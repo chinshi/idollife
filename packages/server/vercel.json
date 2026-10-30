@@ -1,5 +1,5 @@
 {
   "installCommand": "cd ../.. && pnpm install --frozen-lockfile --dangerously-allow-all-builds",
-  "buildCommand": "pnpm build",
+  "buildCommand": "pnpm build:vercel",
   "outputDirectory": "public"
 }
