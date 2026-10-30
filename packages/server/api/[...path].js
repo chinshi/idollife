@@ -15718,8 +15718,8 @@ var cors = (options) => {
     function set(key, value) {
       c.res.headers.set(key, value);
     }
-    const allowOrigin = await findAllowOrigin(c.req.header("origin") || "", c);
-    if (allowOrigin) set("Access-Control-Allow-Origin", allowOrigin);
+    const allowOrigin2 = await findAllowOrigin(c.req.header("origin") || "", c);
+    if (allowOrigin2) set("Access-Control-Allow-Origin", allowOrigin2);
     if (opts.credentials) set("Access-Control-Allow-Credentials", "true");
     if (exposeHeadersStr) set("Access-Control-Expose-Headers", exposeHeadersStr);
     if (c.req.method === "OPTIONS") {
@@ -24508,10 +24508,17 @@ function origins() {
   if (!raw2) return ["http://127.0.0.1:5273", "http://localhost:5273"];
   return raw2.split(",").map((s) => s.trim()).filter(Boolean);
 }
+function allowOrigin(origin) {
+  const list = origins();
+  if (!origin) return list[0];
+  if (list.includes(origin)) return origin;
+  if (/^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(origin)) return origin;
+  return void 0;
+}
 app.use(
   "*",
   cors({
-    origin: origins(),
+    origin: (origin) => allowOrigin(origin),
     allowMethods: ["GET", "POST"],
     allowHeaders: ["content-type", "authorization"]
   })

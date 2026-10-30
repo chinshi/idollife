@@ -13,10 +13,19 @@ function origins(): string[] {
   return raw.split(',').map((s) => s.trim()).filter(Boolean);
 }
 
+/** 允许：本地开发的端口、显式配置的域名、任何 vercel.app 部署 */
+function allowOrigin(origin: string): string | undefined {
+  const list = origins();
+  if (!origin) return list[0];
+  if (list.includes(origin)) return origin;
+  if (/^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(origin)) return origin;
+  return undefined;
+}
+
 app.use(
   '*',
   cors({
-    origin: origins(),
+    origin: (origin) => allowOrigin(origin),
     allowMethods: ['GET', 'POST'],
     allowHeaders: ['content-type', 'authorization'],
   }),
