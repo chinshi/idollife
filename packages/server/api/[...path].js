@@ -3859,7 +3859,7 @@ var require_RealtimeChannel = __commonJS({
           const postgres_changes = (_b = (_a = this.bindings.postgres_changes) === null || _a === void 0 ? void 0 : _a.map((r) => r.filter)) !== null && _b !== void 0 ? _b : [];
           const presence_enabled = !!this.bindings[REALTIME_LISTEN_TYPES.PRESENCE] && this.bindings[REALTIME_LISTEN_TYPES.PRESENCE].length > 0 || ((_c = this.params.config.presence) === null || _c === void 0 ? void 0 : _c.enabled) === true;
           const accessTokenPayload = {};
-          const config = Object.assign({ broadcast, presence: Object.assign(Object.assign({}, presence), { enabled: presence_enabled }), postgres_changes, private: isPrivate }, postgres_changes_options ? { postgres_changes_options } : {});
+          const config2 = Object.assign({ broadcast, presence: Object.assign(Object.assign({}, presence), { enabled: presence_enabled }), postgres_changes, private: isPrivate }, postgres_changes_options ? { postgres_changes_options } : {});
           if (this.socket.accessTokenValue) {
             accessTokenPayload.access_token = this.socket.accessTokenValue;
           }
@@ -3867,7 +3867,7 @@ var require_RealtimeChannel = __commonJS({
             callback === null || callback === void 0 ? void 0 : callback(REALTIME_SUBSCRIBE_STATES.CHANNEL_ERROR, (0, normalizeChannelError_1.normalizeChannelError)(reason));
           });
           this._onClose(() => callback === null || callback === void 0 ? void 0 : callback(REALTIME_SUBSCRIBE_STATES.CLOSED));
-          this.updateJoinPayload(Object.assign({ config }, accessTokenPayload));
+          this.updateJoinPayload(Object.assign({ config: config2 }, accessTokenPayload));
           this._updateFilterMessage();
           const joinTimeout = (postgres_changes_options === null || postgres_changes_options === void 0 ? void 0 : postgres_changes_options.wait) && postgres_changes.length > 0 ? Math.max(timeout, ((_d = postgres_changes_options.timeout) !== null && _d !== void 0 ? _d : constants_1.DEFAULT_POSTGRES_CHANGES_WAIT_TIMEOUT) + constants_1.POSTGRES_CHANGES_WAIT_ERROR_GRACE) : timeout;
           this.channelAdapter.subscribe(joinTimeout).receive("ok", async ({ postgres_changes: postgres_changes2 }) => {
@@ -13904,11 +13904,6 @@ var require_main3 = __commonJS({
   }
 });
 
-// ../../node_modules/.pnpm/hono@4.13.14/node_modules/hono/dist/adapter/vercel/handler.js
-var handle = (app2) => (req) => {
-  return app2.fetch(req);
-};
-
 // ../../node_modules/.pnpm/hono@4.13.14/node_modules/hono/dist/request/constants.js
 var GET_MATCH_RESULT = /* @__PURE__ */ Symbol();
 
@@ -14845,13 +14840,13 @@ var compose = (middleware, onError, onNotFound) => {
       index = i;
       let res;
       let isError = false;
-      let handler;
+      let handler2;
       if (middleware[i]) {
-        handler = middleware[i][0][0];
+        handler2 = middleware[i][0][0];
         context.req.routeIndex = i;
-      } else handler = i === middleware.length && next || void 0;
-      if (handler) try {
-        res = await handler(context, () => dispatch(i + 1));
+      } else handler2 = i === middleware.length && next || void 0;
+      if (handler2) try {
+        res = await handler2(context, () => dispatch(i + 1));
       } catch (err) {
         if (err instanceof Error && onError) {
           context.error = err;
@@ -14917,8 +14912,8 @@ var Hono = class Hono2 {
         const methodName = method.toUpperCase();
         if (typeof args1 === "string") this.#path = args1;
         else this.#addRoute(methodName, this.#path, args1);
-        args.forEach((handler) => {
-          this.#addRoute(methodName, this.#path, handler);
+        args.forEach((handler2) => {
+          this.#addRoute(methodName, this.#path, handler2);
         });
         return this;
       };
@@ -14928,7 +14923,7 @@ var Hono = class Hono2 {
         this.#path = p;
         for (const m of [method].flat()) {
           const methodName = m.toUpperCase();
-          for (const handler of handlers) this.#addRoute(methodName, this.#path, handler);
+          for (const handler2 of handlers) this.#addRoute(methodName, this.#path, handler2);
         }
       }
       return this;
@@ -14939,8 +14934,8 @@ var Hono = class Hono2 {
         this.#path = "*";
         handlers.unshift(arg1);
       }
-      handlers.forEach((handler) => {
-        this.#addRoute("ALL", this.#path, handler);
+      handlers.forEach((handler2) => {
+        this.#addRoute("ALL", this.#path, handler2);
       });
       return this;
     };
@@ -14981,13 +14976,13 @@ var Hono = class Hono2 {
   route(path, app2) {
     const subApp = this.basePath(path);
     app2.routes.map((r) => {
-      let handler;
-      if (app2.errorHandler === errorHandler) handler = r.handler;
+      let handler2;
+      if (app2.errorHandler === errorHandler) handler2 = r.handler;
       else {
-        handler = async (c, next) => (await compose([], app2.errorHandler)(c, () => r.handler(c, next))).res;
-        handler[COMPOSED_HANDLER] = r.handler;
+        handler2 = async (c, next) => (await compose([], app2.errorHandler)(c, () => r.handler(c, next))).res;
+        handler2[COMPOSED_HANDLER] = r.handler;
       }
-      subApp.#addRoute(r.method, r.path, handler, r.basePath);
+      subApp.#addRoute(r.method, r.path, handler2, r.basePath);
     });
     return this;
   }
@@ -15025,8 +15020,8 @@ var Hono = class Hono2 {
   * })
   * ```
   */
-  onError = (handler) => {
-    this.errorHandler = handler;
+  onError = (handler2) => {
+    this.errorHandler = handler2;
     return this;
   };
   /**
@@ -15044,8 +15039,8 @@ var Hono = class Hono2 {
   * })
   * ```
   */
-  notFound = (handler) => {
-    this.#notFoundHandler = handler;
+  notFound = (handler2) => {
+    this.#notFoundHandler = handler2;
     return this;
   };
   /**
@@ -15113,23 +15108,23 @@ var Hono = class Hono2 {
         return new Request(url, request);
       };
     })();
-    const handler = async (c, next) => {
+    const handler2 = async (c, next) => {
       const res = await applicationHandler(replaceRequest(c.req.raw), ...getOptions(c));
       if (res) return res;
       await next();
     };
-    this.#addRoute("ALL", mergePath(path, "*"), handler);
+    this.#addRoute("ALL", mergePath(path, "*"), handler2);
     return this;
   }
-  #addRoute(method, path, handler, baseRoutePath) {
+  #addRoute(method, path, handler2, baseRoutePath) {
     path = mergePath(this._basePath, path);
     const r = {
       basePath: baseRoutePath !== void 0 ? mergePath(this._basePath, baseRoutePath) : this._basePath,
       path,
       method,
-      handler
+      handler: handler2
     };
-    this.router.add(method, path, [handler, r]);
+    this.router.add(method, path, [handler2, r]);
     this.routes.push(r);
   }
   #handleError(err, c) {
@@ -15415,7 +15410,7 @@ var RegExpRouter = class {
       throw e === PATH_ERROR ? new UnsupportedPathError(path) : e;
     }
   }
-  add(method, path, handler) {
+  add(method, path, handler2) {
     const middleware = this.#middleware;
     const routes = this.#routes;
     if (!middleware) throw new Error(MESSAGE_MATCHER_IS_ALREADY_BUILT);
@@ -15437,7 +15432,7 @@ var RegExpRouter = class {
         this.#insertPath(m, path);
         middleware[m][path] = findMiddleware(middleware[m], path) || findMiddleware(middleware["ALL"], path) || [];
       }
-      for (const handlerMap of [middleware, routes]) for (const m of methods) for (const p in handlerMap[m]) re.test(p) && handlerMap[m][p].push([handler, path]);
+      for (const handlerMap of [middleware, routes]) for (const m of methods) for (const p in handlerMap[m]) re.test(p) && handlerMap[m][p].push([handler2, path]);
       return;
     }
     const paths = checkOptionalParameter(path) || [path];
@@ -15446,7 +15441,7 @@ var RegExpRouter = class {
         this.#insertPath(m, path2);
         routes[m][path2] = findMiddleware(middleware[m], path2) || findMiddleware(middleware["ALL"], path2) || [];
       }
-      routes[m][path2].push([handler, path2]);
+      routes[m][path2].push([handler2, path2]);
     }
   }
   match = match;
@@ -15492,12 +15487,12 @@ var SmartRouter = class {
   constructor(init) {
     this.#routers = init.routers;
   }
-  add(method, path, handler) {
+  add(method, path, handler2) {
     if (!this.#routes) throw new Error(MESSAGE_MATCHER_IS_ALREADY_BUILT);
     this.#routes.push([
       method,
       path,
-      handler
+      handler2
     ]);
   }
   match(method, path) {
@@ -15540,7 +15535,7 @@ var Node3 = class Node4 {
   #patterns = [];
   #pattern;
   #params = emptyParams;
-  insert(method, path, handler) {
+  insert(method, path, handler2) {
     let curNode = this;
     const parts = splitRoutingPath(path);
     const possibleKeys = /* @__PURE__ */ new Set();
@@ -15559,7 +15554,7 @@ var Node3 = class Node4 {
       if (isParam) possibleKeys.add(pattern[1]);
     }
     curNode.#methods.push({ [method]: {
-      handler,
+      handler: handler2,
       possibleKeys: [...possibleKeys],
       score: ++order
     } });
@@ -15657,7 +15652,7 @@ var Node3 = class Node4 {
     if (handlerSets[1]) handlerSets.sort((a, b) => {
       return a.score - b.score;
     });
-    return [handlerSets.map(({ handler, params }) => [handler, params])];
+    return [handlerSets.map(({ handler: handler2, params }) => [handler2, params])];
   }
 };
 
@@ -15665,8 +15660,8 @@ var Node3 = class Node4 {
 var TrieRouter = class {
   name = "TrieRouter";
   #node = new Node3();
-  add(method, path, handler) {
-    for (const result of checkOptionalParameter(path) || [path]) this.#node.insert(method, result, handler);
+  add(method, path, handler2) {
+    for (const result of checkOptionalParameter(path) || [path]) this.#node.insert(method, result, handler2);
   }
   match(method, path) {
     return this.#node.search(method, path);
@@ -17876,12 +17871,12 @@ var PostgrestFilterBuilder = class extends PostgrestTransformBuilder {
     else this.url.searchParams.append(column, `ov.{${value.join(",")}}`);
     return this;
   }
-  textSearch(column, query, { config, type } = {}) {
+  textSearch(column, query, { config: config2, type } = {}) {
     let typePart = "";
     if (type === "plain") typePart = "pl";
     else if (type === "phrase") typePart = "ph";
     else if (type === "websearch") typePart = "w";
-    const configPart = config === void 0 ? "" : `(${config})`;
+    const configPart = config2 === void 0 ? "" : `(${config2})`;
     this.url.searchParams.append(column, `${typePart}fts${configPart}.${query}`);
     return this;
   }
@@ -24661,7 +24656,39 @@ app.get("/v1/runs/:id", async (c) => {
 });
 
 // src/vercel.ts
-var vercel_default = handle(app);
+var config = { runtime: "nodejs" };
+async function handler(req, res) {
+  try {
+    const url = `https://${req.headers.host ?? "localhost"}${req.url ?? "/"}`;
+    const headers = new Headers();
+    for (const [key, value] of Object.entries(req.headers)) {
+      if (Array.isArray(value)) value.forEach((v) => headers.append(key, v));
+      else if (value !== void 0) headers.set(key, value);
+    }
+    const chunks = [];
+    for await (const chunk of req) chunks.push(chunk);
+    const hasBody = chunks.length > 0 && req.method !== "GET" && req.method !== "HEAD";
+    const request = new Request(url, {
+      method: req.method ?? "GET",
+      headers,
+      body: hasBody ? Buffer.concat(chunks) : void 0
+    });
+    const response = await app.fetch(request);
+    res.statusCode = response.status;
+    response.headers.forEach((value, key) => res.setHeader(key, value));
+    res.end(Buffer.from(await response.arrayBuffer()));
+  } catch (err) {
+    res.statusCode = 500;
+    res.setHeader("content-type", "application/json");
+    res.end(
+      JSON.stringify({
+        error: "function crashed",
+        detail: err instanceof Error ? `${err.name}: ${err.message}` : String(err)
+      })
+    );
+  }
+}
 export {
-  vercel_default as default
+  config,
+  handler as default
 };
