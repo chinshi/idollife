@@ -15,6 +15,12 @@ export function getStore(): Store {
 
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const mode = process.env.STORE; // 'file' | 'supabase'，不填则自动判断
+
+  if (mode === 'file') {
+    store = new FileStore();
+    return store;
+  }
 
   if (url && key) {
     store = new SupabaseStore(url, key);

@@ -167,6 +167,6 @@ packages/server    API：/health、/v1/sync（用同一份 core 重放）
 
 接 Supabase：
 
-1. 在 Supabase SQL Editor 执行 `packages/server/db/idollife-schema.sql`（建 `idollife` schema + `runs` 表）
+1. 在 Supabase SQL Editor 执行 `packages/server/db/idollife-runs.sql`（建 `public.idollife_runs` 表）
 2. 把 service_role key 填进 `packages/server/.env`（该文件不进 git）
 3. 重启 server，`/health` 里会显示 `store: supabase`

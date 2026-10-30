@@ -1,7 +1,11 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import type { RunRecord, Store } from './types.js';
 
-const TABLE = 'runs';
+/**
+ * 方案 B：表放在 public schema，用 `idollife_` 前缀与工具站数据隔离。
+ * （Supabase 免费档默认只暴露 public，自定义 schema 需要额外配置，故不用。）
+ */
+const TABLE = 'idollife_runs';
 
 interface Row {
   run_id: string;
@@ -25,20 +29,14 @@ function toRecord(row: Row): RunRecord {
   };
 }
 
-/**
- * Supabase 存储（服务端专用，用 service_role key）。
- * 表在独立的 `idollife` schema 里，与工具站数据隔离。
- */
 export class SupabaseStore implements Store {
   kind = 'supabase';
   private client: SupabaseClient;
 
   constructor(url: string, serviceKey: string) {
-    // 指定 schema 后 createClient 的返回泛型会带 schema 名，这里统一收敛成一个类型
     this.client = createClient(url, serviceKey, {
-      db: { schema: 'idollife' },
       auth: { persistSession: false, autoRefreshToken: false },
-    }) as unknown as SupabaseClient;
+    });
   }
 
   async getRun(id: string): Promise<RunRecord | undefined> {
