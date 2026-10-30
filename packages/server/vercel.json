@@ -1,3 +1,5 @@
 {
-  "buildCommand": "pnpm build"
+  "installCommand": "cd ../.. && pnpm install --frozen-lockfile --dangerously-allow-all-builds",
+  "buildCommand": "pnpm build",
+  "outputDirectory": "public"
 }
