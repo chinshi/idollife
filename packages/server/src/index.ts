@@ -135,6 +135,20 @@ app.post('/v1/sync', async (c) => {
   });
 });
 
+/** 当前用户最近的一局（登录后用它恢复云端进度） */
+app.get('/v1/runs/latest', async (c) => {
+  const user = await getUserFromRequest(c);
+  if (!user) return c.json({ error: 'unauthorized' }, 401);
+
+  try {
+    const rec = await getStore().latestForUser(user.id);
+    if (!rec) return c.json({ run: null }, 200);
+    return c.json(rec);
+  } catch (err) {
+    return c.json({ error: 'store unavailable', detail: String(err) }, 503);
+  }
+});
+
 app.get('/v1/runs/:id', async (c) => {
   const user = await getUserFromRequest(c);
   if (!user) return c.json({ error: 'unauthorized' }, 401);

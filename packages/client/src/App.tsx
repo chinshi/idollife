@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { ACTION_LIST, ACTIONS, settle } from '@idollife/core';
 import type { RunState, ScheduleItem, SettleResult } from '@idollife/core';
 import { clearSave, createSave, loadSave, writeSave } from './state/save';
-import { syncRun } from './api/sync';
+import { syncRun, fetchLatestRun } from './api/sync';
 import {
   getAccessToken,
   getSessionUser,
@@ -73,6 +73,7 @@ export default function App() {
   const [runId, setRunId] = useState(boot?.runId ?? createSave(initialRun, 'run-demo').runId);
   const [run, setRun] = useState<RunState>(boot?.run ?? initialRun);
   const [schedule, setSchedule] = useState<ScheduleItem[]>(boot?.schedule ?? []);
+  const [revision, setRevision] = useState<number>(boot?.revision ?? 0);
   const [seed] = useState(boot?.seed ?? 'run-demo');
   const [savedAt, setSavedAt] = useState<number | null>(boot?.updatedAt ?? null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -97,10 +98,37 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+
+    void (async () => {
+      const token = await getAccessToken();
+      const latest = await fetchLatestRun(token);
+      if (cancelled || !latest) return;
+
+      const localEmpty = run.log.length === 0 && schedule.length === 0 && run.at === T0;
+      if (localEmpty || latest.revision > revision) {
+        setRunId(latest.runId);
+        setRun(latest.run);
+        setSchedule(latest.schedule);
+        setRevision(latest.revision);
+        setNotice('已从云端恢复进度。');
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // 只在登录状态变化时拉一次云端
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  useEffect(() => {
     const t = setTimeout(() => {
       const ok = writeSave({
         version: 1,
         runId,
+        revision,
         updatedAt: Date.now(),
         seed,
         run,
@@ -109,7 +137,7 @@ export default function App() {
       if (ok) setSavedAt(Date.now());
     }, 250);
     return () => clearTimeout(t);
-  }, [runId, run, schedule, seed]);
+  }, [runId, revision, run, schedule, seed]);
 
   const lastEnd = useMemo(
     () => schedule.reduce((max, s) => Math.max(max, s.endAt), run.at),
@@ -146,15 +174,30 @@ export default function App() {
     }
 
     setSyncStatus('syncing');
-    const res = await syncRun(
+    const outcome = await syncRun(
       { runId, run: prevRun, schedule: prevSchedule, from, to, seed },
       token,
     );
 
-    if (!res) {
+    if (outcome.kind === 'unauthorized') {
+      setSyncStatus('guest');
+      return;
+    }
+    if (outcome.kind === 'error') {
       setSyncStatus('offline');
       return;
     }
+
+    if (outcome.kind === 'stale') {
+      setRun(outcome.data.state);
+      setRevision(outcome.data.revision);
+      setNotice('服务器上的进度更新，已回滚到云端。');
+      setSyncStatus('synced');
+      return;
+    }
+
+    const res = outcome.data;
+    setRevision(res.revision);
 
     if (!sameState(res.state, local.state)) {
       setRun(res.state);

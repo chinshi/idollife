@@ -45,4 +45,11 @@ export class FileStore implements Store {
   async countRuns(): Promise<number> {
     return Object.keys(await this.load()).length;
   }
+
+  async latestForUser(userId: string): Promise<RunRecord | undefined> {
+    const db = await this.load();
+    return Object.values(db)
+      .filter((r) => r.userId === userId)
+      .sort((a, b) => b.updatedAt - a.updatedAt)[0];
+  }
 }

@@ -18,4 +18,6 @@ export interface Store {
   putRun(rec: RunRecord): Promise<void>;
   listRuns(): Promise<RunRecord[]>;
   countRuns(): Promise<number>;
+  /** 某个用户最近更新的一局 */
+  latestForUser(userId: string): Promise<RunRecord | undefined>;
 }

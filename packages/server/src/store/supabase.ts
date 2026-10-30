@@ -75,4 +75,16 @@ export class SupabaseStore implements Store {
     if (error) throw new Error(`supabase countRuns: ${error.message}`);
     return count ?? 0;
   }
+
+  async latestForUser(userId: string): Promise<RunRecord | undefined> {
+    const { data, error } = await this.client
+      .from(TABLE)
+      .select('*')
+      .eq('user_id', userId)
+      .order('updated_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (error) throw new Error(`supabase latestForUser: ${error.message}`);
+    return data ? toRecord(data as Row) : undefined;
+  }
 }

@@ -5,6 +5,8 @@ const KEY = 'idollife:save:v1';
 export interface SaveV1 {
   version: 1;
   runId: string;
+  /** 与服务端对齐的版本号；本地新建为 0 */
+  revision: number;
   updatedAt: number;
   seed: string;
   run: RunState;
@@ -32,6 +34,7 @@ export function loadSave(): SaveV1 | null {
     return {
       version: 1,
       runId: typeof data.runId === 'string' && data.runId ? data.runId : newRunId(),
+      revision: isNum(data.revision) ? data.revision : 0,
       updatedAt: isNum(data.updatedAt) ? data.updatedAt : 0,
       seed: typeof data.seed === 'string' ? data.seed : 'run-demo',
       run: data.run as RunState,
@@ -63,6 +66,7 @@ export function createSave(run: RunState, seed: string): SaveV1 {
   return {
     version: 1,
     runId: newRunId(),
+    revision: 0,
     updatedAt: 0,
     seed,
     run,
