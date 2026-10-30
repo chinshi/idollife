@@ -170,3 +170,10 @@ packages/server    API：/health、/v1/sync（用同一份 core 重放）
 1. 在 Supabase SQL Editor 执行 `packages/server/db/idollife-runs.sql`（建 `public.idollife_runs` 表）
 2. 把 service_role key 填进 `packages/server/.env`（该文件不进 git）
 3. 重启 server，`/health` 里会显示 `store: supabase`
+### 登录与同步
+
+- 客户端读 `packages/client/.env` 的 `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY`（anon key 可公开）
+- 不登录也能玩，但**只有登录后才会同步到服务器**
+- 服务端用 `Authorization: Bearer <access_token>` 验身份，局归 `user_id` 所有（别人的局返回 403）
+
+自检脚本：`packages/server/scripts/probe-auth.mjs`、`probe-ownership.mjs`
