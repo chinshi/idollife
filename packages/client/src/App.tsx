@@ -1,6 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ACTION_LIST, ACTIONS, applyChoice, getStoryEvent, settle, tierOf } from '@idollife/core';
-import type { RunState, ScheduleItem, SettleResult } from '@idollife/core';
+import {
+  ACTION_LIST,
+  ACTIONS,
+  RUN_LENGTH_MS,
+  applyChoice,
+  applyShow,
+  createFans,
+  getStoryEvent,
+  judgeEnding,
+  performShow,
+  settle,
+  tierOf,
+} from '@idollife/core';
+import type { Ending, RunState, ScheduleItem, SettleResult } from '@idollife/core';
 import { clearSave, createSave, loadSave, writeSave } from './state/save';
 import { syncRun, fetchLatestRun, pushChoice } from './api/sync';
 import {
@@ -22,10 +34,13 @@ const initialRun: RunState = {
   stamina: 100,
   stats: { vocal: 10, dance: 10, acting: 10, talk: 10 },
   axes: { self: 50, others: 50, fit: 50 },
+  fans: createFans(0),
   flags: {},
   pendingEvent: null,
   log: [],
 };
+
+const RUN_END = T0 + RUN_LENGTH_MS;
 
 const AXIS_LABEL: Record<'self' | 'others' | 'fit', string> = {
   self: '自我',
@@ -93,6 +108,8 @@ export default function App() {
   const [savedAt, setSavedAt] = useState<number | null>(boot?.updatedAt ?? null);
   const [notice, setNotice] = useState<string | null>(null);
   const [syncStatus, setSyncStatus] = useState<SyncStatus>('local');
+  const [phase, setPhase] = useState<'playing' | 'deciding' | 'ended'>('playing');
+  const [ending, setEnding] = useState<Ending | null>(null);
 
   const [user, setUser] = useState<AuthUser | null>(null);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
@@ -295,19 +312,53 @@ export default function App() {
     const from = run.at;
     const to = lastEnd;
 
-    const result = settle(prevRun, prevSchedule, from, to, seed);
+    const result = settle(prevRun, prevSchedule, from, to, seed, { endAt: RUN_END });
     setRun(result.state);
     setSchedule((prev) => prev.filter((s) => !result.executed.includes(s.id)));
 
-    setNotice(
-      result.stoppedReason === 'stamina'
-        ? `体力不足，只执行了 ${result.executed.length} 个行动。`
-        : result.stoppedReason === 'time'
-          ? '排程没跑完，剩下的留到下次。'
-          : `执行了 ${result.executed.length} 个行动。`,
-    );
+    if (result.stoppedReason === 'ending') {
+      setPhase('deciding');
+      setNotice('两年到了。最后做一个决定吧。');
+    } else {
+      setNotice(
+        result.stoppedReason === 'stamina'
+          ? `体力不足，只执行了 ${result.executed.length} 个行动。`
+          : result.stoppedReason === 'time'
+            ? '排程没跑完，剩下的留到下次。'
+            : result.stoppedReason === 'event'
+              ? '有件事需要你决定。'
+              : `执行了 ${result.executed.length} 个行动。`,
+      );
+    }
 
     void pushSync(prevRun, prevSchedule, from, to, result);
+  }
+
+  function doShow() {
+    if (phase !== 'playing' || run.pendingEvent) return;
+    const result = performShow(run, `${seed}:show:${run.log.length}`);
+    const next = applyShow(run, result);
+    setRun(next);
+    setNotice(`演出 ${result.grade}：${result.report[0]}`);
+
+    void (async () => {
+      const token = await getAccessToken();
+      const res = await pushChoice(runId, next, token);
+      if (res) setRevision(res.revision);
+    })();
+  }
+
+  function decide(d: 'stay' | 'backstage' | 'leave') {
+    const e = judgeEnding(run, d);
+    setEnding(e);
+    setPhase('ended');
+    setNotice(null);
+
+    void (async () => {
+      const token = await getAccessToken();
+      const res = await pushChoice(runId, run, token);
+      if (res) setRevision(res.revision);
+    })();
   }
 
   function reset() {
@@ -318,6 +369,8 @@ export default function App() {
     setSchedule([]);
     setSavedAt(null);
     setSyncStatus(user ? 'local' : 'guest');
+    setPhase('playing');
+    setEnding(null);
     setNotice('存档已重置。');
   }
 
@@ -407,6 +460,12 @@ export default function App() {
             <span className="k">体力</span>
             <span className="v">{run.stamina}</span>
           </div>
+          <div className="stat">
+            <span className="k">粉丝</span>
+            <span className="v">
+              {Object.values(run.fans.byType).reduce((a, b) => a + b, 0)}
+            </span>
+          </div>
         </div>
         <div className="axes">
           {(['self', 'others', 'fit'] as const).map((k) => (
@@ -455,6 +514,10 @@ export default function App() {
         </div>
         <div className="row">
           <button onClick={autoFill}>自动排满</button>
+          <button onClick={doShow} disabled={run.stamina < 30 || phase !== 'playing'}>
+            参加演出
+            <small>体力 -30</small>
+          </button>
           <button onClick={() => setSchedule([])} disabled={schedule.length === 0}>
             清空排程
           </button>
@@ -513,6 +576,29 @@ export default function App() {
         </div>
         {notice && <p className="notice">{notice}</p>}
       </section>
+
+      {phase === 'deciding' && (
+        <section className="panel event">
+          <h2>两年了</h2>
+          <h3>你还要留在这个圈子吗？</h3>
+          <div className="choices">
+            <button onClick={() => decide('stay')}>留在台前</button>
+            <button onClick={() => decide('backstage')}>转幕后</button>
+            <button onClick={() => decide('leave')}>离开</button>
+          </div>
+        </section>
+      )}
+
+      {phase === 'ended' && ending && (
+        <section className="panel ending">
+          <h2>结局</h2>
+          <h3>{ending.title}</h3>
+          <p>{ending.text}</p>
+          <button className="primary" onClick={reset}>
+            再来一次
+          </button>
+        </section>
+      )}
 
       <section className="panel">
         <h2>日志</h2>

@@ -1,3 +1,5 @@
+import type { Fans } from './fans';
+
 /** 成长属性 */
 export type StatKey = 'vocal' | 'dance' | 'acting' | 'talk';
 
@@ -33,6 +35,7 @@ export interface RunState {
   stamina: number;
   stats: Stats;
   axes: Axes;
+  fans: Fans;
   flags: Record<string, boolean | number>;
   /** 待玩家抉择的剧情事件 id；不为空时不能继续推进 */
   pendingEvent: string | null;
@@ -59,7 +62,7 @@ export interface ActionDef {
   text: string;
 }
 
-export type StopReason = 'exhausted' | 'stamina' | 'time' | 'event' | null;
+export type StopReason = 'exhausted' | 'stamina' | 'time' | 'event' | 'ending' | null;
 
 export interface SettleResult {
   state: RunState;

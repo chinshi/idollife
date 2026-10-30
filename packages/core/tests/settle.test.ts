@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { settle } from '../src/settle';
 import { applyChoice } from '../src/events';
+import { createFans } from '../src/fans';
 import type { RunState, ScheduleItem } from '../src/types';
 
 const MIN = 60_000;
@@ -13,6 +14,7 @@ function baseRun(): RunState {
     stamina: 100,
     stats: { vocal: 10, dance: 10, acting: 10, talk: 10 },
     axes: { self: 50, others: 50, fit: 50 },
+    fans: createFans(100),
     flags: {},
     pendingEvent: null,
     log: [],

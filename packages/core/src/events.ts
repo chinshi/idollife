@@ -41,6 +41,12 @@ export const ROUTINE_TEMPLATES: RoutineTemplate[] = [
   { id: 'r-note', text: '你在手机备忘录里写下一句歌词。', stamina: -1, stat: 'acting', gain: 1 },
   { id: 'r-tired', text: '今天状态一般，练得有点散。', stamina: -2 },
   { id: 'r-mirror', text: '对着镜子调整了很久的表情。', stamina: -2, stat: 'talk', gain: 1 },
+  { id: 'r-rain', text: '下雨了，你在地铁口等了很久。', stamina: -1 },
+  { id: 'r-fan-gift', text: '有粉丝塞给你一包糖，没敢多说话。', stamina: 3 },
+  { id: 'r-roommate', text: '室友在客厅看电视，你戴着耳机练动作。', stamina: -2, stat: 'dance', gain: 1 },
+  { id: 'r-callback', text: '经纪人发来一条没头没尾的消息：「下周再说」。', stamina: 0 },
+  { id: 'r-old-video', text: '你翻到自己一年前的练习视频，看完了。', stamina: -1, stat: 'acting', gain: 1 },
+  { id: 'r-night', text: '凌晨的便利店，只有你和店员。', stamina: 2, stat: 'talk', gain: 1 },
 ];
 
 export const STORY_EVENTS: StoryEvent[] = [
@@ -114,6 +120,50 @@ export const STORY_EVENTS: StoryEvent[] = [
         text: '你继续练，但动作开始变形。',
         effects: { stamina: -5, stats: { dance: 1 }, axes: { self: -5, fit: 2 } },
         setFlag: 'burnout',
+      },
+    ],
+  },
+  {
+    id: 'crowded-fans',
+    title: '有人举你的名字',
+    text: '前排有人举起了写着你的灯牌，你差点忘了下一句歌词。',
+    requires: (s) => s.fans.byType.stage >= 50 && !s.flags['ev:crowded-fans'],
+    choices: [
+      {
+        id: 'look',
+        label: '看过去，笑一下',
+        text: '她愣了一下，然后喊得更大声了。',
+        effects: { axes: { others: 6, self: 2 }, stamina: 3 },
+        setFlag: 'crowded-fans',
+      },
+      {
+        id: 'focus',
+        label: '专心唱完这首歌',
+        text: '你没有抬头，但把这首歌唱到了最好。',
+        effects: { axes: { fit: 6, self: 4 }, stats: { vocal: 1 } },
+        setFlag: 'crowded-fans',
+      },
+    ],
+  },
+  {
+    id: 'manager-doubt',
+    title: '经纪人的犹豫',
+    text: '「你最近……还撑得住吗？」他把话说到一半又咽了回去。',
+    requires: (s) => s.axes.fit < 34 && !s.flags['ev:manager-doubt'],
+    choices: [
+      {
+        id: 'honest',
+        label: '说实话，我不太确定',
+        text: '他沉默了很久，说「那就慢一点」。',
+        effects: { axes: { self: 7, others: 3 }, stamina: 5 },
+        setFlag: 'manager-doubt',
+      },
+      {
+        id: 'brave',
+        label: '我没事，再给我点时间',
+        text: '他点点头，把下一场演出的资料推给你。',
+        effects: { axes: { self: -3, others: 5, fit: 4 }, stamina: -5 },
+        setFlag: 'manager-doubt',
       },
     ],
   },

@@ -2,6 +2,9 @@ import type { ActionDef } from './types';
 
 const MIN = 60_000;
 
+/** 一周目长度：游戏内 2 年（按行动推进的毫秒数计） */
+export const RUN_LENGTH_MS = 2 * 365 * 24 * 60 * MIN;
+
 /** P0 行动表：先跑通循环，数值全部是占位 */
 export const ACTIONS: Record<string, ActionDef> = {
   'vocal-karaoke': {

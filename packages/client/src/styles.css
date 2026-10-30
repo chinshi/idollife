@@ -176,3 +176,6 @@ button.primary small { color: #fff; opacity: 0.8; }
 .panel.event p { margin: 0 0 12px; }
 .choices { display: flex; flex-direction: column; gap: 8px; }
 .choices button { align-items: flex-start; text-align: left; }
+.panel.ending { border-color: #f0c0c0; background: #fff7f7; }
+.panel.ending h3 { margin: 0 0 6px; font-size: 20px; }
+.panel.ending p { margin: 0 0 14px; }

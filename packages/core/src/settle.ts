@@ -21,6 +21,8 @@ export interface SettleOptions {
   routineChance?: number;
   /** 是否检查剧情事件，默认 true */
   storyEvents?: boolean;
+  /** 周目结束时间点；到达即停止并提示结局 */
+  endAt?: number;
 }
 
 export function settle(
@@ -38,10 +40,20 @@ export function settle(
     stamina: run.stamina,
     stats: { ...run.stats },
     axes: { ...run.axes },
+    fans: {
+      byType: { ...run.fans.byType },
+      loyalty: { ...run.fans.loyalty },
+      affection: { ...run.fans.affection },
+    },
     flags: { ...run.flags },
     pendingEvent: run.pendingEvent,
     log: [...run.log],
   };
+
+  // 周目到点：不再推进
+  if (opts.endAt !== undefined && state.at >= opts.endAt) {
+    return { state, executed: [], stoppedReason: 'ending' };
+  }
 
   // 有未处理的抉择，时间不走
   if (state.pendingEvent) {
@@ -128,6 +140,10 @@ export function settle(
   }
 
   if (!stoppedReason) stoppedReason = 'exhausted';
+
+  if (opts.endAt !== undefined && state.at >= opts.endAt) {
+    stoppedReason = 'ending';
+  }
 
   return { state, executed, stoppedReason };
 }
