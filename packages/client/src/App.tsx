@@ -3,6 +3,7 @@ import {
   ACTION_LIST,
   ACTIONS,
   RUN_LENGTH_MS,
+  START_MONEY,
   applyChoice,
   applyShow,
   createFans,
@@ -32,6 +33,7 @@ const T0 = Date.UTC(2026, 0, 1, 9, 0, 0);
 const initialRun: RunState = {
   at: T0,
   stamina: 100,
+  money: START_MONEY,
   stats: { vocal: 10, dance: 10, acting: 10, talk: 10 },
   axes: { self: 50, others: 50, fit: 50 },
   fans: createFans(0),
@@ -456,6 +458,10 @@ export default function App() {
               <span className="v">{run.stats[k]}</span>
             </div>
           ))}
+          <div className="stat">
+            <span className="k">资金</span>
+            <span className="v">{run.money}</span>
+          </div>
           <div className="stat">
             <span className="k">体力</span>
             <span className="v">{run.stamina}</span>

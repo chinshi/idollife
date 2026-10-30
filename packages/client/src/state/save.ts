@@ -1,3 +1,4 @@
+import { START_MONEY } from '@idollife/core';
 import type { RunState, ScheduleItem } from '@idollife/core';
 
 const KEY = 'idollife:save:v1';
@@ -40,6 +41,7 @@ export function loadSave(): SaveV1 | null {
       // 兼容早期没有三轴 / flags 的存档
       run: {
         ...(data.run as RunState),
+        money: isNum((data.run as RunState).money) ? (data.run as RunState).money : START_MONEY,
         axes: (data.run as RunState).axes ?? { self: 50, others: 50, fit: 50 },
         flags: (data.run as RunState).flags ?? {},
         pendingEvent: (data.run as RunState).pendingEvent ?? null,

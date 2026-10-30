@@ -33,6 +33,8 @@ export interface RunState {
   /** 游戏内时间：排程耗尽即静止 */
   at: number;
   stamina: number;
+  /** 资金；可以为负（负债） */
+  money: number;
   stats: Stats;
   axes: Axes;
   fans: Fans;
@@ -58,11 +60,15 @@ export interface ActionDef {
   stamina: number;
   /** 属性成长区间 [min, max] */
   gain?: [number, number];
+  /** 金钱消耗（正数表示要花这么多） */
+  cost?: number;
+  /** 金钱收入 */
+  money?: number;
   durationMs: number;
   text: string;
 }
 
-export type StopReason = 'exhausted' | 'stamina' | 'time' | 'event' | 'ending' | null;
+export type StopReason = 'exhausted' | 'stamina' | 'money' | 'time' | 'event' | 'ending' | null;
 
 export interface SettleResult {
   state: RunState;

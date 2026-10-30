@@ -12,6 +12,7 @@ function baseRun(): RunState {
   return {
     at: T0,
     stamina: 100,
+    money: 5000,
     stats: { vocal: 10, dance: 10, acting: 10, talk: 10 },
     axes: { self: 50, others: 50, fit: 50 },
     fans: createFans(100),
@@ -59,6 +60,33 @@ describe('settle', () => {
     expect(r.stoppedReason).toBe('stamina');
     expect(r.executed).toEqual(['s1']);
     expect(r.state.stamina).toBeLessThanOrEqual(5);
+  });
+
+  it('金钱不足时停下，不执行需要花钱的行动', () => {
+    const run = baseRun();
+    run.money = 10;
+
+    const r = settle(run, [item('s1', 'vocal-karaoke', 0)], T0, T0 + 60 * MIN, 'm', PURE);
+
+    expect(r.stoppedReason).toBe('money');
+    expect(r.executed).toEqual([]);
+    expect(r.state.money).toBe(10);
+  });
+
+  it('打工赚钱，唱 K 花钱', () => {
+    const run = baseRun();
+    run.money = 1000;
+
+    const r = settle(
+      run,
+      [item('s1', 'work-part-time', 0), item('s2', 'vocal-karaoke', 10)],
+      T0,
+      T0 + 60 * MIN,
+      'm2',
+      PURE,
+    );
+
+    expect(r.state.money).toBe(1270);
   });
 
   it('同一输入 + 同一种子 → 结果完全一致', () => {

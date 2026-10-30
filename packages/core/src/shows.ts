@@ -10,6 +10,7 @@ export interface ShowResult {
   /** 这场主要吸引哪类粉丝 */
   fanType: FanType;
   fanGain: number;
+  moneyGain: number;
   report: string[];
 }
 
@@ -45,6 +46,7 @@ export function performShow(state: RunState, seed: string): ShowResult {
   const grade: ShowGrade = score >= 45 ? 'S' : score >= 32 ? 'A' : score >= 20 ? 'B' : 'C';
   const multiplier = grade === 'S' ? 3 : grade === 'A' ? 2 : grade === 'B' ? 1.2 : 0.5;
   const fanGain = Math.max(1, Math.round((score / 10) * multiplier * 3));
+  const moneyGain = Math.round(400 * multiplier);
   const fanType = pickFanType(state);
 
   return {
@@ -52,6 +54,7 @@ export function performShow(state: RunState, seed: string): ShowResult {
     score,
     fanType,
     fanGain,
+    moneyGain,
     report: [...GRADE_TEXT[grade], `这场大概吸引了两百多人里的 ${Math.round(fanGain)} 个。`],
   };
 }
@@ -65,6 +68,7 @@ export function applyShow(state: RunState, result: ShowResult): RunState {
   return {
     ...state,
     stamina,
+    money: state.money + result.moneyGain,
     fans,
     log: [
       ...state.log,

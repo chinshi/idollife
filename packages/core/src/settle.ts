@@ -1,4 +1,5 @@
-import { ACTIONS } from './content';
+import { ACTIONS, RENT_PER_WEEK, WEEK_MS } from './content';
+import { createFans } from './fans';
 import { ROUTINE_TEMPLATES, findStoryEvent } from './events';
 import { hashSeed, mulberry32, randInt } from './rng';
 import type { RunState, ScheduleItem, SettleResult, Stats, StopReason } from './types';
@@ -38,13 +39,10 @@ export function settle(
   const state: RunState = {
     at: run.at,
     stamina: run.stamina,
+    money: typeof run.money === 'number' ? run.money : 0,
     stats: { ...run.stats },
-    axes: { ...run.axes },
-    fans: {
-      byType: { ...run.fans.byType },
-      loyalty: { ...run.fans.loyalty },
-      affection: { ...run.fans.affection },
-    },
+    axes: { ...(run.axes ?? { self: 50, others: 50, fit: 50 }) },
+    fans: { ...(run.fans ?? createFans(0)) },
     flags: { ...run.flags },
     pendingEvent: run.pendingEvent,
     log: [...run.log],
@@ -81,8 +79,15 @@ export function settle(
       break;
     }
 
+    if (action.cost && state.money < action.cost) {
+      stoppedReason = 'money';
+      break;
+    }
+
     const gain = action.gain ? randInt(rng, action.gain[0], action.gain[1]) : 0;
     state.stamina = clamp(state.stamina + action.stamina, 0, 100);
+    if (action.cost) state.money -= action.cost;
+    if (action.money) state.money += action.money;
 
     if (action.stat && gain > 0) {
       const before = state.stats[action.stat];
@@ -137,6 +142,19 @@ export function settle(
         break;
       }
     }
+  }
+
+  // 跨周扣房租
+  const weeks = Math.floor(state.at / WEEK_MS) - Math.floor(run.at / WEEK_MS);
+  if (weeks > 0) {
+    state.money -= weeks * RENT_PER_WEEK;
+    state.log.push({
+      at: state.at,
+      actionId: 'rent',
+      text: '房租扣了 ' + String(weeks * RENT_PER_WEEK) + '。',      staminaDelta: 0,
+      statDelta: {},
+      kind: 'routine',
+    });
   }
 
   if (!stoppedReason) stoppedReason = 'exhausted';
