@@ -2,8 +2,12 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ACTION_LIST,
   ACTIONS,
+  RECRUIT_COST,
   RUN_LENGTH_MS,
   START_MONEY,
+  biasLabel,
+  memberStats,
+  recruit,
   applyChoice,
   applyShow,
   createFans,
@@ -37,6 +41,7 @@ const initialRun: RunState = {
   stats: { vocal: 10, dance: 10, acting: 10, talk: 10 },
   axes: { self: 50, others: 50, fit: 50 },
   fans: createFans(0),
+  party: [],
   flags: {},
   pendingEvent: null,
   log: [],
@@ -249,6 +254,21 @@ export default function App() {
     const token = await getAccessToken();
     const res = await pushChoice(runId, next, token);
     if (res) setRevision(res.revision);
+  }
+
+  function doRecruit() {
+    if (run.money < RECRUIT_COST) {
+      setNotice('钱不够招募了。');
+      return;
+    }
+    const { state } = recruit(run, seed + ':recruit:' + run.log.length + ':' + Date.now());
+    setRun(state);
+    setNotice(state.log.at(-1)?.text ?? '');
+    void (async () => {
+      const token = await getAccessToken();
+      const res = await pushChoice(runId, state, token);
+      if (res) setRevision(res.revision);
+    })();
   }
 
   function addAction(actionId: string) {
@@ -581,6 +601,36 @@ export default function App() {
           <button onClick={reset}>重置存档</button>
         </div>
         {notice && <p className="notice">{notice}</p>}
+      </section>
+
+      <section className="panel">
+        <h2>组合（{run.party.length}）</h2>
+        {run.party.length === 0 ? (
+          <p className="muted">还没有成员。招募一次 500。</p>
+        ) : (
+          <ul className="party">
+            {run.party.map((m) => {
+              const s = memberStats(m, run.stats);
+              return (
+                <li key={m.id}>
+                  <span className="name">{m.name}</span>
+                  <span className="muted">
+                    {biasLabel(m.bias)} · 默契 +{m.dupCount}%
+                  </span>
+                  <span className="dur">
+                    {s.vocal}/{s.dance}/{s.acting}/{s.talk}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+        <div className="row">
+          <button className="primary" onClick={doRecruit} disabled={run.money < RECRUIT_COST}>
+            招募
+            <small>-{RECRUIT_COST}</small>
+          </button>
+        </div>
       </section>
 
       {phase === 'deciding' && (

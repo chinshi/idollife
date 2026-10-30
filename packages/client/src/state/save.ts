@@ -43,6 +43,7 @@ export function loadSave(): SaveV1 | null {
         ...(data.run as RunState),
         money: isNum((data.run as RunState).money) ? (data.run as RunState).money : START_MONEY,
         axes: (data.run as RunState).axes ?? { self: 50, others: 50, fit: 50 },
+        party: (data.run as RunState).party ?? [],
         flags: (data.run as RunState).flags ?? {},
         pendingEvent: (data.run as RunState).pendingEvent ?? null,
       },

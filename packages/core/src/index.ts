@@ -7,3 +7,4 @@ export * from './events';
 export * from './endings';
 export * from './fans-util';
 export * from './shows';
+export * from './members';

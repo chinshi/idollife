@@ -19,6 +19,16 @@ export interface Axes {
 
 export type Tier = 'low' | 'mid' | 'high';
 
+export type Bias = 'vocal' | 'dance' | 'acting' | 'talk' | 'balanced';
+
+export interface Member {
+  id: string;
+  name: string;
+  bias: Bias;
+  /** 重复招募次数，每次 +1%，上限 10 */
+  dupCount: number;
+}
+
 export interface LogEntry {
   at: number;
   actionId: string;
@@ -38,6 +48,8 @@ export interface RunState {
   stats: Stats;
   axes: Axes;
   fans: Fans;
+  /** 组合里的 NPC 成员（不含主角） */
+  party: Member[];
   flags: Record<string, boolean | number>;
   /** 待玩家抉择的剧情事件 id；不为空时不能继续推进 */
   pendingEvent: string | null;

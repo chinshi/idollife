@@ -37,12 +37,12 @@ export function settle(
   const routineChance = opts.routineChance ?? ROUTINE_CHANCE;
   const storyEvents = opts.storyEvents ?? true;
   const state: RunState = {
-    at: run.at,
-    stamina: run.stamina,
+    ...run,
     money: typeof run.money === 'number' ? run.money : 0,
     stats: { ...run.stats },
     axes: { ...(run.axes ?? { self: 50, others: 50, fit: 50 }) },
     fans: { ...(run.fans ?? createFans(0)) },
+    party: run.party ?? [],
     flags: { ...run.flags },
     pendingEvent: run.pendingEvent,
     log: [...run.log],

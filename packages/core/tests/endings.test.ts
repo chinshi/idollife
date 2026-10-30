@@ -11,6 +11,7 @@ function run(overrides: Partial<RunState> = {}): RunState {
     at: T0,
     stamina: 100,
     money: 5000,
+    party: [],
     stats: { vocal: 10, dance: 10, acting: 10, talk: 10 },
     axes: { self: 50, others: 50, fit: 50 },
     fans: createFans(100),
