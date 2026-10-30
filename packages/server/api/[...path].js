@@ -24523,6 +24523,13 @@ app.use(
     allowHeaders: ["content-type", "authorization"]
   })
 );
+app.get("/_debug", (c) => {
+  return c.json({
+    url: c.req.url,
+    path: c.req.path,
+    host: c.req.header("host") ?? null
+  });
+});
 app.get("/health", async (c) => {
   let storeKind = "unknown";
   let runs = -1;

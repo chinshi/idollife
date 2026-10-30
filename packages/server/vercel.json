@@ -1,5 +1,6 @@
 {
   "installCommand": "cd ../.. && pnpm install --frozen-lockfile --dangerously-allow-all-builds",
   "buildCommand": "pnpm build:vercel",
-  "outputDirectory": "public"
+  "outputDirectory": "public",
+  "rewrites": [{ "source": "/api/(.*)", "destination": "/api/[...path]" }]
 }
