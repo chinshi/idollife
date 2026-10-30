@@ -177,3 +177,19 @@ packages/server    API：/health、/v1/sync（用同一份 core 重放）
 - 服务端用 `Authorization: Bearer <access_token>` 验身份，局归 `user_id` 所有（别人的局返回 403）
 
 自检脚本：`packages/server/scripts/probe-auth.mjs`、`probe-ownership.mjs`
+### 部署（Vercel，两个项目）
+
+**1. API 项目**
+- Root Directory: `packages/server`
+- Framework: Other
+- 环境变量：`SUPABASE_URL`、`SUPABASE_SERVICE_ROLE_KEY`、`CORS_ORIGINS`（客户端域名，逗号分隔）
+- 路由前缀是 `/api`（例：`/api/health`、`/api/v1/sync`）
+
+**2. 客户端项目**
+- Root Directory: `packages/client`
+- Framework: Vite，输出 `dist`
+- 环境变量：`VITE_SUPABASE_URL`、`VITE_SUPABASE_ANON_KEY`、`VITE_API_BASE=https://<API 域名>/api`
+
+**顺序**：先部署 API 拿到域名 → 配客户端环境变量并部署 → 把客户端域名填进 API 的 `CORS_ORIGINS` → 重新部署 API。
+
+本地开发不需要这些：`pnpm dev` 会把 `/api` 代理到 `127.0.0.1:8787`。
