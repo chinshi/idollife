@@ -146,7 +146,8 @@
 ```bash
 pnpm install        # 首次安装依赖
 pnpm test           # core 单测（3 条）
-pnpm dev            # 客户端 http://127.0.0.1:5273
+pnpm dev                              # 客户端 http://127.0.0.1:5273
+pnpm --filter @idollife/server start  # API    http://127.0.0.1:8787
 pnpm build          # 构建
 ```
 
@@ -155,7 +156,7 @@ pnpm build          # 构建
 ```
 packages/core      纯函数规则：结算、随机、类型（客户端与服务器共用）
 packages/client    Vite + React 界面
-packages/server    待建：账号 / 同步 / 演出结算
+packages/server    API：/health、/v1/sync（用同一份 core 重放）
 ```
 
 > 铁律：`packages/core` 里不能出现 `Date.now()`、`Math.random()`、DOM、localStorage。

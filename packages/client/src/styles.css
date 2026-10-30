@@ -101,3 +101,25 @@ button.primary small { color: #fff; opacity: 0.8; }
 .log li { flex-direction: column; gap: 2px; }
 
 .muted { color: var(--muted); font-size: 13px; }
+
+.saved { margin: 10px 0 0; }
+
+.sched li { align-items: center; }
+.sched .time {
+  width: 96px;
+  color: var(--muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.sched .name { flex: 1; }
+.sched .dur { color: var(--muted); font-size: 12px; }
+.sched .del {
+  padding: 1px 8px 3px;
+  border-radius: 8px;
+  line-height: 1;
+  color: var(--muted);
+  flex-direction: row;
+}
+.sched .del:hover { color: #d33; border-color: #f0c0c0; }
+
+.notice { margin: 10px 0 0; font-size: 13px; color: var(--accent); }
