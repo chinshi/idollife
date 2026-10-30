@@ -161,3 +161,12 @@ packages/server    API：/health、/v1/sync（用同一份 core 重放）
 
 > 铁律：`packages/core` 里不能出现 `Date.now()`、`Math.random()`、DOM、localStorage。
 > 时间与随机都由参数传入，这样才能「客户端算、服务器重放校验」。
+### 后端存储
+
+默认用本地 JSON（`packages/server/.data/runs.json`），零配置。
+
+接 Supabase：
+
+1. 在 Supabase SQL Editor 执行 `packages/server/db/idollife-schema.sql`（建 `idollife` schema + `runs` 表）
+2. 把 service_role key 填进 `packages/server/.env`（该文件不进 git）
+3. 重启 server，`/health` 里会显示 `store: supabase`

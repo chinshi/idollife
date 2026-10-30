@@ -11,6 +11,8 @@
   "dependencies": {
     "@hono/node-server": "^1.13.0",
     "@idollife/core": "workspace:*",
+    "@supabase/supabase-js": "^2.45.0",
+    "dotenv": "^16.4.0",
     "hono": "^4.6.0"
   },
   "devDependencies": {

@@ -1,9 +1,10 @@
+import 'dotenv/config';
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { settle } from '@idollife/core';
 import type { RunState, ScheduleItem } from '@idollife/core';
-import { getRun, listRuns, putRun, type RunRecord } from './store';
+import { getStore, type RunRecord } from './store/index.js';
 
 const app = new Hono();
 
@@ -17,8 +18,21 @@ app.use(
 );
 
 app.get('/health', async (c) => {
-  const runs = await listRuns();
-  return c.json({ ok: true, name: 'idollife-api', version: '0.2.0', runs: runs.length, serverTime: Date.now() });
+  const store = getStore();
+  let runs = -1;
+  try {
+    runs = await store.countRuns();
+  } catch {
+    runs = -1;
+  }
+  return c.json({
+    ok: true,
+    name: 'idollife-api',
+    version: '0.3.0',
+    store: store.kind,
+    runs,
+    serverTime: Date.now(),
+  });
 });
 
 interface SyncBody {
@@ -49,8 +63,8 @@ function validate(body: unknown): { error: string } | { body: SyncBody } {
 }
 
 /**
- * 同步：服务器保存快照，用同一份 core 重放，revision 递增。
- * 若客户端落后于服务器快照，返回 409 + 服务器状态，让客户端回滚。
+ * 同步：读取服务器快照 → 用同一份 core 重放 → 写回并递增 revision。
+ * 客户端落后于服务器快照时返回 409，让客户端回滚。
  */
 app.post('/v1/sync', async (c) => {
   const raw = await c.req.json().catch(() => null);
@@ -58,9 +72,15 @@ app.post('/v1/sync', async (c) => {
   if ('error' in parsed) return c.json({ error: parsed.error }, 400);
 
   const { runId, run, schedule, from, to, seed } = parsed.body;
-  const existing = await getRun(runId);
+  const store = getStore();
 
-  // 客户端比服务器还旧 → 拒绝，让客户端回滚
+  let existing: RunRecord | undefined;
+  try {
+    existing = await store.getRun(runId);
+  } catch (err) {
+    return c.json({ error: 'store unavailable', detail: String(err) }, 503);
+  }
+
   if (existing && existing.run.at > run.at) {
     return c.json(
       {
@@ -87,7 +107,12 @@ app.post('/v1/sync', async (c) => {
     run: result.state,
     schedule,
   };
-  await putRun(record);
+
+  try {
+    await store.putRun(record);
+  } catch (err) {
+    return c.json({ error: 'store write failed', detail: String(err) }, 503);
+  }
 
   return c.json({
     runId,
@@ -100,7 +125,7 @@ app.post('/v1/sync', async (c) => {
 });
 
 app.get('/v1/runs/:id', async (c) => {
-  const rec = await getRun(c.req.param('id'));
+  const rec = await getStore().getRun(c.req.param('id'));
   if (!rec) return c.json({ error: 'not found' }, 404);
   return c.json(rec);
 });
@@ -108,5 +133,5 @@ app.get('/v1/runs/:id', async (c) => {
 const port = Number(process.env.PORT ?? 8787);
 
 serve({ fetch: app.fetch, port }, (info) => {
-  console.log(`idollife-api listening on http://127.0.0.1:${info.port}`);
+  console.log(`idollife-api listening on http://127.0.0.1:${info.port} (store: ${getStore().kind})`);
 });
