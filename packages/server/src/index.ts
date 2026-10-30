@@ -149,6 +149,45 @@ app.get('/v1/runs/latest', async (c) => {
   }
 });
 
+/**
+ * 事件抉择：P0 阶段信任客户端算出的结果（事件逻辑在 core 里，最后会改为服务端重放）。
+ * 只更新快照并递增 revision。
+ */
+app.post('/v1/choice', async (c) => {
+  const user = await getUserFromRequest(c);
+  if (!user) return c.json({ error: 'unauthorized' }, 401);
+
+  const body = (await c.req.json().catch(() => null)) as
+    | { runId?: string; run?: RunState }
+    | null;
+  if (!body?.runId || !body.run) return c.json({ error: 'runId and run required' }, 400);
+
+  const store = getStore();
+  const existing = await store.getRun(body.runId);
+  if (existing?.userId && existing.userId !== user.id) {
+    return c.json({ error: 'forbidden' }, 403);
+  }
+
+  const record: RunRecord = {
+    userId: user.id,
+    runId: body.runId,
+    revision: (existing?.revision ?? 0) + 1,
+    lastSyncAt: body.run.at,
+    updatedAt: Date.now(),
+    seed: existing?.seed ?? 'choice',
+    run: body.run,
+    schedule: existing?.schedule ?? [],
+  };
+
+  try {
+    await store.putRun(record);
+  } catch (err) {
+    return c.json({ error: 'store write failed', detail: String(err) }, 503);
+  }
+
+  return c.json({ runId: record.runId, revision: record.revision });
+});
+
 app.get('/v1/runs/:id', async (c) => {
   const user = await getUserFromRequest(c);
   if (!user) return c.json({ error: 'unauthorized' }, 401);

@@ -59,8 +59,7 @@ export async function ping(): Promise<boolean> {
   }
 }
 
-export interface CloudRun {
-  runId: string;
+export interface CloudRun {  runId: string;
   revision: number;
   lastSyncAt: number;
   updatedAt: number;
@@ -80,6 +79,29 @@ export async function fetchLatestRun(token: string | null): Promise<CloudRun | n
     const data = (await res.json()) as CloudRun | { run: null };
     if (!('runId' in data)) return null;
     return data;
+  } catch {
+    return null;
+  }
+}
+
+/** 提交一次事件抉择后的状态 */
+export async function pushChoice(
+  runId: string,
+  run: SyncRequest['run'],
+  token: string | null,
+): Promise<{ revision: number } | null> {
+  if (!token) return null;
+  try {
+    const res = await fetch(`${BASE}/v1/choice`, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ runId, run }),
+    });
+    if (!res.ok) return null;
+    return (await res.json()) as { revision: number };
   } catch {
     return null;
   }

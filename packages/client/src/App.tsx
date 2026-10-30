@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ACTION_LIST, ACTIONS, settle } from '@idollife/core';
+import { ACTION_LIST, ACTIONS, applyChoice, getStoryEvent, settle, tierOf } from '@idollife/core';
 import type { RunState, ScheduleItem, SettleResult } from '@idollife/core';
 import { clearSave, createSave, loadSave, writeSave } from './state/save';
-import { syncRun, fetchLatestRun } from './api/sync';
+import { syncRun, fetchLatestRun, pushChoice } from './api/sync';
 import {
   getAccessToken,
   getSessionUser,
@@ -21,7 +21,22 @@ const initialRun: RunState = {
   at: T0,
   stamina: 100,
   stats: { vocal: 10, dance: 10, acting: 10, talk: 10 },
+  axes: { self: 50, others: 50, fit: 50 },
+  flags: {},
+  pendingEvent: null,
   log: [],
+};
+
+const AXIS_LABEL: Record<'self' | 'others' | 'fit', string> = {
+  self: '自我',
+  others: '他人',
+  fit: '适配',
+};
+
+const TIER_LABEL: Record<'low' | 'mid' | 'high', string> = {
+  low: '低',
+  mid: '中',
+  high: '高',
 };
 
 const STAT_LABEL: Record<string, string> = {
@@ -206,6 +221,17 @@ export default function App() {
     setSyncStatus('synced');
   }
 
+  async function choose(choiceId: string) {
+    if (!run.pendingEvent) return;
+    const next = applyChoice(run, run.pendingEvent, choiceId);
+    setRun(next);
+    setNotice('选择已记录。');
+
+    const token = await getAccessToken();
+    const res = await pushChoice(runId, next, token);
+    if (res) setRevision(res.revision);
+  }
+
   function addAction(actionId: string) {
     const action = ACTIONS[actionId];
     if (!action) return;
@@ -382,6 +408,13 @@ export default function App() {
             <span className="v">{run.stamina}</span>
           </div>
         </div>
+        <div className="axes">
+          {(['self', 'others', 'fit'] as const).map((k) => (
+            <span key={k} className="axis">
+              {AXIS_LABEL[k]} {TIER_LABEL[tierOf(run.axes[k])]}
+            </span>
+          ))}
+        </div>
         <p className="muted saved">
           {savedAt ? `已保存 ${fmtClock(savedAt)}` : '尚未保存'}
           {syncStatus !== 'local' && (
@@ -389,6 +422,26 @@ export default function App() {
           )}
         </p>
       </section>
+
+      {run.pendingEvent &&
+        (() => {
+          const ev = getStoryEvent(run.pendingEvent);
+          if (!ev) return null;
+          return (
+            <section className="panel event">
+              <h2>需要你决定</h2>
+              <h3>{ev.title}</h3>
+              <p>{ev.text}</p>
+              <div className="choices">
+                {ev.choices.map((c) => (
+                  <button key={c.id} onClick={() => void choose(c.id)}>
+                    {c.label}
+                  </button>
+                ))}
+              </div>
+            </section>
+          );
+        })()}
 
       <section className="panel">
         <h2>安排行动</h2>

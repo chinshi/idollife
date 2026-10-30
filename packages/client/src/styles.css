@@ -168,3 +168,11 @@ button.primary small { color: #fff; opacity: 0.8; }
 .auth-error { color: #c0392b; font-size: 13px; margin: 0; }
 .auth-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .chip-guest { color: #6b7a99; background: #f2f5fa; }
+.axes { display: flex; gap: 14px; margin-top: 10px; font-size: 12px; color: var(--muted); }
+.axis { padding: 2px 8px; border: 1px solid var(--line); border-radius: 999px; }
+
+.panel.event { border-color: #f4dcb8; background: #fffaf2; }
+.panel.event h3 { margin: 0 0 6px; font-size: 16px; }
+.panel.event p { margin: 0 0 12px; }
+.choices { display: flex; flex-direction: column; gap: 8px; }
+.choices button { align-items: flex-start; text-align: left; }

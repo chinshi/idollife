@@ -37,7 +37,13 @@ export function loadSave(): SaveV1 | null {
       revision: isNum(data.revision) ? data.revision : 0,
       updatedAt: isNum(data.updatedAt) ? data.updatedAt : 0,
       seed: typeof data.seed === 'string' ? data.seed : 'run-demo',
-      run: data.run as RunState,
+      // 兼容早期没有三轴 / flags 的存档
+      run: {
+        ...(data.run as RunState),
+        axes: (data.run as RunState).axes ?? { self: 50, others: 50, fit: 50 },
+        flags: (data.run as RunState).flags ?? {},
+        pendingEvent: (data.run as RunState).pendingEvent ?? null,
+      },
       schedule: data.schedule as ScheduleItem[],
     };
   } catch {
