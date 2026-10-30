@@ -3,6 +3,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { settle } from '@idollife/core';
 import type { RunState, ScheduleItem } from '@idollife/core';
+import { getRun, listRuns, putRun, type RunRecord } from './store';
 
 const app = new Hono();
 
@@ -15,9 +16,10 @@ app.use(
   }),
 );
 
-app.get('/health', (c) =>
-  c.json({ ok: true, name: 'idollife-api', version: '0.1.0', serverTime: Date.now() }),
-);
+app.get('/health', async (c) => {
+  const runs = await listRuns();
+  return c.json({ ok: true, name: 'idollife-api', version: '0.2.0', runs: runs.length, serverTime: Date.now() });
+});
 
 interface SyncBody {
   runId: string;
@@ -47,8 +49,8 @@ function validate(body: unknown): { error: string } | { body: SyncBody } {
 }
 
 /**
- * P0 同步桩：服务器用同一份 core 重放客户端提交的排程。
- * 真实版本会：读数据库里的最新快照、按 lastSyncAt 重放、写回 revision。
+ * 同步：服务器保存快照，用同一份 core 重放，revision 递增。
+ * 若客户端落后于服务器快照，返回 409 + 服务器状态，让客户端回滚。
  */
 app.post('/v1/sync', async (c) => {
   const raw = await c.req.json().catch(() => null);
@@ -56,16 +58,51 @@ app.post('/v1/sync', async (c) => {
   if ('error' in parsed) return c.json({ error: parsed.error }, 400);
 
   const { runId, run, schedule, from, to, seed } = parsed.body;
-  const result = settle(run, schedule, from, to, seed);
+  const existing = await getRun(runId);
+
+  // 客户端比服务器还旧 → 拒绝，让客户端回滚
+  if (existing && existing.run.at > run.at) {
+    return c.json(
+      {
+        runId,
+        revision: existing.revision,
+        accepted: [],
+        stoppedReason: 'stale',
+        state: existing.run,
+        serverTime: Date.now(),
+      },
+      409,
+    );
+  }
+
+  const base = existing?.run ?? run;
+  const result = settle(base, schedule, from, to, seed);
+
+  const record: RunRecord = {
+    runId,
+    revision: (existing?.revision ?? 0) + 1,
+    lastSyncAt: to,
+    updatedAt: Date.now(),
+    seed,
+    run: result.state,
+    schedule,
+  };
+  await putRun(record);
 
   return c.json({
     runId,
-    revision: 1,
+    revision: record.revision,
     accepted: result.executed,
     stoppedReason: result.stoppedReason,
     state: result.state,
     serverTime: Date.now(),
   });
+});
+
+app.get('/v1/runs/:id', async (c) => {
+  const rec = await getRun(c.req.param('id'));
+  if (!rec) return c.json({ error: 'not found' }, 404);
+  return c.json(rec);
 });
 
 const port = Number(process.env.PORT ?? 8787);

@@ -135,3 +135,19 @@ button.primary small { color: #fff; opacity: 0.8; }
 .chip-syncing { color: #6b7a99; background: #f2f5fa; }
 .chip-synced { color: #1a7f4b; border-color: #cde9d9; background: #eefaf3; }
 .chip-offline { color: #a35b00; border-color: #f4dcb8; background: #fdf6ea; }
+
+.days { display: flex; flex-direction: column; gap: 12px; }
+
+.day { border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; }
+
+.day-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 13px;
+  font-weight: 600;
+  padding-bottom: 4px;
+}
+
+.day .sched li { border-top: 1px dashed var(--line); }
+.day .sched li:first-child { border-top: none; }

@@ -92,6 +92,17 @@ export default function App() {
     [schedule],
   );
 
+  const dayGroups = useMemo(() => {
+    const map = new Map<number, ScheduleItem[]>();
+    for (const s of schedule) {
+      const day = Math.floor((s.startAt - T0) / (24 * 60 * MIN)) + 1;
+      const arr = map.get(day) ?? [];
+      arr.push(s);
+      map.set(day, arr);
+    }
+    return [...map.entries()].sort((a, b) => a[0] - b[0]);
+  }, [schedule]);
+
   async function pushSync(
     prevRun: RunState,
     prevSchedule: ScheduleItem[],
@@ -263,21 +274,41 @@ export default function App() {
         {schedule.length === 0 ? (
           <p className="muted">还没有安排。点上面的行动，或者「自动排满」。</p>
         ) : (
-          <ul className="sched">
-            {schedule.map((s) => {
-              const a = ACTIONS[s.actionId];
+          <div className="days">
+            {dayGroups.map(([day, items]) => {
+              const mins = Math.round(
+                items.reduce((sum, s) => sum + (s.endAt - s.startAt), 0) / MIN,
+              );
               return (
-                <li key={s.id}>
-                  <span className="time">{fmt(s.startAt).replace('Day ', 'D')}</span>
-                  <span className="name">{a?.name ?? s.actionId}</span>
-                  <span className="dur">{Math.round((s.endAt - s.startAt) / MIN)} 分</span>
-                  <button className="del" onClick={() => removeItem(s.id)} title="移除">
-                    ×
-                  </button>
-                </li>
+                <div key={day} className="day">
+                  <div className="day-head">
+                    <span>Day {day}</span>
+                    <span className="muted">
+                      {items.length} 个 · {mins} 分
+                    </span>
+                  </div>
+                  <ul className="sched">
+                    {items.map((s) => {
+                      const a = ACTIONS[s.actionId];
+                      return (
+                        <li key={s.id}>
+                          <span className="time">
+                            {String(new Date(s.startAt).getUTCHours()).padStart(2, '0')}:
+                            {String(new Date(s.startAt).getUTCMinutes()).padStart(2, '0')}
+                          </span>
+                          <span className="name">{a?.name ?? s.actionId}</span>
+                          <span className="dur">{Math.round((s.endAt - s.startAt) / MIN)} 分</span>
+                          <button className="del" onClick={() => removeItem(s.id)} title="移除">
+                            ×
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
               );
             })}
-          </ul>
+          </div>
         )}
         <div className="row">
           <button className="primary" onClick={advance} disabled={schedule.length === 0}>
