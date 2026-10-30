@@ -1,0 +1,103 @@
+:root {
+  --bg: #f4f7fb;
+  --card: #ffffff;
+  --line: #eaedf3;
+  --text: #1f2430;
+  --muted: #7a8396;
+  --accent: #f97c12;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.app {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.bar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 8px 4px 16px;
+}
+
+.brand {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.clock { color: var(--muted); font-variant-numeric: tabular-nums; }
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+}
+
+.panel h2 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  margin: 0 0 10px;
+}
+
+.stats { display: flex; flex-wrap: wrap; gap: 18px; }
+
+.stat { display: flex; flex-direction: column; }
+.stat .k { font-size: 12px; color: var(--muted); }
+.stat .v { font-size: 20px; font-weight: 650; font-variant-numeric: tabular-nums; }
+
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+button {
+  font: inherit;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 8px 12px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+button:hover { border-color: #d7dce6; }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+button small { color: var(--muted); font-size: 11px; }
+
+button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+button.primary small { color: #fff; opacity: 0.8; }
+
+.row { display: flex; gap: 8px; margin-top: 12px; }
+
+.sched, .log { list-style: none; margin: 0; padding: 0; }
+
+.sched li, .log li {
+  display: flex;
+  gap: 10px;
+  padding: 6px 0;
+  border-top: 1px dashed var(--line);
+}
+.sched li:first-child, .log li:first-child { border-top: none; }
+
+.log li { flex-direction: column; gap: 2px; }
+
+.muted { color: var(--muted); font-size: 13px; }
