@@ -24,18 +24,24 @@ app.use(
 );
 
 app.get('/health', async (c) => {
-  const store = getStore();
+  let storeKind = 'unknown';
   let runs = -1;
+  let error: string | null = null;
+
   try {
+    const store = getStore();
+    storeKind = store.kind;
     runs = await store.countRuns();
-  } catch {
-    runs = -1;
+  } catch (err) {
+    error = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
   }
+
   return c.json({
+    debug: error,
+    storeKind,
     ok: true,
     name: 'idollife-api',
     version: '0.5.0',
-    store: store.kind,
     runs,
     serverTime: Date.now(),
   });

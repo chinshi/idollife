@@ -24943,18 +24943,22 @@ app.use(
   })
 );
 app.get("/health", async (c) => {
-  const store2 = getStore();
+  let storeKind = "unknown";
   let runs = -1;
+  let error = null;
   try {
+    const store2 = getStore();
+    storeKind = store2.kind;
     runs = await store2.countRuns();
-  } catch {
-    runs = -1;
+  } catch (err) {
+    error = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
   }
   return c.json({
+    debug: error,
+    storeKind,
     ok: true,
     name: "idollife-api",
     version: "0.5.0",
-    store: store2.kind,
     runs,
     serverTime: Date.now()
   });
