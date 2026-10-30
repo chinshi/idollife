@@ -21,6 +21,15 @@ export type Tier = 'low' | 'mid' | 'high';
 
 export type Bias = 'vocal' | 'dance' | 'acting' | 'talk' | 'balanced';
 
+export interface EquipItem {
+  id: string;
+  name: string;
+  slot: 'outfit';
+  rarity: 'common' | 'rare';
+  price: number;
+  affix: { stat: StatKey; value: number };
+}
+
 export interface Member {
   id: string;
   name: string;
@@ -50,6 +59,10 @@ export interface RunState {
   fans: Fans;
   /** 组合里的 NPC 成员（不含主角） */
   party: Member[];
+  /** 背包里的装备 */
+  inventory: EquipItem[];
+  /** 已装备的槽位 → 物品 id */
+  equipped: { outfit?: string };
   flags: Record<string, boolean | number>;
   /** 待玩家抉择的剧情事件 id；不为空时不能继续推进 */
   pendingEvent: string | null;

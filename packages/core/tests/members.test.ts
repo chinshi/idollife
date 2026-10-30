@@ -14,6 +14,8 @@ function base(money = 1000, party: RunState['party'] = []): RunState {
     axes: { self: 50, others: 50, fit: 50 },
     fans: createFans(0),
     party,
+    inventory: [],
+    equipped: {},
     flags: {},
     pendingEvent: null,
     log: [],

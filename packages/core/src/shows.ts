@@ -1,5 +1,6 @@
 import { applyFanAction, createFans, type FanType, type Fans } from './fans';
 import { hashSeed, mulberry32 } from './rng';
+import { effectiveStats } from './shop';
 import type { RunState } from './types';
 
 export type ShowGrade = 'S' | 'A' | 'B' | 'C';
@@ -22,7 +23,7 @@ const GRADE_TEXT: Record<ShowGrade, string[]> = {
 };
 
 function pickFanType(state: RunState): FanType {
-  const s = state.stats;
+  const s = effectiveStats(state);
   if (s.dance >= s.vocal && s.dance >= s.acting && s.dance >= s.talk) return 'stage';
   if (s.vocal >= s.acting && s.vocal >= s.talk) return 'music';
   if (s.acting >= s.talk) return 'growth';
@@ -35,7 +36,7 @@ function pickFanType(state: RunState): FanType {
  */
 export function performShow(state: RunState, seed: string): ShowResult {
   const rng = mulberry32(hashSeed(seed));
-  const s = state.stats;
+  const s = effectiveStats(state);
   const base = (s.vocal + s.dance + s.acting + s.talk) / 4;
   const fitBonus = state.axes.fit / 20;
   const staminaPenalty = state.stamina < 30 ? 8 : 0;

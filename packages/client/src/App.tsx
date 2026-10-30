@@ -6,6 +6,10 @@ import {
   RUN_LENGTH_MS,
   START_MONEY,
   biasLabel,
+  buyItem,
+  effectiveStats,
+  equipItem,
+  getShop,
   memberStats,
   recruit,
   applyChoice,
@@ -17,7 +21,7 @@ import {
   settle,
   tierOf,
 } from '@idollife/core';
-import type { Ending, RunState, ScheduleItem, SettleResult } from '@idollife/core';
+import type { Ending, EquipItem, RunState, ScheduleItem, SettleResult } from '@idollife/core';
 import { clearSave, createSave, loadSave, writeSave } from './state/save';
 import { syncRun, fetchLatestRun, pushChoice } from './api/sync';
 import {
@@ -42,6 +46,8 @@ const initialRun: RunState = {
   axes: { self: 50, others: 50, fit: 50 },
   fans: createFans(0),
   party: [],
+  inventory: [],
+  equipped: {},
   flags: {},
   pendingEvent: null,
   log: [],
@@ -254,6 +260,32 @@ export default function App() {
     const token = await getAccessToken();
     const res = await pushChoice(runId, next, token);
     if (res) setRevision(res.revision);
+  }
+
+  function doBuy(item: EquipItem) {
+    const { state, result } = buyItem(run, item);
+    if (result !== 'ok') {
+      setNotice('钱不够。');
+      return;
+    }
+    setRun(state);
+    setNotice(state.log.at(-1)?.text ?? '');
+    void (async () => {
+      const token = await getAccessToken();
+      const res = await pushChoice(runId, state, token);
+      if (res) setRevision(res.revision);
+    })();
+  }
+
+  function doEquip(item: EquipItem) {
+    const next = equipItem(run, item.id);
+    setRun(next);
+    setNotice(`换上了「${item.name}」。`);
+    void (async () => {
+      const token = await getAccessToken();
+      const res = await pushChoice(runId, next, token);
+      if (res) setRevision(res.revision);
+    })();
   }
 
   function doRecruit() {
@@ -601,6 +633,56 @@ export default function App() {
           <button onClick={reset}>重置存档</button>
         </div>
         {notice && <p className="notice">{notice}</p>}
+      </section>
+
+      <section className="panel">
+        <h2>商店（本周）</h2>
+        <ul className="shop">
+          {getShop(run, seed).map((item) => (
+            <li key={item.id}>
+              <span className="name">{item.name}</span>
+              <span className="muted">
+                {STAT_LABEL[item.affix.stat]} +{item.affix.value}
+                {item.rarity === 'rare' ? ' · 稀有' : ''}
+              </span>
+              <button onClick={() => doBuy(item)} disabled={run.money < item.price}>
+                ¥{item.price}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="panel">
+        <h2>背包（{run.inventory.length}）</h2>
+        {run.inventory.length === 0 ? (
+          <p className="muted">还没买过东西。</p>
+        ) : (
+          <ul className="shop">
+            {run.inventory.map((item) => {
+              const on = run.equipped.outfit === item.id;
+              return (
+                <li key={item.id}>
+                  <span className="name">
+                    {item.name}
+                    {on ? '（已装备）' : ''}
+                  </span>
+                  <span className="muted">
+                    {STAT_LABEL[item.affix.stat]} +{item.affix.value}
+                  </span>
+                  <button onClick={() => doEquip(item)} disabled={on}>
+                    装备
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+        <p className="muted">
+          当前属性：{Object.entries(effectiveStats(run))
+            .map(([k, v]) => `${STAT_LABEL[k]} ${v}`)
+            .join(' · ')}
+        </p>
       </section>
 
       <section className="panel">

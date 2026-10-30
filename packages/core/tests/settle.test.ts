@@ -14,6 +14,8 @@ function baseRun(): RunState {
     stamina: 100,
     money: 5000,
     party: [],
+    inventory: [],
+    equipped: {},
     stats: { vocal: 10, dance: 10, acting: 10, talk: 10 },
     axes: { self: 50, others: 50, fit: 50 },
     fans: createFans(100),

@@ -8,3 +8,4 @@ export * from './endings';
 export * from './fans-util';
 export * from './shows';
 export * from './members';
+export * from './shop';
