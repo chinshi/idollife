@@ -1,9 +1,19 @@
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
+import { cors } from 'hono/cors';
 import { settle } from '@idollife/core';
 import type { RunState, ScheduleItem } from '@idollife/core';
 
 const app = new Hono();
+
+app.use(
+  '*',
+  cors({
+    origin: ['http://127.0.0.1:5273', 'http://localhost:5273'],
+    allowMethods: ['GET', 'POST'],
+    allowHeaders: ['content-type'],
+  }),
+);
 
 app.get('/health', (c) =>
   c.json({ ok: true, name: 'idollife-api', version: '0.1.0', serverTime: Date.now() }),

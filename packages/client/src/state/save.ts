@@ -4,6 +4,7 @@ const KEY = 'idollife:save:v1';
 
 export interface SaveV1 {
   version: 1;
+  runId: string;
   updatedAt: number;
   seed: string;
   run: RunState;
@@ -11,6 +12,10 @@ export interface SaveV1 {
 }
 
 const isNum = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
+
+function newRunId(): string {
+  return `run-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+}
 
 /** 读档：任何异常都当没存档，绝不崩 */
 export function loadSave(): SaveV1 | null {
@@ -26,6 +31,7 @@ export function loadSave(): SaveV1 | null {
 
     return {
       version: 1,
+      runId: typeof data.runId === 'string' && data.runId ? data.runId : newRunId(),
       updatedAt: isNum(data.updatedAt) ? data.updatedAt : 0,
       seed: typeof data.seed === 'string' ? data.seed : 'run-demo',
       run: data.run as RunState,
@@ -51,6 +57,17 @@ export function clearSave(): void {
   } catch {
     /* 忽略 */
   }
+}
+
+export function createSave(run: RunState, seed: string): SaveV1 {
+  return {
+    version: 1,
+    runId: newRunId(),
+    updatedAt: 0,
+    seed,
+    run,
+    schedule: [],
+  };
 }
 
 export const SAVE_KEY = KEY;

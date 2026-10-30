@@ -123,3 +123,15 @@ button.primary small { color: #fff; opacity: 0.8; }
 .sched .del:hover { color: #d33; border-color: #f0c0c0; }
 
 .notice { margin: 10px 0 0; font-size: 13px; color: var(--accent); }
+
+.chip {
+  display: inline-block;
+  margin-left: 10px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  border: 1px solid var(--line);
+}
+.chip-syncing { color: #6b7a99; background: #f2f5fa; }
+.chip-synced { color: #1a7f4b; border-color: #cde9d9; background: #eefaf3; }
+.chip-offline { color: #a35b00; border-color: #f4dcb8; background: #fdf6ea; }

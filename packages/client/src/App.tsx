@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ACTION_LIST, ACTIONS, settle } from '@idollife/core';
-import type { RunState, ScheduleItem } from '@idollife/core';
-import { clearSave, loadSave, writeSave } from './state/save';
+import type { RunState, ScheduleItem, SettleResult } from '@idollife/core';
+import { clearSave, createSave, loadSave, writeSave } from './state/save';
+import { syncRun } from './api/sync';
 
 const MIN = 60_000;
 const T0 = Date.UTC(2026, 0, 1, 9, 0, 0);
@@ -20,6 +21,8 @@ const STAT_LABEL: Record<string, string> = {
   talk: '口才',
 };
 
+type SyncStatus = 'local' | 'syncing' | 'synced' | 'offline';
+
 function fmt(time: number): string {
   const day = Math.floor((time - T0) / (24 * 60 * MIN)) + 1;
   const d = new Date(time);
@@ -30,28 +33,54 @@ function fmt(time: number): string {
 
 function fmtClock(ts: number): string {
   const d = new Date(ts);
-  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(
-    d.getSeconds(),
-  ).padStart(2, '0')}`;
+  return [d.getHours(), d.getMinutes(), d.getSeconds()]
+    .map((n) => String(n).padStart(2, '0'))
+    .join(':');
 }
+
+function sameState(a: RunState, b: RunState): boolean {
+  return (
+    a.at === b.at &&
+    a.stamina === b.stamina &&
+    a.stats.vocal === b.stats.vocal &&
+    a.stats.dance === b.stats.dance &&
+    a.stats.acting === b.stats.acting &&
+    a.stats.talk === b.stats.talk
+  );
+}
+
+const SYNC_TEXT: Record<SyncStatus, string> = {
+  local: '',
+  syncing: '同步中…',
+  synced: '已同步',
+  offline: '离线（仅本地）',
+};
 
 export default function App() {
   const boot = useRef(loadSave()).current;
 
+  const [runId, setRunId] = useState(boot?.runId ?? createSave(initialRun, 'run-demo').runId);
   const [run, setRun] = useState<RunState>(boot?.run ?? initialRun);
   const [schedule, setSchedule] = useState<ScheduleItem[]>(boot?.schedule ?? []);
   const [seed] = useState(boot?.seed ?? 'run-demo');
   const [savedAt, setSavedAt] = useState<number | null>(boot?.updatedAt ?? null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>('local');
 
-  // 自动存档（防抖 250ms）
   useEffect(() => {
     const t = setTimeout(() => {
-      const ok = writeSave({ version: 1, updatedAt: Date.now(), seed, run, schedule });
+      const ok = writeSave({
+        version: 1,
+        runId,
+        updatedAt: Date.now(),
+        seed,
+        run,
+        schedule,
+      });
       if (ok) setSavedAt(Date.now());
     }, 250);
     return () => clearTimeout(t);
-  }, [run, schedule, seed]);
+  }, [runId, run, schedule, seed]);
 
   const lastEnd = useMemo(
     () => schedule.reduce((max, s) => Math.max(max, s.endAt), run.at),
@@ -62,6 +91,35 @@ export default function App() {
     () => Math.round(schedule.reduce((sum, s) => sum + (s.endAt - s.startAt), 0) / MIN),
     [schedule],
   );
+
+  async function pushSync(
+    prevRun: RunState,
+    prevSchedule: ScheduleItem[],
+    from: number,
+    to: number,
+    local: SettleResult,
+  ) {
+    setSyncStatus('syncing');
+    const res = await syncRun({
+      runId,
+      run: prevRun,
+      schedule: prevSchedule,
+      from,
+      to,
+      seed,
+    });
+
+    if (!res) {
+      setSyncStatus('offline');
+      return;
+    }
+
+    if (!sameState(res.state, local.state)) {
+      setRun(res.state);
+      setNotice('服务器已校准进度（以服务器为准）。');
+    }
+    setSyncStatus('synced');
+  }
 
   function addAction(actionId: string) {
     const action = ACTIONS[actionId];
@@ -79,9 +137,15 @@ export default function App() {
     setNotice(null);
   }
 
-  /** 按「练、练、休」的节奏自动排满，最多 9 个 */
   function autoFill() {
-    const pattern = ['vocal-karaoke', 'dance-otaku', 'rest-sleep', 'acting-short', 'talk-selftalk', 'rest-sleep'];
+    const pattern = [
+      'vocal-karaoke',
+      'dance-otaku',
+      'rest-sleep',
+      'acting-short',
+      'talk-selftalk',
+      'rest-sleep',
+    ];
     let stamina = run.stamina;
     let cursor = Math.max(lastEnd, run.at);
     const next: ScheduleItem[] = [];
@@ -114,7 +178,13 @@ export default function App() {
 
   function advance() {
     if (schedule.length === 0) return;
-    const result = settle(run, schedule, run.at, lastEnd, seed);
+
+    const prevRun = run;
+    const prevSchedule = schedule;
+    const from = run.at;
+    const to = lastEnd;
+
+    const result = settle(prevRun, prevSchedule, from, to, seed);
     setRun(result.state);
     setSchedule((prev) => prev.filter((s) => !result.executed.includes(s.id)));
 
@@ -125,13 +195,18 @@ export default function App() {
           ? '排程没跑完，剩下的留到下次。'
           : `执行了 ${result.executed.length} 个行动。`,
     );
+
+    void pushSync(prevRun, prevSchedule, from, to, result);
   }
 
   function reset() {
     clearSave();
+    const fresh = createSave(initialRun, 'run-demo');
+    setRunId(fresh.runId);
     setRun(initialRun);
     setSchedule([]);
     setSavedAt(null);
+    setSyncStatus('local');
     setNotice('存档已重置。');
   }
 
@@ -157,6 +232,9 @@ export default function App() {
         </div>
         <p className="muted saved">
           {savedAt ? `已保存 ${fmtClock(savedAt)}` : '尚未保存'}
+          {syncStatus !== 'local' && (
+            <span className={`chip chip-${syncStatus}`}>{SYNC_TEXT[syncStatus]}</span>
+          )}
         </p>
       </section>
 
