@@ -151,3 +151,20 @@ button.primary small { color: #fff; opacity: 0.8; }
 
 .day .sched li { border-top: 1px dashed var(--line); }
 .day .sched li:first-child { border-top: none; }
+
+.auth-form { display: flex; flex-direction: column; gap: 10px; }
+.auth-tabs { display: flex; gap: 6px; }
+.tab { padding: 4px 12px; border-radius: 8px; flex-direction: row; }
+.tab.active { border-color: var(--accent); color: var(--accent); }
+.auth-fields { display: flex; gap: 8px; flex-wrap: wrap; }
+.auth-fields input {
+  flex: 1;
+  min-width: 160px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font: inherit;
+}
+.auth-error { color: #c0392b; font-size: 13px; margin: 0; }
+.auth-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.chip-guest { color: #6b7a99; background: #f2f5fa; }

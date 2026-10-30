@@ -4,6 +4,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { settle } from '@idollife/core';
 import type { RunState, ScheduleItem } from '@idollife/core';
+import { getUserFromRequest } from './auth.js';
 import { getStore, type RunRecord } from './store/index.js';
 
 const app = new Hono();
@@ -13,7 +14,7 @@ app.use(
   cors({
     origin: ['http://127.0.0.1:5273', 'http://localhost:5273'],
     allowMethods: ['GET', 'POST'],
-    allowHeaders: ['content-type'],
+    allowHeaders: ['content-type', 'authorization'],
   }),
 );
 
@@ -28,7 +29,7 @@ app.get('/health', async (c) => {
   return c.json({
     ok: true,
     name: 'idollife-api',
-    version: '0.3.0',
+    version: '0.4.0',
     store: store.kind,
     runs,
     serverTime: Date.now(),
@@ -63,10 +64,15 @@ function validate(body: unknown): { error: string } | { body: SyncBody } {
 }
 
 /**
- * 同步：读取服务器快照 → 用同一份 core 重放 → 写回并递增 revision。
- * 客户端落后于服务器快照时返回 409，让客户端回滚。
+ * 同步：需要登录。服务端用同一份 core 重放并写回，revision 递增。
+ * - 未登录 → 401
+ * - 别人的局 → 403
+ * - 客户端的局比服务器旧 → 409，返回服务器状态让它回滚
  */
 app.post('/v1/sync', async (c) => {
+  const user = await getUserFromRequest(c);
+  if (!user) return c.json({ error: 'unauthorized' }, 401);
+
   const raw = await c.req.json().catch(() => null);
   const parsed = validate(raw);
   if ('error' in parsed) return c.json({ error: parsed.error }, 400);
@@ -79,6 +85,10 @@ app.post('/v1/sync', async (c) => {
     existing = await store.getRun(runId);
   } catch (err) {
     return c.json({ error: 'store unavailable', detail: String(err) }, 503);
+  }
+
+  if (existing?.userId && existing.userId !== user.id) {
+    return c.json({ error: 'forbidden' }, 403);
   }
 
   if (existing && existing.run.at > run.at) {
@@ -99,6 +109,7 @@ app.post('/v1/sync', async (c) => {
   const result = settle(base, schedule, from, to, seed);
 
   const record: RunRecord = {
+    userId: user.id,
     runId,
     revision: (existing?.revision ?? 0) + 1,
     lastSyncAt: to,
@@ -125,8 +136,13 @@ app.post('/v1/sync', async (c) => {
 });
 
 app.get('/v1/runs/:id', async (c) => {
+  const user = await getUserFromRequest(c);
+  if (!user) return c.json({ error: 'unauthorized' }, 401);
+
   const rec = await getStore().getRun(c.req.param('id'));
   if (!rec) return c.json({ error: 'not found' }, 404);
+  if (rec.userId && rec.userId !== user.id) return c.json({ error: 'forbidden' }, 403);
+
   return c.json(rec);
 });
 

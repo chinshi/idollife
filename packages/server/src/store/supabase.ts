@@ -2,13 +2,14 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import type { RunRecord, Store } from './types.js';
 
 /**
- * 方案 B：表放在 public schema，用 `idollife_` 前缀与工具站数据隔离。
- * （Supabase 免费档默认只暴露 public，自定义 schema 需要额外配置，故不用。）
+ * 表放在 public schema，用 `idollife_` 前缀与工具站数据隔离。
+ * 服务端用 service_role 访问（绕过 RLS）；匿名与登录用户都不可直连。
  */
 const TABLE = 'idollife_runs';
 
 interface Row {
   run_id: string;
+  user_id: string | null;
   revision: number;
   last_sync_at: number;
   updated_at: number;
@@ -19,6 +20,7 @@ interface Row {
 
 function toRecord(row: Row): RunRecord {
   return {
+    userId: row.user_id,
     runId: row.run_id,
     revision: row.revision,
     lastSyncAt: row.last_sync_at,
@@ -48,6 +50,7 @@ export class SupabaseStore implements Store {
   async putRun(rec: RunRecord): Promise<void> {
     const row: Row = {
       run_id: rec.runId,
+      user_id: rec.userId,
       revision: rec.revision,
       last_sync_at: rec.lastSyncAt,
       updated_at: rec.updatedAt,

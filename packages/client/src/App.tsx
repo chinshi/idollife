@@ -3,6 +3,16 @@ import { ACTION_LIST, ACTIONS, settle } from '@idollife/core';
 import type { RunState, ScheduleItem, SettleResult } from '@idollife/core';
 import { clearSave, createSave, loadSave, writeSave } from './state/save';
 import { syncRun } from './api/sync';
+import {
+  getAccessToken,
+  getSessionUser,
+  onAuthChange,
+  signIn,
+  signOut,
+  signUp,
+  supabase,
+  type AuthUser,
+} from './auth/supabase';
 
 const MIN = 60_000;
 const T0 = Date.UTC(2026, 0, 1, 9, 0, 0);
@@ -21,7 +31,7 @@ const STAT_LABEL: Record<string, string> = {
   talk: '口才',
 };
 
-type SyncStatus = 'local' | 'syncing' | 'synced' | 'offline';
+type SyncStatus = 'local' | 'syncing' | 'synced' | 'offline' | 'guest';
 
 function fmt(time: number): string {
   const day = Math.floor((time - T0) / (24 * 60 * MIN)) + 1;
@@ -54,6 +64,7 @@ const SYNC_TEXT: Record<SyncStatus, string> = {
   syncing: '同步中…',
   synced: '已同步',
   offline: '离线（仅本地）',
+  guest: '未登录（仅本地）',
 };
 
 export default function App() {
@@ -66,6 +77,24 @@ export default function App() {
   const [savedAt, setSavedAt] = useState<number | null>(boot?.updatedAt ?? null);
   const [notice, setNotice] = useState<string | null>(null);
   const [syncStatus, setSyncStatus] = useState<SyncStatus>('local');
+
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [authBusy, setAuthBusy] = useState(false);
+
+  useEffect(() => {
+    void getSessionUser().then((u) => {
+      setUser(u);
+      setSyncStatus(u ? 'local' : 'guest');
+    });
+    return onAuthChange((u) => {
+      setUser(u);
+      setSyncStatus(u ? 'local' : 'guest');
+    });
+  }, []);
 
   useEffect(() => {
     const t = setTimeout(() => {
@@ -110,15 +139,17 @@ export default function App() {
     to: number,
     local: SettleResult,
   ) {
+    const token = await getAccessToken();
+    if (!token) {
+      setSyncStatus('guest');
+      return;
+    }
+
     setSyncStatus('syncing');
-    const res = await syncRun({
-      runId,
-      run: prevRun,
-      schedule: prevSchedule,
-      from,
-      to,
-      seed,
-    });
+    const res = await syncRun(
+      { runId, run: prevRun, schedule: prevSchedule, from, to, seed },
+      token,
+    );
 
     if (!res) {
       setSyncStatus('offline');
@@ -217,8 +248,23 @@ export default function App() {
     setRun(initialRun);
     setSchedule([]);
     setSavedAt(null);
-    setSyncStatus('local');
+    setSyncStatus(user ? 'local' : 'guest');
     setNotice('存档已重置。');
+  }
+
+  async function submitAuth(e: React.FormEvent) {
+    e.preventDefault();
+    setAuthError(null);
+    setAuthBusy(true);
+    const fn = authMode === 'login' ? signIn : signUp;
+    const res = await fn(email.trim(), password);
+    setAuthBusy(false);
+    if (res.error) {
+      setAuthError(res.error);
+      return;
+    }
+    setPassword('');
+    setNotice(authMode === 'login' ? '登录成功，下次推进将同步到服务器。' : '注册成功。');
   }
 
   return (
@@ -227,6 +273,58 @@ export default function App() {
         <span className="brand">idollife</span>
         <span className="clock">{fmt(run.at)}</span>
       </header>
+
+      <section className="panel">
+        {!supabase ? (
+          <p className="muted">未配置 Supabase，登录不可用（本地照常玩）。</p>
+        ) : user ? (
+          <div className="auth-row">
+            <span className="muted">已登录：{user.email ?? user.id.slice(0, 8)}</span>
+            <button onClick={() => void signOut()}>退出</button>
+          </div>
+        ) : (
+          <form className="auth-form" onSubmit={submitAuth}>
+            <div className="auth-tabs">
+              <button
+                type="button"
+                className={authMode === 'login' ? 'tab active' : 'tab'}
+                onClick={() => setAuthMode('login')}
+              >
+                登录
+              </button>
+              <button
+                type="button"
+                className={authMode === 'register' ? 'tab active' : 'tab'}
+                onClick={() => setAuthMode('register')}
+              >
+                注册
+              </button>
+            </div>
+            <div className="auth-fields">
+              <input
+                type="email"
+                placeholder="邮箱"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <input
+                type="password"
+                placeholder="密码（至少 6 位）"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                minLength={6}
+                required
+              />
+              <button className="primary" disabled={authBusy}>
+                {authBusy ? '处理中…' : authMode === 'login' ? '登录' : '注册'}
+              </button>
+            </div>
+            {authError && <p className="auth-error">{authError}</p>}
+            <p className="muted">登录后进度才会同步到服务器；不登录也能本地玩。</p>
+          </form>
+        )}
+      </section>
 
       <section className="panel">
         <div className="stats">
@@ -290,11 +388,12 @@ export default function App() {
                   <ul className="sched">
                     {items.map((s) => {
                       const a = ACTIONS[s.actionId];
+                      const d = new Date(s.startAt);
                       return (
                         <li key={s.id}>
                           <span className="time">
-                            {String(new Date(s.startAt).getUTCHours()).padStart(2, '0')}:
-                            {String(new Date(s.startAt).getUTCMinutes()).padStart(2, '0')}
+                            {String(d.getUTCHours()).padStart(2, '0')}:
+                            {String(d.getUTCMinutes()).padStart(2, '0')}
                           </span>
                           <span className="name">{a?.name ?? s.actionId}</span>
                           <span className="dur">{Math.round((s.endAt - s.startAt) / MIN)} 分</span>

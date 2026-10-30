@@ -20,12 +20,16 @@ export interface SyncResponse {
   serverTime: number;
 }
 
-/** 同步失败返回 null，让调用方走「离线模式」 */
-export async function syncRun(body: SyncRequest): Promise<SyncResponse | null> {
+/** token 为空或请求失败都返回 null，调用方据此走「离线/未登录」分支 */
+export async function syncRun(body: SyncRequest, token: string | null): Promise<SyncResponse | null> {
+  if (!token) return null;
   try {
     const res = await fetch(`${BASE}/v1/sync`, {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
+      headers: {
+        'content-type': 'application/json',
+        authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify(body),
     });
     if (!res.ok) return null;

@@ -1,6 +1,8 @@
 import type { RunState, ScheduleItem } from '@idollife/core';
 
 export interface RunRecord {
+  /** 归属用户；未登录时为 null */
+  userId: string | null;
   runId: string;
   revision: number;
   lastSyncAt: number;
