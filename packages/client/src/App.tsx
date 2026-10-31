@@ -296,8 +296,6 @@ function AppInner() {
   const scheduleRef = useRef<ScheduleItem[]>(boot?.schedule ?? []);
   const batchRef = useRef<{ from: number; prevRun: RunState; prevSchedule: ScheduleItem[] } | null>(null);
   const timelineRef = useRef<HTMLDivElement | null>(null);
-  const innerRef = useRef<HTMLDivElement | null>(null);
-  const [arrowTop, setArrowTop] = useState(0);
   const gameNowRef = useRef<number>(boot?.run?.at ?? T0);
   const resumeAfterEvent = useRef(false);
   const dbgLines = useRef<string[]>([]);
@@ -503,96 +501,29 @@ function AppInner() {
     .filter((s) => Math.floor((s.startAt - T0) / DAY_MS) === todayIndex)
     .reduce((n, s) => n + (s.actionId === SHOW_ACTION_ID ? SHOW_SLOTS : 1), 0);
 
-  // 当前时刻始终钉在可视区中间，时间轴整体向上移动
-  useEffect(() => {
-    const inner = innerRef.current;
-    const box = timelineRef.current;
-    if (!inner || !box) return;
+  /** 每个行动在时间轴上占多少像素（一条行动 ≈ 56px） */
+  const pxPerMs = 56 / (ACTION_LIST[0]?.durationMs ?? 60_000);
 
-    const center = box.clientHeight / 2;
-
-    if (running) {
-      const pend = schedule.filter((s) => !s.done).sort((a, b) => a.startAt - b.startAt);
-      const cur = pend[0];
-      if (!cur) return;
-
-      const curRow = inner.querySelector<HTMLElement>(`[data-node-id="${cur.id}"]`);
-      const nextRow = pend[1]
-        ? inner.querySelector<HTMLElement>(`[data-node-id="${pend[1]!.id}"]`)
-        : null;
-      if (!curRow) return;
-
-      const y0 = curRow.offsetTop + 15.5;
-      const y1 = nextRow ? nextRow.offsetTop + 15.5 : curRow.offsetTop + curRow.offsetHeight;
-      const y = y0 + (y1 - y0) * progress;
-      setArrowTop(y);
-      inner.style.transform = `translateY(${center - y}px)`;
-    } else {
-      const nowEl = inner.querySelector<HTMLElement>('.tl-now');
-      if (!nowEl) return;
-      const y = nowEl.offsetTop + nowEl.offsetHeight / 2;
-      inner.style.transform = `translateY(${center - y}px)`;
-    }
-  }, [running, gameNow, schedule, progress]);
-
-
-  /** 竖向时间轴：按天分组，标出「现在」的位置 */
-  const timeline = useMemo(() => {
-    const items = [...schedule].sort((a, b) => a.startAt - b.startAt);
-    const doneItems = items.filter((s) => s.done);
-    const pendingItems = items.filter((s) => !s.done);
-    const shownDone = doneItems.slice(-historyLimit);
-
-    const nodes: Array<
-      | { type: 'day'; id: string; label: string }
-      | { type: 'item'; id: string; item: ScheduleItem; index: number; label: string }
-      | { type: 'now'; id: string }
-      | { type: 'more'; id: string; hidden: number }
-    > = [];
-
-    if (doneItems.length > shownDone.length) {
-      nodes.push({ type: 'more', id: 'more', hidden: doneItems.length - shownDone.length });
-    }
-
-    let lastDay = Number.NaN;
-    const perDay = new Map<number, number>();
-
-    const pushItem = (it: ScheduleItem) => {
-      const d = Math.floor((it.startAt - T0) / DAY_MS);
-      if (d !== lastDay) {
-        nodes.push({ type: 'day', id: `d-${d}`, label: dayLabel(it.startAt, run.at) });
-        lastDay = d;
-      }
-      const n = (perDay.get(d) ?? 0) + 1;
-      perDay.set(d, n);
-      nodes.push({
-        type: 'item',
-        id: it.id,
-        item: it,
-        index: n,
-        label: dayLabel(it.startAt, run.at),
-      });
+  const { visibleItems, hiddenCount } = useMemo(() => {
+    const done = schedule.filter((s) => s.done);
+    const pend = schedule.filter((s) => !s.done);
+    const shownDone = done.slice(-historyLimit);
+    return {
+      visibleItems: [...shownDone, ...pend].sort((a, b) => a.startAt - b.startAt),
+      hiddenCount: done.length - shownDone.length,
     };
+  }, [schedule, historyLimit]);
 
-    const firstPending = pendingItems[0];
-    const shown = [...shownDone, ...pendingItems].sort((a, b) => a.startAt - b.startAt);
-
-    let nowPlaced = false;
-    if (firstPending && !running) {
-      nodes.push({ type: 'now', id: 'now' });
-      nowPlaced = true;
-    }
-    for (const it of shown) {
-      pushItem(it);
-      if (it.id === firstPending?.id && running) {
-        nodes.push({ type: 'now', id: 'now' });
-        nowPlaced = true;
+  const dayMarks = useMemo(() => {
+    const marks: Array<{ day: number; at: number; label: string }> = [];
+    for (const it of visibleItems) {
+      const day = Math.floor((it.startAt - T0) / DAY_MS);
+      if (marks.length === 0 || marks[marks.length - 1]!.day !== day) {
+        marks.push({ day, at: T0 + day * DAY_MS, label: dayLabel(it.startAt, run.at) });
       }
     }
-    if (!nowPlaced) nodes.push({ type: 'now', id: 'now' });
-
-    return nodes;
-  }, [schedule, run.at, running, historyLimit]);
+    return marks;
+  }, [visibleItems, run.at]);
   const visibleLog = useMemo(() => {
     const list = [...run.log].reverse();
     const filtered = list.filter((l) => {
@@ -1326,106 +1257,93 @@ function AppInner() {
           </div>
 
           <div className="timeline" ref={timelineRef}>
-            <div className="timeline-inner" ref={innerRef}>
-            {timeline.length === 0 && (
-              <p className="muted">还没有安排。点「安排行程」加几个。</p>
-            )}
-
-            {timeline.map((node) => {
-              if (node.type === 'more') {
-                return (
-                  <button
-                    key={node.id}
-                    className="tl-more"
-                    onClick={() => setHistoryLimit((n) => n + 9)}
-                  >
-                    更多（还有 {node.hidden} 条更早的日程）
-                  </button>
-                );
-              }
-              if (node.type === 'day') {
-                return (
-                  <div key={node.id} className="tl-day">
-                    {node.label}
-                  </div>
-                );
-              }
-              if (node.type === 'now') {
-                return (
-                  <div key={node.id} className="tl-now">
-                    <span className="tl-node now" />
-                    <span className="tl-now-text">
-                      {running ? (
-                        <span className="tl-now-line">
-                          <strong>现在</strong>
-                          <em className="tl-count">还剩 {Math.ceil(remainMs / 1000)} 秒</em>
-                        </span>
-                      ) : (
-                        <strong>时间已停止</strong>
-                      )}
-                    </span>
-                  </div>
-                );
-              }
-
-              const a = ACTIONS[node.item.actionId];
-              const name =
-                a?.name ?? (node.item.actionId === SHOW_ACTION_ID ? '演出' : node.item.actionId);
-              const done = !!node.item.done;
-              const cls = [
-                'tl-item',
-                done ? 'done' : '',
-                node.item.fixed ? 'fixed' : '',
-                node.item.stopAfter ? 'stopped' : '',
-              ]
-                .filter(Boolean)
-                .join(' ');
-
-              const isCurrent = running && nextItem?.id === node.item.id;
-              return (
-                <div
-                  key={node.id}
-                  className={isCurrent ? `${cls} current` : cls}
-                  data-node-id={node.item.id}
-                >
-                  <span className="tl-node" />
-                  <div className="tl-body">
-                    <div className="tl-title">
-                      <span className="tl-idx">
-                        {node.label} · 行动 {node.index}
-                      </span>
-                      <span className="tl-name">{name}</span>
-                      {node.item.fixed && <span className="tag fixed-tag">固定</span>}
-                      {done && <span className="tag done-tag">已完成</span>}
-                    </div>
-                    <div className="tl-meta">
-                      {Math.round((node.item.endAt - node.item.startAt) / MIN)} 分
-                      {node.item.stopAfter && ' · 预计到此停止'}
-                    </div>
-                  </div>
-                  {!node.item.fixed && !done && (
-                    <div className="tl-actions">
-                      <button
-                        className={node.item.stopAfter ? 'stop-btn on' : 'stop-btn'}
-                        title="执行到这里就停止推进"
-                        onClick={() => toggleStop(node.item.id)}
-                      >
-                        ⏹
-                      </button>
-                      <button className="del" onClick={() => removeItem(node.item.id)}>
-                        ×
-                      </button>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-              {running && (
-                <span className="tl-arrow" style={{ top: `${arrowTop}px` }} title="现在" />
+            <div className="timeline-inner">
+              {visibleItems.length === 0 && (
+                <p className="muted tl-empty">还没有安排。点「安排行程」加几个。</p>
               )}
+
+              {hiddenCount > 0 && (
+                <button className="tl-more" onClick={() => setHistoryLimit((n) => n + 9)}>
+                  更多（还有 {hiddenCount} 条更早的日程）
+                </button>
+              )}
+
+              {dayMarks.map((m) => (
+                <div
+                  key={`d-${m.day}`}
+                  className="tl-day-mark"
+                  style={{ top: `calc(50% + ${(m.at - gameNow) * pxPerMs}px)` }}
+                >
+                  {m.label}
+                </div>
+              ))}
+
+              {visibleItems.map((it) => {
+                const a = ACTIONS[it.actionId];
+                const name = a?.name ?? (it.actionId === SHOW_ACTION_ID ? '演出' : it.actionId);
+                const done = !!it.done;
+                const cls = [
+                  'tl-item',
+                  done ? 'done' : '',
+                  it.fixed ? 'fixed' : '',
+                  it.stopAfter ? 'stopped' : '',
+                ]
+                  .filter(Boolean)
+                  .join(' ');
+
+                return (
+                  <div
+                    key={it.id}
+                    className={cls}
+                    style={{ top: `calc(50% + ${(it.startAt - gameNow) * pxPerMs}px)` }}
+                    data-node-id={it.id}
+                  >
+                    <span className="tl-node" />
+                    <div className="tl-body">
+                      <div className="tl-title">
+                        <span className="tl-idx">{dayLabel(it.startAt, run.at)}</span>
+                        <span className="tl-name">{name}</span>
+                        {it.fixed && <span className="tag fixed-tag">固定</span>}
+                        {done && <span className="tag done-tag">已完成</span>}
+                      </div>
+                      <div className="tl-meta">
+                        {Math.round((it.endAt - it.startAt) / MIN)} 分
+                        {it.stopAfter && ' · 预计到此停止'}
+                      </div>
+                    </div>
+                    {!it.fixed && !done && (
+                      <div className="tl-actions">
+                        <button
+                          className={it.stopAfter ? 'stop-btn on' : 'stop-btn'}
+                          title="执行到这里就停止推进"
+                          onClick={() => toggleStop(it.id)}
+                        >
+                          ⏹
+                        </button>
+                        <button className="del" onClick={() => removeItem(it.id)}>
+                          ×
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+
+              <div className="tl-playhead">
+                <span className="tl-arrow" />
+                <span className="tl-playhead-text">
+                  {running ? (
+                    <>
+                      <strong>现在</strong>
+                      <em>还剩 {Math.ceil(remainMs / 1000)} 秒</em>
+                    </>
+                  ) : (
+                    <strong>时间已停止</strong>
+                  )}
+                </span>
+              </div>
             </div>
           </div>
-
           <div className="side-foot">
             <button
               className="primary"

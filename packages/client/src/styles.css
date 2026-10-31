@@ -611,3 +611,81 @@ button.primary small { color: #fff; opacity: 0.8; }
   transition: transform 0.16s linear;
   will-change: transform;
 }
+/* ===== 时间轴：按时间映射位置（不再滚动/不再位移） ===== */
+.timeline {
+  position: relative;
+  overflow: hidden;
+  flex: 1 1 0;
+  min-height: 260px;
+}
+.timeline-inner {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  transform: none;
+  transition: none;
+}
+.timeline-inner::before {
+  content: '';
+  position: absolute;
+  left: 9px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--line);
+}
+.tl-item {
+  position: absolute;
+  left: 26px;
+  right: 8px;
+  min-height: 34px;
+  padding: 2px 0;
+}
+.tl-item .tl-node {
+  left: -20.5px;
+  top: 8px;
+}
+.tl-day-mark {
+  position: absolute;
+  left: 26px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.tl-day-mark::before {
+  content: '';
+  position: absolute;
+  left: -20px;
+  top: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--line);
+}
+.tl-playhead {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 26px;
+  pointer-events: none;
+}
+.tl-playhead .tl-arrow {
+  position: absolute;
+  left: -1px;
+}
+.tl-playhead-text {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  background: #fff;
+  padding: 1px 6px;
+  border-radius: 6px;
+  font-size: 12px;
+  box-shadow: 0 0 0 1px var(--line);
+}
+.tl-playhead-text em { font-style: normal; color: var(--muted); }
+.tl-more { position: absolute; left: 26px; top: 2px; }
