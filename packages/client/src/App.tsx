@@ -620,13 +620,17 @@ function AppInner() {
     const action = ACTIONS[actionId];
     if (!action) return;
 
-    const startAt = Math.max(lastEnd, run.at);
-    const dayIndex = Math.floor((startAt - T0) / DAY_MS);
-
-    if (slotsOnDay(dayIndex) >= DAILY_SLOTS) {
-      setNotice('这一天已经排满 3 个行动了，换一天吧。');
-      return;
+    // 从最早的可用位置开始，排满就自动顺延到下一天
+    let dayIndex = Math.floor((Math.max(lastEnd, run.at) - T0) / DAY_MS);
+    let guard = 0;
+    while (slotsOnDay(dayIndex) >= DAILY_SLOTS && guard < 60) {
+      dayIndex += 1;
+      guard += 1;
     }
+
+    const dayStart = T0 + dayIndex * DAY_MS;
+    const usedSlots = slotsOnDay(dayIndex);
+    const startAt = Math.max(run.at, dayStart + usedSlots * action.durationMs);
 
     setSchedule((prev) => [
       ...prev,
