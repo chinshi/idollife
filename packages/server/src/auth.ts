@@ -3,6 +3,9 @@ import type { Context } from 'hono';
 
 let authClient: SupabaseClient | null = null;
 
+const timedFetch: typeof fetch = (input, init) =>
+  fetch(input, { ...init, signal: AbortSignal.timeout(8000) });
+
 function client(): SupabaseClient | null {
   if (authClient) return authClient;
   const url = process.env.SUPABASE_URL;
@@ -10,6 +13,7 @@ function client(): SupabaseClient | null {
   if (!url || !key) return null;
   authClient = createClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },
+    global: { fetch: timedFetch },
   });
   return authClient;
 }

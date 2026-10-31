@@ -7,6 +7,10 @@ import type { RunRecord, Store } from './types.js';
  */
 const TABLE = 'idollife_runs';
 
+/** 8 秒硬超时：避免 Supabase 不可达时函数一直挂着 */
+const timedFetch: typeof fetch = (input, init) =>
+  fetch(input, { ...init, signal: AbortSignal.timeout(8000) });
+
 interface Row {
   run_id: string;
   user_id: string | null;
@@ -38,6 +42,7 @@ export class SupabaseStore implements Store {
   constructor(url: string, serviceKey: string) {
     this.client = createClient(url, serviceKey, {
       auth: { persistSession: false, autoRefreshToken: false },
+      global: { fetch: timedFetch },
     });
   }
 

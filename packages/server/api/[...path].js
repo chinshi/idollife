@@ -24356,13 +24356,15 @@ if (shouldShowDeprecationWarning()) console.warn("\u26A0\uFE0F  Node.js 20 and b
 
 // src/auth.ts
 var authClient = null;
+var timedFetch = (input, init) => fetch(input, { ...init, signal: AbortSignal.timeout(8e3) });
 function client() {
   if (authClient) return authClient;
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) return null;
   authClient = createClient(url, key, {
-    auth: { persistSession: false, autoRefreshToken: false }
+    auth: { persistSession: false, autoRefreshToken: false },
+    global: { fetch: timedFetch }
   });
   return authClient;
 }
@@ -24426,6 +24428,7 @@ var FileStore = class {
 
 // src/store/supabase.ts
 var TABLE = "idollife_runs";
+var timedFetch2 = (input, init) => fetch(input, { ...init, signal: AbortSignal.timeout(8e3) });
 function toRecord(row) {
   return {
     userId: row.user_id,
@@ -24443,7 +24446,8 @@ var SupabaseStore = class {
   client;
   constructor(url, serviceKey) {
     this.client = createClient(url, serviceKey, {
-      auth: { persistSession: false, autoRefreshToken: false }
+      auth: { persistSession: false, autoRefreshToken: false },
+      global: { fetch: timedFetch2 }
     });
   }
   async getRun(id) {
