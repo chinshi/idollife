@@ -546,20 +546,22 @@ function AppInner() {
     [visibleItems, run.at],
   );
 
+  const padY = Math.round(boxH / 2);
+
   const trackHeight = useMemo(() => {
     if (visibleItems.length === 0) return 0;
     const last = visibleItems[visibleItems.length - 1]!;
-    return Math.max(0, Math.round((last.endAt - baseTime) * pxPerMs)) + 160;
-  }, [visibleItems, baseTime, pxPerMs]);
+    return padY * 2 + Math.max(0, Math.round((last.endAt - baseTime) * pxPerMs)) + 160;
+  }, [visibleItems, baseTime, pxPerMs, padY]);
 
   // 行动完成（run.at 变化）时，把「现在」拉回可视区中央
   useEffect(() => {
     const el = timelineRef.current;
     if (!el) return;
     const nowY = (run.at - baseTime) * pxPerMs;
-    const top = Math.max(0, Math.round(nowY - el.clientHeight / 2));
+    const top = Math.max(0, Math.round(nowY + padY - el.clientHeight / 2));
     el.scrollTo({ top, behavior: 'smooth' });
-  }, [run.at, baseTime, pxPerMs, boxH]);
+  }, [run.at, baseTime, pxPerMs, boxH, padY]);
 
   const dayMarks = useMemo(() => {
     const marks: Array<{ day: number; at: number; label: string }> = [];
