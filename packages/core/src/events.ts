@@ -226,6 +226,7 @@ export function applyChoice(state: RunState, eventId: string, choiceId: string):
     text: `${choice.text}`,
     staminaDelta: choice.effects.stamina ?? 0,
     statDelta: (choice.effects.stats ?? {}) as Partial<Stats>,
+    axesChanged: Object.keys(choice.effects.axes ?? {}).length > 0,
     kind: 'choice',
   });
 

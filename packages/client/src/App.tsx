@@ -92,7 +92,9 @@ const STAT_LABEL: Record<string, string> = {
 };
 
 type SyncStatus = 'local' | 'syncing' | 'synced' | 'offline' | 'expired';
-type BagTab = 'shop' | 'equip' | 'consume' | 'other';
+type SysTab = 'shop' | 'bag';
+type BagTab = 'equip' | 'consume' | 'other';
+type LogTab = 'all' | 'event' | 'stat';
 
 function totalFans(run: RunState): number {
   return Object.values(run.fans.byType).reduce((a, b) => a + b, 0);
@@ -274,6 +276,8 @@ function AppInner() {
   const [showPartyModal, setShowPartyModal] = useState(false);
   const [partyName, setPartyName] = useState('');
   const [bagTab, setBagTab] = useState<BagTab>('equip');
+  const [sysTab, setSysTab] = useState<SysTab>('shop');
+  const [logTab, setLogTab] = useState<LogTab>('all');
   const [forceLogin, setForceLogin] = useState(false);
   const [running, setRunning] = useState(false);
   const [speed, setSpeed] = useState(1);
@@ -382,7 +386,7 @@ function AppInner() {
     const startGame = runRef.current.at;
 
     const id = window.setInterval(() => {
-      const target = startGame + (Date.now() - startReal) * speed;
+      const target = Math.max(runRef.current.at, startGame + (Date.now() - startReal) * speed);
       setGameNow(target);
 
       const prev = runRef.current;
@@ -398,8 +402,16 @@ function AppInner() {
         dbg('执行 ' + result.executed.join(',') + ' → at=' + String(result.state.at));
       }
 
+      const stillPending = scheduleRef.current.some((s) => !s.done);
+      if (result.stoppedReason === 'exhausted' && stillPending) {
+        dbg('等待下一个行动 startAt=' + String(nextStart()));
+        return;
+      }
+
       if (result.stoppedReason !== 'time') {
-        dbg('停止 reason=' + String(result.stoppedReason));
+        dbg('停止 reason=' + String(result.stoppedReason) + ' 剩=' + String(
+          scheduleRef.current.filter((s) => !s.done).length,
+        ));
         setRunning(false);
         const batch = batchRef.current;
         if (batch) endBatch(result, batch);
@@ -422,7 +434,11 @@ function AppInner() {
     pending.length > 0
       ? [...pending].sort((a, b) => a.startAt - b.startAt)[0] ?? null
       : null;
-  const remainMs = running && nextItem ? Math.max(0, nextItem.endAt - gameNow) : 0;
+  const nextDuration = nextItem ? Math.max(1, nextItem.endAt - nextItem.startAt) : 1;
+  const remainMs =
+    running && nextItem
+      ? Math.min(nextDuration, Math.max(0, nextItem.endAt - gameNow))
+      : 0;
   const progress =
     running && nextItem
       ? Math.min(1, Math.max(0, (gameNow - nextItem.startAt) / Math.max(1, nextItem.endAt - nextItem.startAt)))
@@ -452,7 +468,8 @@ function AppInner() {
         nodes.push({ type: 'day', id: `d-${d}`, label: dayLabel(it.startAt, run.at) });
         lastDay = d;
       }
-      if (!nowPlaced && !it.done) {
+      const firstPending = !nowPlaced && !it.done;
+      if (firstPending && !running) {
         nodes.push({ type: 'now', id: 'now' });
         nowPlaced = true;
       }
@@ -465,10 +482,27 @@ function AppInner() {
         index: n,
         label: dayLabel(it.startAt, run.at),
       });
+      if (firstPending && running) nowPlaced = true;
     }
 
+    if (!nowPlaced) nodes.push({ type: 'now', id: 'now' });
+
     return nodes;
-  }, [schedule, run.at]);
+  }, [schedule, run.at, running]);
+
+  const visibleLog = useMemo(() => {
+    const list = [...run.log].reverse();
+    const filtered = list.filter((l) => {
+      if (logTab === 'event') {
+        return l.kind === 'choice' || l.kind === 'routine' || l.actionId.startsWith('event:');
+      }
+      if (logTab === 'stat') {
+        return Object.keys(l.statDelta).length > 0 || !!l.axesChanged;
+      }
+      return true;
+    });
+    return filtered.slice(0, 60);
+  }, [run.log, logTab]);
 
   const party = activeParty(run);
 
@@ -582,6 +616,11 @@ function AppInner() {
     } catch {
       /* 忽略 */
     }
+  }
+
+  function nextStart(): number {
+    const pend = scheduleRef.current.filter((s) => !s.done);
+    return pend.length > 0 ? pend[0]!.startAt : 0;
   }
 
   function markExecuted(prev: ScheduleItem[], executed: string[]): ScheduleItem[] {
@@ -881,6 +920,36 @@ function AppInner() {
       <main className="cols">
         <div className="col-main">
       <section className="panel">
+        <div className="panel-head">
+          <h2>日志</h2>
+        </div>
+        <div className="tabs">
+          {(['all', 'event', 'stat'] as LogTab[]).map((t) => (
+            <button
+              key={t}
+              className={logTab === t ? 'tab active' : 'tab'}
+              onClick={() => setLogTab(t)}
+            >
+              {t === 'all' ? '全部' : t === 'event' ? '事件' : '属性'}
+            </button>
+          ))}
+        </div>
+        {visibleLog.length === 0 ? (
+          <p className="muted small">还没有记录。</p>
+        ) : (
+          <ul className="log dense">
+            {visibleLog.map((l, i) => (
+              <li key={`${l.at}-${i}`}>
+                <span className="log-time">{fmtGameTime(l.at)}</span>
+                <span className="log-text">{l.text}</span>
+                {l.axesChanged && <em className="tag hidden-tag">隐藏属性变动</em>}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="panel">
         <div className="stats">
           {(['vocal', 'dance', 'acting', 'talk'] as const).map((k) => (
             <div key={k} className="stat">
@@ -979,23 +1048,23 @@ function AppInner() {
 
       <section className="panel">
         <div className="panel-head">
-          <h2>物品</h2>
+          <h2>系统</h2>
           <span className="muted small">装备 {run.inventory.length} 件</span>
         </div>
 
         <div className="tabs">
-          {(['shop', 'equip', 'consume', 'other'] as BagTab[]).map((t) => (
+          {(['shop', 'bag'] as SysTab[]).map((t) => (
             <button
               key={t}
-              className={bagTab === t ? 'tab active' : 'tab'}
-              onClick={() => setBagTab(t)}
+              className={sysTab === t ? 'tab active' : 'tab'}
+              onClick={() => setSysTab(t)}
             >
-              {t === 'shop' ? '商店' : t === 'equip' ? '装备' : t === 'consume' ? '消耗' : '其他'}
+              {t === 'shop' ? '商店' : '物品'}
             </button>
           ))}
         </div>
 
-        {bagTab === 'shop' && (
+        {sysTab === 'shop' && (
           <ul className="shop">
             {getShop(run, seed).map((item) => (
               <li key={item.id}>
@@ -1012,32 +1081,50 @@ function AppInner() {
           </ul>
         )}
 
-        {bagTab === 'equip' &&
-          (run.inventory.length === 0 ? (
-            <p className="muted">还没有装备。</p>
-          ) : (
-            <ul className="shop">
-              {run.inventory.map((item) => {
-                const on = run.equipped.outfit === item.id;
-                return (
-                  <li key={item.id}>
-                    <span className="name">
-                      {item.name}
-                      {on ? '（已装备）' : ''}
-                    </span>
-                    <span className="muted">
-                      {STAT_LABEL[item.affix.stat]} +{item.affix.value}
-                    </span>
-                    <button onClick={() => doEquip(item)} disabled={on}>
-                      装备
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          ))}
+        {sysTab === 'bag' && (
+          <>
+            <div className="tabs sub">
+              {(['equip', 'consume', 'other'] as BagTab[]).map((t) => (
+                <button
+                  key={t}
+                  className={bagTab === t ? 'tab active' : 'tab'}
+                  onClick={() => setBagTab(t)}
+                >
+                  {t === 'equip' ? '装备' : t === 'consume' ? '消耗' : '其他'}
+                </button>
+              ))}
+            </div>
 
-        {(bagTab === 'consume' || bagTab === 'other') && <p className="muted">暂无物品。</p>}
+            {bagTab === 'equip' &&
+              (run.inventory.length === 0 ? (
+                <p className="muted">还没有装备。</p>
+              ) : (
+                <ul className="shop">
+                  {run.inventory.map((item) => {
+                    const on = run.equipped.outfit === item.id;
+                    return (
+                      <li key={item.id}>
+                        <span className="name">
+                          {item.name}
+                          {on ? '（已装备）' : ''}
+                        </span>
+                        <span className="muted">
+                          {STAT_LABEL[item.affix.stat]} +{item.affix.value}
+                        </span>
+                        <button onClick={() => doEquip(item)} disabled={on}>
+                          装备
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              ))}
+
+            {(bagTab === 'consume' || bagTab === 'other') && (
+              <p className="muted">暂无物品。</p>
+            )}
+          </>
+        )}
 
         <p className="muted small">
           实际属性：
@@ -1047,24 +1134,6 @@ function AppInner() {
         </p>
       </section>
 
-      <section className="panel">
-        <h2>日志</h2>
-        {run.log.length === 0 ? (
-          <p className="muted">还没有发生什么。</p>
-        ) : (
-          <ul className="log">
-            {[...run.log]
-              .reverse()
-              .slice(0, 40)
-              .map((l, i) => (
-                <li key={`${l.at}-${i}`}>
-                  <span className="muted">{fmtGameTime(l.at)}</span>
-                  <span>{l.text}</span>
-                </li>
-              ))}
-          </ul>
-        )}
-      </section>
 
         </div>
 
@@ -1124,7 +1193,7 @@ function AppInner() {
                       (nextItem.actionId === SHOW_ACTION_ID ? '演出' : nextItem.actionId)
                     }」`
                   : '进行中…'
-                : '已静止'}
+                : '时间已停止'}
             </div>
           </div>
 
@@ -1156,6 +1225,11 @@ function AppInner() {
                         </em>
                       )}
                     </span>
+                    {running && (
+                      <span className="tl-bar">
+                        <span style={{ width: `${Math.round(progress * 100)}%` }} />
+                      </span>
+                    )}
                   </div>
                 );
               }
@@ -1178,7 +1252,14 @@ function AppInner() {
                 <div key={node.id} className={isCurrent ? `${cls} current` : cls}>
                   <span className="tl-node" />
                   {isCurrent && (
-                    <span className="tl-progress" style={{ height: `${Math.round(progress * 100)}%` }} />
+                    <span
+                      className="tl-arrow"
+                      style={{ top: `${Math.round(progress * 100)}%` }}
+                      title="现在"
+                    >
+                      ▶
+                      <em>还剩 {Math.ceil(remainMs / 1000)} 秒</em>
+                    </span>
                   )}
                   <div className="tl-body">
                     <div className="tl-title">

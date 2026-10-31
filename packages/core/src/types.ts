@@ -51,6 +51,8 @@ export interface LogEntry {
   text: string;
   staminaDelta: number;
   statDelta: Partial<Stats>;
+  /** 隐藏属性（三轴）是否发生变化：只记录有无，不记录数值 */
+  axesChanged?: boolean;
   kind?: 'action' | 'routine' | 'choice';
 }
 
