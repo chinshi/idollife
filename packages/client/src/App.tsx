@@ -418,6 +418,17 @@ function AppInner() {
       );
       setGameNow(target);
 
+      // 先清掉已经过期（结束时间早于当前时间）的条，
+      // 否则 settle 会跳过它们 → 判定 exhausted → 时间看似不动
+      const stale = scheduleRef.current.filter((s) => !s.done && s.endAt <= runRef.current.at);
+      if (stale.length > 0) {
+        const staleIds = new Set(stale.map((s) => s.id));
+        const cleaned = scheduleRef.current.filter((s) => !staleIds.has(s.id));
+        scheduleRef.current = cleaned;
+        setSchedule(cleaned);
+        dbg('清理过期行程 ' + String(stale.length) + ' 条');
+      }
+
       const prev = runRef.current;
       const prevSched = scheduleRef.current;
       const result = settle(prev, prevSched, prev.at, target, seed, { endAt: RUN_END });
@@ -744,15 +755,27 @@ function AppInner() {
 
   function advance() {
     if (!requireLogin()) return;
-    if (pending.length === 0 || running) return;
+    if (running) return;
+    if (pending.length === 0) {
+      setNotice('没有待执行的行程，先点「安排行程」加几条。');
+      dbg('推进失败：没有待执行条目');
+      return;
+    }
     if (run.pendingEvent) {
       setNotice('先处理重点事件，时间已暂停。');
       setActiveEventId(run.pendingEvent);
       return;
     }
 
-    setSnapshot({ run, schedule });
-    batchRef.current = { from: run.at, prevRun: run, prevSchedule: schedule };
+    const staleAtStart = schedule.filter((s) => !s.done && s.endAt <= run.at);
+    const usable = schedule.filter((s) => !staleAtStart.includes(s));
+    if (staleAtStart.length > 0) {
+      dbg('开始前清理过期行程 ' + String(staleAtStart.length) + ' 条');
+      setSchedule(usable);
+    }
+
+    setSnapshot({ run, schedule: usable });
+    batchRef.current = { from: run.at, prevRun: run, prevSchedule: usable };
     setGameNow(run.at);
     setRunning(true);
     dbg('开始推进 pending=' + String(pending.length) + ' at=' + String(run.at));
