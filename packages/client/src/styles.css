@@ -644,9 +644,10 @@ button.primary small { color: #fff; opacity: 0.8; }
   padding: 2px 0;
 }
 /* 圆点放在「这一条开始」的位置：正在执行的行动圆点正好落在中间线上 */
+/* 圆点圆心 = 行动开始时刻（正好落在中间线上） */
 .tl-item .tl-node {
   left: -20.5px;
-  top: 6px;
+  top: -4.5px;
   bottom: auto;
 }
 .tl-day-mark {
@@ -743,7 +744,7 @@ button.primary small { color: #fff; opacity: 0.8; }
   position: absolute;
   left: 26px;
   right: 8px;
-  padding-top: 6px;
+  padding-top: 14px;   /* 让文字避开中间那条现在线 */
 }
 .timeline-track .tl-day-mark {
   position: absolute;
