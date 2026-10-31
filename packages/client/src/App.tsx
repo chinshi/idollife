@@ -1343,7 +1343,7 @@ function AppInner() {
                   const a = ACTIONS[it.actionId];
                   const name = a?.name ?? (it.actionId === SHOW_ACTION_ID ? '演出' : it.actionId);
                   const done = !!it.done;
-                  const isCurrent = running && nextItem?.id === it.id;
+                  const isCurrent = nextItem?.id === it.id;
                   const cls = [
                     'tl-item',
                     done ? 'done' : '',
@@ -1398,15 +1398,7 @@ function AppInner() {
                   );
                 })}
 
-                <div
-                  className="tl-playhead"
-                  style={{
-                    top: `${padY + Math.round(((nextItem?.startAt ?? run.at) - baseTime) * pxPerMs) - 11}px`,
-                  }}
-                >
-                  <span className="tl-arrow" />
-                  <span className="tl-playhead-line" />
-                </div>
+
               </div>
             </div>
 
