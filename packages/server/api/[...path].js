@@ -15751,12 +15751,14 @@ var cors = (options) => {
 
 // ../core/src/content.ts
 var MIN = 6e4;
+var ACTION_MINUTES = 1;
 var RUN_LENGTH_MS = 2 * 365 * 24 * 60 * MIN;
 var WEEK_MS = 7 * 24 * 60 * MIN;
 var DAY_MS = 24 * 60 * MIN;
 var RENT_PER_WEEK = 500;
+var SHOW_SLOTS = 3;
 var SHOW_ACTION_ID = "show";
-var SHOW_DURATION_MS = 30 * MIN;
+var SHOW_DURATION_MS = SHOW_SLOTS * ACTION_MINUTES * MIN;
 var ACTIONS = {
   "vocal-karaoke": {
     id: "vocal-karaoke",
@@ -15766,7 +15768,7 @@ var ACTIONS = {
     stamina: -10,
     gain: [1, 3],
     cost: 50,
-    durationMs: 10 * MIN,
+    durationMs: ACTION_MINUTES * MIN,
     text: "\u4F60\u5728\u5305\u53A2\u91CC\u5531\u4E86\u4E24\u5C0F\u65F6\uFF0C\u55D3\u5B50\u6709\u70B9\u70ED\u3002\uFF08\u6F14\u5531 +{n}\uFF09"
   },
   "dance-otaku": {
@@ -15776,7 +15778,7 @@ var ACTIONS = {
     stat: "dance",
     stamina: -12,
     gain: [1, 3],
-    durationMs: 10 * MIN,
+    durationMs: ACTION_MINUTES * MIN,
     text: "\u5BF9\u7740\u955C\u5B50\u628A\u540C\u4E00\u6BB5\u526F\u6B4C\u8DF3\u4E86\u4E8C\u5341\u904D\u3002\uFF08\u821E\u8E48 +{n}\uFF09"
   },
   "acting-short": {
@@ -15786,7 +15788,7 @@ var ACTIONS = {
     stat: "acting",
     stamina: -10,
     gain: [1, 2],
-    durationMs: 10 * MIN,
+    durationMs: ACTION_MINUTES * MIN,
     text: "\u81EA\u5BFC\u81EA\u6F14\u62CD\u4E86\u4E09\u6761\uFF0C\u7B2C\u4E8C\u6761\u6700\u597D\u3002\uFF08\u6F14\u6280 +{n}\uFF09"
   },
   "talk-selftalk": {
@@ -15796,7 +15798,7 @@ var ACTIONS = {
     stat: "talk",
     stamina: -8,
     gain: [1, 2],
-    durationMs: 10 * MIN,
+    durationMs: ACTION_MINUTES * MIN,
     text: "\u5BF9\u7740\u955C\u5934\u7EC3\u4E86\u4E00\u4E0B\u5348\u4E32\u573A\u8BCD\u3002\uFF08\u53E3\u624D +{n}\uFF09"
   },
   "work-part-time": {
@@ -15805,7 +15807,7 @@ var ACTIONS = {
     category: "work",
     stamina: -20,
     money: 320,
-    durationMs: 10 * MIN,
+    durationMs: ACTION_MINUTES * MIN,
     text: "\u5728\u4FBF\u5229\u5E97\u7AD9\u4E86\u56DB\u4E2A\u5C0F\u65F6\uFF0C\u811A\u6709\u70B9\u9EBB\u3002\uFF08\u6536\u5165 +320\uFF09"
   },
   "rest-sleep": {
@@ -15813,7 +15815,7 @@ var ACTIONS = {
     name: "\u7206\u7761",
     category: "recover",
     stamina: 25,
-    durationMs: 10 * MIN,
+    durationMs: ACTION_MINUTES * MIN,
     text: "\u7761\u4E86\u4E00\u89C9\uFF0C\u611F\u89C9\u6D3B\u8FC7\u6765\u4E86\u3002"
   }
 };

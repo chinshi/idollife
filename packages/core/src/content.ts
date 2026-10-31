@@ -2,6 +2,9 @@ import type { ActionDef } from './types';
 
 const MIN = 60_000;
 
+/** 一个行动流逝多少游戏分钟（测试期改成 1，正式值见 docs/02） */
+export const ACTION_MINUTES = 1;
+
 /** 一周目长度：游戏内 2 年（按行动推进的毫秒数计） */
 export const RUN_LENGTH_MS = 2 * 365 * 24 * 60 * MIN;
 
@@ -21,7 +24,7 @@ export const START_MONEY = 8000;
 export const DAILY_SLOTS = 3;
 export const SHOW_SLOTS = 3;
 export const SHOW_ACTION_ID = 'show';
-export const SHOW_DURATION_MS = 30 * MIN;
+export const SHOW_DURATION_MS = SHOW_SLOTS * ACTION_MINUTES * MIN;
 
 /** 出道门槛：四项属性和 */
 export const DEBUT_THRESHOLD = 120;
@@ -36,7 +39,7 @@ export const ACTIONS: Record<string, ActionDef> = {
     stamina: -10,
     gain: [1, 3],
     cost: 50,
-    durationMs: 10 * MIN,
+    durationMs: ACTION_MINUTES * MIN,
     text: '你在包厢里唱了两小时，嗓子有点热。（演唱 +{n}）',
   },
   'dance-otaku': {
@@ -46,7 +49,7 @@ export const ACTIONS: Record<string, ActionDef> = {
     stat: 'dance',
     stamina: -12,
     gain: [1, 3],
-    durationMs: 10 * MIN,
+    durationMs: ACTION_MINUTES * MIN,
     text: '对着镜子把同一段副歌跳了二十遍。（舞蹈 +{n}）',
   },
   'acting-short': {
@@ -56,7 +59,7 @@ export const ACTIONS: Record<string, ActionDef> = {
     stat: 'acting',
     stamina: -10,
     gain: [1, 2],
-    durationMs: 10 * MIN,
+    durationMs: ACTION_MINUTES * MIN,
     text: '自导自演拍了三条，第二条最好。（演技 +{n}）',
   },
   'talk-selftalk': {
@@ -66,7 +69,7 @@ export const ACTIONS: Record<string, ActionDef> = {
     stat: 'talk',
     stamina: -8,
     gain: [1, 2],
-    durationMs: 10 * MIN,
+    durationMs: ACTION_MINUTES * MIN,
     text: '对着镜头练了一下午串场词。（口才 +{n}）',
   },
   'work-part-time': {
@@ -75,7 +78,7 @@ export const ACTIONS: Record<string, ActionDef> = {
     category: 'work',
     stamina: -20,
     money: 320,
-    durationMs: 10 * MIN,
+    durationMs: ACTION_MINUTES * MIN,
     text: '在便利店站了四个小时，脚有点麻。（收入 +320）',
   },
   'rest-sleep': {
@@ -83,7 +86,7 @@ export const ACTIONS: Record<string, ActionDef> = {
     name: '爆睡',
     category: 'recover',
     stamina: 25,
-    durationMs: 10 * MIN,
+    durationMs: ACTION_MINUTES * MIN,
     text: '睡了一觉，感觉活过来了。',
   },
 };
