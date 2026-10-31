@@ -688,17 +688,22 @@ function AppInner() {
     const action = ACTIONS[actionId];
     if (!action) return;
 
-    // 从最早的可用位置开始，排满就自动顺延到下一天
-    let dayIndex = Math.floor((Math.max(lastEnd, run.at) - T0) / DAY_MS);
+    // 与上一条首尾相接；当天排满/放不下就顺延到下一天
+    let startAt = Math.max(run.at, lastEnd);
     let guard = 0;
-    while (slotsOnDay(dayIndex) >= DAILY_SLOTS && guard < 60) {
-      dayIndex += 1;
+    while (guard < 60) {
       guard += 1;
-    }
+      const d = Math.floor((startAt - T0) / DAY_MS);
+      const dayStart = T0 + d * DAY_MS;
+      const used = slotsOnDay(d);
+      const slotStart = Math.max(startAt, dayStart + used * action.durationMs);
 
-    const dayStart = T0 + dayIndex * DAY_MS;
-    const usedSlots = slotsOnDay(dayIndex);
-    const startAt = Math.max(run.at, dayStart + usedSlots * action.durationMs);
+      if (used < DAILY_SLOTS && slotStart + action.durationMs <= dayStart + DAY_MS) {
+        startAt = slotStart;
+        break;
+      }
+      startAt = dayStart + DAY_MS;
+    }
 
     setSchedule((prev) => [
       ...prev,
@@ -787,9 +792,18 @@ function AppInner() {
       setSchedule(usable);
     }
 
-    setSnapshot({ run, schedule: usable });
-    batchRef.current = { from: run.at, prevRun: run, prevSchedule: usable };
-    setGameNow(run.at);
+    const firstPending = usable.filter((s) => !s.done).sort((a, b) => a.startAt - b.startAt)[0];
+    let baseRun = run;
+    if (firstPending && firstPending.startAt > run.at) {
+      const skipped = Math.round((firstPending.startAt - run.at) / 1000);
+      dbg('跳过空档 ' + String(skipped) + 's');
+      baseRun = { ...run, at: firstPending.startAt };
+      setRun(baseRun);
+    }
+
+    setSnapshot({ run: baseRun, schedule: usable });
+    batchRef.current = { from: baseRun.at, prevRun: baseRun, prevSchedule: usable };
+    setGameNow(baseRun.at);
     setRunning(true);
     dbg('开始推进 pending=' + String(pending.length) + ' at=' + String(run.at));
   }
