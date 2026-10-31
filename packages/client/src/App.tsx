@@ -3,8 +3,11 @@ import {
   ACTION_LIST,
   ACTIONS,
   CATEGORY_LABEL,
-  DAILY_ACTIONS,
+  DAILY_SLOTS,
   DAY_MS,
+  SHOW_ACTION_ID,
+  SHOW_DURATION_MS,
+  SHOW_SLOTS,
   RECRUIT_COST,
   RUN_LENGTH_MS,
   START_MONEY,
@@ -389,20 +392,22 @@ function AppInner() {
     return false;
   }
 
+  /** 某一天已经占用了几个行动位（演出占 3 个） */
+  function slotsOnDay(dayIndex: number): number {
+    return schedule
+      .filter((s) => Math.floor((s.startAt - T0) / DAY_MS) === dayIndex)
+      .reduce((n, s) => n + (s.actionId === SHOW_ACTION_ID ? SHOW_SLOTS : 1), 0);
+  }
+
   function addAction(actionId: string) {
     const action = ACTIONS[actionId];
     if (!action) return;
 
     const startAt = Math.max(lastEnd, run.at);
     const dayIndex = Math.floor((startAt - T0) / DAY_MS);
-    const weekday = new Date(T0 + dayIndex * DAY_MS).getUTCDay();
-    const cap = weekday === 0 || weekday === 6 ? DAILY_ACTIONS.weekend : DAILY_ACTIONS.weekday;
-    const used = schedule.filter(
-      (s) => Math.floor((s.startAt - T0) / DAY_MS) === dayIndex,
-    ).length;
 
-    if (used >= cap) {
-      setNotice(`这一天最多 ${cap} 个行动，换一天吧。`);
+    if (slotsOnDay(dayIndex) >= DAILY_SLOTS) {
+      setNotice('这一天已经排满 3 个行动了，换一天吧。');
       return;
     }
 
@@ -518,13 +523,38 @@ function AppInner() {
     setRun(switchParty(run, id));
   }
 
-  function doShow() {
-    if (phase !== 'playing' || run.pendingEvent) return;
-    const result = performShow(run, `${seed}:show:${run.log.length}`);
-    const next = applyShow(run, result);
-    setRun(next);
-    setNotice(`演出 ${result.grade}：${result.report[0]}`);
-    void pushWholeState(next);
+  /** 参加演出：排在最近的周六/周日，占满当天 3 个行动位 */
+  function addShow() {
+    if (phase !== 'playing') return;
+
+    let dayIndex = Math.floor(Math.max(lastEnd, run.at) / DAY_MS) - Math.floor(T0 / DAY_MS);
+    let dayStart = T0 + dayIndex * DAY_MS;
+
+    for (let i = 0; i < 8; i++) {
+      const weekday = new Date(dayStart).getUTCDay();
+      const isWeekend = weekday === 0 || weekday === 6;
+      if (isWeekend && slotsOnDay(dayIndex) === 0) break;
+      dayIndex += 1;
+      dayStart += DAY_MS;
+    }
+
+    const weekday = new Date(dayStart).getUTCDay();
+    if (weekday !== 0 && weekday !== 6) {
+      setNotice('最近一周没有空闲的周末了。');
+      return;
+    }
+
+    const startAt = Math.max(dayStart, run.at, lastEnd);
+    setSchedule((prev) => [
+      ...prev,
+      {
+        id: `show-${Date.now()}`,
+        actionId: SHOW_ACTION_ID,
+        startAt,
+        endAt: startAt + SHOW_DURATION_MS,
+      },
+    ]);
+    setNotice('演出安排在周末，占满当天 3 个行动位。');
   }
 
   function doDivine() {
@@ -686,7 +716,7 @@ function AppInner() {
                         </button>
                         <span className="when">{g.label}</span>
                         <span className="idx">行动 {i + 1}</span>
-                        <span className="name">{a?.name ?? s.actionId}</span>
+                        <span className="name">{a?.name ?? (s.actionId === SHOW_ACTION_ID ? '演出' : s.actionId)}</span>
                         <span className="dur">{Math.round((s.endAt - s.startAt) / MIN)} 分</span>
                         <button className="del" onClick={() => removeItem(s.id)}>
                           ×
@@ -707,7 +737,7 @@ function AppInner() {
           <button onClick={stopCurrent} disabled={!snapshot && schedule.length === 0}>
             停止当前行程
           </button>
-          <button onClick={doShow} disabled={run.stamina < 30 || phase !== 'playing'}>
+          <button onClick={addShow} disabled={phase !== 'playing'}>
             参加演出
           </button>
         </div>

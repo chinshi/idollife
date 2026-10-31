@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { settle } from '../src/settle';
 import { divine, divinationCost, divinationReading, tierText } from '../src/divination';
 import { createFans } from '../src/fans';
-import { DAY_MS } from '../src/content';
+import { DAY_MS, SHOW_ACTION_ID, SHOW_DURATION_MS } from '../src/content';
 import type { RunState, ScheduleItem } from '../src/types';
 
 const MIN = 60_000;
@@ -74,5 +74,28 @@ describe('占卜', () => {
     expect(r.self).toBe(tierText('low') === '低' ? 'low' : r.self);
     expect(r.others).toBe('high');
     expect(r.fit).toBe('mid');
+  });
+});
+
+describe('演出占位', () => {
+  it('周末演出按行动位结算：扣体力、给钱、涨粉', () => {
+    const run = base({ stamina: 100, money: 0 });
+    const startAt = T0 + 600000;
+    const show = {
+      id: 'show1',
+      actionId: SHOW_ACTION_ID,
+      startAt,
+      endAt: startAt + SHOW_DURATION_MS,
+    };
+
+    const r = settle(run, [show], T0, startAt + SHOW_DURATION_MS, 's', {
+      routineChance: 0,
+      storyEvents: false,
+    });
+
+    expect(r.executed).toEqual(['show1']);
+    expect(r.state.stamina).toBe(70);
+    expect(r.state.money).toBeGreaterThan(0);
+    expect(r.state.log.some((l) => l.actionId.startsWith('show:'))).toBe(true);
   });
 });

@@ -1,5 +1,6 @@
-import { ACTIONS, RENT_PER_WEEK, WEEK_MS } from './content';
+import { ACTIONS, RENT_PER_WEEK, SHOW_ACTION_ID, WEEK_MS } from './content';
 import { createFans } from './fans';
+import { applyShow, performShow } from './shows';
 import { ROUTINE_TEMPLATES, findStoryEvent } from './events';
 import { hashSeed, mulberry32, randInt } from './rng';
 import type { RunState, ScheduleItem, SettleResult, Stats, StopReason } from './types';
@@ -72,6 +73,28 @@ export function settle(
     if (item.endAt > to) {
       stoppedReason = 'time';
       break;
+    }
+
+    // 演出：一场占 3 个行动位，按当天状态结算
+    if (item.actionId === SHOW_ACTION_ID) {
+      if (state.stamina < 30) {
+        stoppedReason = 'stamina';
+        break;
+      }
+      const show = performShow(state, `${seed}:${item.id}`);
+      const applied = applyShow(state, show);
+      state.stamina = applied.stamina;
+      state.money = applied.money;
+      state.fans = applied.fans;
+      state.log = applied.log;
+      state.at = item.endAt;
+      cursor = item.endAt;
+      executed.push(item.id);
+      if (item.stopAfter) {
+        stoppedReason = 'stopped';
+        break;
+      }
+      continue;
     }
 
     const action = ACTIONS[item.actionId];

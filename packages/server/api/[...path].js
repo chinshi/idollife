@@ -15755,6 +15755,8 @@ var RUN_LENGTH_MS = 2 * 365 * 24 * 60 * MIN;
 var WEEK_MS = 7 * 24 * 60 * MIN;
 var DAY_MS = 24 * 60 * MIN;
 var RENT_PER_WEEK = 500;
+var SHOW_ACTION_ID = "show";
+var SHOW_DURATION_MS = 30 * MIN;
 var ACTIONS = {
   "vocal-karaoke": {
     id: "vocal-karaoke",
@@ -15842,6 +15844,9 @@ function randInt(rng, min, max) {
 
 // ../core/src/fans.ts
 var FAN_TYPES = ["stage", "gachi", "music", "live", "growth", "power"];
+var LOYALTY_ORDER = ["casual", "dd", "group", "solo"];
+var AFFECTION_MAX = 100;
+var PROMOTE_RATIO = 0.05;
 function zeroed(keys) {
   return keys.reduce((acc, k) => {
     acc[k] = 0;
@@ -15853,6 +15858,107 @@ function createFans(total = 0) {
     byType: zeroed(FAN_TYPES),
     loyalty: { casual: total, dd: 0, group: 0, solo: 0 },
     affection: zeroed(FAN_TYPES)
+  };
+}
+function applyFanAction(fans, type, newFans, affection) {
+  const next = {
+    byType: { ...fans.byType },
+    loyalty: { ...fans.loyalty },
+    affection: { ...fans.affection }
+  };
+  const added = Math.max(0, Math.floor(newFans));
+  next.byType[type] += added;
+  next.loyalty.casual += added;
+  next.affection[type] = Math.min(AFFECTION_MAX, next.affection[type] + Math.max(0, affection));
+  while (next.affection[type] >= AFFECTION_MAX) {
+    next.affection[type] -= AFFECTION_MAX;
+    promoteOnce(next);
+  }
+  return next;
+}
+function promoteOnce(fans) {
+  for (let i = 0; i < LOYALTY_ORDER.length - 1; i++) {
+    const from = LOYALTY_ORDER[i];
+    const to = LOYALTY_ORDER[i + 1];
+    const movable = Math.max(1, Math.floor(fans.loyalty[from] * PROMOTE_RATIO));
+    const moved = Math.min(movable, fans.loyalty[from]);
+    if (moved > 0) {
+      fans.loyalty[from] -= moved;
+      fans.loyalty[to] += moved;
+      return;
+    }
+  }
+}
+
+// ../core/src/shop.ts
+function effectiveStats(state) {
+  const stats = { ...state.stats };
+  for (const slot of Object.keys(state.equipped)) {
+    const id = state.equipped[slot];
+    if (!id) continue;
+    const item = state.inventory.find((i) => i.id === id);
+    if (!item) continue;
+    stats[item.affix.stat] = Math.min(100, stats[item.affix.stat] + item.affix.value);
+  }
+  return stats;
+}
+
+// ../core/src/shows.ts
+var GRADE_TEXT = {
+  S: ["\u706F\u4EAE\u8D77\u6765\u7684\u90A3\u4E00\u523B\uFF0C\u5168\u573A\u5B89\u9759\u4E86\u3002", "\u4F60\u8DF3\u5B8C\u6700\u540E\u4E00\u6BB5\uFF0C\u638C\u58F0\u6BD4\u97F3\u4E50\u8FD8\u54CD\u3002"],
+  A: ["\u53D1\u6325\u5F88\u7A33\uFF0C\u53F0\u4E0B\u6709\u4EBA\u8DDF\u7740\u558A\u3002", "\u7ED3\u675F\u540E\u6709\u4EBA\u6324\u5230\u524D\u6392\u8981\u7B7E\u540D\u3002"],
+  B: ["\u4E2D\u89C4\u4E2D\u77E9\uFF0C\u4F46\u6CA1\u51FA\u9519\u3002", "\u6709\u4EBA\u5728\u95E8\u53E3\u72B9\u8C6B\u4E86\u4E00\u4E0B\uFF0C\u8FD8\u662F\u8D70\u4E86\u3002"],
+  C: ["\u4E2D\u95F4\u5FD8\u4E86\u4E00\u4E2A\u52A8\u4F5C\uFF0C\u4F60\u7B11\u7740\u5706\u8FC7\u53BB\u4E86\u3002", "\u53F0\u4E0B\u7A00\u7A00\u62C9\u62C9\u7684\u638C\u58F0\uFF0C\u4F60\u8BF4\u4E86\u8C22\u8C22\u3002"]
+};
+function pickFanType(state) {
+  const s = effectiveStats(state);
+  if (s.dance >= s.vocal && s.dance >= s.acting && s.dance >= s.talk) return "stage";
+  if (s.vocal >= s.acting && s.vocal >= s.talk) return "music";
+  if (s.acting >= s.talk) return "growth";
+  return "gachi";
+}
+function performShow(state, seed) {
+  const rng = mulberry32(hashSeed(seed));
+  const s = effectiveStats(state);
+  const base = (s.vocal + s.dance + s.acting + s.talk) / 4;
+  const fitBonus = state.axes.fit / 20;
+  const staminaPenalty = state.stamina < 30 ? 8 : 0;
+  const noise = rng() * 10 - 5;
+  const score = Math.round(base + fitBonus - staminaPenalty + noise);
+  const grade = score >= 45 ? "S" : score >= 32 ? "A" : score >= 20 ? "B" : "C";
+  const multiplier = grade === "S" ? 3 : grade === "A" ? 2 : grade === "B" ? 1.2 : 0.5;
+  const fanGain = Math.max(1, Math.round(score / 10 * multiplier * 3));
+  const moneyGain = Math.round(400 * multiplier);
+  const fanType = pickFanType(state);
+  return {
+    grade,
+    score,
+    fanType,
+    fanGain,
+    moneyGain,
+    report: [...GRADE_TEXT[grade], `\u8FD9\u573A\u5927\u6982\u5438\u5F15\u4E86\u4E24\u767E\u591A\u4EBA\u91CC\u7684 ${Math.round(fanGain)} \u4E2A\u3002`]
+  };
+}
+function applyShow(state, result) {
+  const stamina = Math.max(0, state.stamina - 30);
+  let fans = state.fans;
+  fans = applyFanAction(fans, result.fanType, result.fanGain, 8);
+  return {
+    ...state,
+    stamina,
+    money: state.money + result.moneyGain,
+    fans,
+    log: [
+      ...state.log,
+      {
+        at: state.at,
+        actionId: `show:${result.grade}`,
+        text: `\u6F14\u51FA\u7ED3\u675F\uFF08${result.grade}\uFF09\u3002${result.report.join(" ")}`,
+        staminaDelta: -30,
+        statDelta: {},
+        kind: "action"
+      }
+    ]
   };
 }
 
@@ -16033,6 +16139,26 @@ function settle(run, schedule, from, to, seed, opts = {}) {
     if (item.endAt > to) {
       stoppedReason = "time";
       break;
+    }
+    if (item.actionId === SHOW_ACTION_ID) {
+      if (state.stamina < 30) {
+        stoppedReason = "stamina";
+        break;
+      }
+      const show = performShow(state, `${seed}:${item.id}`);
+      const applied = applyShow(state, show);
+      state.stamina = applied.stamina;
+      state.money = applied.money;
+      state.fans = applied.fans;
+      state.log = applied.log;
+      state.at = item.endAt;
+      cursor = item.endAt;
+      executed.push(item.id);
+      if (item.stopAfter) {
+        stoppedReason = "stopped";
+        break;
+      }
+      continue;
     }
     const action = ACTIONS[item.actionId];
     if (!action) continue;

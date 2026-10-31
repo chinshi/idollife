@@ -17,8 +17,11 @@ export const RENT_PER_WEEK = 500;
 /** 开局资金 */
 export const START_MONEY = 8000;
 
-/** 每天的行动上限：周中 3，周末 4 */
-export const DAILY_ACTIONS = { weekday: 3, weekend: 4 };
+/** 每天的行动位：每天 3 个；周末一场演出直接占满 3 个 */
+export const DAILY_SLOTS = 3;
+export const SHOW_SLOTS = 3;
+export const SHOW_ACTION_ID = 'show';
+export const SHOW_DURATION_MS = 30 * MIN;
 
 /** 出道门槛：四项属性和 */
 export const DEBUT_THRESHOLD = 120;
