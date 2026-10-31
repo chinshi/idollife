@@ -1272,7 +1272,7 @@ function AppInner() {
                   {isCurrent && (
                     <span
                       className="tl-arrow"
-                      style={{ top: `${Math.round(10 + progress * 80)}%` }}
+                      style={{ top: `calc(15px + (100% - 15px) * ${progress.toFixed(3)})` }}
                       title="现在"
                     >
                       ▶
