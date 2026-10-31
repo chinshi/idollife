@@ -105,14 +105,18 @@ function fmtGameTime(t: number): string {
   return `第 ${day} 天`;
 }
 
+function dayOf(t: number): number {
+  return Math.floor((t - T0) / DAY_MS);
+}
+
 function dayLabel(startAt: number, now: number): string {
-  const dayOf = (t: number) => Math.floor((t - T0) / DAY_MS);
-  const diff = dayOf(startAt) - dayOf(now);
+  const d = dayOf(startAt);
+  const diff = d - dayOf(now);
   if (diff === 0) return '今天';
   if (diff === 1) return '明日';
-  if (diff === 2) return '后天';
   if (diff === -1) return '昨日';
-  return `第 ${dayOf(startAt) + 1} 天`;
+  const week = Math.floor(d / 7) + 1;
+  return `第${week}周 ${weekdayName(d)}`;
 }
 
 function sameState(a: RunState, b: RunState): boolean {
@@ -287,6 +291,7 @@ function AppInner() {
   const runRef = useRef<RunState>(boot?.run ?? initialRun);
   const scheduleRef = useRef<ScheduleItem[]>(boot?.schedule ?? []);
   const batchRef = useRef<{ from: number; prevRun: RunState; prevSchedule: ScheduleItem[] } | null>(null);
+  const timelineRef = useRef<HTMLDivElement | null>(null);
   const resumeAfterEvent = useRef(false);
   const dbgLines = useRef<string[]>([]);
   const [showDebug, setShowDebug] = useState(false);
@@ -424,6 +429,7 @@ function AppInner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [running, seed, speed]);
 
+
   const lastEnd = useMemo(
     () => schedule.reduce((max, s) => Math.max(max, s.endAt), run.at),
     [schedule, run.at],
@@ -450,6 +456,18 @@ function AppInner() {
   const usedToday = schedule
     .filter((s) => Math.floor((s.startAt - T0) / DAY_MS) === todayIndex)
     .reduce((n, s) => n + (s.actionId === SHOW_ACTION_ID ? SHOW_SLOTS : 1), 0);
+
+  // 跨日 / 开始推进时，把「现在」滚到可视区中间
+  useEffect(() => {
+    const box = timelineRef.current;
+    if (!box) return;
+    const el = box.querySelector('.tl-now');
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const b = box.getBoundingClientRect();
+    const delta = r.top - b.top - box.clientHeight / 2 + 24;
+    box.scrollTo({ top: Math.max(0, box.scrollTop + delta), behavior: 'smooth' });
+  }, [todayIndex, running]);
 
   /** 竖向时间轴：按天分组，标出「现在」的位置 */
   const timeline = useMemo(() => {
@@ -579,6 +597,7 @@ function AppInner() {
     return schedule
       .filter((s) => Math.floor((s.startAt - T0) / DAY_MS) === dayIndex)
       .reduce((n, s) => n + (s.actionId === SHOW_ACTION_ID ? SHOW_SLOTS : 1), 0);
+
   }
 
   function addAction(actionId: string) {
@@ -1202,7 +1221,7 @@ function AppInner() {
             </div>
           </div>
 
-          <div className="timeline">
+          <div className="timeline" ref={timelineRef}>
             {timeline.length === 0 && (
               <p className="muted">还没有安排。点「安排行程」加几个。</p>
             )}
