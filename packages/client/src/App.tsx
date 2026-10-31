@@ -516,14 +516,19 @@ function AppInner() {
   }, [schedule, historyLimit]);
 
   // 测量时间轴可视高度，用来做整数像素居中（避免文字被小数像素模糊）
+  // 依赖 user：登录前页面是欢迎页，时间轴元素还不存在，登录后必须重新测量
   useEffect(() => {
     const el = timelineRef.current;
     if (!el) return;
     const ro = new ResizeObserver(() => setBoxH(el.clientHeight));
     ro.observe(el);
     setBoxH(el.clientHeight);
-    return () => ro.disconnect();
-  }, []);
+    const t = window.setTimeout(() => setBoxH(el.clientHeight), 60);
+    return () => {
+      window.clearTimeout(t);
+      ro.disconnect();
+    };
+  }, [user]);
 
   const baseTime = useMemo(
     () => visibleItems[0]?.startAt ?? run.at,
