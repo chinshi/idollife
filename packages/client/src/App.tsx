@@ -558,10 +558,10 @@ function AppInner() {
   useEffect(() => {
     const el = timelineRef.current;
     if (!el) return;
-    const nowY = (run.at - baseTime) * pxPerMs;
+    const nowY = ((nextItem?.startAt ?? run.at) - baseTime) * pxPerMs;
     const top = Math.max(0, Math.round(nowY + padY - el.clientHeight / 2));
     el.scrollTo({ top, behavior: 'smooth' });
-  }, [run.at, baseTime, pxPerMs, boxH, padY]);
+  }, [run.at, nextItem?.startAt, baseTime, pxPerMs, boxH, padY]);
 
   const dayMarks = useMemo(() => {
     const marks: Array<{ day: number; at: number; label: string }> = [];
@@ -1401,7 +1401,7 @@ function AppInner() {
                 <div
                   className="tl-playhead"
                   style={{
-                    top: `${padY + Math.round((run.at - baseTime) * pxPerMs) - 11}px`,
+                    top: `${padY + Math.round(((nextItem?.startAt ?? run.at) - baseTime) * pxPerMs) - 11}px`,
                   }}
                 >
                   <span className="tl-arrow" />
