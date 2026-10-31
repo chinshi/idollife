@@ -451,6 +451,7 @@ export default function App() {
     if (snapshot) {
       setRun(snapshot.run);
       setNotice('本批行程已作废。');
+      void pushWholeState(snapshot.run);
     } else {
       setNotice('排程已清空（没有可回滚的本批记录）。');
     }
