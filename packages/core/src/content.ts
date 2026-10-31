@@ -17,6 +17,9 @@ export const RENT_PER_WEEK = 500;
 /** 开局资金 */
 export const START_MONEY = 8000;
 
+/** 每天的行动上限：周中 3，周末 4 */
+export const DAILY_ACTIONS = { weekday: 3, weekend: 4 };
+
 /** 出道门槛：四项属性和 */
 export const DEBUT_THRESHOLD = 120;
 

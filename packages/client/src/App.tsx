@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { Component, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ACTION_LIST,
   ACTIONS,
   CATEGORY_LABEL,
+  DAILY_ACTIONS,
   DAY_MS,
   RECRUIT_COST,
   RUN_LENGTH_MS,
@@ -223,7 +224,7 @@ function AuthForm({
   );
 }
 
-export default function App() {
+function AppInner() {
   const boot = useRef(loadSave()).current;
 
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -249,6 +250,8 @@ export default function App() {
   const [bagTab, setBagTab] = useState<BagTab>('equip');
   const [forceLogin, setForceLogin] = useState(false);
 
+  const pulledFor = useRef<string | null>(null);
+
   const [snapshot, setSnapshot] = useState<{ run: RunState; schedule: ScheduleItem[] } | null>(null);
 
   useEffect(() => {
@@ -257,12 +260,15 @@ export default function App() {
       setChecking(false);
     });
     return onAuthChange((u) => {
+      if (!u) pulledFor.current = null;
       setUser(u);
     });
   }, []);
 
   useEffect(() => {
     if (!user) return;
+    if (pulledFor.current === user.id) return;
+    pulledFor.current = user.id;
     let cancelled = false;
 
     void (async () => {
@@ -386,7 +392,20 @@ export default function App() {
   function addAction(actionId: string) {
     const action = ACTIONS[actionId];
     if (!action) return;
+
     const startAt = Math.max(lastEnd, run.at);
+    const dayIndex = Math.floor((startAt - T0) / DAY_MS);
+    const weekday = new Date(T0 + dayIndex * DAY_MS).getUTCDay();
+    const cap = weekday === 0 || weekday === 6 ? DAILY_ACTIONS.weekend : DAILY_ACTIONS.weekday;
+    const used = schedule.filter(
+      (s) => Math.floor((s.startAt - T0) / DAY_MS) === dayIndex,
+    ).length;
+
+    if (used >= cap) {
+      setNotice(`这一天最多 ${cap} 个行动，换一天吧。`);
+      return;
+    }
+
     setSchedule((prev) => [
       ...prev,
       {
@@ -967,5 +986,45 @@ export default function App() {
         </Modal>
       )}
     </div>
+  );
+}
+
+class ErrorBoundary extends Component<{ children: React.ReactNode }, { error: Error | null }> {
+  state: { error: Error | null } = { error: null };
+
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+
+  componentDidCatch(error: Error, info: unknown) {
+    console.error('[idollife] render error', error, info);
+  }
+
+  render() {
+    if (this.state.error) {
+      return (
+        <div className="app">
+          <div className="panel">
+            <h2>页面出错了</h2>
+            <p className="muted">{this.state.error.message}</p>
+            <p className="muted small">
+              如果浏览器装了网页翻译插件（比如沉浸式翻译），请在本站关掉它——它会改写页面结构，导致应用崩溃白屏。
+            </p>
+            <button className="primary" onClick={() => window.location.reload()}>
+              重新加载
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+export default function App() {
+  return (
+    <ErrorBoundary>
+      <AppInner />
+    </ErrorBoundary>
   );
 }

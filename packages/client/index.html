@@ -1,12 +1,15 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" translate="no">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- 禁止浏览器/插件自动翻译：翻译会改写 DOM，导致 React 崩溃白屏 -->
+    <meta name="google" content="notranslate" />
+    <meta name="robots" content="noindex" />
     <title>idollife · 偶像生活</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root" translate="no" class="notranslate"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
