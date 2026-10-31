@@ -5,31 +5,46 @@
       "id": "back-to-wall",
       "name": "背水一战",
       "desc": "辞了工作来参加选拔，退路已经堵死。",
-      "initial": { "money": 3000, "stamina": 100 }
+      "initial": {
+        "money": 3000,
+        "stamina": 100
+      }
     },
     {
       "id": "talented",
       "name": "天赋型",
       "desc": "没怎么练过，但一开口就让人记住。",
-      "initial": { "money": 8000, "stamina": 100 }
+      "initial": {
+        "money": 8000,
+        "stamina": 100
+      }
     },
     {
       "id": "day-job",
       "name": "白天上班",
       "desc": "白天上班，晚上练舞，时间永远不够用。",
-      "initial": { "money": 12000, "stamina": 80 }
+      "initial": {
+        "money": 12000,
+        "stamina": 80
+      }
     },
     {
       "id": "theater-family",
       "name": "剧场家的女儿",
       "desc": "从小在后台长大，台上的规矩比谁都熟。",
-      "initial": { "money": 15000, "stamina": 100 }
+      "initial": {
+        "money": 15000,
+        "stamina": 100
+      }
     },
     {
       "id": "tag-along",
       "name": "陪朋友试镜",
       "desc": "本来只是陪朋友来的，结果被留下了。",
-      "initial": { "money": 6000, "stamina": 100 }
+      "initial": {
+        "money": 6000,
+        "stamina": 100
+      }
     }
   ]
 }

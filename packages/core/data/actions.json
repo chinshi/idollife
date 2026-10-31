@@ -5,46 +5,58 @@
       "id": "vocal-karaoke",
       "name": "唱 K",
       "category": "growth",
-      "stat": "vocal",
       "stamina": -10,
-      "gain": [1, 3],
-      "cost": 50,
-      "text": "你在包厢里唱了两小时，嗓子有点热。（演唱 +{n}）"
+      "text": "你在包厢里唱了两小时，嗓子有点热。（演唱 +{n}）",
+      "stat": "vocal",
+      "gain": [
+        1,
+        3
+      ],
+      "cost": 50
     },
     {
       "id": "dance-otaku",
       "name": "跳宅舞",
       "category": "growth",
-      "stat": "dance",
       "stamina": -12,
-      "gain": [1, 3],
-      "text": "对着镜子把同一段副歌跳了二十遍。（舞蹈 +{n}）"
+      "text": "对着镜子把同一段副歌跳了二十遍。（舞蹈 +{n}）",
+      "stat": "dance",
+      "gain": [
+        1,
+        3
+      ]
     },
     {
       "id": "acting-short",
       "name": "自拍小短剧",
       "category": "growth",
-      "stat": "acting",
       "stamina": -10,
-      "gain": [1, 2],
-      "text": "自导自演拍了三条，第二条最好。（演技 +{n}）"
+      "text": "自导自演拍了三条，第二条最好。（演技 +{n}）",
+      "stat": "acting",
+      "gain": [
+        1,
+        2
+      ]
     },
     {
       "id": "talk-selftalk",
       "name": "自说自话",
       "category": "growth",
-      "stat": "talk",
       "stamina": -8,
-      "gain": [1, 2],
-      "text": "对着镜头练了一下午串场词。（口才 +{n}）"
+      "text": "对着镜头练了一下午串场词。（口才 +{n}）",
+      "stat": "talk",
+      "gain": [
+        1,
+        2
+      ]
     },
     {
       "id": "work-part-time",
       "name": "打工",
       "category": "work",
       "stamina": -20,
-      "money": 320,
-      "text": "在便利店站了四个小时，脚有点麻。（收入 +320）"
+      "text": "在便利店站了四个小时，脚有点麻。（收入 +320）",
+      "money": 320
     },
     {
       "id": "rest-sleep",

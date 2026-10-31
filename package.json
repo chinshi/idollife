@@ -7,7 +7,12 @@
   "scripts": {
     "test": "pnpm -r --if-present test && pnpm check:data",
     "check:data": "node scripts/validate-data.mjs",
+    "content:template": "node scripts/content-template.mjs",
+    "content:import": "node scripts/content-import.mjs && node scripts/validate-data.mjs",
     "build": "pnpm -r --if-present build",
     "dev": "pnpm --filter @idollife/client dev"
+  },
+  "devDependencies": {
+    "exceljs": "^4.4.0"
   }
 }

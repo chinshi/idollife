@@ -4,18 +4,58 @@
     "commonPrice": 800,
     "rarePrice": 2000,
     "common": [
-      { "name": "素色练习服", "stat": "dance", "value": 2 },
-      { "name": "旧卫衣", "stat": "dance", "value": 2 },
-      { "name": "白衬衫", "stat": "acting", "value": 2 },
-      { "name": "针织开衫", "stat": "vocal", "value": 2 },
-      { "name": "运动外套", "stat": "dance", "value": 2 },
-      { "name": "宽松T恤", "stat": "talk", "value": 2 }
+      {
+        "name": "素色练习服",
+        "stat": "dance",
+        "value": 2
+      },
+      {
+        "name": "旧卫衣",
+        "stat": "dance",
+        "value": 2
+      },
+      {
+        "name": "白衬衫",
+        "stat": "acting",
+        "value": 2
+      },
+      {
+        "name": "针织开衫",
+        "stat": "vocal",
+        "value": 2
+      },
+      {
+        "name": "运动外套",
+        "stat": "dance",
+        "value": 2
+      },
+      {
+        "name": "宽松T恤",
+        "stat": "talk",
+        "value": 2
+      }
     ],
     "rare": [
-      { "name": "打歌服·初版", "stat": "dance", "value": 5 },
-      { "name": "古风长裙", "stat": "acting", "value": 5 },
-      { "name": "Lolita 套装", "stat": "talk", "value": 5 },
-      { "name": "摇滚夹克", "stat": "vocal", "value": 5 }
+      {
+        "name": "打歌服·初版",
+        "stat": "dance",
+        "value": 5
+      },
+      {
+        "name": "古风长裙",
+        "stat": "acting",
+        "value": 5
+      },
+      {
+        "name": "Lolita 套装",
+        "stat": "talk",
+        "value": 5
+      },
+      {
+        "name": "摇滚夹克",
+        "stat": "vocal",
+        "value": 5
+      }
     ]
   }
 }
