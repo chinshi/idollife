@@ -689,3 +689,14 @@ button.primary small { color: #fff; opacity: 0.8; }
 }
 .tl-playhead-text em { font-style: normal; color: var(--muted); }
 .tl-more { position: absolute; left: 26px; top: 2px; }
+/* 正在执行的这一条：高亮 + 显示进度感 */
+.tl-item.current {
+  background: linear-gradient(90deg, rgba(249, 124, 18, 0.10), rgba(249, 124, 18, 0));
+  border-radius: 8px;
+}
+.tl-item.current .tl-node {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(249, 124, 18, 0.18);
+}
+.tl-item.current .tl-name { color: #b35a00; }

@@ -1241,9 +1241,7 @@ function AppInner() {
               第 {todayIndex + 1} 天 · {weekdayName(todayIndex)} · 今日剩余{' '}
               {Math.max(0, 3 - usedToday)}/3
             </div>
-            <div className="muted small">
-              gameNow={Math.round(gameNow)} / end={Math.round(nextItem?.endAt ?? 0)}
-            </div>
+
             <div className="side-now">
               {running
                 ? nextItem
@@ -1282,9 +1280,11 @@ function AppInner() {
                 const a = ACTIONS[it.actionId];
                 const name = a?.name ?? (it.actionId === SHOW_ACTION_ID ? '演出' : it.actionId);
                 const done = !!it.done;
+                const isCurrent = running && nextItem?.id === it.id;
                 const cls = [
                   'tl-item',
                   done ? 'done' : '',
+                  isCurrent ? 'current' : '',
                   it.fixed ? 'fixed' : '',
                   it.stopAfter ? 'stopped' : '',
                 ]
@@ -1295,7 +1295,10 @@ function AppInner() {
                   <div
                     key={it.id}
                     className={cls}
-                    style={{ top: `calc(50% + ${(it.startAt - gameNow) * pxPerMs}px)` }}
+                    style={{
+                      top: `calc(50% + ${(it.startAt - gameNow) * pxPerMs}px)`,
+                      height: `${Math.max(34, (it.endAt - it.startAt) * pxPerMs)}px`,
+                    }}
                     data-node-id={it.id}
                   >
                     <span className="tl-node" />
