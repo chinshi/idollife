@@ -427,3 +427,25 @@ button.primary small { color: #fff; opacity: 0.8; }
 
 .speed-row { display: flex; align-items: center; gap: 6px; }
 .speed-row .tab { padding: 2px 8px; }
+
+.tl-now-text { display: flex; flex-direction: column; }
+.tl-count { font-style: normal; font-size: 11px; color: var(--muted); }
+.tl-item.current .tl-node { background: var(--accent); border-color: var(--accent); }
+.tl-progress {
+  position: absolute;
+  left: -16px;
+  top: 11px;
+  width: 2px;
+  background: var(--accent);
+  transition: height 0.22s linear;
+}
+.debug-pre {
+  max-height: 50vh;
+  overflow: auto;
+  font-size: 11px;
+  line-height: 1.5;
+  background: #f7f8fb;
+  padding: 8px;
+  border-radius: 8px;
+  white-space: pre-wrap;
+}

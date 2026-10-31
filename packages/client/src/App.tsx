@@ -280,6 +280,10 @@ function AppInner() {
   const runRef = useRef<RunState>(boot?.run ?? initialRun);
   const scheduleRef = useRef<ScheduleItem[]>(boot?.schedule ?? []);
   const batchRef = useRef<{ from: number; prevRun: RunState; prevSchedule: ScheduleItem[] } | null>(null);
+  const resumeAfterEvent = useRef(false);
+  const dbgLines = useRef<string[]>([]);
+  const [showDebug, setShowDebug] = useState(false);
+  const [debugText, setDebugText] = useState('');
 
   const pulledFor = useRef<string | null>(null);
 
@@ -389,9 +393,11 @@ function AppInner() {
         scheduleRef.current = nextSched;
         setRun(result.state);
         setSchedule(nextSched);
+        dbg('执行 ' + result.executed.join(',') + ' → at=' + String(result.state.at));
       }
 
       if (result.stoppedReason !== 'time') {
+        dbg('停止 reason=' + String(result.stoppedReason));
         setRunning(false);
         const batch = batchRef.current;
         if (batch) endBatch(result, batch);
@@ -415,6 +421,10 @@ function AppInner() {
       ? [...pending].sort((a, b) => a.startAt - b.startAt)[0] ?? null
       : null;
   const remainMs = running && nextItem ? Math.max(0, nextItem.endAt - gameNow) : 0;
+  const progress =
+    running && nextItem
+      ? Math.min(1, Math.max(0, (gameNow - nextItem.startAt) / Math.max(1, nextItem.endAt - nextItem.startAt)))
+      : 0;
 
   const todayIndex = Math.floor((run.at - T0) / DAY_MS);
   const usedToday = schedule
@@ -562,6 +572,16 @@ function AppInner() {
     setSchedule((prev) => prev.map((s) => (s.id === id ? { ...s, stopAfter: !s.stopAfter } : s)));
   }
 
+  function dbg(msg: string) {
+    const line = new Date().toISOString().slice(11, 19) + ' ' + msg;
+    dbgLines.current = [...dbgLines.current.slice(-199), line];
+    try {
+      localStorage.setItem('idollife:debug:v1', dbgLines.current.join('\n'));
+    } catch {
+      /* 忽略 */
+    }
+  }
+
   function markExecuted(prev: ScheduleItem[], executed: string[]): ScheduleItem[] {
     const marked = prev.map((s) => (executed.includes(s.id) ? { ...s, done: true } : s));
     const doneIds = marked.filter((s) => s.done).map((s) => s.id);
@@ -586,6 +606,8 @@ function AppInner() {
                 : '这一批行程走完了。',
       );
     }
+    dbg('批次结束 reason=' + String(result.stoppedReason) + ' at=' + String(result.state.at));
+    if (result.stoppedReason === 'event') resumeAfterEvent.current = true;
     void pushSync(batch.prevRun, batch.prevSchedule, batch.from, result.state.at, result);
     setSnapshot(null);
     batchRef.current = null;
@@ -599,6 +621,7 @@ function AppInner() {
     batchRef.current = { from: run.at, prevRun: run, prevSchedule: schedule };
     setGameNow(run.at);
     setRunning(true);
+    dbg('开始推进 pending=' + String(pending.length) + ' at=' + String(run.at));
   }
 
   function stopCurrent() {
@@ -608,8 +631,10 @@ function AppInner() {
     );
     if (!ok) return;
 
+    dbg('手动停止');
     setRunning(false);
     batchRef.current = null;
+    resumeAfterEvent.current = false;
 
     if (snapshot) {
       setRun(snapshot.run);
@@ -631,8 +656,10 @@ function AppInner() {
 
     const fresh = createSave(initialRun, 'run-demo');
     clearSave();
+    dbg('重新开始（测试）');
     setRunning(false);
     batchRef.current = null;
+    resumeAfterEvent.current = false;
     setSnapshot(null);
     setGameNow(T0);
     setRunId(fresh.runId);
@@ -762,7 +789,18 @@ function AppInner() {
     const next = applyChoice(run, run.pendingEvent, choiceId);
     setRun(next);
     setNotice('选择已记录。');
+    dbg('选择 ' + choiceId);
     await pushWholeState(next);
+
+    const rest = schedule.filter((s) => !s.done);
+    if (resumeAfterEvent.current && rest.length > 0) {
+      resumeAfterEvent.current = false;
+      setSnapshot(null);
+      batchRef.current = { from: next.at, prevRun: next, prevSchedule: schedule };
+      setGameNow(next.at);
+      setRunning(true);
+      dbg('事件处理完，自动续跑 ' + String(rest.length) + ' 个');
+    }
   }
 
   function decide(d: 'stay' | 'backstage' | 'leave') {
@@ -815,6 +853,15 @@ function AppInner() {
         </span>
         <span className="spacer" />
         <span className="muted small">{user?.email ?? '已离线'}</span>
+        <button
+          className="link-btn"
+          onClick={() => {
+            setDebugText(localStorage.getItem('idollife:debug:v1') ?? '(空)');
+            setShowDebug(true);
+          }}
+        >
+          日志
+        </button>
         <button className="link-btn" onClick={restartForTest}>
           重新开始
         </button>
@@ -1067,7 +1114,17 @@ function AppInner() {
                 return (
                   <div key={node.id} className="tl-now">
                     <span className="tl-node now" />
-                    <span>现在 · {fmtGameTime(run.at)}</span>
+                    <span className="tl-now-text">
+                      现在 · {fmtGameTime(gameNow)}
+                      {running && nextItem && (
+                        <em className="tl-count">
+                          还剩 {Math.ceil(remainMs / 1000)} 秒完成「
+                          {ACTIONS[nextItem.actionId]?.name ??
+                            (nextItem.actionId === SHOW_ACTION_ID ? '演出' : nextItem.actionId)}
+                          」
+                        </em>
+                      )}
+                    </span>
                   </div>
                 );
               }
@@ -1085,9 +1142,13 @@ function AppInner() {
                 .filter(Boolean)
                 .join(' ');
 
+              const isCurrent = running && nextItem?.id === node.item.id;
               return (
-                <div key={node.id} className={cls}>
+                <div key={node.id} className={isCurrent ? `${cls} current` : cls}>
                   <span className="tl-node" />
+                  {isCurrent && (
+                    <span className="tl-progress" style={{ height: `${Math.round(progress * 100)}%` }} />
+                  )}
                   <div className="tl-body">
                     <div className="tl-title">
                       <span className="tl-idx">
@@ -1253,6 +1314,22 @@ function AppInner() {
           >
             再来一次
           </button>
+        </Modal>
+      )}
+
+      {showDebug && (
+        <Modal title="调试日志" onClose={() => setShowDebug(false)}>
+          <pre className="debug-pre">{debugText}</pre>
+          <div className="row">
+            <button
+              onClick={() => {
+                void navigator.clipboard?.writeText(debugText);
+                setNotice('日志已复制');
+              }}
+            >
+              复制
+            </button>
+          </div>
         </Modal>
       )}
 
