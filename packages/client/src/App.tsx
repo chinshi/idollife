@@ -297,6 +297,8 @@ function AppInner() {
   const scheduleRef = useRef<ScheduleItem[]>(boot?.schedule ?? []);
   const batchRef = useRef<{ from: number; prevRun: RunState; prevSchedule: ScheduleItem[] } | null>(null);
   const timelineRef = useRef<HTMLDivElement | null>(null);
+  const innerRef = useRef<HTMLDivElement | null>(null);
+  const [arrowTop, setArrowTop] = useState(0);
   const gameNowRef = useRef<number>(boot?.run?.at ?? T0);
   const resumeAfterEvent = useRef(false);
   const dbgLines = useRef<string[]>([]);
@@ -478,10 +480,31 @@ function AppInner() {
     .filter((s) => Math.floor((s.startAt - T0) / DAY_MS) === todayIndex)
     .reduce((n, s) => n + (s.actionId === SHOW_ACTION_ID ? SHOW_SLOTS : 1), 0);
 
+  // 箭头位置：当前行动圆点 → 下一个行动圆点（按真实 DOM 坐标算）
+  useEffect(() => {
+    if (!running) return;
+    const inner = innerRef.current;
+    if (!inner) return;
+
+    const pend = schedule.filter((s) => !s.done).sort((a, b) => a.startAt - b.startAt);
+    const cur = pend[0];
+    if (!cur) return;
+
+    const curRow = inner.querySelector<HTMLElement>(`[data-node-id="${cur.id}"]`);
+    const nextRow = pend[1]
+      ? inner.querySelector<HTMLElement>(`[data-node-id="${pend[1]!.id}"]`)
+      : null;
+    if (!curRow) return;
+
+    const y0 = curRow.offsetTop + 15.5;
+    const y1 = nextRow ? nextRow.offsetTop + 15.5 : curRow.offsetTop + curRow.offsetHeight;
+    setArrowTop(y0 + (y1 - y0) * progress);
+  }, [running, gameNow, schedule, progress]);
+
   // 跨日 / 开始推进时，把「现在」滚到可视区中间（交给成熟库计算）
   useEffect(() => {
     const box = timelineRef.current;
-    const el = box?.querySelector('.tl-now');
+    const el = box?.querySelector('.tl-arrow') ?? box?.querySelector('.tl-now');
     if (!box || !el) return;
 
     scrollIntoView(el, {
@@ -1254,7 +1277,7 @@ function AppInner() {
           </div>
 
           <div className="timeline" ref={timelineRef}>
-            <div className="timeline-inner">
+            <div className="timeline-inner" ref={innerRef}>
             {timeline.length === 0 && (
               <p className="muted">还没有安排。点「安排行程」加几个。</p>
             )}
@@ -1311,17 +1334,12 @@ function AppInner() {
 
               const isCurrent = running && nextItem?.id === node.item.id;
               return (
-                <div key={node.id} className={isCurrent ? `${cls} current` : cls}>
+                <div
+                  key={node.id}
+                  className={isCurrent ? `${cls} current` : cls}
+                  data-node-id={node.item.id}
+                >
                   <span className="tl-node" />
-                  {isCurrent && (
-                    <span
-                      className="tl-arrow"
-                      style={{ top: `calc(15px + (100% - 15px) * ${progress.toFixed(3)})` }}
-                      title="现在"
-                    >
-                      ▶
-                    </span>
-                  )}
                   <div className="tl-body">
                     <div className="tl-title">
                       <span className="tl-idx">
@@ -1353,6 +1371,11 @@ function AppInner() {
                 </div>
               );
             })}
+              {running && (
+                <span className="tl-arrow" style={{ top: `${arrowTop}px` }} title="现在">
+                  ▶
+                </span>
+              )}
             </div>
           </div>
 
