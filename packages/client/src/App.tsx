@@ -112,11 +112,13 @@ function dayOf(t: number): number {
 function dayLabel(startAt: number, now: number): string {
   const d = dayOf(startAt);
   const diff = d - dayOf(now);
-  if (diff === 0) return '今天';
-  if (diff === 1) return '明日';
-  if (diff === -1) return '昨日';
+  const wd = weekdayName(d);
+  if (diff === 0) return `今天 ${wd}`;
+  if (diff === 1) return `明日 ${wd}`;
+  if (diff === -1) return `昨日 ${wd}`;
+  if (diff === 2) return `后天 ${wd}`;
   const week = Math.floor(d / 7) + 1;
-  return `第${week}周 ${weekdayName(d)}`;
+  return `第${week}周 ${wd}`;
 }
 
 function sameState(a: RunState, b: RunState): boolean {
