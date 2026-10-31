@@ -106,11 +106,13 @@ function fmtGameTime(t: number): string {
 }
 
 function dayLabel(startAt: number, now: number): string {
-  const diff = Math.floor((startAt - T0) / DAY_MS) - Math.floor((now - T0) / DAY_MS);
-  if (diff <= 0) return '今天';
+  const dayOf = (t: number) => Math.floor((t - T0) / DAY_MS);
+  const diff = dayOf(startAt) - dayOf(now);
+  if (diff === 0) return '今天';
   if (diff === 1) return '明日';
   if (diff === 2) return '后天';
-  return `第 ${diff + 1} 天`;
+  if (diff === -1) return '昨日';
+  return `第 ${dayOf(startAt) + 1} 天`;
 }
 
 function sameState(a: RunState, b: RunState): boolean {

@@ -520,7 +520,7 @@ button.primary small { color: #fff; opacity: 0.8; }
 .tl-item.current { min-height: 52px; }
 .tl-arrow {
   position: absolute;
-  left: -23px;
+  left: -18px;
   color: var(--accent);
   font-size: 22px;
   line-height: 1;
