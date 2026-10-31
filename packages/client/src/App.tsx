@@ -715,28 +715,19 @@ function AppInner() {
   }
 
   function stopCurrent() {
-    if (!running && !snapshot) return;
+    if (!running) return;
     const ok = window.confirm(
-      '确定停止当前行程吗？\n\n本批行程作废：拿不到属性点，触发的事件也会失效。',
+      '停止当前行程？\n\n只作废正在进行的那条行动（不结算），时间回到它开始前。\n其余没开始的行程会保留。',
     );
     if (!ok) return;
 
-    dbg('手动停止');
+    dbg('手动停止（只作废当前行动）');
     setRunning(false);
     batchRef.current = null;
-    resumeAfterEvent.current = false;
-
-    if (snapshot) {
-      setRun(snapshot.run);
-      setSchedule([]);
-      setGameNow(snapshot.run.at);
-      setNotice('本批行程已作废。');
-      void pushWholeState(snapshot.run);
-    } else {
-      setSchedule([]);
-      setNotice('排程已清空。');
-    }
     setSnapshot(null);
+    resumeAfterEvent.current = false;
+    // 当前行动还没结算，run.at 就停在它的开始时间，无需回滚
+    setNotice('已停止：当前这条行动作废，其余行程保留。');
   }
 
   /** 仅测试用：清空本地存档，从头新建一局并覆盖云端 */
@@ -1351,7 +1342,7 @@ function AppInner() {
             >
               {running ? '推进中…' : '开始推进'}
             </button>
-            <button onClick={stopCurrent} disabled={!snapshot && pending.length === 0}>
+            <button onClick={stopCurrent} disabled={!running}>
               停止当前行程
             </button>
             <button onClick={addShow} disabled={phase !== 'playing'}>
