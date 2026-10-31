@@ -641,9 +641,11 @@ button.primary small { color: #fff; opacity: 0.8; }
   min-height: 34px;
   padding: 2px 0;
 }
+/* 圆点放在「这一条结束」的位置：剩 0 秒时正好落在中间线上 */
 .tl-item .tl-node {
   left: -20.5px;
-  top: 8px;
+  top: auto;
+  bottom: -4.5px;
 }
 .tl-day-mark {
   position: absolute;
