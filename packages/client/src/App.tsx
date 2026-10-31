@@ -507,13 +507,13 @@ function AppInner() {
     setSyncStatus('synced');
   }
 
-  async function pushWholeState(next: RunState) {
+  async function pushWholeState(next: RunState, overrideRunId?: string) {
     const token = await getAccessToken();
     if (!token) {
       setForceLogin(true);
       return;
     }
-    const res = await pushChoice(runId, next, token);
+    const res = await pushChoice(overrideRunId ?? runId, next, token);
     if (res) setRevision(res.revision);
   }
 
@@ -622,6 +622,27 @@ function AppInner() {
       setNotice('排程已清空。');
     }
     setSnapshot(null);
+  }
+
+  /** 仅测试用：清空本地存档，从头新建一局并覆盖云端 */
+  function restartForTest() {
+    const ok = window.confirm('重新开始（测试用）\n\n会清空本地存档并新建一局，确定吗？');
+    if (!ok) return;
+
+    const fresh = createSave(initialRun, 'run-demo');
+    clearSave();
+    setRunning(false);
+    batchRef.current = null;
+    setSnapshot(null);
+    setGameNow(T0);
+    setRunId(fresh.runId);
+    setRun(initialRun);
+    setSchedule([]);
+    setRevision(0);
+    setEnding(null);
+    setPhase('playing');
+    setNotice('已新建一局。');
+    void pushWholeState(initialRun, fresh.runId);
   }
 
   function openPartyModal() {
@@ -794,6 +815,9 @@ function AppInner() {
         </span>
         <span className="spacer" />
         <span className="muted small">{user?.email ?? '已离线'}</span>
+        <button className="link-btn" onClick={restartForTest}>
+          重新开始
+        </button>
         <button className="link-btn" onClick={() => void signOut()}>
           退出
         </button>
