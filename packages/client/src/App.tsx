@@ -1273,7 +1273,7 @@ function AppInner() {
           <div className="timeline" ref={timelineRef}>
             <div
               className="timeline-track"
-              style={{ transform: `translate3d(0, ${Math.round(boxH / 2 + (baseTime - gameNow) * pxPerMs)}px, 0)` }}
+              style={{ transform: `translate3d(0, ${Math.round(boxH / 2 + (baseTime - run.at) * pxPerMs)}px, 0)` }}
             >
               {visibleItems.length === 0 && (
                 <p className="muted tl-empty">还没有安排。点「安排行程」加几个。</p>
