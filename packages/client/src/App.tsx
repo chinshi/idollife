@@ -284,6 +284,7 @@ function AppInner() {
   const [showPartyModal, setShowPartyModal] = useState(false);
   const [planBackup, setPlanBackup] = useState<ScheduleItem[] | null>(null);
   const previewRef = useRef<HTMLDivElement | null>(null);
+  const logRef = useRef<HTMLDivElement | null>(null);
   const [planTick, setPlanTick] = useState(0);
   const [scrollInfo, setScrollInfo] = useState('');
   const [partyName, setPartyName] = useState('');
@@ -616,9 +617,15 @@ function AppInner() {
     }
     return marks;
   }, [visibleItems, run.at]);
+  // 有新日志就滚到底（按时间正序，最新的在下面）
+  useEffect(() => {
+    const el = logRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
+  }, [run.log.length, logTab]);
+
   const visibleLog = useMemo(() => {
-    const list = [...run.log].reverse();
-    const filtered = list.filter((l) => {
+    const filtered = run.log.filter((l) => {
       if (logTab === 'event') {
         return l.kind === 'choice' || l.kind === 'routine' || l.actionId.startsWith('event:');
       }
@@ -627,7 +634,7 @@ function AppInner() {
       }
       return true;
     });
-    return filtered.slice(0, 60);
+    return filtered.slice(-60);
   }, [run.log, logTab]);
 
   const party = activeParty(run);
@@ -1104,7 +1111,8 @@ function AppInner() {
         {visibleLog.length === 0 ? (
           <p className="muted small">还没有记录。</p>
         ) : (
-          <ul className="log dense">
+          <div className="log-scroll" ref={logRef}>
+            <ul className="log dense">
             {visibleLog.map((l, i) => (
               <li key={`${l.at}-${i}`}>
                 <span className="log-time">{fmtGameTime(l.at)}</span>
@@ -1113,6 +1121,7 @@ function AppInner() {
               </li>
             ))}
           </ul>
+          </div>
         )}
       </section>
 

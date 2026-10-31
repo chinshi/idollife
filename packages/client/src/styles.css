@@ -888,3 +888,12 @@ button.primary small { color: #fff; opacity: 0.8; }
   filter: drop-shadow(0 0 3px rgba(249, 124, 18, 0.55));
   pointer-events: none;
 }
+/* 日志：固定最大高度、内部滚动 */
+.log-scroll {
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #ccd4e3 transparent;
+}
+.log-scroll::-webkit-scrollbar { width: 6px; }
+.log-scroll::-webkit-scrollbar-thumb { background: #ccd4e3; border-radius: 3px; }
