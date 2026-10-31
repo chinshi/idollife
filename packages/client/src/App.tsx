@@ -77,6 +77,12 @@ const initialRun: RunState = {
   log: [],
 };
 
+const WEEKDAY_NAMES = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+
+function weekdayName(dayIndex: number): string {
+  return WEEKDAY_NAMES[(dayIndex + 4) % 7]!;
+}
+
 const STAT_LABEL: Record<string, string> = {
   vocal: '演唱',
   dance: '舞蹈',
@@ -85,7 +91,7 @@ const STAT_LABEL: Record<string, string> = {
 };
 
 type SyncStatus = 'local' | 'syncing' | 'synced' | 'offline' | 'expired';
-type BagTab = 'equip' | 'consume' | 'other';
+type BagTab = 'shop' | 'equip' | 'consume' | 'other';
 
 function totalFans(run: RunState): number {
   return Object.values(run.fans.byType).reduce((a, b) => a + b, 0);
@@ -268,6 +274,12 @@ function AppInner() {
   const [partyName, setPartyName] = useState('');
   const [bagTab, setBagTab] = useState<BagTab>('equip');
   const [forceLogin, setForceLogin] = useState(false);
+  const [running, setRunning] = useState(false);
+  const [speed, setSpeed] = useState(1);
+  const [gameNow, setGameNow] = useState<number>(boot?.run?.at ?? T0);
+  const runRef = useRef<RunState>(boot?.run ?? initialRun);
+  const scheduleRef = useRef<ScheduleItem[]>(boot?.schedule ?? []);
+  const batchRef = useRef<{ from: number; prevRun: RunState; prevSchedule: ScheduleItem[] } | null>(null);
 
   const pulledFor = useRef<string | null>(null);
 
@@ -349,6 +361,47 @@ function AppInner() {
     return () => clearTimeout(t);
   }, [runId, revision, run, schedule, seed]);
 
+  useEffect(() => {
+    runRef.current = run;
+  }, [run]);
+
+  useEffect(() => {
+    scheduleRef.current = schedule;
+  }, [schedule]);
+
+  useEffect(() => {
+    if (!running) return;
+
+    const startReal = Date.now();
+    const startGame = runRef.current.at;
+
+    const id = window.setInterval(() => {
+      const target = startGame + (Date.now() - startReal) * speed;
+      setGameNow(target);
+
+      const prev = runRef.current;
+      const prevSched = scheduleRef.current;
+      const result = settle(prev, prevSched, prev.at, target, seed, { endAt: RUN_END });
+
+      if (result.executed.length > 0) {
+        const nextSched = markExecuted(prevSched, result.executed);
+        runRef.current = result.state;
+        scheduleRef.current = nextSched;
+        setRun(result.state);
+        setSchedule(nextSched);
+      }
+
+      if (result.stoppedReason !== 'time') {
+        setRunning(false);
+        const batch = batchRef.current;
+        if (batch) endBatch(result, batch);
+      }
+    }, 200);
+
+    return () => window.clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [running, seed, speed]);
+
   const lastEnd = useMemo(
     () => schedule.reduce((max, s) => Math.max(max, s.endAt), run.at),
     [schedule, run.at],
@@ -356,6 +409,12 @@ function AppInner() {
 
 
   const pending = useMemo(() => schedule.filter((s) => !s.done), [schedule]);
+
+  const nextItem =
+    pending.length > 0
+      ? [...pending].sort((a, b) => a.startAt - b.startAt)[0] ?? null
+      : null;
+  const remainMs = running && nextItem ? Math.max(0, nextItem.endAt - gameNow) : 0;
 
   const todayIndex = Math.floor((run.at - T0) / DAY_MS);
   const usedToday = schedule
@@ -503,62 +562,65 @@ function AppInner() {
     setSchedule((prev) => prev.map((s) => (s.id === id ? { ...s, stopAfter: !s.stopAfter } : s)));
   }
 
-  function advance() {
-    if (!requireLogin()) return;
-    if (pending.length === 0) return;
+  function markExecuted(prev: ScheduleItem[], executed: string[]): ScheduleItem[] {
+    const marked = prev.map((s) => (executed.includes(s.id) ? { ...s, done: true } : s));
+    const doneIds = marked.filter((s) => s.done).map((s) => s.id);
+    const keep = new Set(doneIds.slice(-12));
+    return marked.filter((s) => !s.done || keep.has(s.id));
+  }
 
-    setSnapshot({ run, schedule });
-
-    const prevRun = run;
-    const prevSchedule = schedule;
-    const from = run.at;
-    const to = lastEnd;
-
-    const result = settle(prevRun, prevSchedule, from, to, seed, { endAt: RUN_END });
-    setRun(result.state);
-    setSchedule((prev) => {
-      const marked = prev.map((s) =>
-        result.executed.includes(s.id) ? { ...s, done: true } : s,
-      );
-      const doneIds = marked.filter((s) => s.done).map((s) => s.id);
-      const keep = new Set(doneIds.slice(-12));
-      return marked.filter((s) => !s.done || keep.has(s.id));
-    });
-
+  function endBatch(result: SettleResult, batch: { from: number; prevRun: RunState; prevSchedule: ScheduleItem[] }) {
     if (result.stoppedReason === 'ending') {
       setPhase('deciding');
       setNotice('两年到了。最后做一个决定吧。');
     } else {
       setNotice(
         result.stoppedReason === 'stamina'
-          ? `体力不足，只执行了 ${result.executed.length} 个行动。`
+          ? '体力不足，行程停下了。'
           : result.stoppedReason === 'money'
-            ? `钱不够，只执行了 ${result.executed.length} 个行动。`
+            ? '钱不够，行程停下了。'
             : result.stoppedReason === 'stopped'
               ? '到你说的那个点停下了。'
               : result.stoppedReason === 'event'
                 ? '有件事需要你决定。'
-                : `执行了 ${result.executed.length} 个行动。`,
+                : '这一批行程走完了。',
       );
     }
+    void pushSync(batch.prevRun, batch.prevSchedule, batch.from, result.state.at, result);
+    setSnapshot(null);
+    batchRef.current = null;
+  }
 
-    void pushSync(prevRun, prevSchedule, from, to, result);
+  function advance() {
+    if (!requireLogin()) return;
+    if (pending.length === 0 || running) return;
+
+    setSnapshot({ run, schedule });
+    batchRef.current = { from: run.at, prevRun: run, prevSchedule: schedule };
+    setGameNow(run.at);
+    setRunning(true);
   }
 
   function stopCurrent() {
+    if (!running && !snapshot) return;
     const ok = window.confirm(
       '确定停止当前行程吗？\n\n本批行程作废：拿不到属性点，触发的事件也会失效。',
     );
     if (!ok) return;
 
+    setRunning(false);
+    batchRef.current = null;
+
     if (snapshot) {
       setRun(snapshot.run);
+      setSchedule([]);
+      setGameNow(snapshot.run.at);
       setNotice('本批行程已作废。');
       void pushWholeState(snapshot.run);
     } else {
-      setNotice('排程已清空（没有可回滚的本批记录）。');
+      setSchedule([]);
+      setNotice('排程已清空。');
     }
-    setSchedule([]);
     setSnapshot(null);
   }
 
@@ -727,7 +789,8 @@ function AppInner() {
       <header className="bar">
         <span className="brand">idollife</span>
         <span className="clock">
-          {fmtGameTime(run.at)} · 今日行动位 {Math.min(usedToday, 3)}/3
+          第 {todayIndex + 1} 天 · {weekdayName(todayIndex)} · 今日剩余{' '}
+          {Math.max(0, 3 - usedToday)}/3
         </span>
         <span className="spacer" />
         <span className="muted small">{user?.email ?? '已离线'}</span>
@@ -777,23 +840,6 @@ function AppInner() {
 
 
 
-      <section className="panel">
-        <h2>商店（本周）</h2>
-        <ul className="shop">
-          {getShop(run, seed).map((item) => (
-            <li key={item.id}>
-              <span className="name">{item.name}</span>
-              <span className="muted">
-                {STAT_LABEL[item.affix.stat]} +{item.affix.value}
-                {item.rarity === 'rare' ? ' · 稀有' : ''}
-              </span>
-              <button onClick={() => doBuy(item)} disabled={run.money < item.price}>
-                ¥{item.price}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </section>
 
       <section className="panel">
         <div className="panel-head">
@@ -853,21 +899,42 @@ function AppInner() {
       </section>
 
       <section className="panel">
-        <h2>背包（{run.inventory.length}）</h2>
+        <div className="panel-head">
+          <h2>物品</h2>
+          <span className="muted small">装备 {run.inventory.length} 件</span>
+        </div>
+
         <div className="tabs">
-          {(['equip', 'consume', 'other'] as BagTab[]).map((t) => (
+          {(['shop', 'equip', 'consume', 'other'] as BagTab[]).map((t) => (
             <button
               key={t}
               className={bagTab === t ? 'tab active' : 'tab'}
               onClick={() => setBagTab(t)}
             >
-              {t === 'equip' ? '装备' : t === 'consume' ? '消耗' : '其他'}
+              {t === 'shop' ? '商店' : t === 'equip' ? '装备' : t === 'consume' ? '消耗' : '其他'}
             </button>
           ))}
         </div>
 
-        {bagTab === 'equip' ? (
-          run.inventory.length === 0 ? (
+        {bagTab === 'shop' && (
+          <ul className="shop">
+            {getShop(run, seed).map((item) => (
+              <li key={item.id}>
+                <span className="name">{item.name}</span>
+                <span className="muted">
+                  {STAT_LABEL[item.affix.stat]} +{item.affix.value}
+                  {item.rarity === 'rare' ? ' · 稀有' : ''}
+                </span>
+                <button onClick={() => doBuy(item)} disabled={run.money < item.price}>
+                  ¥{item.price}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {bagTab === 'equip' &&
+          (run.inventory.length === 0 ? (
             <p className="muted">还没有装备。</p>
           ) : (
             <ul className="shop">
@@ -889,10 +956,9 @@ function AppInner() {
                 );
               })}
             </ul>
-          )
-        ) : (
-          <p className="muted">暂无物品。</p>
-        )}
+          ))}
+
+        {(bagTab === 'consume' || bagTab === 'other') && <p className="muted">暂无物品。</p>}
 
         <p className="muted small">
           实际属性：
@@ -928,6 +994,36 @@ function AppInner() {
             <button className="primary wide" onClick={() => setShowActions(true)}>
               安排行程
             </button>
+          </div>
+
+          <div className="speed-row">
+            <span className="muted small">速度</span>
+            {[1, 10, 60].map((v) => (
+              <button
+                key={v}
+                className={speed === v ? 'tab active' : 'tab'}
+                onClick={() => setSpeed(v)}
+              >
+                {v}×
+              </button>
+            ))}
+          </div>
+
+          <div className="side-status">
+            <div className="side-date">
+              第 {todayIndex + 1} 天 · {weekdayName(todayIndex)} · 今日剩余{' '}
+              {Math.max(0, 3 - usedToday)}/3
+            </div>
+            <div className="side-now">
+              {running
+                ? nextItem
+                  ? `进行中 · 还剩 ${Math.ceil(remainMs / 1000)} 秒完成「${
+                      ACTIONS[nextItem.actionId]?.name ??
+                      (nextItem.actionId === SHOW_ACTION_ID ? '演出' : nextItem.actionId)
+                    }」`
+                  : '进行中…'
+                : '已静止'}
+            </div>
           </div>
 
           <div className="timeline">
@@ -1002,8 +1098,12 @@ function AppInner() {
           </div>
 
           <div className="side-foot">
-            <button className="primary" onClick={advance} disabled={pending.length === 0}>
-              开始推进
+            <button
+              className="primary"
+              onClick={advance}
+              disabled={pending.length === 0 || running}
+            >
+              {running ? '推进中…' : '开始推进'}
             </button>
             <button onClick={stopCurrent} disabled={!snapshot && pending.length === 0}>
               停止当前行程

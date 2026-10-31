@@ -213,7 +213,7 @@ export function applyChoice(state: RunState, eventId: string, choiceId: string):
   next.log.push({
     at: next.at,
     actionId: `event:${ev.id}`,
-    text: `${choice.text}（自我 ${tierOf(next.axes.self)} / 他人 ${tierOf(next.axes.others)} / 适配 ${tierOf(next.axes.fit)}）`,
+    text: `${choice.text}`,
     staminaDelta: choice.effects.stamina ?? 0,
     statDelta: (choice.effects.stats ?? {}) as Partial<Stats>,
     kind: 'choice',

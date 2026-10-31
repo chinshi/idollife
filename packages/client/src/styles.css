@@ -413,3 +413,17 @@ button.primary small { color: #fff; opacity: 0.8; }
 }
 .crash-text { display: flex; gap: 6px; overflow: hidden; }
 .crash-text span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.side-status {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 6px 2px;
+  border-bottom: 1px dashed var(--line);
+}
+.side-status strong { color: var(--accent); font-variant-numeric: tabular-nums; }
+.side-date { margin-bottom: 2px; }
+
+.side-date { margin-bottom: 2px; }
+.side-now { color: var(--text); }
+
+.speed-row { display: flex; align-items: center; gap: 6px; }
+.speed-row .tab { padding: 2px 8px; }
