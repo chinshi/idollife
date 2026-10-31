@@ -309,7 +309,7 @@ button.primary small { color: #fff; opacity: 0.8; }
 /* ---------- 竖向时间轴 ---------- */
 .timeline {
   position: relative;
-  overflow: auto;
+  overflow: hidden;
   padding: 4px 0;
 }
 
@@ -566,7 +566,7 @@ button.primary small { color: #fff; opacity: 0.8; }
   width: 100%;
 }
 .col-side { overflow: hidden; }
-.timeline { flex: 1 1 auto; min-height: 0; }
+.timeline { flex: 1 1 0; min-height: 260px; }
 .plan { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 18px; }
 .plan-actions {
   max-height: 58vh;
@@ -606,3 +606,8 @@ button.primary small { color: #fff; opacity: 0.8; }
 .plan .actions button small { font-size: 11px; opacity: 0.75; }
 .plan-actions::-webkit-scrollbar, .plan-preview::-webkit-scrollbar { width: 6px; }
 .plan-actions::-webkit-scrollbar-thumb, .plan-preview::-webkit-scrollbar-thumb { background: #ccd4e3; border-radius: 3px; }
+
+.timeline-inner {
+  transition: transform 0.16s linear;
+  will-change: transform;
+}

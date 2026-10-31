@@ -1,5 +1,4 @@
 import { Component, useEffect, useMemo, useRef, useState } from 'react';
-import scrollIntoView from 'scroll-into-view-if-needed';
 import {
   ACTION_LIST,
   ACTIONS,
@@ -504,41 +503,38 @@ function AppInner() {
     .filter((s) => Math.floor((s.startAt - T0) / DAY_MS) === todayIndex)
     .reduce((n, s) => n + (s.actionId === SHOW_ACTION_ID ? SHOW_SLOTS : 1), 0);
 
-  // 箭头位置：当前行动圆点 → 下一个行动圆点（按真实 DOM 坐标算）
+  // 当前时刻始终钉在可视区中间，时间轴整体向上移动
   useEffect(() => {
-    if (!running) return;
     const inner = innerRef.current;
-    if (!inner) return;
+    const box = timelineRef.current;
+    if (!inner || !box) return;
 
-    const pend = schedule.filter((s) => !s.done).sort((a, b) => a.startAt - b.startAt);
-    const cur = pend[0];
-    if (!cur) return;
+    const center = box.clientHeight / 2;
 
-    const curRow = inner.querySelector<HTMLElement>(`[data-node-id="${cur.id}"]`);
-    const nextRow = pend[1]
-      ? inner.querySelector<HTMLElement>(`[data-node-id="${pend[1]!.id}"]`)
-      : null;
-    if (!curRow) return;
+    if (running) {
+      const pend = schedule.filter((s) => !s.done).sort((a, b) => a.startAt - b.startAt);
+      const cur = pend[0];
+      if (!cur) return;
 
-    const y0 = curRow.offsetTop + 15.5;
-    const y1 = nextRow ? nextRow.offsetTop + 15.5 : curRow.offsetTop + curRow.offsetHeight;
-    setArrowTop(y0 + (y1 - y0) * progress);
+      const curRow = inner.querySelector<HTMLElement>(`[data-node-id="${cur.id}"]`);
+      const nextRow = pend[1]
+        ? inner.querySelector<HTMLElement>(`[data-node-id="${pend[1]!.id}"]`)
+        : null;
+      if (!curRow) return;
+
+      const y0 = curRow.offsetTop + 15.5;
+      const y1 = nextRow ? nextRow.offsetTop + 15.5 : curRow.offsetTop + curRow.offsetHeight;
+      const y = y0 + (y1 - y0) * progress;
+      setArrowTop(y);
+      inner.style.transform = `translateY(${center - y}px)`;
+    } else {
+      const nowEl = inner.querySelector<HTMLElement>('.tl-now');
+      if (!nowEl) return;
+      const y = nowEl.offsetTop + nowEl.offsetHeight / 2;
+      inner.style.transform = `translateY(${center - y}px)`;
+    }
   }, [running, gameNow, schedule, progress]);
 
-  // 跨日 / 开始推进时，把「现在」滚到可视区中间（交给成熟库计算）
-  useEffect(() => {
-    const box = timelineRef.current;
-    const el = box?.querySelector('.tl-arrow') ?? box?.querySelector('.tl-now');
-    if (!box || !el) return;
-
-    scrollIntoView(el, {
-      behavior: 'smooth',
-      block: 'center',
-      inline: 'nearest',
-      scrollMode: 'if-needed',
-      boundary: box,
-    });
-  }, [todayIndex, running, historyLimit]);
 
   /** 竖向时间轴：按天分组，标出「现在」的位置 */
   const timeline = useMemo(() => {
