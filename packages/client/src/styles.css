@@ -517,14 +517,17 @@ button.primary small { color: #fff; opacity: 0.8; }
 .tabs.sub .tab { font-size: 12px; padding: 2px 10px; opacity: 0.9; }
 
 .tl-item.current { position: relative; }
+.tl-item.current { min-height: 52px; }
 .tl-arrow {
   position: absolute;
-  left: -27px;
+  left: -23px;
   color: var(--accent);
-  font-size: 16px;
+  font-size: 22px;
   line-height: 1;
   transform: translateY(-50%);
   transition: top 0.22s linear;
   pointer-events: none;
-  text-shadow: 0 0 4px rgba(249, 124, 18, 0.35);
+  text-shadow: 0 0 6px rgba(249, 124, 18, 0.45);
 }
+.tl-now-line { display: flex; align-items: baseline; gap: 6px; }
+.tl-now-line .tl-count { font-size: 12px; color: var(--muted); }

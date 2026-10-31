@@ -1219,15 +1219,10 @@ function AppInner() {
                     <span className="tl-node now" />
                     <span className="tl-now-text">
                       {running ? (
-                        <>
+                        <span className="tl-now-line">
                           <strong>现在</strong>
-                          <em className="tl-count">
-                            还剩 {Math.ceil(remainMs / 1000)} 秒完成「
-                            {ACTIONS[nextItem?.actionId ?? '']?.name ??
-                              (nextItem?.actionId === SHOW_ACTION_ID ? '演出' : '')}
-                            」
-                          </em>
-                        </>
+                          <em className="tl-count">还剩 {Math.ceil(remainMs / 1000)} 秒</em>
+                        </span>
                       ) : (
                         <strong>时间已停止</strong>
                       )}
@@ -1256,7 +1251,7 @@ function AppInner() {
                   {isCurrent && (
                     <span
                       className="tl-arrow"
-                      style={{ top: `${Math.round(progress * 100)}%` }}
+                      style={{ top: `${Math.round(10 + progress * 80)}%` }}
                       title="现在"
                     >
                       ▶
