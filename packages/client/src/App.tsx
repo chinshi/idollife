@@ -78,10 +78,10 @@ const initialRun: RunState = {
   log: [],
 };
 
-const WEEKDAY_NAMES = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+const WEEKDAY_NAMES = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
 
 function weekdayName(dayIndex: number): string {
-  return WEEKDAY_NAMES[(dayIndex + 4) % 7]!;
+  return WEEKDAY_NAMES[dayIndex % 7]!;
 }
 
 const STAT_LABEL: Record<string, string> = {
@@ -810,15 +810,15 @@ function AppInner() {
     let dayStart = T0 + dayIndex * DAY_MS;
 
     for (let i = 0; i < 8; i++) {
-      const weekday = (dayIndex + 4) % 7;
-      const isWeekend = weekday === 0 || weekday === 6;
+      const weekday = dayIndex % 7;
+      const isWeekend = weekday >= 5;
       if (isWeekend && slotsOnDay(dayIndex) === 0) break;
       dayIndex += 1;
       dayStart += DAY_MS;
     }
 
-    const weekday = (dayIndex + 4) % 7;
-    if (weekday !== 0 && weekday !== 6) {
+    const weekday = dayIndex % 7;
+    if (weekday < 5) {
       setNotice('最近一周没有空闲的周末了。');
       return;
     }
