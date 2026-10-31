@@ -1221,7 +1221,7 @@ function AppInner() {
             </div>
           </div>
 
-          <div className="timeline" ref={timelineRef}>
+          <div className="timeline" ref={timelineRef}>`n            <div className="timeline-inner">
             {timeline.length === 0 && (
               <p className="muted">还没有安排。点「安排行程」加几个。</p>
             )}
@@ -1309,6 +1309,7 @@ function AppInner() {
                 </div>
               );
             })}
+            </div>
           </div>
 
           <div className="side-foot">
