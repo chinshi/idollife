@@ -157,14 +157,16 @@ function Modal({
   title,
   onClose,
   children,
+  wide,
 }: {
   title: string;
   onClose?: () => void;
   children: React.ReactNode;
+  wide?: boolean;
 }) {
   return (
     <div className="overlay" onClick={onClose}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
+      <div className={wide ? 'modal wide' : 'modal'} onClick={(e) => e.stopPropagation()}>
         <div className="modal-head">
           <h3>{title}</h3>
           {onClose && (
@@ -1379,7 +1381,7 @@ function AppInner() {
         })()}
 
       {showActions && (
-        <Modal title="安排行程" onClose={() => setShowActions(false)}>
+        <Modal title="安排行程" wide onClose={() => setShowActions(false)}>
           <div className="plan">
             <div className="plan-actions">
               {(['growth', 'recover', 'work'] as ActionCategory[]).map((cat) => {
@@ -1406,7 +1408,7 @@ function AppInner() {
             </div>
 
             <div className="plan-preview">
-              <div className="plan-preview-head">已安排 {pending.length} 个</div>
+              <div className="plan-preview-head">待执行 {pending.length} 个（已完成的不显示）</div>
               {pending.length === 0 ? (
                 <p className="muted small">左边点行动，会加到时间轴末尾。</p>
               ) : (

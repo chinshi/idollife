@@ -565,7 +565,7 @@ button.primary small { color: #fff; opacity: 0.8; }
 }
 .col-side { overflow: hidden; }
 .timeline { flex: 1 1 auto; min-height: 0; }
-.plan { display: grid; grid-template-columns: minmax(0, 1fr) 200px; gap: 14px; }
+.plan { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 18px; }
 .plan-preview {
   border-left: 1px solid var(--line);
   padding-left: 12px;
@@ -580,3 +580,18 @@ button.primary small { color: #fff; opacity: 0.8; }
   .plan { grid-template-columns: 1fr; }
   .plan-preview { border-left: none; border-top: 1px solid var(--line); padding-left: 0; padding-top: 10px; }
 }
+.modal.wide { width: min(920px, 96vw); }
+
+/* 安排行程：按钮更紧凑 */
+.plan .action-group { margin-bottom: 10px; }
+.plan .action-group h4 { margin: 0 0 4px; }
+.plan .actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.plan .actions button {
+  padding: 5px 10px;
+  font-size: 13px;
+  border-radius: 8px;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 2px;
+}
+.plan .actions button small { font-size: 11px; opacity: 0.75; }
