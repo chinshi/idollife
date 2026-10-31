@@ -111,14 +111,12 @@ function dayOf(t: number): number {
 
 function dayLabel(startAt: number, now: number): string {
   const d = dayOf(startAt);
-  const diff = d - dayOf(now);
-  const wd = weekdayName(d);
-  if (diff === 0) return `今天 ${wd}`;
-  if (diff === 1) return `明日 ${wd}`;
-  if (diff === -1) return `昨日 ${wd}`;
-  if (diff === 2) return `后天 ${wd}`;
+  const cur = dayOf(now);
+  if (d === cur) return '今天';
+  if (d === cur - 1) return '昨天';
+  if (d === cur + 1) return '明天';
   const week = Math.floor(d / 7) + 1;
-  return `第${week}周 ${wd}`;
+  return `第${week}周 ${weekdayName(d)}`;
 }
 
 function sameState(a: RunState, b: RunState): boolean {
@@ -512,17 +510,17 @@ function AppInner() {
       });
     };
 
-    for (const it of shownDone) pushItem(it);
-
     const firstPending = pendingItems[0];
+    const shown = [...shownDone, ...pendingItems].sort((a, b) => a.startAt - b.startAt);
+
     let nowPlaced = false;
     if (firstPending && !running) {
       nodes.push({ type: 'now', id: 'now' });
       nowPlaced = true;
     }
-    for (const it of pendingItems) {
+    for (const it of shown) {
       pushItem(it);
-      if (it === firstPending && running) {
+      if (it.id === firstPending?.id && running) {
         nodes.push({ type: 'now', id: 'now' });
         nowPlaced = true;
       }
