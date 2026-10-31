@@ -432,7 +432,7 @@ function AppInner() {
 
 
   const lastEnd = useMemo(
-    () => schedule.reduce((max, s) => Math.max(max, s.endAt), run.at),
+    () => schedule.filter((s) => !s.fixed).reduce((max, s) => Math.max(max, s.endAt), run.at),
     [schedule, run.at],
   );
 
@@ -511,12 +511,19 @@ function AppInner() {
     for (const it of shownDone) pushItem(it);
 
     const firstPending = pendingItems[0];
-    if (firstPending && !running) nodes.push({ type: 'now', id: 'now' });
+    let nowPlaced = false;
+    if (firstPending && !running) {
+      nodes.push({ type: 'now', id: 'now' });
+      nowPlaced = true;
+    }
     for (const it of pendingItems) {
       pushItem(it);
-      if (it === firstPending && running) nodes.push({ type: 'now', id: 'now' });
+      if (it === firstPending && running) {
+        nodes.push({ type: 'now', id: 'now' });
+        nowPlaced = true;
+      }
     }
-    if (nodes[nodes.length - 1]?.type !== 'now') nodes.push({ type: 'now', id: 'now' });
+    if (!nowPlaced) nodes.push({ type: 'now', id: 'now' });
 
     return nodes;
   }, [schedule, run.at, running, historyLimit]);
@@ -1372,28 +1379,56 @@ function AppInner() {
         })()}
 
       {showActions && (
-        <Modal title="安排行动" onClose={() => setShowActions(false)}>
-          {(['growth', 'recover', 'work'] as ActionCategory[]).map((cat) => {
-            const list = ACTION_LIST.filter((a) => a.category === cat);
-            if (list.length === 0) return null;
-            return (
-              <div key={cat} className="action-group">
-                <h4>{CATEGORY_LABEL[cat]}</h4>
-                <div className="actions">
-                  {list.map((a) => (
-                    <button key={a.id} onClick={() => addAction(a.id)}>
-                      {a.name}
-                      <small>
-                        {a.stamina > 0 ? `体力 +${a.stamina}` : `体力 ${a.stamina}`}
-                        {a.cost ? ` · ¥${a.cost}` : ''}
-                        {a.money ? ` · +¥${a.money}` : ''}
-                      </small>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
+        <Modal title="安排行程" onClose={() => setShowActions(false)}>
+          <div className="plan">
+            <div className="plan-actions">
+              {(['growth', 'recover', 'work'] as ActionCategory[]).map((cat) => {
+                const list = ACTION_LIST.filter((a) => a.category === cat);
+                if (list.length === 0) return null;
+                return (
+                  <div key={cat} className="action-group">
+                    <h4>{CATEGORY_LABEL[cat]}</h4>
+                    <div className="actions">
+                      {list.map((a) => (
+                        <button key={a.id} onClick={() => addAction(a.id)}>
+                          {a.name}
+                          <small>
+                            {a.stamina > 0 ? `体力 +${a.stamina}` : `体力 ${a.stamina}`}
+                            {a.cost ? ` · ¥${a.cost}` : ''}
+                            {a.money ? ` · +¥${a.money}` : ''}
+                          </small>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="plan-preview">
+              <div className="plan-preview-head">已安排 {pending.length} 个</div>
+              {pending.length === 0 ? (
+                <p className="muted small">左边点行动，会加到时间轴末尾。</p>
+              ) : (
+                <ul className="plan-list">
+                  {pending.map((s) => {
+                    const a = ACTIONS[s.actionId];
+                    return (
+                      <li key={s.id}>
+                        <span className="plan-day">{dayLabel(s.startAt, run.at)}</span>
+                        <span className="plan-name">
+                          {a?.name ?? (s.actionId === SHOW_ACTION_ID ? '演出' : s.actionId)}
+                        </span>
+                        <button className="del" onClick={() => removeItem(s.id)}>
+                          ×
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+          </div>
         </Modal>
       )}
 
