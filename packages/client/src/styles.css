@@ -552,3 +552,16 @@ button.primary small { color: #fff; opacity: 0.8; }
   border-radius: 3px;
 }
 .timeline:hover::-webkit-scrollbar-thumb { background: #cbd3e2; }
+.tl-more {
+  display: block;
+  margin: 2px 0 6px;
+  padding: 2px 0;
+  border: none;
+  background: transparent;
+  color: #3b82f6;
+  font-size: 12px;
+  text-align: center;
+  width: 100%;
+}
+.col-side { overflow: hidden; }
+.timeline { flex: 1 1 auto; min-height: 0; }

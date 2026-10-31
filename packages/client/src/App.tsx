@@ -284,6 +284,7 @@ function AppInner() {
   const [bagTab, setBagTab] = useState<BagTab>('equip');
   const [sysTab, setSysTab] = useState<SysTab>('shop');
   const [logTab, setLogTab] = useState<LogTab>('all');
+  const [historyLimit, setHistoryLimit] = useState(9);
   const [forceLogin, setForceLogin] = useState(false);
   const [running, setRunning] = useState(false);
   const [speed, setSpeed] = useState(1);
@@ -467,31 +468,34 @@ function AppInner() {
     const b = box.getBoundingClientRect();
     const delta = r.top - b.top - box.clientHeight / 2 + 24;
     box.scrollTo({ top: Math.max(0, box.scrollTop + delta), behavior: 'smooth' });
-  }, [todayIndex, running]);
+  }, [todayIndex, running, historyLimit]);
 
   /** 竖向时间轴：按天分组，标出「现在」的位置 */
   const timeline = useMemo(() => {
     const items = [...schedule].sort((a, b) => a.startAt - b.startAt);
+    const doneItems = items.filter((s) => s.done);
+    const pendingItems = items.filter((s) => !s.done);
+    const shownDone = doneItems.slice(-historyLimit);
+
     const nodes: Array<
       | { type: 'day'; id: string; label: string }
       | { type: 'item'; id: string; item: ScheduleItem; index: number; label: string }
       | { type: 'now'; id: string }
+      | { type: 'more'; id: string; hidden: number }
     > = [];
+
+    if (doneItems.length > shownDone.length) {
+      nodes.push({ type: 'more', id: 'more', hidden: doneItems.length - shownDone.length });
+    }
 
     let lastDay = Number.NaN;
     const perDay = new Map<number, number>();
-    let nowPlaced = false;
 
-    for (const it of items) {
+    const pushItem = (it: ScheduleItem) => {
       const d = Math.floor((it.startAt - T0) / DAY_MS);
       if (d !== lastDay) {
         nodes.push({ type: 'day', id: `d-${d}`, label: dayLabel(it.startAt, run.at) });
         lastDay = d;
-      }
-      const firstPending = !nowPlaced && !it.done;
-      if (firstPending && !running) {
-        nodes.push({ type: 'now', id: 'now' });
-        nowPlaced = true;
       }
       const n = (perDay.get(d) ?? 0) + 1;
       perDay.set(d, n);
@@ -502,17 +506,20 @@ function AppInner() {
         index: n,
         label: dayLabel(it.startAt, run.at),
       });
-      if (firstPending && running) {
-        nodes.push({ type: 'now', id: 'now' });
-        nowPlaced = true;
-      }
-    }
+    };
 
-    if (!nowPlaced) nodes.push({ type: 'now', id: 'now' });
+    for (const it of shownDone) pushItem(it);
+
+    const firstPending = pendingItems[0];
+    if (firstPending && !running) nodes.push({ type: 'now', id: 'now' });
+    for (const it of pendingItems) {
+      pushItem(it);
+      if (it === firstPending && running) nodes.push({ type: 'now', id: 'now' });
+    }
+    if (nodes[nodes.length - 1]?.type !== 'now') nodes.push({ type: 'now', id: 'now' });
 
     return nodes;
-  }, [schedule, run.at, running]);
-
+  }, [schedule, run.at, running, historyLimit]);
   const visibleLog = useMemo(() => {
     const list = [...run.log].reverse();
     const filtered = list.filter((l) => {
@@ -650,7 +657,7 @@ function AppInner() {
   function markExecuted(prev: ScheduleItem[], executed: string[]): ScheduleItem[] {
     const marked = prev.map((s) => (executed.includes(s.id) ? { ...s, done: true } : s));
     const doneIds = marked.filter((s) => s.done).map((s) => s.id);
-    const keep = new Set(doneIds.slice(-12));
+    const keep = new Set(doneIds.slice(-60));
     return marked.filter((s) => !s.done || keep.has(s.id));
   }
 
@@ -1227,6 +1234,17 @@ function AppInner() {
             )}
 
             {timeline.map((node) => {
+              if (node.type === 'more') {
+                return (
+                  <button
+                    key={node.id}
+                    className="tl-more"
+                    onClick={() => setHistoryLimit((n) => n + 9)}
+                  >
+                    更多（还有 {node.hidden} 条更早的日程）
+                  </button>
+                );
+              }
               if (node.type === 'day') {
                 return (
                   <div key={node.id} className="tl-day">
