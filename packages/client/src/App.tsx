@@ -1232,7 +1232,8 @@ function AppInner() {
             </div>
           </div>
 
-          <div className="timeline" ref={timelineRef}>`n            <div className="timeline-inner">
+          <div className="timeline" ref={timelineRef}>
+            <div className="timeline-inner">
             {timeline.length === 0 && (
               <p className="muted">还没有安排。点「安排行程」加几个。</p>
             )}
