@@ -571,13 +571,14 @@ function AppInner() {
   useEffect(() => {
     const started = running && !prevRunningRef.current;
     const advanced = (nextItem?.id ?? null) !== prevNextIdRef.current;
-    prevRunningRef.current = running;
-    prevNextIdRef.current = nextItem?.id ?? null;
-
     if (!started && !advanced) return;
 
+    // 元素还没挂载（欢迎页/加载中）就先不记账，等它出现后再滚一次
     const el = timelineRef.current;
     if (!el) return;
+
+    prevRunningRef.current = running;
+    prevNextIdRef.current = nextItem?.id ?? null;
 
     // 直接用这一行的真实布局位置来居中，避免任何公式/测量误差
     const cur = nextItem;
