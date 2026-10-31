@@ -112,9 +112,9 @@ function dayOf(t: number): number {
 function dayLabel(startAt: number, now: number): string {
   const d = dayOf(startAt);
   const cur = dayOf(now);
-  if (d === cur) return '今天';
-  if (d === cur - 1) return '昨天';
-  if (d === cur + 1) return '明天';
+  if (d === cur) return `今天（${weekdayName(d)}）`;
+  if (d === cur - 1) return `昨天（${weekdayName(d)}）`;
+  if (d === cur + 1) return `明天（${weekdayName(d)}）`;
   const week = Math.floor(d / 7) + 1;
   return `第${week}周 ${weekdayName(d)}`;
 }
