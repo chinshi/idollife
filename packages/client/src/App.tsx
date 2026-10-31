@@ -403,8 +403,10 @@ function AppInner() {
 
     const anchorPerf = performance.now();
     const anchorGame = Math.max(runRef.current.at, gameNowRef.current);
+    dbg('时钟启动 anchorGame=' + String(anchorGame) + ' speed=' + String(speed));
     let raf = 0;
     let lastProcess = 0;
+    let lastBeat = 0;
 
     const tick = () => {
       raf = requestAnimationFrame(tick);
@@ -418,9 +420,14 @@ function AppInner() {
       );
       setGameNow(target);
 
+      if (nowPerf - lastBeat > 2000) {
+        lastBeat = nowPerf;
+        dbg('心跳 target=' + String(Math.round(target)) + ' runAt=' + String(runRef.current.at));
+      }
+
       // 先清掉已经过期（结束时间早于当前时间）的条，
       // 否则 settle 会跳过它们 → 判定 exhausted → 时间看似不动
-      const stale = scheduleRef.current.filter((s) => !s.done && s.endAt <= runRef.current.at);
+      const stale = scheduleRef.current.filter((s) => !s.done && s.startAt < runRef.current.at);
       if (stale.length > 0) {
         const staleIds = new Set(stale.map((s) => s.id));
         const cleaned = scheduleRef.current.filter((s) => !staleIds.has(s.id));
@@ -767,7 +774,7 @@ function AppInner() {
       return;
     }
 
-    const staleAtStart = schedule.filter((s) => !s.done && s.endAt <= run.at);
+    const staleAtStart = schedule.filter((s) => !s.done && s.startAt < run.at);
     const usable = schedule.filter((s) => !staleAtStart.includes(s));
     if (staleAtStart.length > 0) {
       dbg('开始前清理过期行程 ' + String(staleAtStart.length) + ' 条');
