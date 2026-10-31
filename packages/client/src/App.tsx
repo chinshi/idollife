@@ -579,12 +579,18 @@ function AppInner() {
     const el = timelineRef.current;
     if (!el) return;
 
-    // 把「当前行动」整块居中。
-    // 因为内容上方留了 padY(=容器一半) 的空白，所以滚动量 = 时间偏移 + 行高一半
+    // 直接用这一行的真实布局位置来居中，避免任何公式/测量误差
     const cur = nextItem;
+    const rowEl = cur
+      ? el.querySelector<HTMLElement>(`[data-node-id="${cur.id}"]`)
+      : null;
+
     const offset = ((cur?.startAt ?? run.at) - baseTime) * pxPerMs;
     const rowH = cur ? Math.max(34, (cur.endAt - cur.startAt) * pxPerMs) : 0;
-    const top = Math.max(0, Math.round(offset + rowH / 2));
+
+    const top = rowEl
+      ? Math.max(0, Math.round(rowEl.offsetTop + rowEl.offsetHeight / 2 - el.clientHeight / 2))
+      : Math.max(0, Math.round(offset + rowH / 2));
     dbg(
 
       '滚动 off=' + String(Math.round(offset)) +
