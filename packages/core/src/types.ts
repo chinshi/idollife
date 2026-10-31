@@ -88,6 +88,10 @@ export interface ScheduleItem {
   endAt: number;
   /** 打勾后：执行完这一条就停止推进 */
   stopAfter?: boolean;
+  /** 已经执行过（留在时间轴上给玩家看） */
+  done?: boolean;
+  /** 强制固定行程（系统安排，比如周末演出），不能删 */
+  fixed?: boolean;
 }
 
 /** 行动分类（界面按这个分组） */

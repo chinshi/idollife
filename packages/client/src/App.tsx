@@ -316,15 +316,44 @@ function AppInner() {
     [schedule, run.at],
   );
 
-  const groups = useMemo(() => {
-    const map = new Map<string, { label: string; items: ScheduleItem[] }>();
-    for (const s of schedule) {
-      const label = dayLabel(s.startAt, run.at);
-      const g = map.get(label) ?? { label, items: [] };
-      g.items.push(s);
-      map.set(label, g);
+
+  const pending = useMemo(() => schedule.filter((s) => !s.done), [schedule]);
+
+  /** 竖向时间轴：按天分组，标出「现在」的位置 */
+  const timeline = useMemo(() => {
+    const items = [...schedule].sort((a, b) => a.startAt - b.startAt);
+    const nodes: Array<
+      | { type: 'day'; id: string; label: string }
+      | { type: 'item'; id: string; item: ScheduleItem; index: number; label: string }
+      | { type: 'now'; id: string }
+    > = [];
+
+    let lastDay = Number.NaN;
+    const perDay = new Map<number, number>();
+    let nowPlaced = false;
+
+    for (const it of items) {
+      const d = Math.floor((it.startAt - T0) / DAY_MS);
+      if (d !== lastDay) {
+        nodes.push({ type: 'day', id: `d-${d}`, label: dayLabel(it.startAt, run.at) });
+        lastDay = d;
+      }
+      if (!nowPlaced && !it.done) {
+        nodes.push({ type: 'now', id: 'now' });
+        nowPlaced = true;
+      }
+      const n = (perDay.get(d) ?? 0) + 1;
+      perDay.set(d, n);
+      nodes.push({
+        type: 'item',
+        id: it.id,
+        item: it,
+        index: n,
+        label: dayLabel(it.startAt, run.at),
+      });
     }
-    return [...map.values()];
+
+    return nodes;
   }, [schedule, run.at]);
 
   const party = activeParty(run);
@@ -433,7 +462,7 @@ function AppInner() {
 
   function advance() {
     if (!requireLogin()) return;
-    if (schedule.length === 0) return;
+    if (pending.length === 0) return;
 
     setSnapshot({ run, schedule });
 
@@ -444,7 +473,14 @@ function AppInner() {
 
     const result = settle(prevRun, prevSchedule, from, to, seed, { endAt: RUN_END });
     setRun(result.state);
-    setSchedule((prev) => prev.filter((s) => !result.executed.includes(s.id)));
+    setSchedule((prev) => {
+      const marked = prev.map((s) =>
+        result.executed.includes(s.id) ? { ...s, done: true } : s,
+      );
+      const doneIds = marked.filter((s) => s.done).map((s) => s.id);
+      const keep = new Set(doneIds.slice(-12));
+      return marked.filter((s) => !s.done || keep.has(s.id));
+    });
 
     if (result.stoppedReason === 'ending') {
       setPhase('deciding');
@@ -550,6 +586,7 @@ function AppInner() {
       {
         id: `show-${Date.now()}`,
         actionId: SHOW_ACTION_ID,
+        fixed: true,
         startAt,
         endAt: startAt + SHOW_DURATION_MS,
       },
@@ -653,6 +690,8 @@ function AppInner() {
         </button>
       </header>
 
+      <main className="cols">
+        <div className="col-main">
       <section className="panel">
         <div className="stats">
           {(['vocal', 'dance', 'acting', 'talk'] as const).map((k) => (
@@ -690,59 +729,7 @@ function AppInner() {
         </p>
       </section>
 
-      <section className="panel">
-        <div className="panel-head">
-          <h2>行程</h2>
-          <button onClick={() => setShowActions(true)}>安排行动</button>
-        </div>
 
-        {schedule.length === 0 ? (
-          <p className="muted">还没有安排。点「安排行动」加几个。</p>
-        ) : (
-          <div className="days">
-            {groups.map((g) => (
-              <div key={g.label} className="day">
-                <ul className="sched">
-                  {g.items.map((s, i) => {
-                    const a = ACTIONS[s.actionId];
-                    return (
-                      <li key={s.id}>
-                        <button
-                          className={s.stopAfter ? 'stop-btn on' : 'stop-btn'}
-                          title="执行到这里就停止推进"
-                          onClick={() => toggleStop(s.id)}
-                        >
-                          ⏹
-                        </button>
-                        <span className="when">{g.label}</span>
-                        <span className="idx">行动 {i + 1}</span>
-                        <span className="name">{a?.name ?? (s.actionId === SHOW_ACTION_ID ? '演出' : s.actionId)}</span>
-                        <span className="dur">{Math.round((s.endAt - s.startAt) / MIN)} 分</span>
-                        <button className="del" onClick={() => removeItem(s.id)}>
-                          ×
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            ))}
-          </div>
-        )}
-
-        <div className="row">
-          <button className="primary" onClick={advance} disabled={schedule.length === 0}>
-            开始推进
-          </button>
-          <button onClick={stopCurrent} disabled={!snapshot && schedule.length === 0}>
-            停止当前行程
-          </button>
-          <button onClick={addShow} disabled={phase !== 'playing'}>
-            参加演出
-          </button>
-        </div>
-        {notice && <p className="notice">{notice}</p>}
-      </section>
 
       <section className="panel">
         <h2>商店（本周）</h2>
@@ -887,6 +874,101 @@ function AppInner() {
           </ul>
         )}
       </section>
+
+        </div>
+
+        <aside className="col-side">
+          <div className="side-head">
+            <button className="primary wide" onClick={() => setShowActions(true)}>
+              安排行程
+            </button>
+          </div>
+
+          <div className="timeline">
+            {timeline.length === 0 && (
+              <p className="muted">还没有安排。点「安排行程」加几个。</p>
+            )}
+
+            {timeline.map((node) => {
+              if (node.type === 'day') {
+                return (
+                  <div key={node.id} className="tl-day">
+                    {node.label}
+                  </div>
+                );
+              }
+              if (node.type === 'now') {
+                return (
+                  <div key={node.id} className="tl-now">
+                    <span className="tl-node now" />
+                    <span>现在 · {fmtGameTime(run.at)}</span>
+                  </div>
+                );
+              }
+
+              const a = ACTIONS[node.item.actionId];
+              const name =
+                a?.name ?? (node.item.actionId === SHOW_ACTION_ID ? '演出' : node.item.actionId);
+              const done = !!node.item.done;
+              const cls = [
+                'tl-item',
+                done ? 'done' : '',
+                node.item.fixed ? 'fixed' : '',
+                node.item.stopAfter ? 'stopped' : '',
+              ]
+                .filter(Boolean)
+                .join(' ');
+
+              return (
+                <div key={node.id} className={cls}>
+                  <span className="tl-node" />
+                  <div className="tl-body">
+                    <div className="tl-title">
+                      <span className="tl-idx">
+                        {node.label} · 行动 {node.index}
+                      </span>
+                      <span className="tl-name">{name}</span>
+                      {node.item.fixed && <span className="tag fixed-tag">固定</span>}
+                      {done && <span className="tag done-tag">已完成</span>}
+                    </div>
+                    <div className="tl-meta">
+                      {Math.round((node.item.endAt - node.item.startAt) / MIN)} 分
+                      {node.item.stopAfter && ' · 预计到此停止'}
+                    </div>
+                  </div>
+                  {!node.item.fixed && !done && (
+                    <div className="tl-actions">
+                      <button
+                        className={node.item.stopAfter ? 'stop-btn on' : 'stop-btn'}
+                        title="执行到这里就停止推进"
+                        onClick={() => toggleStop(node.item.id)}
+                      >
+                        ⏹
+                      </button>
+                      <button className="del" onClick={() => removeItem(node.item.id)}>
+                        ×
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="side-foot">
+            <button className="primary" onClick={advance} disabled={pending.length === 0}>
+              开始推进
+            </button>
+            <button onClick={stopCurrent} disabled={!snapshot && pending.length === 0}>
+              停止当前行程
+            </button>
+            <button onClick={addShow} disabled={phase !== 'playing'}>
+              参加演出
+            </button>
+          </div>
+          {notice && <p className="notice">{notice}</p>}
+        </aside>
+      </main>
 
       {run.pendingEvent &&
         (() => {
