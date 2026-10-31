@@ -760,3 +760,12 @@ button.primary small { color: #fff; opacity: 0.8; }
   border-radius: 50%;
   background: var(--line);
 }
+/* 播放头：箭头 + 一条横线，不再压文字 */
+.tl-playhead-line {
+  position: absolute;
+  left: 12px;
+  right: 6px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(249,124,18,0.55), rgba(249,124,18,0.05));
+}
+.tl-remain { font-style: normal; color: var(--accent); }

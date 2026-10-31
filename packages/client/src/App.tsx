@@ -1294,16 +1294,6 @@ function AppInner() {
                 </button>
               )}
 
-              {dayMarks.map((m) => (
-                <div
-                  key={`d-${m.day}`}
-                  className="tl-day-mark"
-                  style={{ top: `${(m.at - baseTime) * pxPerMs}px` }}
-                >
-                  {m.label}
-                </div>
-              ))}
-
               {visibleItems.map((it) => {
                 const a = ACTIONS[it.actionId];
                 const name = a?.name ?? (it.actionId === SHOW_ACTION_ID ? '演出' : it.actionId);
@@ -1340,6 +1330,9 @@ function AppInner() {
                       <div className="tl-meta">
                         {Math.round((it.endAt - it.startAt) / MIN)} 分
                         {it.stopAfter && ' · 预计到此停止'}
+                        {isCurrent && running && (
+                          <em className="tl-remain"> · 还剩 {Math.ceil(remainMs / 1000)} 秒</em>
+                        )}
                       </div>
                     </div>
                     {!it.fixed && !done && (
@@ -1363,16 +1356,7 @@ function AppInner() {
 
             <div className="tl-playhead" style={{ top: `${Math.round(boxH / 2) - 11}px` }}>
               <span className="tl-arrow" />
-              <span className="tl-playhead-text">
-                {running ? (
-                  <>
-                    <strong>现在</strong>
-                    <em>还剩 {Math.ceil(remainMs / 1000)} 秒</em>
-                  </>
-                ) : (
-                  <strong>时间已停止</strong>
-                )}
-              </span>
+              <span className="tl-playhead-line" />
             </div>
           </div>
           <div className="side-foot">
