@@ -523,15 +523,24 @@ function AppInner() {
   useEffect(() => {
     const el = timelineRef.current;
     if (!el) return;
-    const ro = new ResizeObserver(() => setBoxH(el.clientHeight));
+
+    const update = () => {
+      const h = el.clientHeight;
+      if (h > 0) setBoxH(h);
+    };
+
+    update();
+    const ro = new ResizeObserver(update);
     ro.observe(el);
-    setBoxH(el.clientHeight);
-    const t = window.setTimeout(() => setBoxH(el.clientHeight), 60);
+
+    // 兜底：布局完成/字体加载后可能还有一次尺寸变化
+    const timers = [80, 250, 600].map((ms) => window.setTimeout(update, ms));
+
     return () => {
-      window.clearTimeout(t);
+      timers.forEach((t) => window.clearTimeout(t));
       ro.disconnect();
     };
-  }, [user]);
+  }, [user, checking]);
 
   // 左侧添加行动后，右侧自动滚到最新一条
   useEffect(() => {
@@ -569,11 +578,12 @@ function AppInner() {
     const el = timelineRef.current;
     if (!el) return;
 
-    // 把「当前行动」整块居中：行顶 + 行高一半
+    // 把「当前行动」整块居中。
+    // 因为内容上方留了 padY(=容器一半) 的空白，所以滚动量 = 时间偏移 + 行高一半
     const cur = nextItem;
-    const rowTop = padY + ((cur?.startAt ?? run.at) - baseTime) * pxPerMs;
+    const offset = ((cur?.startAt ?? run.at) - baseTime) * pxPerMs;
     const rowH = cur ? Math.max(34, (cur.endAt - cur.startAt) * pxPerMs) : 0;
-    const top = Math.max(0, Math.round(rowTop + rowH / 2 - el.clientHeight / 2));
+    const top = Math.max(0, Math.round(offset + rowH / 2));
     el.scrollTo({ top, behavior: 'smooth' });
   }, [running, nextItem?.id, run.at, baseTime, pxPerMs, boxH, padY]);
 
