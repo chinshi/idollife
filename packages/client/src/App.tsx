@@ -1,4 +1,5 @@
 import { Component, useEffect, useMemo, useRef, useState } from 'react';
+import scrollIntoView from 'scroll-into-view-if-needed';
 import {
   ACTION_LIST,
   ACTIONS,
@@ -291,10 +292,12 @@ function AppInner() {
   const [running, setRunning] = useState(false);
   const [speed, setSpeed] = useState(1);
   const [gameNow, setGameNow] = useState<number>(boot?.run?.at ?? T0);
+
   const runRef = useRef<RunState>(boot?.run ?? initialRun);
   const scheduleRef = useRef<ScheduleItem[]>(boot?.schedule ?? []);
   const batchRef = useRef<{ from: number; prevRun: RunState; prevSchedule: ScheduleItem[] } | null>(null);
   const timelineRef = useRef<HTMLDivElement | null>(null);
+  const gameNowRef = useRef<number>(boot?.run?.at ?? T0);
   const resumeAfterEvent = useRef(false);
   const dbgLines = useRef<string[]>([]);
   const [showDebug, setShowDebug] = useState(false);
@@ -386,17 +389,31 @@ function AppInner() {
   }, [run]);
 
   useEffect(() => {
+    gameNowRef.current = gameNow;
+  }, [gameNow]);
+
+  useEffect(() => {
     scheduleRef.current = schedule;
   }, [schedule]);
 
   useEffect(() => {
     if (!running) return;
 
-    const startReal = Date.now();
-    const startGame = runRef.current.at;
+    const anchorPerf = performance.now();
+    const anchorGame = Math.max(runRef.current.at, gameNowRef.current);
+    let raf = 0;
+    let lastProcess = 0;
 
-    const id = window.setInterval(() => {
-      const target = Math.max(runRef.current.at, startGame + (Date.now() - startReal) * speed);
+    const tick = () => {
+      raf = requestAnimationFrame(tick);
+      const nowPerf = performance.now();
+      if (nowPerf - lastProcess < 100) return;
+      lastProcess = nowPerf;
+
+      const target = Math.max(
+        runRef.current.at,
+        anchorGame + (nowPerf - anchorPerf) * speed,
+      );
       setGameNow(target);
 
       const prev = runRef.current;
@@ -426,9 +443,10 @@ function AppInner() {
         const batch = batchRef.current;
         if (batch) endBatch(result, batch);
       }
-    }, 200);
+    };
 
-    return () => window.clearInterval(id);
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [running, seed, speed]);
 
@@ -460,16 +478,19 @@ function AppInner() {
     .filter((s) => Math.floor((s.startAt - T0) / DAY_MS) === todayIndex)
     .reduce((n, s) => n + (s.actionId === SHOW_ACTION_ID ? SHOW_SLOTS : 1), 0);
 
-  // 跨日 / 开始推进时，把「现在」滚到可视区中间
+  // 跨日 / 开始推进时，把「现在」滚到可视区中间（交给成熟库计算）
   useEffect(() => {
     const box = timelineRef.current;
-    if (!box) return;
-    const el = box.querySelector('.tl-now');
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    const b = box.getBoundingClientRect();
-    const delta = r.top - b.top - box.clientHeight / 2 + 24;
-    box.scrollTo({ top: Math.max(0, box.scrollTop + delta), behavior: 'smooth' });
+    const el = box?.querySelector('.tl-now');
+    if (!box || !el) return;
+
+    scrollIntoView(el, {
+      behavior: 'smooth',
+      block: 'center',
+      inline: 'nearest',
+      scrollMode: 'if-needed',
+      boundary: box,
+    });
   }, [todayIndex, running, historyLimit]);
 
   /** 竖向时间轴：按天分组，标出「现在」的位置 */
