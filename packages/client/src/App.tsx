@@ -286,7 +286,6 @@ function AppInner() {
   const previewRef = useRef<HTMLDivElement | null>(null);
   const logRef = useRef<HTMLDivElement | null>(null);
   const [planTick, setPlanTick] = useState(0);
-  const [scrollInfo, setScrollInfo] = useState('');
   const [partyName, setPartyName] = useState('');
   const [bagTab, setBagTab] = useState<BagTab>('equip');
   const [sysTab, setSysTab] = useState<SysTab>('shop');
@@ -603,7 +602,6 @@ function AppInner() {
       ' boxH=' + String(boxH) +
       ' padY=' + String(padY),
     );
-    setScrollInfo('off=' + String(Math.round(offset)) + ' top=' + String(top) + ' ch=' + String(el.clientHeight) + ' sh=' + String(el.scrollHeight) + ' boxH=' + String(boxH) + ' padY=' + String(padY));
     el.scrollTo({ top, behavior: 'smooth' });
   }, [running, nextItem?.id, run.at, baseTime, pxPerMs, boxH, padY]);
 
@@ -1375,7 +1373,6 @@ function AppInner() {
               {Math.max(0, 3 - usedToday)}/3
             </div>
 
-            <div className="muted small">{scrollInfo}</div>
             <div className="side-now">
               {running
                 ? nextItem

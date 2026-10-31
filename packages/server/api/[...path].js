@@ -15983,6 +15983,7 @@ var ROUTINE_TEMPLATES = [
 var STORY_EVENTS = [
   {
     id: "first-audition",
+    major: true,
     title: "\u4E00\u4E2A\u8BD5\u955C\u673A\u4F1A",
     text: "\u7ECF\u7EAA\u4EBA\u63A8\u95E8\u8FDB\u6765\uFF1A\u300C\u6709\u4E2A\u5C0F\u573A\u5B50\u7684\u8BD5\u955C\uFF0C\u540E\u5929\u3002\u4F60\u6562\u4E0D\u6562\u53BB\uFF1F\u300D",
     requires: (s) => s.stats.dance >= 15 && !s.flags["first-audition"],
@@ -16034,6 +16035,7 @@ var STORY_EVENTS = [
   },
   {
     id: "burnout",
+    major: true,
     title: "\u6491\u4E0D\u4F4F\u4E86",
     text: "\u8FDE\u7740\u51E0\u5929\u6CA1\u7761\u591F\uFF0C\u4F60\u5728\u6392\u7EC3\u5BA4\u7684\u5730\u677F\u4E0A\u5750\u4E86\u5F88\u4E45\u3002",
     requires: (s) => s.stamina < 20 && !s.flags["burnout"],
@@ -16102,7 +16104,9 @@ var STORY_EVENTS = [
 function findStoryEvent(state) {
   for (const ev of STORY_EVENTS) {
     if (state.pendingEvent === ev.id) return ev;
-    if (!state.flags[`ev:${ev.id}`] && ev.requires(state)) return ev;
+    if (!state.flags[`ev:${ev.id}`] && !state.flags[`ev:${ev.id}:queued`] && ev.requires(state)) {
+      return ev;
+    }
   }
   return null;
 }
@@ -16124,6 +16128,7 @@ function settle(run, schedule, from, to, seed, opts = {}) {
     activePartyId: run.activePartyId ?? null,
     flags: { ...run.flags },
     pendingEvent: run.pendingEvent,
+    eventQueue: [...run.eventQueue ?? []],
     log: [...run.log]
   };
   if (opts.endAt !== void 0 && state.at >= opts.endAt) {
@@ -16220,9 +16225,13 @@ function settle(run, schedule, from, to, seed, opts = {}) {
     if (storyEvents) {
       const story = findStoryEvent(state);
       if (story) {
-        state.pendingEvent = story.id;
-        stoppedReason = "event";
-        break;
+        if (story.major) {
+          state.pendingEvent = story.id;
+          stoppedReason = "event";
+          break;
+        }
+        state.eventQueue = [...state.eventQueue ?? [], story.id];
+        state.flags = { ...state.flags, ["ev:" + story.id + ":queued"]: true };
       }
     }
     if (item.stopAfter) {
