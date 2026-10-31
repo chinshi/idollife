@@ -669,8 +669,7 @@ button.primary small { color: #fff; opacity: 0.8; }
   position: absolute;
   left: 0;
   right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  height: 22px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -736,7 +735,7 @@ button.primary small { color: #fff; opacity: 0.8; }
   position: absolute;
   left: 0;
   right: 0;
-  top: 50%;
+  top: 0;
   will-change: transform;
   backface-visibility: hidden;
 }

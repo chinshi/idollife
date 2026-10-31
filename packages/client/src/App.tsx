@@ -296,6 +296,7 @@ function AppInner() {
   const scheduleRef = useRef<ScheduleItem[]>(boot?.schedule ?? []);
   const batchRef = useRef<{ from: number; prevRun: RunState; prevSchedule: ScheduleItem[] } | null>(null);
   const timelineRef = useRef<HTMLDivElement | null>(null);
+  const [boxH, setBoxH] = useState(0);
   const gameNowRef = useRef<number>(boot?.run?.at ?? T0);
   const resumeAfterEvent = useRef(false);
   const dbgLines = useRef<string[]>([]);
@@ -513,6 +514,16 @@ function AppInner() {
       hiddenCount: done.length - shownDone.length,
     };
   }, [schedule, historyLimit]);
+
+  // 测量时间轴可视高度，用来做整数像素居中（避免文字被小数像素模糊）
+  useEffect(() => {
+    const el = timelineRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setBoxH(el.clientHeight));
+    ro.observe(el);
+    setBoxH(el.clientHeight);
+    return () => ro.disconnect();
+  }, []);
 
   const baseTime = useMemo(
     () => visibleItems[0]?.startAt ?? run.at,
@@ -1262,7 +1273,7 @@ function AppInner() {
           <div className="timeline" ref={timelineRef}>
             <div
               className="timeline-track"
-              style={{ transform: `translate3d(0, ${Math.round((baseTime - gameNow) * pxPerMs)}px, 0)` }}
+              style={{ transform: `translate3d(0, ${Math.round(boxH / 2 + (baseTime - gameNow) * pxPerMs)}px, 0)` }}
             >
               {visibleItems.length === 0 && (
                 <p className="muted tl-empty">还没有安排。点「安排行程」加几个。</p>
@@ -1345,7 +1356,7 @@ function AppInner() {
               })}
             </div>
 
-            <div className="tl-playhead">
+            <div className="tl-playhead" style={{ top: `${Math.round(boxH / 2) - 11}px` }}>
               <span className="tl-arrow" />
               <span className="tl-playhead-text">
                 {running ? (
