@@ -422,7 +422,13 @@ function AppInner() {
 
       if (nowPerf - lastBeat > 2000) {
         lastBeat = nowPerf;
-        dbg('心跳 target=' + String(Math.round(target)) + ' runAt=' + String(runRef.current.at));
+        const fp = scheduleRef.current.filter((s) => !s.done).sort((a, b) => a.startAt - b.startAt)[0];
+        const rest = fp ? Math.max(0, Math.round((fp.endAt - target) / 1000)) : -1;
+        dbg(
+          '心跳 target=' + String(Math.round(target)) +
+          ' runAt=' + String(runRef.current.at) +
+          ' 剩=' + String(rest) + 's',
+        );
       }
 
       // 先清掉已经过期（结束时间早于当前时间）的条，
@@ -1293,6 +1299,9 @@ function AppInner() {
             <div className="side-date">
               第 {todayIndex + 1} 天 · {weekdayName(todayIndex)} · 今日剩余{' '}
               {Math.max(0, 3 - usedToday)}/3
+            </div>
+            <div className="muted small">
+              gameNow={Math.round(gameNow)} / end={Math.round(nextItem?.endAt ?? 0)}
             </div>
             <div className="side-now">
               {running
