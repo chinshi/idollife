@@ -24675,7 +24675,29 @@ app.get("/v1/runs/:id", async (c) => {
 
 // src/vercel.ts
 var config = { runtime: "nodejs" };
+function readBody(req) {
+  return new Promise((resolve) => {
+    const chunks = [];
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      resolve(Buffer.concat(chunks));
+    };
+    req.on("data", (chunk) => chunks.push(chunk));
+    req.on("end", finish);
+    req.on("error", finish);
+    req.on("close", finish);
+    setTimeout(finish, 300);
+  });
+}
 async function handler(req, res) {
+  const fail = (status, payload) => {
+    if (res.headersSent) return;
+    res.statusCode = status;
+    res.setHeader("content-type", "application/json");
+    res.end(JSON.stringify(payload));
+  };
   try {
     const url = `https://${req.headers.host ?? "localhost"}${req.url ?? "/"}`;
     const headers = new Headers();
@@ -24683,27 +24705,24 @@ async function handler(req, res) {
       if (Array.isArray(value)) value.forEach((v) => headers.append(key, v));
       else if (value !== void 0) headers.set(key, value);
     }
-    const chunks = [];
-    for await (const chunk of req) chunks.push(chunk);
-    const hasBody = chunks.length > 0 && req.method !== "GET" && req.method !== "HEAD";
-    const request = new Request(url, {
-      method: req.method ?? "GET",
-      headers,
-      body: hasBody ? Buffer.concat(chunks) : void 0
-    });
-    const response = await app.fetch(request);
+    const method = req.method ?? "GET";
+    const body = await readBody(req);
+    const hasBody = body.length > 0 && method !== "GET" && method !== "HEAD";
+    const request = new Request(url, { method, headers, body: hasBody ? body : void 0 });
+    const response = await Promise.race([
+      app.fetch(request),
+      new Promise(
+        (_, reject) => setTimeout(() => reject(new Error("app.fetch timed out after 9s")), 9e3)
+      )
+    ]);
     res.statusCode = response.status;
     response.headers.forEach((value, key) => res.setHeader(key, value));
     res.end(Buffer.from(await response.arrayBuffer()));
   } catch (err) {
-    res.statusCode = 500;
-    res.setHeader("content-type", "application/json");
-    res.end(
-      JSON.stringify({
-        error: "function crashed",
-        detail: err instanceof Error ? `${err.name}: ${err.message}` : String(err)
-      })
-    );
+    fail(500, {
+      error: "function crashed",
+      detail: err instanceof Error ? `${err.name}: ${err.message}` : String(err)
+    });
   }
 }
 export {
