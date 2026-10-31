@@ -771,10 +771,17 @@ button.primary small { color: #fff; opacity: 0.8; }
   background: linear-gradient(90deg, rgba(249,124,18,0.55), rgba(249,124,18,0.05));
 }
 .tl-remain { font-style: normal; color: var(--accent); }
-/* 安排行程：固定高度，两栏各自滚动，按钮位置稳定 */
+/* 安排行程：弹窗内部固定高度，两栏各自滚动，外层不出现滚动条 */
+.modal.wide .modal-body {
+  display: flex;
+  flex-direction: column;
+  height: 72vh;
+}
 .plan {
-  height: 62vh;
-  min-height: 320px;
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+  overflow: hidden;
 }
 .plan-actions,
 .plan-preview {
