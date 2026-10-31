@@ -249,7 +249,7 @@ export default function App() {
   const [bagTab, setBagTab] = useState<BagTab>('equip');
   const [forceLogin, setForceLogin] = useState(false);
 
-  const snapshot = useRef<{ run: RunState; schedule: ScheduleItem[] } | null>(null);
+  const [snapshot, setSnapshot] = useState<{ run: RunState; schedule: ScheduleItem[] } | null>(null);
 
   useEffect(() => {
     void getSessionUser().then((u) => {
@@ -411,7 +411,7 @@ export default function App() {
     if (!requireLogin()) return;
     if (schedule.length === 0) return;
 
-    snapshot.current = { run, schedule };
+    setSnapshot({ run, schedule });
 
     const prevRun = run;
     const prevSchedule = schedule;
@@ -448,15 +448,14 @@ export default function App() {
     );
     if (!ok) return;
 
-    const snap = snapshot.current;
-    if (snap) {
-      setRun(snap.run);
+    if (snapshot) {
+      setRun(snapshot.run);
       setNotice('本批行程已作废。');
     } else {
       setNotice('排程已清空（没有可回滚的本批记录）。');
     }
     setSchedule([]);
-    snapshot.current = null;
+    setSnapshot(null);
   }
 
   function openPartyModal() {
@@ -685,7 +684,7 @@ export default function App() {
           <button className="primary" onClick={advance} disabled={schedule.length === 0}>
             开始推进
           </button>
-          <button onClick={stopCurrent} disabled={schedule.length === 0}>
+          <button onClick={stopCurrent} disabled={!snapshot && schedule.length === 0}>
             停止当前行程
           </button>
           <button onClick={doShow} disabled={run.stamina < 30 || phase !== 'playing'}>
