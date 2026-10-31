@@ -24,6 +24,7 @@ function baseRun(): RunState {
     fans: createFans(100),
     flags: {},
     pendingEvent: null,
+    eventQueue: [],
     log: [],
   };
 }

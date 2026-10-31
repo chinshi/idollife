@@ -22,6 +22,7 @@ function run(overrides: Partial<RunState> = {}): RunState {
     fans: createFans(100),
     flags: {},
     pendingEvent: null,
+    eventQueue: [],
     log: [],
     ...overrides,
   };

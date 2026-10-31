@@ -20,6 +20,8 @@ export interface StoryEvent {
   id: string;
   title: string;
   text: string;
+  /** 重点事件：触发即暂停时间 */
+  major?: boolean;
   /** 触发条件（纯函数，便于测试） */
   requires: (s: RunState) => boolean;
   choices: Choice[];
@@ -52,6 +54,7 @@ export const ROUTINE_TEMPLATES: RoutineTemplate[] = [
 export const STORY_EVENTS: StoryEvent[] = [
   {
     id: 'first-audition',
+    major: true,
     title: '一个试镜机会',
     text: '经纪人推门进来：「有个小场子的试镜，后天。你敢不敢去？」',
     requires: (s) => s.stats.dance >= 15 && !s.flags['first-audition'],
@@ -103,6 +106,7 @@ export const STORY_EVENTS: StoryEvent[] = [
   },
   {
     id: 'burnout',
+    major: true,
     title: '撑不住了',
     text: '连着几天没睡够，你在排练室的地板上坐了很久。',
     requires: (s) => s.stamina < 20 && !s.flags['burnout'],
@@ -172,7 +176,9 @@ export const STORY_EVENTS: StoryEvent[] = [
 export function findStoryEvent(state: RunState): StoryEvent | null {
   for (const ev of STORY_EVENTS) {
     if (state.pendingEvent === ev.id) return ev;
-    if (!state.flags[`ev:${ev.id}`] && ev.requires(state)) return ev;
+    if (!state.flags[`ev:${ev.id}`] && !state.flags[`ev:${ev.id}:queued`] && ev.requires(state)) {
+      return ev;
+    }
   }
   return null;
 }
@@ -196,6 +202,7 @@ export function applyChoice(state: RunState, eventId: string, choiceId: string):
     axes: { ...state.axes },
     flags: { ...state.flags },
     pendingEvent: null,
+    eventQueue: (state.eventQueue ?? []).filter((id) => id !== eventId),
     log: [...state.log],
   };
 
@@ -208,7 +215,10 @@ export function applyChoice(state: RunState, eventId: string, choiceId: string):
     next.axes[key] = clamp(next.axes[key] + (v ?? 0));
   }
 
-  if (choice.setFlag) next.flags[`ev:${choice.setFlag}`] = true;
+  if (choice.setFlag) {
+    next.flags[`ev:${choice.setFlag}`] = true;
+    delete next.flags[`ev:${choice.setFlag}:queued`];
+  }
 
   next.log.push({
     at: next.at,

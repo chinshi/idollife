@@ -77,8 +77,10 @@ export interface RunState {
   /** 已装备的槽位 → 物品 id */
   equipped: { outfit?: string };
   flags: Record<string, boolean | number>;
-  /** 待玩家抉择的剧情事件 id；不为空时不能继续推进 */
+  /** 重点事件（会暂停时间），不为空时不能继续推进 */
   pendingEvent: string | null;
+  /** 普通事件队列：不暂停时间，玩家有空再处理 */
+  eventQueue: string[];
   log: LogEntry[];
 }
 

@@ -57,6 +57,7 @@ export function loadSave(): SaveV1 | null {
         equipped: run.equipped ?? {},
         flags: run.flags ?? {},
         pendingEvent: run.pendingEvent ?? null,
+        eventQueue: run.eventQueue ?? [],
       },
       schedule: data.schedule as ScheduleItem[],
     };

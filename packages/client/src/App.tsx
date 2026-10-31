@@ -74,6 +74,7 @@ const initialRun: RunState = {
   equipped: {},
   flags: {},
   pendingEvent: null,
+  eventQueue: [],
   log: [],
 };
 
@@ -283,6 +284,7 @@ function AppInner() {
   const resumeAfterEvent = useRef(false);
   const dbgLines = useRef<string[]>([]);
   const [showDebug, setShowDebug] = useState(false);
+  const [activeEventId, setActiveEventId] = useState<string | null>(null);
   const [debugText, setDebugText] = useState('');
 
   const pulledFor = useRef<string | null>(null);
@@ -616,6 +618,11 @@ function AppInner() {
   function advance() {
     if (!requireLogin()) return;
     if (pending.length === 0 || running) return;
+    if (run.pendingEvent) {
+      setNotice('先处理重点事件，时间已暂停。');
+      setActiveEventId(run.pendingEvent);
+      return;
+    }
 
     setSnapshot({ run, schedule });
     batchRef.current = { from: run.at, prevRun: run, prevSchedule: schedule };
@@ -784,16 +791,17 @@ function AppInner() {
     void pushWholeState(next);
   }
 
-  async function choose(choiceId: string) {
-    if (!run.pendingEvent) return;
-    const next = applyChoice(run, run.pendingEvent, choiceId);
+  async function choose(eventId: string, choiceId: string) {
+    const wasMajor = run.pendingEvent === eventId;
+    const next = applyChoice(run, eventId, choiceId);
+    setActiveEventId(null);
     setRun(next);
     setNotice('选择已记录。');
     dbg('选择 ' + choiceId);
     await pushWholeState(next);
 
     const rest = schedule.filter((s) => !s.done);
-    if (resumeAfterEvent.current && rest.length > 0) {
+    if (wasMajor && resumeAfterEvent.current && rest.length > 0) {
       resumeAfterEvent.current = false;
       setSnapshot(null);
       batchRef.current = { from: next.at, prevRun: next, prevSchedule: schedule };
@@ -1061,6 +1069,29 @@ function AppInner() {
         </div>
 
         <aside className="col-side">
+          {(run.pendingEvent || run.eventQueue.length > 0) && (
+            <div className={run.pendingEvent ? 'event-box major' : 'event-box'}>
+              <div className="event-head">
+                {run.pendingEvent ? '重点事件 · 时间已暂停' : '待处理事件'}
+              </div>
+              {run.pendingEvent && (
+                <button
+                  className="event-item major"
+                  onClick={() => setActiveEventId(run.pendingEvent)}
+                >
+                  <span>{getStoryEvent(run.pendingEvent)?.title ?? '事件'}</span>
+                  <em>立刻处理 →</em>
+                </button>
+              )}
+              {run.eventQueue.map((id) => (
+                <button key={id} className="event-item" onClick={() => setActiveEventId(id)}>
+                  <span>{getStoryEvent(id)?.title ?? id}</span>
+                  <em>处理 →</em>
+                </button>
+              ))}
+            </div>
+          )}
+
           <div className="side-head">
             <button className="primary wide" onClick={() => setShowActions(true)}>
               安排行程
@@ -1201,17 +1232,20 @@ function AppInner() {
         </aside>
       </main>
 
-      {run.pendingEvent &&
+      {activeEventId &&
         (() => {
-          const ev = getStoryEvent(run.pendingEvent);
+          const ev = getStoryEvent(activeEventId);
           if (!ev) return null;
           return (
-            <Modal title="需要你决定">
+            <Modal
+              title={ev.major ? '重点事件' : '事件'}
+              onClose={() => setActiveEventId(null)}
+            >
               <h4>{ev.title}</h4>
               <p>{ev.text}</p>
               <div className="choices">
                 {ev.choices.map((c) => (
-                  <button key={c.id} onClick={() => void choose(c.id)}>
+                  <button key={c.id} onClick={() => void choose(activeEventId, c.id)}>
                     {c.label}
                   </button>
                 ))}

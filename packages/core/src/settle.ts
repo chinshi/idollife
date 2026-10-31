@@ -48,6 +48,7 @@ export function settle(
     activePartyId: run.activePartyId ?? null,
     flags: { ...run.flags },
     pendingEvent: run.pendingEvent,
+    eventQueue: [...(run.eventQueue ?? [])],
     log: [...run.log],
   };
 
@@ -158,13 +159,17 @@ export function settle(
       });
     }
 
-    // 剧情事件：一旦触发就停下，等玩家抉择
+    // 剧情事件：重点事件暂停时间，普通事件进队列不打断
     if (storyEvents) {
       const story = findStoryEvent(state);
       if (story) {
-        state.pendingEvent = story.id;
-        stoppedReason = 'event';
-        break;
+        if (story.major) {
+          state.pendingEvent = story.id;
+          stoppedReason = 'event';
+          break;
+        }
+        state.eventQueue = [...(state.eventQueue ?? []), story.id];
+        state.flags = { ...state.flags, ['ev:' + story.id + ':queued']: true };
       }
     }
 

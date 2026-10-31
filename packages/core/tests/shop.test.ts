@@ -22,6 +22,7 @@ function base(overrides: Partial<RunState> = {}): RunState {
     equipped: {},
     flags: {},
     pendingEvent: null,
+    eventQueue: [],
     log: [],
     ...overrides,
   };
