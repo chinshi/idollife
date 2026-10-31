@@ -565,7 +565,11 @@ button.primary small { color: #fff; opacity: 0.8; }
   text-align: center;
   width: 100%;
 }
-.col-side { overflow: hidden; }
+.col-side {
+  overflow: hidden;
+  height: calc(100vh - 24px);
+  max-height: calc(100vh - 24px);
+}
 .timeline { flex: 1 1 0; min-height: 260px; }
 .plan { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 18px; }
 .plan-actions {
@@ -607,16 +611,13 @@ button.primary small { color: #fff; opacity: 0.8; }
 .plan-actions::-webkit-scrollbar, .plan-preview::-webkit-scrollbar { width: 6px; }
 .plan-actions::-webkit-scrollbar-thumb, .plan-preview::-webkit-scrollbar-thumb { background: #ccd4e3; border-radius: 3px; }
 
-.timeline-inner {
-  transition: transform 0.16s linear;
-  will-change: transform;
-}
+
 /* ===== 时间轴：按时间映射位置（不再滚动/不再位移） ===== */
 .timeline {
   position: relative;
   overflow: hidden;
   flex: 1 1 0;
-  min-height: 260px;
+  min-height: 240px;
 }
 .timeline-inner {
   position: absolute;
@@ -708,5 +709,7 @@ button.primary small { color: #fff; opacity: 0.8; }
   top: 50%;
   transform: translateY(-50%);
 }
-/* 行用 transform 定位，禁用额外过渡避免残影 */
-.tl-item, .tl-day-mark { transition: none; will-change: transform; }
+/* 行用 transform 定位，禁用过渡避免残影 */
+.tl-item, .tl-day-mark { transition: none; }
+/* 行动完成瞬间不要有过渡，避免残影 */
+.tl-item, .tl-item * { transition: none !important; }
