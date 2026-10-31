@@ -1,0 +1,10 @@
+{
+  "_说明": "NPC 队友表：namePool 是随机名字池；biases 是偏向分布",
+  "members": {
+    "namePool": [
+      "林小满", "周予", "陈一诺", "苏晚", "何昭", "许知",
+      "郑夏", "唐澄", "白露", "顾南", "沈青", "叶绫"
+    ],
+    "biases": ["vocal", "dance", "acting", "talk", "balanced"]
+  }
+}

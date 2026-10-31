@@ -1,0 +1,17 @@
+{
+  "_说明": "全局数值表。改这里就能调平衡，不需要碰代码",
+  "balance": {
+    "actionMinutes": 1,
+    "dailySlots": 3,
+    "showSlots": 3,
+    "startMoney": 8000,
+    "rentPerWeek": 500,
+    "debutThreshold": 120,
+    "routineChance": 0.45,
+    "recruitCost": 500,
+    "dupCap": 10,
+    "npcBaseRatio": 0.9,
+    "runDays": 730,
+    "divinationBase": 100
+  }
+}

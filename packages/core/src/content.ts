@@ -1,13 +1,14 @@
-import type { ActionDef } from './types';
+import { BALANCE, RAW_ACTIONS } from './data';
+import type { ActionCategory, ActionDef, StatKey } from './types';
 
 const MIN = 60_000;
 
-/** 一个行动流逝多少游戏分钟（测试期改成 1，正式值见 docs/02） */
-export const ACTION_MINUTES = 1;
+/** 一个行动流逝多少游戏分钟 */
+export const ACTION_MINUTES = BALANCE.actionMinutes;
 
-/** 每天的行动位：每天 3 个；周末一场演出直接占满 3 个 */
-export const DAILY_SLOTS = 3;
-export const SHOW_SLOTS = 3;
+/** 每天的行动位 */
+export const DAILY_SLOTS = BALANCE.dailySlots;
+export const SHOW_SLOTS = BALANCE.showSlots;
 
 /** 游戏内一天 = 3 个行动位的时长（日历按行动走，不按 24 小时走） */
 export const DAY_MS = DAILY_SLOTS * ACTION_MINUTES * MIN;
@@ -15,82 +16,39 @@ export const DAY_MS = DAILY_SLOTS * ACTION_MINUTES * MIN;
 /** 游戏内一周 = 7 天 */
 export const WEEK_MS = 7 * DAY_MS;
 
-/** 一周目长度：游戏内 2 年 */
-export const RUN_LENGTH_MS = 730 * DAY_MS;
+/** 一周目长度 */
+export const RUN_LENGTH_MS = BALANCE.runDays * DAY_MS;
+
+/** 每周房租（结算时自动扣） */
+export const RENT_PER_WEEK = BALANCE.rentPerWeek;
+
+/** 开局资金 */
+export const START_MONEY = BALANCE.startMoney;
+
+/** 出道门槛：四项属性之和 */
+export const DEBUT_THRESHOLD = BALANCE.debutThreshold;
 
 export const SHOW_ACTION_ID = 'show';
 export const SHOW_DURATION_MS = SHOW_SLOTS * ACTION_MINUTES * MIN;
 
-/** 每周房租（记在结算里自动扣） */
-export const RENT_PER_WEEK = 500;
-
-/** 开局资金 */
-export const START_MONEY = 8000;
-
-/** 出道门槛：四项属性和 */
-export const DEBUT_THRESHOLD = 120;
-
-/** P0 行动表 */
-export const ACTIONS: Record<string, ActionDef> = {
-  'vocal-karaoke': {
-    id: 'vocal-karaoke',
-    name: '唱 K',
-    category: 'growth',
-    stat: 'vocal',
-    stamina: -10,
-    gain: [1, 3],
-    cost: 50,
-    durationMs: ACTION_MINUTES * MIN,
-    text: '你在包厢里唱了两小时，嗓子有点热。（演唱 +{n}）',
-  },
-  'dance-otaku': {
-    id: 'dance-otaku',
-    name: '跳宅舞',
-    category: 'growth',
-    stat: 'dance',
-    stamina: -12,
-    gain: [1, 3],
-    durationMs: ACTION_MINUTES * MIN,
-    text: '对着镜子把同一段副歌跳了二十遍。（舞蹈 +{n}）',
-  },
-  'acting-short': {
-    id: 'acting-short',
-    name: '自拍小短剧',
-    category: 'growth',
-    stat: 'acting',
-    stamina: -10,
-    gain: [1, 2],
-    durationMs: ACTION_MINUTES * MIN,
-    text: '自导自演拍了三条，第二条最好。（演技 +{n}）',
-  },
-  'talk-selftalk': {
-    id: 'talk-selftalk',
-    name: '自说自话',
-    category: 'growth',
-    stat: 'talk',
-    stamina: -8,
-    gain: [1, 2],
-    durationMs: ACTION_MINUTES * MIN,
-    text: '对着镜头练了一下午串场词。（口才 +{n}）',
-  },
-  'work-part-time': {
-    id: 'work-part-time',
-    name: '打工',
-    category: 'work',
-    stamina: -20,
-    money: 320,
-    durationMs: ACTION_MINUTES * MIN,
-    text: '在便利店站了四个小时，脚有点麻。（收入 +320）',
-  },
-  'rest-sleep': {
-    id: 'rest-sleep',
-    name: '爆睡',
-    category: 'recover',
-    stamina: 25,
-    durationMs: ACTION_MINUTES * MIN,
-    text: '睡了一觉，感觉活过来了。',
-  },
-};
+/** 行动表（来自 data/actions.json） */
+export const ACTIONS: Record<string, ActionDef> = Object.fromEntries(
+  RAW_ACTIONS.map((a) => [
+    a.id,
+    {
+      id: a.id,
+      name: a.name,
+      category: a.category as ActionCategory,
+      stat: a.stat as StatKey | undefined,
+      stamina: a.stamina,
+      gain: a.gain as [number, number] | undefined,
+      cost: a.cost,
+      money: a.money,
+      durationMs: ACTION_MINUTES * MIN,
+      text: a.text,
+    } satisfies ActionDef,
+  ]),
+);
 
 export const ACTION_LIST = Object.values(ACTIONS);
 

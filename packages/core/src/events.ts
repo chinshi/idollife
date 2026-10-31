@@ -1,5 +1,5 @@
-import type { Axes, RunState, Stats } from './types.js';
-import { tierOf } from './types.js';
+import { RAW_ROUTINE, RAW_STORY, type RawRequires } from './data';
+import type { Axes, RunState, Stats } from './types';
 
 export interface ChoiceEffects {
   stats?: Partial<Stats>;
@@ -22,7 +22,7 @@ export interface StoryEvent {
   text: string;
   /** 重点事件：触发即暂停时间 */
   major?: boolean;
-  /** 触发条件（纯函数，便于测试） */
+  /** 触发条件 */
   requires: (s: RunState) => boolean;
   choices: Choice[];
 }
@@ -36,142 +36,67 @@ export interface RoutineTemplate {
   gain?: number;
 }
 
-export const ROUTINE_TEMPLATES: RoutineTemplate[] = [
-  { id: 'r-rehearsal', text: '排练室空着，你多练了半小时。', stamina: -3, stat: 'dance', gain: 1 },
-  { id: 'r-convenience', text: '便利店的关东煮打折，你买了一份。', stamina: 4 },
-  { id: 'r-train', text: '末班车上有人认出你，小声说了句加油。', stamina: 2, stat: 'vocal', gain: 1 },
-  { id: 'r-note', text: '你在手机备忘录里写下一句歌词。', stamina: -1, stat: 'acting', gain: 1 },
-  { id: 'r-tired', text: '今天状态一般，练得有点散。', stamina: -2 },
-  { id: 'r-mirror', text: '对着镜子调整了很久的表情。', stamina: -2, stat: 'talk', gain: 1 },
-  { id: 'r-rain', text: '下雨了，你在地铁口等了很久。', stamina: -1 },
-  { id: 'r-fan-gift', text: '有粉丝塞给你一包糖，没敢多说话。', stamina: 3 },
-  { id: 'r-roommate', text: '室友在客厅看电视，你戴着耳机练动作。', stamina: -2, stat: 'dance', gain: 1 },
-  { id: 'r-callback', text: '经纪人发来一条没头没尾的消息：「下周再说」。', stamina: 0 },
-  { id: 'r-old-video', text: '你翻到自己一年前的练习视频，看完了。', stamina: -1, stat: 'acting', gain: 1 },
-  { id: 'r-night', text: '凌晨的便利店，只有你和店员。', stamina: 2, stat: 'talk', gain: 1 },
-];
+/** 常规事件表（来自 data/events.json 的 routine） */
+export const ROUTINE_TEMPLATES: RoutineTemplate[] = RAW_ROUTINE.map((r) => ({
+  id: r.id,
+  text: r.text,
+  stamina: r.stamina,
+  stat: r.stat as keyof Stats | undefined,
+  gain: r.gain,
+}));
 
-export const STORY_EVENTS: StoryEvent[] = [
-  {
-    id: 'first-audition',
-    major: true,
-    title: '一个试镜机会',
-    text: '经纪人推门进来：「有个小场子的试镜，后天。你敢不敢去？」',
-    requires: (s) => s.stats.dance >= 15 && !s.flags['first-audition'],
-    choices: [
-      {
-        id: 'go',
-        label: '去，反正也没什么可输的',
-        text: '你去了。台下只有五个人，但你跳完了整支舞。',
-        effects: { stamina: -10, axes: { self: 8, others: 4, fit: 3 } },
-        setFlag: 'first-audition',
-      },
-      {
-        id: 'prepare',
-        label: '再练两天，准备充分再去',
-        text: '你多练了两天，动作更稳了，但也错过了这次机会。',
-        effects: { stamina: -5, stats: { dance: 2 }, axes: { self: 3, fit: 5 } },
-        setFlag: 'first-audition',
-      },
-      {
-        id: 'skip',
-        label: '算了，还没准备好',
-        text: '你说下次吧。经纪人没再说什么。',
-        effects: { axes: { self: -6, others: -2 } },
-        setFlag: 'first-audition',
-      },
-    ],
-  },
-  {
-    id: 'fan-letter',
-    title: '第一封信',
-    text: '后台收到一封手写信，字迹很认真：「谢谢你上周那场演出。」',
-    requires: (s) => s.axes.others >= 45 && !s.flags['fan-letter'],
-    choices: [
-      {
-        id: 'reply',
-        label: '回一封',
-        text: '你写了回信。一周后，她又来了，还带了朋友。',
-        effects: { axes: { others: 6, self: 3 } },
-        setFlag: 'fan-letter',
-      },
-      {
-        id: 'keep',
-        label: '收起来，好好保存',
-        text: '你把信夹进笔记本里，没跟任何人说。',
-        effects: { axes: { self: 5 } },
-        setFlag: 'fan-letter',
-      },
-    ],
-  },
-  {
-    id: 'burnout',
-    major: true,
-    title: '撑不住了',
-    text: '连着几天没睡够，你在排练室的地板上坐了很久。',
-    requires: (s) => s.stamina < 20 && !s.flags['burnout'],
-    choices: [
-      {
-        id: 'rest',
-        label: '请两天假，好好睡一觉',
-        text: '你睡了一整天，醒来时天已经黑了。',
-        effects: { stamina: 40, axes: { self: 4 } },
-        setFlag: 'burnout',
-      },
-      {
-        id: 'push',
-        label: '咬牙继续',
-        text: '你继续练，但动作开始变形。',
-        effects: { stamina: -5, stats: { dance: 1 }, axes: { self: -5, fit: 2 } },
-        setFlag: 'burnout',
-      },
-    ],
-  },
-  {
-    id: 'crowded-fans',
-    title: '有人举你的名字',
-    text: '前排有人举起了写着你的灯牌，你差点忘了下一句歌词。',
-    requires: (s) => s.fans.byType.stage >= 50 && !s.flags['ev:crowded-fans'],
-    choices: [
-      {
-        id: 'look',
-        label: '看过去，笑一下',
-        text: '她愣了一下，然后喊得更大声了。',
-        effects: { axes: { others: 6, self: 2 }, stamina: 3 },
-        setFlag: 'crowded-fans',
-      },
-      {
-        id: 'focus',
-        label: '专心唱完这首歌',
-        text: '你没有抬头，但把这首歌唱到了最好。',
-        effects: { axes: { fit: 6, self: 4 }, stats: { vocal: 1 } },
-        setFlag: 'crowded-fans',
-      },
-    ],
-  },
-  {
-    id: 'manager-doubt',
-    title: '经纪人的犹豫',
-    text: '「你最近……还撑得住吗？」他把话说到一半又咽了回去。',
-    requires: (s) => s.axes.fit < 34 && !s.flags['ev:manager-doubt'],
-    choices: [
-      {
-        id: 'honest',
-        label: '说实话，我不太确定',
-        text: '他沉默了很久，说「那就慢一点」。',
-        effects: { axes: { self: 7, others: 3 }, stamina: 5 },
-        setFlag: 'manager-doubt',
-      },
-      {
-        id: 'brave',
-        label: '我没事，再给我点时间',
-        text: '他点点头，把下一场演出的资料推给你。',
-        effects: { axes: { self: -3, others: 5, fit: 4 }, stamina: -5 },
-        setFlag: 'manager-doubt',
-      },
-    ],
-  },
-];
+/** 把 JSON 里的触发条件翻译成函数 */
+function makeRequires(req?: RawRequires): (s: RunState) => boolean {
+  return (s: RunState) => {
+    if (req?.statsAtLeast) {
+      for (const [k, v] of Object.entries(req.statsAtLeast)) {
+        if (s.stats[k as keyof Stats] < v) return false;
+      }
+    }
+    if (req?.axesAtLeast) {
+      for (const [k, v] of Object.entries(req.axesAtLeast)) {
+        if (s.axes[k as keyof Axes] < v) return false;
+      }
+    }
+    if (req?.axesBelow) {
+      for (const [k, v] of Object.entries(req.axesBelow)) {
+        if (s.axes[k as keyof Axes] >= v) return false;
+      }
+    }
+    if (typeof req?.staminaBelow === 'number' && s.stamina >= req.staminaBelow) return false;
+    if (req?.fansAtLeast) {
+      for (const [k, v] of Object.entries(req.fansAtLeast)) {
+        if (((s.fans.byType as Record<string, number>)[k] ?? 0) < v) return false;
+      }
+    }
+    if (req?.flagsNot) {
+      for (const f of req.flagsNot) {
+        if (s.flags[f]) return false;
+      }
+    }
+    return true;
+  };
+}
+
+/** 剧情事件表（来自 data/events.json 的 story） */
+export const STORY_EVENTS: StoryEvent[] = RAW_STORY.map((e) => ({
+  id: e.id,
+  title: e.title,
+  text: e.text,
+  major: e.major,
+  requires: makeRequires(e.requires),
+  choices: e.choices.map((c) => ({
+    id: c.id,
+    label: c.label,
+    text: c.text,
+    effects: {
+      stamina: c.effects.stamina,
+      stats: c.effects.stats as Partial<Stats> | undefined,
+      axes: c.effects.axes as Partial<Axes> | undefined,
+    },
+    setFlag: c.setFlag,
+  })),
+}));
 
 export function findStoryEvent(state: RunState): StoryEvent | null {
   for (const ev of STORY_EVENTS) {
@@ -223,7 +148,7 @@ export function applyChoice(state: RunState, eventId: string, choiceId: string):
   next.log.push({
     at: next.at,
     actionId: `event:${ev.id}`,
-    text: `${choice.text}`,
+    text: choice.text,
     staminaDelta: choice.effects.stamina ?? 0,
     statDelta: (choice.effects.stats ?? {}) as Partial<Stats>,
     axesChanged: Object.keys(choice.effects.axes ?? {}).length > 0,

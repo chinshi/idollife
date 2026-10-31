@@ -10,3 +10,4 @@ export * from './shows';
 export * from './members';
 export * from './shop';
 export * from './divination';
+export * from './data';

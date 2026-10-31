@@ -1,0 +1,16 @@
+{
+  "_说明": "日志/系统文案表。{n} 会被替换成数值，{name} 会被替换成名字",
+  "logs": {
+    "rent": "房租扣了 {n}。",
+    "show": "演出结束（{grade}）。{report}",
+    "recruitNew": "招募到了 {name}（{bias}）。",
+    "recruitDup": "{name} 又来了，默契 +1%（累计 {n}）。",
+    "buy": "买下了「{name}」（{stat} +{n}）。",
+    "equip": "换上了「{name}」。",
+    "debut": "你正式出道了。从现在起，可以组建自己的组合。",
+    "createParty": "创建了组合「{name}」。",
+    "divination": "占卜：自我{self} / 他人{others} / 适配{fit}。",
+    "startAdvance": "开始推进（{n} 条待执行）",
+    "stopAdvance": "已停止：当前这条行动作废，其余行程保留。"
+  }
+}

@@ -4,17 +4,16 @@ import type { Bias, Member, Party, RunState, Stats } from './types';
 
 export type { Bias, Member };
 
-export const RECRUIT_COST = 500;
-export const DUP_CAP = 10;
-/** NPC 初始强度是主角的 90% */
-export const NPC_BASE_RATIO = 0.9;
+import membersJson from '../data/members.json';
+import { BALANCE } from './data';
 
-const NAMES = [
-  '林小满', '周予', '陈一诺', '苏晚', '何昭', '许知',
-  '郑夏', '唐澄', '白露', '顾南', '沈青', '叶绫',
-];
+export const RECRUIT_COST = BALANCE.recruitCost;
+export const DUP_CAP = BALANCE.dupCap;
+/** NPC 初始强度相对主角 */
+export const NPC_BASE_RATIO = BALANCE.npcBaseRatio;
 
-const BIASES: Bias[] = ['vocal', 'dance', 'acting', 'talk', 'balanced'];
+const NAMES = membersJson.members.namePool;
+const BIASES = membersJson.members.biases as Bias[];
 
 export type PartyResult = 'ok' | 'not-debuted' | 'not-found' | 'no-party';
 export type RecruitResult = 'new' | 'dup' | 'poor' | 'no-party';

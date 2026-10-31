@@ -1,0 +1,63 @@
+/**
+ * 内容配置入口：所有「可以改内容」的东西都在 packages/core/data/*.json
+ * 这里只做加载与类型收口，不要在代码里写死文案/数值。
+ */
+import actionsJson from '../data/actions.json';
+import balanceJson from '../data/balance.json';
+import eventsJson from '../data/events.json';
+
+export const BALANCE = balanceJson.balance;
+
+export interface RawAction {
+  id: string;
+  name: string;
+  category: string;
+  stat?: string;
+  stamina: number;
+  gain?: [number, number];
+  cost?: number;
+  money?: number;
+  text: string;
+}
+
+export interface RawRoutine {
+  id: string;
+  text: string;
+  stamina: number;
+  stat?: string;
+  gain?: number;
+}
+
+export interface RawRequires {
+  statsAtLeast?: Record<string, number>;
+  axesAtLeast?: Record<string, number>;
+  axesBelow?: Record<string, number>;
+  staminaBelow?: number;
+  fansAtLeast?: Record<string, number>;
+  flagsNot?: string[];
+}
+
+export interface RawChoice {
+  id: string;
+  label: string;
+  text: string;
+  effects: {
+    stamina?: number;
+    stats?: Record<string, number>;
+    axes?: Record<string, number>;
+  };
+  setFlag?: string;
+}
+
+export interface RawStory {
+  id: string;
+  title: string;
+  text: string;
+  major?: boolean;
+  requires?: RawRequires;
+  choices: RawChoice[];
+}
+
+export const RAW_ACTIONS = actionsJson.actions as RawAction[];
+export const RAW_ROUTINE = eventsJson.routine as RawRoutine[];
+export const RAW_STORY = eventsJson.story as RawStory[];

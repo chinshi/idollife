@@ -1,26 +1,23 @@
+import shopJson from '../data/shop.json';
 import { WEEK_MS } from './content';
 import { hashSeed, mulberry32 } from './rng';
 import type { EquipItem, RunState, StatKey, Stats } from './types';
 
 export const SLOT_LABEL = '服装';
-const COMMON_PRICE = 800;
-const RARE_PRICE = 2000;
+const COMMON_PRICE = shopJson.shop.commonPrice;
+const RARE_PRICE = shopJson.shop.rarePrice;
 
-const OUTFITS = [
-  { name: '素色练习服', stat: 'dance' as StatKey, value: 2 },
-  { name: '旧卫衣', stat: 'dance' as StatKey, value: 2 },
-  { name: '白衬衫', stat: 'acting' as StatKey, value: 2 },
-  { name: '针织开衫', stat: 'vocal' as StatKey, value: 2 },
-  { name: '运动外套', stat: 'dance' as StatKey, value: 2 },
-  { name: '宽松T恤', stat: 'talk' as StatKey, value: 2 },
-];
+const OUTFITS = shopJson.shop.common.map((o) => ({
+  name: o.name,
+  stat: o.stat as StatKey,
+  value: o.value,
+}));
 
-const RARE_OUTFITS = [
-  { name: '打歌服·初版', stat: 'dance' as StatKey, value: 5 },
-  { name: '古风长裙', stat: 'acting' as StatKey, value: 5 },
-  { name: 'Lolita 套装', stat: 'talk' as StatKey, value: 5 },
-  { name: '摇滚夹克', stat: 'vocal' as StatKey, value: 5 },
-];
+const RARE_OUTFITS = shopJson.shop.rare.map((o) => ({
+  name: o.name,
+  stat: o.stat as StatKey,
+  value: o.value,
+}));
 
 /** 当前游戏周（从 0 起） */
 export function weekOf(at: number): number {

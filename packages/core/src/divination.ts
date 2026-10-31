@@ -3,7 +3,9 @@ import type { RunState, Tier } from './types';
 import { tierOf } from './types';
 
 /** 第一次占卜 100，同一天内每再占一次翻倍 */
-export const DIVINATION_BASE = 100;
+import { BALANCE } from './data';
+
+export const DIVINATION_BASE = BALANCE.divinationBase;
 
 /** 今天已经占了几次（跨天自动归零） */
 export function divinationCountToday(state: RunState): number {

@@ -1,4 +1,5 @@
 import { ACTIONS, RENT_PER_WEEK, SHOW_ACTION_ID, WEEK_MS } from './content';
+import { BALANCE } from './data';
 import { createFans } from './fans';
 import { applyShow, performShow } from './shows';
 import { ROUTINE_TEMPLATES, findStoryEvent } from './events';
@@ -8,7 +9,7 @@ import type { RunState, ScheduleItem, SettleResult, Stats, StopReason } from './
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
 
 /** 每个行动后触发常规事件的概率 */
-const ROUTINE_CHANCE = 0.45;
+const ROUTINE_CHANCE = BALANCE.routineChance;
 
 /**
  * 纯结算函数：给定状态、排程、时间区间与种子，算出这段时间发生了什么。
