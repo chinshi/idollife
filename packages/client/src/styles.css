@@ -199,3 +199,88 @@ button.primary small { color: #fff; opacity: 0.8; }
 }
 .shop li:first-child { border-top: none; }
 .shop .name { flex: 1; }
+/* ---------- 开始页 ---------- */
+.landing {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px;
+}
+.landing-title { font-size: 34px; margin: 0; letter-spacing: 2px; }
+.landing-sub { margin: 0 0 12px; color: var(--muted); font-size: 13px; }
+.landing-card { width: min(360px, 92vw); }
+
+/* ---------- 弹窗 ---------- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 24, 35, 0.42);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 50;
+}
+.modal {
+  width: min(520px, 96vw);
+  max-height: 86vh;
+  overflow: auto;
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  box-shadow: 0 20px 60px rgba(20, 24, 35, 0.18);
+}
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+}
+.modal-head h3 { margin: 0; font-size: 16px; }
+.modal-body { padding: 14px 18px 18px; }
+.modal-body h4 { margin: 0 0 8px; font-size: 15px; }
+.icon-btn { border: none; background: transparent; font-size: 20px; line-height: 1; padding: 2px 6px; }
+
+/* ---------- 表单 ---------- */
+.field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; font-size: 13px; }
+.field span { color: var(--muted); }
+.field input {
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font: inherit;
+}
+.wide { width: 100%; }
+
+/* ---------- 行程 ---------- */
+.panel-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.panel-head h2 { margin: 0; }
+.sched li { display: flex; align-items: center; gap: 8px; }
+.when { font-size: 12px; color: var(--accent); min-width: 34px; }
+.idx { font-size: 12px; color: var(--muted); min-width: 52px; }
+.stop-btn {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 8px;
+  padding: 2px 6px;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #9aa4b8;
+}
+.stop-btn.on { background: #fff1e6; border-color: #f0c193; color: #c46a14; }
+.spacer { flex: 1; }
+.link-btn { border: none; background: transparent; color: var(--accent); font-size: 13px; }
+
+/* ---------- 分类 / 占卜 ---------- */
+.action-group { margin-bottom: 14px; }
+.action-group h4 { margin: 0 0 6px; font-size: 13px; color: var(--muted); }
+.reading p { margin: 4px 0; font-size: 15px; }
+.tabs { display: flex; gap: 6px; margin-bottom: 10px; }
+.ending-title { font-size: 20px; margin: 0 0 8px; }
+.small { font-size: 12px; }
+.center { text-align: center; }
+.wrap { flex-wrap: wrap; }

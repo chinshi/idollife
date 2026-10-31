@@ -42,7 +42,9 @@ export function settle(
     stats: { ...run.stats },
     axes: { ...(run.axes ?? { self: 50, others: 50, fit: 50 }) },
     fans: { ...(run.fans ?? createFans(0)) },
-    party: run.party ?? [],
+    debuted: run.debuted ?? false,
+    parties: run.parties ?? [],
+    activePartyId: run.activePartyId ?? null,
     flags: { ...run.flags },
     pendingEvent: run.pendingEvent,
     log: [...run.log],
@@ -141,6 +143,12 @@ export function settle(
         stoppedReason = 'event';
         break;
       }
+    }
+
+    // 玩家在这一条上打了「到此为止」
+    if (item.stopAfter) {
+      stoppedReason = 'stopped';
+      break;
     }
   }
 

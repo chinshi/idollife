@@ -15753,11 +15753,13 @@ var cors = (options) => {
 var MIN = 6e4;
 var RUN_LENGTH_MS = 2 * 365 * 24 * 60 * MIN;
 var WEEK_MS = 7 * 24 * 60 * MIN;
+var DAY_MS = 24 * 60 * MIN;
 var RENT_PER_WEEK = 500;
 var ACTIONS = {
   "vocal-karaoke": {
     id: "vocal-karaoke",
     name: "\u5531 K",
+    category: "growth",
     stat: "vocal",
     stamina: -10,
     gain: [1, 3],
@@ -15768,6 +15770,7 @@ var ACTIONS = {
   "dance-otaku": {
     id: "dance-otaku",
     name: "\u8DF3\u5B85\u821E",
+    category: "growth",
     stat: "dance",
     stamina: -12,
     gain: [1, 3],
@@ -15777,6 +15780,7 @@ var ACTIONS = {
   "acting-short": {
     id: "acting-short",
     name: "\u81EA\u62CD\u5C0F\u77ED\u5267",
+    category: "growth",
     stat: "acting",
     stamina: -10,
     gain: [1, 2],
@@ -15786,6 +15790,7 @@ var ACTIONS = {
   "talk-selftalk": {
     id: "talk-selftalk",
     name: "\u81EA\u8BF4\u81EA\u8BDD",
+    category: "growth",
     stat: "talk",
     stamina: -8,
     gain: [1, 2],
@@ -15795,6 +15800,7 @@ var ACTIONS = {
   "work-part-time": {
     id: "work-part-time",
     name: "\u6253\u5DE5",
+    category: "work",
     stamina: -20,
     money: 320,
     durationMs: 10 * MIN,
@@ -15803,6 +15809,7 @@ var ACTIONS = {
   "rest-sleep": {
     id: "rest-sleep",
     name: "\u7206\u7761",
+    category: "recover",
     stamina: 25,
     durationMs: 10 * MIN,
     text: "\u7761\u4E86\u4E00\u89C9\uFF0C\u611F\u89C9\u6D3B\u8FC7\u6765\u4E86\u3002"
@@ -16003,7 +16010,9 @@ function settle(run, schedule, from, to, seed, opts = {}) {
     stats: { ...run.stats },
     axes: { ...run.axes ?? { self: 50, others: 50, fit: 50 } },
     fans: { ...run.fans ?? createFans(0) },
-    party: run.party ?? [],
+    debuted: run.debuted ?? false,
+    parties: run.parties ?? [],
+    activePartyId: run.activePartyId ?? null,
     flags: { ...run.flags },
     pendingEvent: run.pendingEvent,
     log: [...run.log]
@@ -16086,6 +16095,10 @@ function settle(run, schedule, from, to, seed, opts = {}) {
         stoppedReason = "event";
         break;
       }
+    }
+    if (item.stopAfter) {
+      stoppedReason = "stopped";
+      break;
     }
   }
   const weeks = Math.floor(state.at / WEEK_MS) - Math.floor(run.at / WEEK_MS);

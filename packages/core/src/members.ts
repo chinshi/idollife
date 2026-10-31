@@ -1,8 +1,8 @@
+import { DEBUT_THRESHOLD } from './content';
 import { hashSeed, mulberry32 } from './rng';
-import type { Bias, Member, RunState, Stats } from './types';
+import type { Bias, Member, Party, RunState, Stats } from './types';
 
 export type { Bias, Member };
-
 
 export const RECRUIT_COST = 500;
 export const DUP_CAP = 10;
@@ -16,48 +16,112 @@ const NAMES = [
 
 const BIASES: Bias[] = ['vocal', 'dance', 'acting', 'talk', 'balanced'];
 
-export interface RecruitResult {
-  kind: 'new' | 'dup' | 'poor';
-  member?: Member;
-  cost: number;
-  /** 触发这次招募的随机角色名，便于测试复现 */
-  roll: number;
+export type PartyResult = 'ok' | 'not-debuted' | 'not-found' | 'no-party';
+export type RecruitResult = 'new' | 'dup' | 'poor' | 'no-party';
+
+/** 是否够格出道 */
+export function canDebut(state: RunState): boolean {
+  if (state.debuted) return false;
+  const total = state.stats.vocal + state.stats.dance + state.stats.acting + state.stats.talk;
+  return total >= DEBUT_THRESHOLD;
 }
 
-/** 招募一个 NPC：花 500，随机抽一个模板；重复则叠 +1%（上限 +10%） */
+export function debut(state: RunState): RunState {
+  if (!canDebut(state)) return state;
+  return {
+    ...state,
+    debuted: true,
+    log: [
+      ...state.log,
+      {
+        at: state.at,
+        actionId: 'debut',
+        text: '你正式出道了。从现在起，可以组建自己的组合。',
+        staminaDelta: 0,
+        statDelta: {},
+        kind: 'action',
+      },
+    ],
+  };
+}
+
+/** 创建组合（出道前不可用） */
+export function createParty(state: RunState, name: string): { state: RunState; result: PartyResult } {
+  if (!state.debuted) return { state, result: 'not-debuted' };
+
+  const id = `party-${state.parties.length + 1}-${state.at.toString(36)}`;
+  const party: Party = { id, name: name.trim() || `组合 ${state.parties.length + 1}`, members: [] };
+
+  return {
+    state: {
+      ...state,
+      parties: [...state.parties, party],
+      activePartyId: id,
+      log: [
+        ...state.log,
+        {
+          at: state.at,
+          actionId: 'create-party',
+          text: `创建了组合「${party.name}」。`,
+          staminaDelta: 0,
+          statDelta: {},
+          kind: 'action',
+        },
+      ],
+    },
+    result: 'ok',
+  };
+}
+
+export function switchParty(state: RunState, partyId: string): RunState {
+  if (!state.parties.some((p) => p.id === partyId)) return state;
+  return { ...state, activePartyId: partyId };
+}
+
+export function activeParty(state: RunState): Party | undefined {
+  return state.parties.find((p) => p.id === state.activePartyId);
+}
+
+/**
+ * 招募一个 NPC：花 500，抽一个模板；重复则叠 +1%（上限 +10%）。
+ * 必须先有组合。
+ */
 export function recruit(state: RunState, seed: string): { state: RunState; result: RecruitResult } {
-  if (state.money < RECRUIT_COST) {
-    return { state, result: { kind: 'poor', cost: RECRUIT_COST, roll: -1 } };
-  }
+  const party = activeParty(state);
+  if (!party) return { state, result: 'no-party' };
+  if (state.money < RECRUIT_COST) return { state, result: 'poor' };
 
   const rng = mulberry32(hashSeed(seed + ':' + state.log.length));
-  const roll = rng();
   const name = NAMES[Math.floor(rng() * NAMES.length)]!;
   const bias = BIASES[Math.floor(rng() * BIASES.length)]!;
   const id = `npc-${name}`;
 
-  const upgraded = addOrUpgradeMember(state, name, bias);
-  const result: RecruitResult = { ...upgraded.result, cost: RECRUIT_COST, roll };
-  const party = upgraded.party;
+  const members = [...party.members];
+  const idx = members.findIndex((m) => m.id === id);
+  let result: RecruitResult;
+  let text: string;
+
+  if (idx >= 0) {
+    const prev = members[idx]!;
+    const dupCount = Math.min(DUP_CAP, prev.dupCount + 1);
+    members[idx] = { ...prev, dupCount };
+    result = 'dup';
+    text = `${prev.name} 又来了，默契 +1%（累计 ${dupCount}）。`;
+  } else {
+    const member: Member = { id, name, bias, dupCount: 0 };
+    members.push(member);
+    result = 'new';
+    text = `招募到了 ${name}（${biasLabel(bias)}）。`;
+  }
 
   return {
     state: {
       ...state,
       money: state.money - RECRUIT_COST,
-      party,
+      parties: state.parties.map((p) => (p.id === party.id ? { ...p, members } : p)),
       log: [
         ...state.log,
-        {
-          at: state.at,
-          actionId: 'recruit',
-          text:
-            result.kind === 'new'
-              ? `招募到了 ${result.member!.name}（${biasLabel(result.member!.bias)}）。`
-              : `${result.member!.name} 又来了，默契 +1%（累计 ${result.member!.dupCount}）。`,
-          staminaDelta: 0,
-          statDelta: {},
-          kind: 'action',
-        },
+        { at: state.at, actionId: 'recruit', text, staminaDelta: 0, statDelta: {}, kind: 'action' },
       ],
     },
     result,
@@ -79,10 +143,7 @@ export function biasLabel(bias: Bias): string {
   }
 }
 
-/**
- * 成员的实际能力：以主角平均值为基准 ×90%，
- * 再按偏向重新分配，重复次数最多 +10%。
- */
+/** 成员的实际能力：主角平均值 ×90%，按偏向重新分配，重复最多 +10% */
 export function memberStats(member: Member, player: Stats): Stats {
   const avg = (player.vocal + player.dance + player.acting + player.talk) / 4;
   const scale = avg * NPC_BASE_RATIO * (1 + Math.min(DUP_CAP, member.dupCount) * 0.01);
@@ -100,26 +161,4 @@ export function memberStats(member: Member, player: Stats): Stats {
     acting: Math.round(scale * a),
     talk: Math.round(scale * t),
   };
-}
-
-/** 把同名成员加入组合，或给已有成员叠一次「默契」（+1%，上限 +10%） */
-export function addOrUpgradeMember(
-  state: RunState,
-  name: string,
-  bias: Bias,
-): { party: Member[]; result: { kind: 'new' | 'dup'; member: Member } } {
-  const party = [...state.party];
-  const id = `npc-${name}`;
-  const idx = party.findIndex((m) => m.id === id);
-
-  if (idx >= 0) {
-    const prev = party[idx]!;
-    const dupCount = Math.min(DUP_CAP, prev.dupCount + 1);
-    party[idx] = { ...prev, dupCount };
-    return { party, result: { kind: 'dup', member: party[idx]! } };
-  }
-
-  const member: Member = { id, name, bias, dupCount: 0 };
-  party.push(member);
-  return { party, result: { kind: 'new', member } };
 }

@@ -32,22 +32,30 @@ export function loadSave(): SaveV1 | null {
     if (!data.run.stats || !Array.isArray(data.run.log)) return null;
     if (!Array.isArray(data.schedule)) return null;
 
+    const run = data.run as RunState;
+
     return {
       version: 1,
       runId: typeof data.runId === 'string' && data.runId ? data.runId : newRunId(),
       revision: isNum(data.revision) ? data.revision : 0,
       updatedAt: isNum(data.updatedAt) ? data.updatedAt : 0,
       seed: typeof data.seed === 'string' ? data.seed : 'run-demo',
-      // 兼容早期没有三轴 / flags 的存档
       run: {
-        ...(data.run as RunState),
-        money: isNum((data.run as RunState).money) ? (data.run as RunState).money : START_MONEY,
-        axes: (data.run as RunState).axes ?? { self: 50, others: 50, fit: 50 },
-        party: (data.run as RunState).party ?? [],
-        inventory: (data.run as RunState).inventory ?? [],
-        equipped: (data.run as RunState).equipped ?? {},
-        flags: (data.run as RunState).flags ?? {},
-        pendingEvent: (data.run as RunState).pendingEvent ?? null,
+        ...run,
+        money: isNum(run.money) ? run.money : START_MONEY,
+        axes: run.axes ?? { self: 50, others: 50, fit: 50 },
+        fans: run.fans ?? {
+          byType: { stage: 0, gachi: 0, music: 0, live: 0, growth: 0, power: 0 },
+          loyalty: { casual: 0, dd: 0, group: 0, solo: 0 },
+          affection: { stage: 0, gachi: 0, music: 0, live: 0, growth: 0, power: 0 },
+        },
+        debuted: run.debuted ?? false,
+        parties: run.parties ?? [],
+        activePartyId: run.activePartyId ?? null,
+        inventory: run.inventory ?? [],
+        equipped: run.equipped ?? {},
+        flags: run.flags ?? {},
+        pendingEvent: run.pendingEvent ?? null,
       },
       schedule: data.schedule as ScheduleItem[],
     };

@@ -9,3 +9,4 @@ export * from './fans-util';
 export * from './shows';
 export * from './members';
 export * from './shop';
+export * from './divination';

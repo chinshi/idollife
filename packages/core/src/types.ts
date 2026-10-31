@@ -10,7 +10,7 @@ export interface Stats {
   talk: number;
 }
 
-/** 三轴：自我 / 他人 / 适配（0–100，界面只显示档位） */
+/** 三轴：自我 / 他人 / 适配（0–100，界面上隐藏，只能靠占卜看档位） */
 export interface Axes {
   self: number;
   others: number;
@@ -38,6 +38,13 @@ export interface Member {
   dupCount: number;
 }
 
+/** 组合（一个玩家可以有多个） */
+export interface Party {
+  id: string;
+  name: string;
+  members: Member[];
+}
+
 export interface LogEntry {
   at: number;
   actionId: string;
@@ -47,7 +54,7 @@ export interface LogEntry {
   kind?: 'action' | 'routine' | 'choice';
 }
 
-/** 单局状态（P0 只保留跑通循环所需字段） */
+/** 单局状态 */
 export interface RunState {
   /** 游戏内时间：排程耗尽即静止 */
   at: number;
@@ -57,8 +64,12 @@ export interface RunState {
   stats: Stats;
   axes: Axes;
   fans: Fans;
-  /** 组合里的 NPC 成员（不含主角） */
-  party: Member[];
+  /** 是否已出道（出道后才能组组合） */
+  debuted: boolean;
+  /** 拥有 / 加入的组合 */
+  parties: Party[];
+  /** 当前操作的组合 id；没有组合时为 null */
+  activePartyId: string | null;
   /** 背包里的装备 */
   inventory: EquipItem[];
   /** 已装备的槽位 → 物品 id */
@@ -72,14 +83,20 @@ export interface RunState {
 export interface ScheduleItem {
   id: string;
   actionId: string;
-  /** 真实时间戳（ms） */
+  /** 游戏时间戳（ms） */
   startAt: number;
   endAt: number;
+  /** 打勾后：执行完这一条就停止推进 */
+  stopAfter?: boolean;
 }
+
+/** 行动分类（界面按这个分组） */
+export type ActionCategory = 'growth' | 'recover' | 'work';
 
 export interface ActionDef {
   id: string;
   name: string;
+  category: ActionCategory;
   stat?: StatKey;
   /** 体力变化：负数消耗，正数恢复 */
   stamina: number;
@@ -93,7 +110,15 @@ export interface ActionDef {
   text: string;
 }
 
-export type StopReason = 'exhausted' | 'stamina' | 'money' | 'time' | 'event' | 'ending' | null;
+export type StopReason =
+  | 'exhausted'
+  | 'stamina'
+  | 'money'
+  | 'time'
+  | 'event'
+  | 'ending'
+  | 'stopped'
+  | null;
 
 export interface SettleResult {
   state: RunState;
