@@ -624,6 +624,7 @@ button.primary small { color: #fff; opacity: 0.8; }
   padding: 0;
   transform: none;
   transition: none;
+  will-change: auto;
 }
 .timeline-inner::before {
   content: '';
@@ -702,3 +703,10 @@ button.primary small { color: #fff; opacity: 0.8; }
   box-shadow: 0 0 0 3px rgba(249, 124, 18, 0.18);
 }
 .tl-item.current .tl-name { color: #b35a00; }
+/* 播放头箭头：垂直中心严格对齐中间线 */
+.tl-playhead .tl-arrow {
+  top: 50%;
+  transform: translateY(-50%);
+}
+/* 行用 transform 定位，禁用额外过渡避免残影 */
+.tl-item, .tl-day-mark { transition: none; will-change: transform; }

@@ -1296,7 +1296,8 @@ function AppInner() {
                     key={it.id}
                     className={cls}
                     style={{
-                      top: `calc(50% + ${(it.startAt - gameNow) * pxPerMs}px)`,
+                      top: '50%',
+                      transform: `translateY(${(it.startAt - gameNow) * pxPerMs}px)`,
                       height: `${Math.max(34, (it.endAt - it.startAt) * pxPerMs)}px`,
                     }}
                     data-node-id={it.id}
