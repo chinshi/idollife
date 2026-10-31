@@ -19,6 +19,9 @@ function allowOrigin(origin: string): string | undefined {
   if (!origin) return list[0];
   if (list.includes(origin)) return origin;
   if (/^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(origin)) return origin;
+  // 自有域名：nofunoffice.com 及其子域
+  if (origin === 'https://nofunoffice.com') return origin;
+  if (/^https:\/\/[a-z0-9-]+(\.[a-z0-9-]+)*\.nofunoffice\.com$/.test(origin)) return origin;
   return undefined;
 }
 
