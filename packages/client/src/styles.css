@@ -364,7 +364,7 @@ button.primary small { color: #fff; opacity: 0.8; }
 }
 .tl-node {
   position: absolute;
-  left: -21px;
+  left: -20.5px;
   top: 11px;
   width: 9px;
   height: 9px;
@@ -523,16 +523,19 @@ button.primary small { color: #fff; opacity: 0.8; }
 
 .tl-item.current { position: relative; }
 .tl-item.current { min-height: 52px; }
+/* 三角形箭头：右尖严格落在轴线中心（轴线 left:9px 宽 2px → 中心 10px） */
 .tl-arrow {
   position: absolute;
-  left: -1px;
-  color: var(--accent);
-  font-size: 22px;
-  line-height: 1;
+  left: -1px;            /* -1 + 11(border-left) = 10 = 轴线中心 */
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 11px solid var(--accent);
   transform: translateY(-50%);
   transition: top 0.22s linear;
   pointer-events: none;
-  text-shadow: 0 0 6px rgba(249, 124, 18, 0.45);
+  filter: drop-shadow(0 0 3px rgba(249, 124, 18, 0.55));
 }
 .tl-now-line { display: flex; align-items: baseline; gap: 6px; }
 .tl-now-line .tl-count { font-size: 12px; color: var(--muted); }

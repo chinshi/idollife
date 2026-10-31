@@ -1372,9 +1372,7 @@ function AppInner() {
               );
             })}
               {running && (
-                <span className="tl-arrow" style={{ top: `${arrowTop}px` }} title="现在">
-                  ▶
-                </span>
+                <span className="tl-arrow" style={{ top: `${arrowTop}px` }} title="现在" />
               )}
             </div>
           </div>
