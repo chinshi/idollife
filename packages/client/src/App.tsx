@@ -514,6 +514,11 @@ function AppInner() {
     };
   }, [schedule, historyLimit]);
 
+  const baseTime = useMemo(
+    () => visibleItems[0]?.startAt ?? run.at,
+    [visibleItems, run.at],
+  );
+
   const dayMarks = useMemo(() => {
     const marks: Array<{ day: number; at: number; label: string }> = [];
     for (const it of visibleItems) {
@@ -1255,13 +1260,20 @@ function AppInner() {
           </div>
 
           <div className="timeline" ref={timelineRef}>
-            <div className="timeline-inner">
+            <div
+              className="timeline-track"
+              style={{ transform: `translateY(${(baseTime - gameNow) * pxPerMs}px)` }}
+            >
               {visibleItems.length === 0 && (
                 <p className="muted tl-empty">还没有安排。点「安排行程」加几个。</p>
               )}
 
               {hiddenCount > 0 && (
-                <button className="tl-more" onClick={() => setHistoryLimit((n) => n + 9)}>
+                <button
+                  className="tl-more"
+                  style={{ top: `${(visibleItems[0]!.startAt - baseTime) * pxPerMs - 26}px` }}
+                  onClick={() => setHistoryLimit((n) => n + 9)}
+                >
                   更多（还有 {hiddenCount} 条更早的日程）
                 </button>
               )}
@@ -1270,7 +1282,7 @@ function AppInner() {
                 <div
                   key={`d-${m.day}`}
                   className="tl-day-mark"
-                  style={{ top: `calc(50% + ${(m.at - gameNow) * pxPerMs}px)` }}
+                  style={{ top: `${(m.at - baseTime) * pxPerMs}px` }}
                 >
                   {m.label}
                 </div>
@@ -1296,8 +1308,7 @@ function AppInner() {
                     key={it.id}
                     className={cls}
                     style={{
-                      top: '50%',
-                      transform: `translateY(${(it.startAt - gameNow) * pxPerMs}px)`,
+                      top: `${(it.startAt - baseTime) * pxPerMs}px`,
                       height: `${Math.max(34, (it.endAt - it.startAt) * pxPerMs)}px`,
                     }}
                     data-node-id={it.id}
@@ -1332,20 +1343,20 @@ function AppInner() {
                   </div>
                 );
               })}
+            </div>
 
-              <div className="tl-playhead">
-                <span className="tl-arrow" />
-                <span className="tl-playhead-text">
-                  {running ? (
-                    <>
-                      <strong>现在</strong>
-                      <em>还剩 {Math.ceil(remainMs / 1000)} 秒</em>
-                    </>
-                  ) : (
-                    <strong>时间已停止</strong>
-                  )}
-                </span>
-              </div>
+            <div className="tl-playhead">
+              <span className="tl-arrow" />
+              <span className="tl-playhead-text">
+                {running ? (
+                  <>
+                    <strong>现在</strong>
+                    <em>还剩 {Math.ceil(remainMs / 1000)} 秒</em>
+                  </>
+                ) : (
+                  <strong>时间已停止</strong>
+                )}
+              </span>
             </div>
           </div>
           <div className="side-foot">
