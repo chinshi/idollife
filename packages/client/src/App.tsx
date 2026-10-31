@@ -1397,13 +1397,19 @@ function AppInner() {
                     </div>
                   );
                 })}
+
+                <div
+                  className="tl-playhead"
+                  style={{
+                    top: `${padY + Math.round((run.at - baseTime) * pxPerMs) - 11}px`,
+                  }}
+                >
+                  <span className="tl-arrow" />
+                  <span className="tl-playhead-line" />
+                </div>
               </div>
             </div>
 
-            <div className="tl-playhead" style={{ top: `${Math.round(boxH / 2) - 11}px` }}>
-              <span className="tl-arrow" />
-              <span className="tl-playhead-line" />
-            </div>
           </div>
           <div className="side-foot">
             <button
