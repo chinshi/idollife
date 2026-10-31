@@ -584,6 +584,16 @@ function AppInner() {
     const offset = ((cur?.startAt ?? run.at) - baseTime) * pxPerMs;
     const rowH = cur ? Math.max(34, (cur.endAt - cur.startAt) * pxPerMs) : 0;
     const top = Math.max(0, Math.round(offset + rowH / 2));
+    dbg(
+
+      '滚动 off=' + String(Math.round(offset)) +
+      ' rowH=' + String(Math.round(rowH)) +
+      ' top=' + String(top) +
+      ' clientH=' + String(el.clientHeight) +
+      ' scrollH=' + String(el.scrollHeight) +
+      ' boxH=' + String(boxH) +
+      ' padY=' + String(padY),
+    );
     el.scrollTo({ top, behavior: 'smooth' });
   }, [running, nextItem?.id, run.at, baseTime, pxPerMs, boxH, padY]);
 
