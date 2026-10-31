@@ -769,3 +769,34 @@ button.primary small { color: #fff; opacity: 0.8; }
   background: linear-gradient(90deg, rgba(249,124,18,0.55), rgba(249,124,18,0.05));
 }
 .tl-remain { font-style: normal; color: var(--accent); }
+/* 安排行程：固定高度，两栏各自滚动，按钮位置稳定 */
+.plan {
+  height: 62vh;
+  min-height: 320px;
+}
+.plan-actions,
+.plan-preview {
+  height: 100%;
+  max-height: none;
+  min-height: 0;
+  overflow: auto;
+}
+.plan-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+/* 正在执行的行动：实心圆点 */
+.tl-item.current .tl-node {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(249, 124, 18, 0.18);
+}
+.tl-item.current.done .tl-node {
+  background: var(--accent);
+  border-color: var(--accent);
+}

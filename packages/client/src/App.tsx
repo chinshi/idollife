@@ -282,6 +282,7 @@ function AppInner() {
   const [showDivination, setShowDivination] = useState(false);
   const [reading, setReading] = useState<{ self: string; others: string; fit: string } | null>(null);
   const [showPartyModal, setShowPartyModal] = useState(false);
+  const [planBackup, setPlanBackup] = useState<ScheduleItem[] | null>(null);
   const [partyName, setPartyName] = useState('');
   const [bagTab, setBagTab] = useState<BagTab>('equip');
   const [sysTab, setSysTab] = useState<SysTab>('shop');
@@ -630,6 +631,24 @@ function AppInner() {
       .filter((s) => Math.floor((s.startAt - T0) / DAY_MS) === dayIndex)
       .reduce((n, s) => n + (s.actionId === SHOW_ACTION_ID ? SHOW_SLOTS : 1), 0);
 
+  }
+
+  function openPlan() {
+    setPlanBackup(schedule);
+    setShowActions(true);
+  }
+
+  function savePlan() {
+    setPlanBackup(null);
+    setShowActions(false);
+    setNotice('行程已保存。');
+  }
+
+  function cancelPlan() {
+    if (planBackup) setSchedule(planBackup);
+    setPlanBackup(null);
+    setShowActions(false);
+    setNotice('已取消，行程恢复原样。');
   }
 
   function addAction(actionId: string) {
@@ -1239,7 +1258,7 @@ function AppInner() {
           )}
 
           <div className="side-head">
-            <button className="primary wide" onClick={() => setShowActions(true)}>
+            <button className="primary wide" onClick={openPlan}>
               安排行程
             </button>
           </div>
@@ -1401,7 +1420,7 @@ function AppInner() {
         })()}
 
       {showActions && (
-        <Modal title="安排行程" wide onClose={() => setShowActions(false)}>
+        <Modal title="安排行程" wide onClose={cancelPlan}>
           <div className="plan">
             <div className="plan-actions">
               {(['growth', 'recover', 'work'] as ActionCategory[]).map((cat) => {
@@ -1450,6 +1469,13 @@ function AppInner() {
                 </ul>
               )}
             </div>
+          </div>
+
+          <div className="plan-foot">
+            <button onClick={cancelPlan}>取消</button>
+            <button className="primary" onClick={savePlan}>
+              保存安排
+            </button>
           </div>
         </Modal>
       )}
