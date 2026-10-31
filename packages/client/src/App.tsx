@@ -482,7 +482,10 @@ function AppInner() {
         index: n,
         label: dayLabel(it.startAt, run.at),
       });
-      if (firstPending && running) nowPlaced = true;
+      if (firstPending && running) {
+        nodes.push({ type: 'now', id: 'now' });
+        nowPlaced = true;
+      }
     }
 
     if (!nowPlaced) nodes.push({ type: 'now', id: 'now' });
@@ -1215,21 +1218,20 @@ function AppInner() {
                   <div key={node.id} className="tl-now">
                     <span className="tl-node now" />
                     <span className="tl-now-text">
-                      现在 · {fmtGameTime(gameNow)}
-                      {running && nextItem && (
-                        <em className="tl-count">
-                          还剩 {Math.ceil(remainMs / 1000)} 秒完成「
-                          {ACTIONS[nextItem.actionId]?.name ??
-                            (nextItem.actionId === SHOW_ACTION_ID ? '演出' : nextItem.actionId)}
-                          」
-                        </em>
+                      {running ? (
+                        <>
+                          <strong>现在</strong>
+                          <em className="tl-count">
+                            还剩 {Math.ceil(remainMs / 1000)} 秒完成「
+                            {ACTIONS[nextItem?.actionId ?? '']?.name ??
+                              (nextItem?.actionId === SHOW_ACTION_ID ? '演出' : '')}
+                            」
+                          </em>
+                        </>
+                      ) : (
+                        <strong>时间已停止</strong>
                       )}
                     </span>
-                    {running && (
-                      <span className="tl-bar">
-                        <span style={{ width: `${Math.round(progress * 100)}%` }} />
-                      </span>
-                    )}
                   </div>
                 );
               }
@@ -1258,7 +1260,6 @@ function AppInner() {
                       title="现在"
                     >
                       ▶
-                      <em>还剩 {Math.ceil(remainMs / 1000)} 秒</em>
                     </span>
                   )}
                   <div className="tl-body">

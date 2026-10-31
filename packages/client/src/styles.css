@@ -519,15 +519,12 @@ button.primary small { color: #fff; opacity: 0.8; }
 .tl-item.current { position: relative; }
 .tl-arrow {
   position: absolute;
-  left: -24px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
+  left: -27px;
   color: var(--accent);
-  font-size: 11px;
+  font-size: 16px;
+  line-height: 1;
   transform: translateY(-50%);
   transition: top 0.22s linear;
   pointer-events: none;
-  white-space: nowrap;
+  text-shadow: 0 0 4px rgba(249, 124, 18, 0.35);
 }
-.tl-arrow em { font-style: normal; background: #fff; padding: 0 2px; }
