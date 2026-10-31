@@ -60,6 +60,7 @@ const T0 = Date.UTC(2026, 0, 1, 9, 0, 0);
 const RUN_END = T0 + RUN_LENGTH_MS;
 
 const initialRun: RunState = {
+  startedAt: T0,
   at: T0,
   stamina: 100,
   money: START_MONEY,
@@ -92,10 +93,7 @@ function totalFans(run: RunState): number {
 
 function fmtGameTime(t: number): string {
   const day = Math.floor((t - T0) / DAY_MS) + 1;
-  const d = new Date(t);
-  return `第 ${day} 天 · ${String(d.getUTCHours()).padStart(2, '0')}:${String(
-    d.getUTCMinutes(),
-  ).padStart(2, '0')}`;
+  return `第 ${day} 天`;
 }
 
 function dayLabel(startAt: number, now: number): string {
@@ -318,6 +316,11 @@ function AppInner() {
 
 
   const pending = useMemo(() => schedule.filter((s) => !s.done), [schedule]);
+
+  const todayIndex = Math.floor((run.at - T0) / DAY_MS);
+  const usedToday = schedule
+    .filter((s) => Math.floor((s.startAt - T0) / DAY_MS) === todayIndex)
+    .reduce((n, s) => n + (s.actionId === SHOW_ACTION_ID ? SHOW_SLOTS : 1), 0);
 
   /** 竖向时间轴：按天分组，标出「现在」的位置 */
   const timeline = useMemo(() => {
@@ -563,18 +566,18 @@ function AppInner() {
   function addShow() {
     if (phase !== 'playing') return;
 
-    let dayIndex = Math.floor(Math.max(lastEnd, run.at) / DAY_MS) - Math.floor(T0 / DAY_MS);
+    let dayIndex = Math.floor((Math.max(lastEnd, run.at) - T0) / DAY_MS);
     let dayStart = T0 + dayIndex * DAY_MS;
 
     for (let i = 0; i < 8; i++) {
-      const weekday = new Date(dayStart).getUTCDay();
+      const weekday = (dayIndex + 4) % 7;
       const isWeekend = weekday === 0 || weekday === 6;
       if (isWeekend && slotsOnDay(dayIndex) === 0) break;
       dayIndex += 1;
       dayStart += DAY_MS;
     }
 
-    const weekday = new Date(dayStart).getUTCDay();
+    const weekday = (dayIndex + 4) % 7;
     if (weekday !== 0 && weekday !== 6) {
       setNotice('最近一周没有空闲的周末了。');
       return;
@@ -682,7 +685,9 @@ function AppInner() {
     <div className="app">
       <header className="bar">
         <span className="brand">idollife</span>
-        <span className="clock">{fmtGameTime(run.at)}</span>
+        <span className="clock">
+          {fmtGameTime(run.at)} · 今日行动位 {Math.min(usedToday, 3)}/3
+        </span>
         <span className="spacer" />
         <span className="muted small">{user.email}</span>
         <button className="link-btn" onClick={() => void signOut()}>

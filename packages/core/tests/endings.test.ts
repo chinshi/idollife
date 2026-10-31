@@ -9,6 +9,7 @@ const T0 = Date.UTC(2026, 0, 1, 9, 0, 0);
 function run(overrides: Partial<RunState> = {}): RunState {
   return {
     at: T0,
+    startedAt: T0,
     stamina: 100,
     money: 5000,
     parties: [],

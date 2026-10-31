@@ -11,6 +11,7 @@ const PURE = { routineChance: 0, storyEvents: false };
 function baseRun(): RunState {
   return {
     at: T0,
+    startedAt: T0,
     stamina: 100,
     money: 5000,
     parties: [],
@@ -47,7 +48,7 @@ describe('settle', () => {
     expect(r.state.at).toBe(T0 + 30 * MIN);
     expect(r.state.stats.vocal).toBeGreaterThan(10);
     expect(r.state.stats.dance).toBeGreaterThan(10);
-    expect(r.state.log).toHaveLength(3);
+    expect(r.state.log.filter((l) => l.kind === 'action')).toHaveLength(3);
   });
 
   it('体力不足时停下，不执行后面的行动', () => {

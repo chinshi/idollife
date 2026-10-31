@@ -15752,13 +15752,14 @@ var cors = (options) => {
 // ../core/src/content.ts
 var MIN = 6e4;
 var ACTION_MINUTES = 1;
-var RUN_LENGTH_MS = 2 * 365 * 24 * 60 * MIN;
-var WEEK_MS = 7 * 24 * 60 * MIN;
-var DAY_MS = 24 * 60 * MIN;
-var RENT_PER_WEEK = 500;
+var DAILY_SLOTS = 3;
 var SHOW_SLOTS = 3;
+var DAY_MS = DAILY_SLOTS * ACTION_MINUTES * MIN;
+var WEEK_MS = 7 * DAY_MS;
+var RUN_LENGTH_MS = 730 * DAY_MS;
 var SHOW_ACTION_ID = "show";
 var SHOW_DURATION_MS = SHOW_SLOTS * ACTION_MINUTES * MIN;
+var RENT_PER_WEEK = 500;
 var ACTIONS = {
   "vocal-karaoke": {
     id: "vocal-karaoke",
@@ -16229,7 +16230,8 @@ function settle(run, schedule, from, to, seed, opts = {}) {
       break;
     }
   }
-  const weeks = Math.floor(state.at / WEEK_MS) - Math.floor(run.at / WEEK_MS);
+  const origin = state.startedAt ?? run.at;
+  const weeks = Math.floor((state.at - origin) / WEEK_MS) - Math.floor((run.at - origin) / WEEK_MS);
   if (weeks > 0) {
     state.money -= weeks * RENT_PER_WEEK;
     state.log.push({

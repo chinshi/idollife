@@ -176,7 +176,8 @@ export function settle(
   }
 
   // 跨周扣房租
-  const weeks = Math.floor(state.at / WEEK_MS) - Math.floor(run.at / WEEK_MS);
+  const origin = state.startedAt ?? run.at;
+  const weeks = Math.floor((state.at - origin) / WEEK_MS) - Math.floor((run.at - origin) / WEEK_MS);
   if (weeks > 0) {
     state.money -= weeks * RENT_PER_WEEK;
     state.log.push({

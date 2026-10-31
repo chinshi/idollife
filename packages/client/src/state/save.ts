@@ -42,6 +42,7 @@ export function loadSave(): SaveV1 | null {
       seed: typeof data.seed === 'string' ? data.seed : 'run-demo',
       run: {
         ...run,
+        startedAt: isNum(run.startedAt) ? run.startedAt : run.at,
         money: isNum(run.money) ? run.money : START_MONEY,
         axes: run.axes ?? { self: 50, others: 50, fit: 50 },
         fans: run.fans ?? {

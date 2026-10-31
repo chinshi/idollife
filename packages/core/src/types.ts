@@ -56,6 +56,8 @@ export interface LogEntry {
 
 /** 单局状态 */
 export interface RunState {
+  /** 开局时间（用于按周扣房租） */
+  startedAt: number;
   /** 游戏内时间：排程耗尽即静止 */
   at: number;
   stamina: number;

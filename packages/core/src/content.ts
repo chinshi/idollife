@@ -5,26 +5,27 @@ const MIN = 60_000;
 /** 一个行动流逝多少游戏分钟（测试期改成 1，正式值见 docs/02） */
 export const ACTION_MINUTES = 1;
 
-/** 一周目长度：游戏内 2 年（按行动推进的毫秒数计） */
-export const RUN_LENGTH_MS = 2 * 365 * 24 * 60 * MIN;
+/** 每天的行动位：每天 3 个；周末一场演出直接占满 3 个 */
+export const DAILY_SLOTS = 3;
+export const SHOW_SLOTS = 3;
 
-/** 游戏内一周 */
-export const WEEK_MS = 7 * 24 * 60 * MIN;
+/** 游戏内一天 = 3 个行动位的时长（日历按行动走，不按 24 小时走） */
+export const DAY_MS = DAILY_SLOTS * ACTION_MINUTES * MIN;
 
-/** 游戏内一天 */
-export const DAY_MS = 24 * 60 * MIN;
+/** 游戏内一周 = 7 天 */
+export const WEEK_MS = 7 * DAY_MS;
+
+/** 一周目长度：游戏内 2 年 */
+export const RUN_LENGTH_MS = 730 * DAY_MS;
+
+export const SHOW_ACTION_ID = 'show';
+export const SHOW_DURATION_MS = SHOW_SLOTS * ACTION_MINUTES * MIN;
 
 /** 每周房租（记在结算里自动扣） */
 export const RENT_PER_WEEK = 500;
 
 /** 开局资金 */
 export const START_MONEY = 8000;
-
-/** 每天的行动位：每天 3 个；周末一场演出直接占满 3 个 */
-export const DAILY_SLOTS = 3;
-export const SHOW_SLOTS = 3;
-export const SHOW_ACTION_ID = 'show';
-export const SHOW_DURATION_MS = SHOW_SLOTS * ACTION_MINUTES * MIN;
 
 /** 出道门槛：四项属性和 */
 export const DEBUT_THRESHOLD = 120;
