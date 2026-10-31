@@ -554,14 +554,28 @@ function AppInner() {
     return padY * 2 + Math.max(0, Math.round((last.endAt - baseTime) * pxPerMs)) + 160;
   }, [visibleItems, baseTime, pxPerMs, padY]);
 
-  // 行动完成（run.at 变化）时，把「现在」拉回可视区中央
+  // 只在两种时机自动滚动：①开始推进 ②一条行动完成、进入下一条
+  const prevRunningRef = useRef(false);
+  const prevNextIdRef = useRef<string | null>(null);
+
   useEffect(() => {
+    const started = running && !prevRunningRef.current;
+    const advanced = (nextItem?.id ?? null) !== prevNextIdRef.current;
+    prevRunningRef.current = running;
+    prevNextIdRef.current = nextItem?.id ?? null;
+
+    if (!started && !advanced) return;
+
     const el = timelineRef.current;
     if (!el) return;
-    const nowY = ((nextItem?.startAt ?? run.at) - baseTime) * pxPerMs;
-    const top = Math.max(0, Math.round(nowY + padY - el.clientHeight / 2));
+
+    // 把「当前行动」整块居中：行顶 + 行高一半
+    const cur = nextItem;
+    const rowTop = padY + ((cur?.startAt ?? run.at) - baseTime) * pxPerMs;
+    const rowH = cur ? Math.max(34, (cur.endAt - cur.startAt) * pxPerMs) : 0;
+    const top = Math.max(0, Math.round(rowTop + rowH / 2 - el.clientHeight / 2));
     el.scrollTo({ top, behavior: 'smooth' });
-  }, [run.at, nextItem?.startAt, baseTime, pxPerMs, boxH, padY]);
+  }, [running, nextItem?.id, run.at, baseTime, pxPerMs, boxH, padY]);
 
   const dayMarks = useMemo(() => {
     const marks: Array<{ day: number; at: number; label: string }> = [];
