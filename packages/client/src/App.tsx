@@ -123,6 +123,21 @@ const SYNC_TEXT: Record<SyncStatus, string> = {
   expired: '登录已过期',
 };
 
+function CrashBanner({ msg, onClose }: { msg: string | null; onClose: () => void }) {
+  if (!msg) return null;
+  return (
+    <div className="crash-banner">
+      <div className="crash-text">
+        <strong>页面出错了：</strong>
+        <span>{msg.split('\n')[0]}</span>
+      </div>
+      <button className="icon-btn" onClick={onClose}>
+        ×
+      </button>
+    </div>
+  );
+}
+
 function Modal({
   title,
   onClose,
@@ -229,6 +244,9 @@ function AppInner() {
   const boot = useRef(loadSave()).current;
 
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [authLost, setAuthLost] = useState(false);
+  const [crash, setCrash] = useState<string | null>(null);
+  const hadUser = useRef(false);
   const [checking, setChecking] = useState(true);
 
   const [runId, setRunId] = useState(boot?.runId ?? createSave(initialRun, 'run-demo').runId);
@@ -256,12 +274,34 @@ function AppInner() {
   const [snapshot, setSnapshot] = useState<{ run: RunState; schedule: ScheduleItem[] } | null>(null);
 
   useEffect(() => {
+    const onErr = (e: ErrorEvent) => setCrash(e.error?.stack ?? e.message);
+    const onRej = (e: PromiseRejectionEvent) => {
+      const r = e.reason as { stack?: string; message?: string } | undefined;
+      setCrash(r?.stack ?? String(r?.message ?? r));
+    };
+    window.addEventListener('error', onErr);
+    window.addEventListener('unhandledrejection', onRej);
+    return () => {
+      window.removeEventListener('error', onErr);
+      window.removeEventListener('unhandledrejection', onRej);
+    };
+  }, []);
+
+  useEffect(() => {
     void getSessionUser().then((u) => {
       setUser(u);
       setChecking(false);
     });
     return onAuthChange((u) => {
-      if (!u) pulledFor.current = null;
+      if (u) {
+        hadUser.current = true;
+        setAuthLost(false);
+      } else if (hadUser.current) {
+        // 曾经登录过：不要把整页换成登录页，改用弹窗强制重登
+        setAuthLost(true);
+        setForceLogin(true);
+        pulledFor.current = null;
+      }
       setUser(u);
     });
   }, []);
@@ -668,7 +708,7 @@ function AppInner() {
     );
   }
 
-  if (!user) {
+  if (!user && !authLost) {
     return (
       <div className="landing">
         <h1 className="landing-title">偶像生活</h1>
@@ -683,13 +723,14 @@ function AppInner() {
 
   return (
     <div className="app">
+      <CrashBanner msg={crash} onClose={() => setCrash(null)} />
       <header className="bar">
         <span className="brand">idollife</span>
         <span className="clock">
           {fmtGameTime(run.at)} · 今日行动位 {Math.min(usedToday, 3)}/3
         </span>
         <span className="spacer" />
-        <span className="muted small">{user.email}</span>
+        <span className="muted small">{user?.email ?? '已离线'}</span>
         <button className="link-btn" onClick={() => void signOut()}>
           退出
         </button>
