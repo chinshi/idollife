@@ -719,6 +719,8 @@ button.primary small { color: #fff; opacity: 0.8; }
   overflow: hidden;
   flex: 1 1 0;
   min-height: 240px;
+  contain: layout paint;
+  isolation: isolate;
 }
 .timeline::before {
   content: '';
