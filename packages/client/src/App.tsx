@@ -546,6 +546,21 @@ function AppInner() {
     [visibleItems, run.at],
   );
 
+  const trackHeight = useMemo(() => {
+    if (visibleItems.length === 0) return 0;
+    const last = visibleItems[visibleItems.length - 1]!;
+    return Math.max(0, Math.round((last.endAt - baseTime) * pxPerMs)) + 160;
+  }, [visibleItems, baseTime, pxPerMs]);
+
+  // 行动完成（run.at 变化）时，把「现在」拉回可视区中央
+  useEffect(() => {
+    const el = timelineRef.current;
+    if (!el) return;
+    const nowY = (run.at - baseTime) * pxPerMs;
+    const top = Math.max(0, Math.round(nowY - el.clientHeight / 2));
+    el.scrollTo({ top, behavior: 'smooth' });
+  }, [run.at, baseTime, pxPerMs, boxH]);
+
   const dayMarks = useMemo(() => {
     const marks: Array<{ day: number; at: number; label: string }> = [];
     for (const it of visibleItems) {
@@ -1305,83 +1320,82 @@ function AppInner() {
             </div>
           </div>
 
-          <div className="timeline" ref={timelineRef}>
-            <div
-              className="timeline-track"
-              style={{ transform: `translate3d(0, ${Math.round(boxH / 2 + (baseTime - run.at) * pxPerMs)}px, 0)` }}
-            >
-              {visibleItems.length === 0 && (
-                <p className="muted tl-empty">还没有安排。点「安排行程」加几个。</p>
-              )}
+          <div className="timeline">
+            <div className="timeline-scroll" ref={timelineRef}>
+              <div className="timeline-track" style={{ height: `${trackHeight}px` }}>
+                {visibleItems.length === 0 && (
+                  <p className="muted tl-empty">还没有安排。点「安排行程」加几个。</p>
+                )}
 
-              {hiddenCount > 0 && (
-                <button
-                  className="tl-more"
-                  style={{ top: `${(visibleItems[0]!.startAt - baseTime) * pxPerMs - 26}px` }}
-                  onClick={() => setHistoryLimit((n) => n + 9)}
-                >
-                  更多（还有 {hiddenCount} 条更早的日程）
-                </button>
-              )}
-
-              {visibleItems.map((it) => {
-                const a = ACTIONS[it.actionId];
-                const name = a?.name ?? (it.actionId === SHOW_ACTION_ID ? '演出' : it.actionId);
-                const done = !!it.done;
-                const isCurrent = running && nextItem?.id === it.id;
-                const cls = [
-                  'tl-item',
-                  done ? 'done' : '',
-                  isCurrent ? 'current' : '',
-                  it.fixed ? 'fixed' : '',
-                  it.stopAfter ? 'stopped' : '',
-                ]
-                  .filter(Boolean)
-                  .join(' ');
-
-                return (
-                  <div
-                    key={it.id}
-                    className={cls}
-                    style={{
-                      top: `${(it.startAt - baseTime) * pxPerMs}px`,
-                      height: `${Math.max(34, (it.endAt - it.startAt) * pxPerMs)}px`,
-                    }}
-                    data-node-id={it.id}
+                {hiddenCount > 0 && (
+                  <button
+                    className="tl-more"
+                    style={{ top: `${Math.round((visibleItems[0]!.startAt - baseTime) * pxPerMs) - 30}px` }}
+                    onClick={() => setHistoryLimit((n) => n + 9)}
                   >
-                    <span className="tl-node" />
-                    <div className="tl-body">
-                      <div className="tl-title">
-                        <span className="tl-idx">{dayLabel(it.startAt, run.at)}</span>
-                        <span className="tl-name">{name}</span>
-                        {it.fixed && <span className="tag fixed-tag">固定</span>}
-                        {done && <span className="tag done-tag">已完成</span>}
+                    更多（还有 {hiddenCount} 条更早的日程）
+                  </button>
+                )}
+
+                {visibleItems.map((it) => {
+                  const a = ACTIONS[it.actionId];
+                  const name = a?.name ?? (it.actionId === SHOW_ACTION_ID ? '演出' : it.actionId);
+                  const done = !!it.done;
+                  const isCurrent = running && nextItem?.id === it.id;
+                  const cls = [
+                    'tl-item',
+                    done ? 'done' : '',
+                    isCurrent ? 'current' : '',
+                    it.fixed ? 'fixed' : '',
+                    it.stopAfter ? 'stopped' : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' ');
+
+                  return (
+                    <div
+                      key={it.id}
+                      className={cls}
+                      style={{
+                        top: `${Math.round((it.startAt - baseTime) * pxPerMs)}px`,
+                        height: `${Math.max(34, Math.round((it.endAt - it.startAt) * pxPerMs))}px`,
+                      }}
+                      data-node-id={it.id}
+                    >
+                      <span className="tl-node" />
+                      <div className="tl-body">
+                        <div className="tl-title">
+                          <span className="tl-idx">{dayLabel(it.startAt, run.at)}</span>
+                          <span className="tl-name">{name}</span>
+                          {it.fixed && <span className="tag fixed-tag">固定</span>}
+                          {done && <span className="tag done-tag">已完成</span>}
+                        </div>
+                        <div className="tl-meta">
+                          {Math.round((it.endAt - it.startAt) / MIN)} 分
+                          {it.stopAfter && ' · 预计到此停止'}
+                          {isCurrent && running && (
+                            <em className="tl-remain"> · 还剩 {Math.ceil(remainMs / 1000)} 秒</em>
+                          )}
+                        </div>
                       </div>
-                      <div className="tl-meta">
-                        {Math.round((it.endAt - it.startAt) / MIN)} 分
-                        {it.stopAfter && ' · 预计到此停止'}
-                        {isCurrent && running && (
-                          <em className="tl-remain"> · 还剩 {Math.ceil(remainMs / 1000)} 秒</em>
-                        )}
-                      </div>
+                      {!it.fixed && !done && (
+                        <div className="tl-actions">
+                          <button
+                            className={it.stopAfter ? 'stop-btn on' : 'stop-btn'}
+                            title="执行到这里就停止推进"
+                            onClick={() => toggleStop(it.id)}
+                          >
+                            ⏹
+                          </button>
+                          <button className="del" onClick={() => removeItem(it.id)}>
+                            ×
+                          </button>
+                        </div>
+                      )}
                     </div>
-                    {!it.fixed && !done && (
-                      <div className="tl-actions">
-                        <button
-                          className={it.stopAfter ? 'stop-btn on' : 'stop-btn'}
-                          title="执行到这里就停止推进"
-                          onClick={() => toggleStop(it.id)}
-                        >
-                          ⏹
-                        </button>
-                        <button className="del" onClick={() => removeItem(it.id)}>
-                          ×
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
 
             <div className="tl-playhead" style={{ top: `${Math.round(boxH / 2) - 11}px` }}>

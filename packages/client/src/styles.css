@@ -809,3 +809,60 @@ button.primary small { color: #fff; opacity: 0.8; }
   background: var(--accent);
   border-color: var(--accent);
 }
+/* ===== 时间轴：原生滚动 + 播放头浮层 ===== */
+.timeline {
+  position: relative;
+  overflow: hidden;
+  flex: 1 1 0;
+  min-height: 240px;
+  contain: layout paint;
+  isolation: isolate;
+}
+.timeline-scroll {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #ccd4e3 transparent;
+}
+.timeline-scroll::-webkit-scrollbar { width: 6px; }
+.timeline-scroll::-webkit-scrollbar-track { background: transparent; }
+.timeline-scroll::-webkit-scrollbar-thumb {
+  background: #ccd4e3;
+  border-radius: 3px;
+}
+.timeline-track {
+  position: relative;
+  transform: none;
+  will-change: auto;
+}
+.timeline-track .tl-item {
+  position: absolute;
+  left: 26px;
+  right: 8px;
+  padding-top: 14px;
+}
+.tl-playhead {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  z-index: 2;
+}
+.tl-playhead .tl-arrow {
+  position: absolute;
+  left: -1px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.tl-playhead-line {
+  position: absolute;
+  left: 12px;
+  right: 6px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(249,124,18,0.55), rgba(249,124,18,0.05));
+}
