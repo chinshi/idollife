@@ -1097,11 +1097,11 @@ function AppInner() {
         <div className="panel-head">
           <h2>日志</h2>
         </div>
-        <div className="tabs">
+        <div className="mini-tabs">
           {(['all', 'event', 'stat'] as LogTab[]).map((t) => (
             <button
               key={t}
-              className={logTab === t ? 'tab active' : 'tab'}
+              className={logTab === t ? 'mini-tab active' : 'mini-tab'}
               onClick={() => setLogTab(t)}
             >
               {t === 'all' ? '全部' : t === 'event' ? '事件' : '属性'}
