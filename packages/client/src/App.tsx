@@ -283,6 +283,8 @@ function AppInner() {
   const [reading, setReading] = useState<{ self: string; others: string; fit: string } | null>(null);
   const [showPartyModal, setShowPartyModal] = useState(false);
   const [planBackup, setPlanBackup] = useState<ScheduleItem[] | null>(null);
+  const previewRef = useRef<HTMLDivElement | null>(null);
+  const [planTick, setPlanTick] = useState(0);
   const [partyName, setPartyName] = useState('');
   const [bagTab, setBagTab] = useState<BagTab>('equip');
   const [sysTab, setSysTab] = useState<SysTab>('shop');
@@ -531,6 +533,14 @@ function AppInner() {
     };
   }, [user]);
 
+  // 左侧添加行动后，右侧自动滚到最新一条
+  useEffect(() => {
+    if (!showActions) return;
+    const el = previewRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
+  }, [planTick, showActions]);
+
   const baseTime = useMemo(
     () => visibleItems[0]?.startAt ?? run.at,
     [visibleItems, run.at],
@@ -682,6 +692,7 @@ function AppInner() {
       },
     ]);
     setNotice(null);
+    setPlanTick((n) => n + 1);
   }
 
   function removeItem(id: string) {
@@ -1446,7 +1457,7 @@ function AppInner() {
               })}
             </div>
 
-            <div className="plan-preview">
+            <div className="plan-preview" ref={previewRef}>
               <div className="plan-preview-head">待执行 {pending.length} 个（已完成的不显示）</div>
               {pending.length === 0 ? (
                 <p className="muted small">左边点行动，会加到时间轴末尾。</p>
