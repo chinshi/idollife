@@ -911,3 +911,11 @@ button.primary small { color: #fff; opacity: 0.8; }
 }
 .mini-tab:hover { color: var(--text); }
 .mini-tab.active { color: var(--accent); font-weight: 600; }
+/* 日志按天分组的分隔标题 */
+.log-day {
+  list-style: none;
+  padding: 6px 0 2px;
+  font-size: 11px;
+  color: var(--muted);
+  border-top: none !important;
+}

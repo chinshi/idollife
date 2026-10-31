@@ -1,4 +1,4 @@
-import { Component, useEffect, useMemo, useRef, useState } from 'react';
+import { Component, Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ACTION_LIST,
   ACTIONS,
@@ -1113,13 +1113,26 @@ function AppInner() {
         ) : (
           <div className="log-scroll" ref={logRef}>
             <ul className="log dense">
-            {visibleLog.map((l, i) => (
-              <li key={`${l.at}-${i}`}>
-                <span className="log-time">{fmtGameTime(l.at)}</span>
-                <span className="log-text">{l.text}</span>
-                {l.axesChanged && <em className="tag hidden-tag">隐藏属性变动</em>}
-              </li>
-            ))}
+            {visibleLog.map((l, i) => {
+              const day = Math.floor((l.at - T0) / DAY_MS);
+              const prev = i > 0 ? visibleLog[i - 1] : undefined;
+              const prevDay = prev ? Math.floor((prev.at - T0) / DAY_MS) : -1;
+              const isNewDay = day !== prevDay;
+
+              return (
+                <Fragment key={`${l.at}-${i}`}>
+                  {isNewDay && (
+                    <li className="log-day">
+                      第 {Math.floor(day / 7) + 1} 周 {weekdayName(day)}
+                    </li>
+                  )}
+                  <li>
+                    <span className="log-text">{l.text}</span>
+                    {l.axesChanged && <em className="tag hidden-tag">隐藏属性变动</em>}
+                  </li>
+                </Fragment>
+              );
+            })}
           </ul>
           </div>
         )}
