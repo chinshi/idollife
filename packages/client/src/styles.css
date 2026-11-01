@@ -1639,3 +1639,14 @@ body { overflow: hidden; }
 /* 日志底部留白，最后一条不贴边 */
 .mod-log .log-scroll { padding-bottom: 28px; }
 .mod-log .log { padding-bottom: 8px; }
+/* 右侧两模块加宽 1.5 倍（240 → 360），从中间列取空间 */
+.shell { grid-template-columns: 168px minmax(0, 1fr) 360px; }
+.bar { grid-template-columns: 168px minmax(0, 1fr) 360px; }
+@media (max-width: 1280px) {
+  .shell { grid-template-columns: 168px minmax(0, 1fr) 320px; }
+  .bar { grid-template-columns: 168px minmax(0, 1fr) 320px; }
+}
+@media (max-width: 900px) {
+  .shell { grid-template-columns: 148px minmax(0, 1fr) 260px; }
+  .bar { grid-template-columns: 148px minmax(0, 1fr) 260px; }
+}
