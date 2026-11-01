@@ -1172,7 +1172,7 @@ function AppInner() {
       return;
     }
     setRun(r.state);
-    setFriendsTab('list');
+    // 不切换页签：留在「认识新朋友」方便连续抽取
     setNotice(r.friend ? `认识了 ${r.friend.name}，已加入朋友圈。` : '认识了一个新朋友。');
   }
 
