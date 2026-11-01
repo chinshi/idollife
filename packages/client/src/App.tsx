@@ -316,7 +316,6 @@ function AppInner() {
   const [showStops, setShowStops] = useState(false);
   const [showInvite, setShowInvite] = useState(false);
   const [kickTarget, setKickTarget] = useState<string | null>(null);
-  const [kickStep, setKickStep] = useState<1 | 2>(1);
   const [friendsTab, setFriendsTab] = useState<'list' | 'meet'>('list');
   const statTotal = run.stats.vocal + run.stats.dance + run.stats.acting + run.stats.talk;
   const STOP_TEXT: Record<string, string> = {
@@ -2006,7 +2005,6 @@ function AppInner() {
                               className="mcard-kick"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setKickStep(1);
                                 setKickTarget(m.id);
                               }}
                             >
@@ -2299,30 +2297,18 @@ function AppInner() {
         </Modal>
       )}
       {kickTarget && (
-        <Modal
-          title={kickStep === 1 ? '请离成员' : '再确认一次'}
-          onClose={() => setKickTarget(null)}
-        >
-          <p>
-            如果请离了该成员，可能对于团会产生不好的影响，且一个月内无法重新入团。
-          </p>
-          {kickStep === 2 && (
-            <p className="muted small">确定要请离吗？这个操作不能撤销。</p>
-          )}
+        <Modal title="请离成员" onClose={() => setKickTarget(null)}>
+          <p>如果请离了该成员，可能对于团会产生不好的影响，且一个月内无法重新入团。</p>
           <div className="row">
             <button onClick={() => setKickTarget(null)}>取消</button>
             <button
               className="primary"
               onClick={() => {
-                if (kickStep === 1) {
-                  setKickStep(2);
-                  return;
-                }
                 doKick(kickTarget);
                 setKickTarget(null);
               }}
             >
-              {kickStep === 1 ? '继续' : '确认请离'}
+              确认请离
             </button>
           </div>
         </Modal>
