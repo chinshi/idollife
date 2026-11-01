@@ -1165,3 +1165,18 @@ body { overflow: hidden; }
 
 .stats.big { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .stats.big .stat { padding: 10px; border: 1px solid var(--line); border-radius: 8px; }
+/* 全屏铺满：去掉旧的居中限宽 */
+.app {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.app > .bar { padding: 6px 14px; }
+.shell { padding: 8px 14px 14px; gap: 12px; }
+.col-left, .col-center, .col-right { min-width: 0; }
+.tlh-inner { width: max-content; min-width: 100%; }
