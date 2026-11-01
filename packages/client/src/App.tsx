@@ -479,11 +479,11 @@ function AppInner() {
           setRun(healed);
           dbg('对齐到下一个行动 at=' + String(next.startAt));
         } else if (next) {
-          // 行动已经开始却没被执行（重叠/脏数据）：丢掉它，防止死锁
-          const cleaned = scheduleRef.current.filter((s) => s.id !== next.id);
-          scheduleRef.current = cleaned;
-          setSchedule(cleaned);
-          dbg('丢弃无法执行的行程序 ' + next.id + ' startAt=' + String(next.startAt));
+          // 重叠：把待执行行程整体顺延，让它们重新首尾相接
+          const fixed = repairChain(scheduleRef.current, runRef.current.at);
+          scheduleRef.current = fixed;
+          setSchedule(fixed);
+          dbg('修复重叠行程 at=' + String(runRef.current.at));
         }
         return;
       }
@@ -506,7 +506,7 @@ function AppInner() {
 
 
   const lastEnd = useMemo(
-    () => schedule.filter((s) => !s.fixed).reduce((max, s) => Math.max(max, s.endAt), run.at),
+    () => schedule.reduce((max, s) => Math.max(max, s.endAt), run.at),
     [schedule, run.at],
   );
 
@@ -847,6 +847,23 @@ function AppInner() {
     return pend.length > 0 ? pend[0]!.startAt : 0;
   }
 
+  /** 修复排程重叠：待执行行程若开始时间早于已推进时间，则顺延成首尾相接 */
+  function repairChain(list: ScheduleItem[], fromAt: number): ScheduleItem[] {
+    const pending = list
+      .filter((s) => !s.done && !s.fixed)
+      .sort((a, b) => a.startAt - b.startAt);
+
+    let cursor = fromAt;
+    const patched = new Map<string, ScheduleItem>();
+    for (const it of pending) {
+      const dur = Math.max(1, it.endAt - it.startAt);
+      const start = Math.max(cursor, it.startAt);
+      if (start !== it.startAt) patched.set(it.id, { ...it, startAt: start, endAt: start + dur });
+      cursor = Math.max(cursor, start + dur);
+    }
+    if (patched.size === 0) return list;
+    return list.map((s) => patched.get(s.id) ?? s);
+  }
   function markExecuted(prev: ScheduleItem[], executed: string[]): ScheduleItem[] {
     const marked = prev.map((s) => (executed.includes(s.id) ? { ...s, done: true } : s));
     const doneIds = marked.filter((s) => s.done).map((s) => s.id);
@@ -893,8 +910,14 @@ function AppInner() {
       return;
     }
 
-    const staleAtStart = schedule.filter((s) => !s.done && s.startAt < run.at);
-    const usable = schedule.filter((s) => !staleAtStart.includes(s));
+    const repaired = repairChain(schedule, run.at);
+    if (repaired !== schedule) {
+      dbg('修复重叠行程');
+      setSchedule(repaired);
+    }
+
+    const staleAtStart = repaired.filter((s) => !s.done && s.startAt < run.at);
+    const usable = repaired.filter((s) => !staleAtStart.includes(s));
     if (staleAtStart.length > 0) {
       dbg('开始前清理过期行程 ' + String(staleAtStart.length) + ' 条');
       setSchedule(usable);
