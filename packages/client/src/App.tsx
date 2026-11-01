@@ -290,6 +290,7 @@ function AppInner() {
   const [sysTab, setSysTab] = useState<SysTab>('shop');
   const [logTab, setLogTab] = useState<LogTab>('all');
   const [mainTab, setMainTab] = useState<MainTab>('plan');
+  const [lastStop, setLastStop] = useState('');
   const [historyLimit, setHistoryLimit] = useState(9);
   const [forceLogin, setForceLogin] = useState(false);
   const [running, setRunning] = useState(false);
@@ -870,6 +871,7 @@ function AppInner() {
                 : '这一批行程走完了。',
       );
     }
+    setLastStop(String(result.stoppedReason ?? 'exhausted'));
     dbg('批次结束 reason=' + String(result.stoppedReason) + ' at=' + String(result.state.at));
     if (result.stoppedReason === 'event') resumeAfterEvent.current = true;
     void pushSync(batch.prevRun, batch.prevSchedule, batch.from, result.state.at, result);
@@ -1233,7 +1235,7 @@ function AppInner() {
               <button onClick={() => setMainTab('plan')}>查看历史日程</button>
               <button onClick={openPlan}>安排行程</button>
               <span className="muted small">
-                {running ? '推进中' : '已停止'} · at={Math.round(run.at)} · 待办 {pending.length}
+                {running ? '推进中' : '已停止'} · 待办 {pending.length} · 上次停止：{lastStop || '—'}
               </span>
             </div>
           </section>
