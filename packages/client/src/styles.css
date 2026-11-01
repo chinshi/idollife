@@ -1540,3 +1540,5 @@ body { overflow: hidden; }
   opacity: 0.55;
   cursor: not-allowed;
 }
+/* 工具条按钮居中 */
+.tlx-toolbar { justify-content: center; }
