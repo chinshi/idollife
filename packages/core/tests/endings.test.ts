@@ -13,6 +13,7 @@ function run(overrides: Partial<RunState> = {}): RunState {
     stamina: 100,
     money: 5000,
     parties: [],
+    friends: [],
     activePartyId: null,
     debuted: false,
     inventory: [],

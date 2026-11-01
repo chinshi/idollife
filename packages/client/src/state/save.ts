@@ -40,6 +40,7 @@ export function normalizeRun(run: RunState): RunState {
     fans: run.fans ?? EMPTY_FANS,
     debuted: run.debuted ?? false,
     parties: run.parties ?? [],
+    friends: run.friends ?? [],
     activePartyId: run.activePartyId ?? null,
     inventory: run.inventory ?? [],
     equipped: run.equipped ?? {},

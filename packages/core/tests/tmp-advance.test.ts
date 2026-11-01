@@ -18,6 +18,7 @@ function base(over: Partial<RunState> = {}): RunState {
     fans: createFans(0),
     debuted: false,
     parties: [],
+    friends: [],
     activePartyId: null,
     inventory: [],
     equipped: {},

@@ -1,0 +1,29 @@
+{
+  "_说明": "认识新朋友的渠道表：每个渠道花钱认识一个人，biasPool 决定大概率是什么类型，quality 是强度系数区间",
+  "channels": [
+    {
+      "id": "comic-con",
+      "name": "逛漫展",
+      "cost": 200,
+      "biasPool": ["dance", "acting"],
+      "quality": [0.8, 1.05],
+      "text": "在人堆里挤了一天，加到了几个同好。"
+    },
+    {
+      "id": "live-show",
+      "name": "看演出",
+      "cost": 300,
+      "biasPool": ["vocal", "dance"],
+      "quality": [0.85, 1.1],
+      "text": "散场后在后门等到很晚，认识了两个同样在练的人。"
+    },
+    {
+      "id": "friend-intro",
+      "name": "朋友介绍",
+      "cost": 500,
+      "biasPool": ["vocal", "dance", "acting", "talk"],
+      "quality": [0.95, 1.15],
+      "text": "朋友把她拉进群，说了句「你们应该聊得来」。"
+    }
+  ]
+}

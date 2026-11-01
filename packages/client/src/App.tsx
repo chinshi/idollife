@@ -17,6 +17,9 @@ import {
   biasLabel,
   buyItem,
   canDebut,
+  CHANNELS,
+  meetFriend,
+  inviteFriend,
   canShowAction,
   previewAction,
   remainingTimes,
@@ -74,6 +77,7 @@ const initialRun: RunState = {
   debuted: false,
   parties: [],
   activePartyId: null,
+  friends: [],
   inventory: [],
   equipped: {},
   flags: {},
@@ -1101,6 +1105,31 @@ function AppInner() {
     void pushWholeState(state);
   }
 
+  function doMeet(channelId: string) {
+    const r = meetFriend(run, channelId, seed);
+    if (r.result === 'poor') {
+      setNotice('钱不够，先攒一点。');
+      return;
+    }
+    if (r.result !== 'ok') {
+      setNotice('这个渠道暂时去不了。');
+      return;
+    }
+    setRun(r.state);
+    setNotice(r.friend ? `认识了 ${r.friend.name}，已加入朋友圈。` : '认识了一个新朋友。');
+  }
+
+  function doInvite(friendId: string) {
+    const r = inviteFriend(run, friendId);
+    if (r.result === 'no-party') {
+      setNotice('先创建或选择一个组合。');
+      return;
+    }
+    if (r.result !== 'ok') return;
+    setRun(r.state);
+    setNotice('已经邀请进组合了。');
+  }
+
   function doRecruit() {
     if (!party) {
       setNotice('还没有组合，招募不了。');
@@ -1637,15 +1666,42 @@ function AppInner() {
                   </ul>
                 )}
 
-                <div className="row">
-                  <button
-                    className="primary"
-                    onClick={doRecruit}
-                    disabled={!party || run.money < RECRUIT_COST}
-                  >
-                    招募
-                    <small>-{RECRUIT_COST}</small>
-                  </button>
+                <div className="friend-block">
+                  <h4>认识新朋友</h4>
+                  <div className="row wrap">
+                    {CHANNELS.map((c) => (
+                      <button
+                        key={c.id}
+                        onClick={() => doMeet(c.id)}
+                        disabled={run.money < c.cost}
+                        title={c.text}
+                      >
+                        {c.name}
+                        <small>¥{c.cost}</small>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="friend-block">
+                  <h4>朋友圈 {run.friends.length > 0 ? `（${run.friends.length}）` : ''}</h4>
+                  {run.friends.length === 0 ? (
+                    <p className="muted small">还没有认识的人，去上面挑个渠道试试。</p>
+                  ) : (
+                    <ul className="friends">
+                      {run.friends.map((f) => (
+                        <li key={f.id}>
+                          <span className="name">{f.name}</span>
+                          <span className="muted">
+                            {biasLabel(f.bias)} · 资质 {Math.round(f.quality * 100)}%
+                          </span>
+                          <button onClick={() => doInvite(f.id)} disabled={!party}>
+                            邀请
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </>
             )}

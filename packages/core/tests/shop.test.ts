@@ -16,6 +16,7 @@ function base(overrides: Partial<RunState> = {}): RunState {
     axes: { self: 50, others: 50, fit: 50 },
     fans: createFans(0),
     parties: [],
+    friends: [],
     activePartyId: null,
     debuted: false,
     inventory: [],
