@@ -12,8 +12,13 @@ export const BALANCE = balanceJson.balance;
 export interface RawAction {
   id: string;
   name: string;
+  /** 分类字段名：growth / work / recover */
   category: string;
+  /** 分类中文名：提升属性 / 赚钱 / 恢复状态 */
+  categoryName?: string;
   stat?: string;
+  /** 属性中文名，例如 演唱 */
+  statName?: string;
   stamina: number;
   gain?: [number, number];
   cost?: number;
@@ -26,6 +31,7 @@ export interface RawRoutine {
   text: string;
   stamina: number;
   stat?: string;
+  statName?: string;
   gain?: number;
 }
 
@@ -57,6 +63,10 @@ export interface RawStory {
   major?: boolean;
   requires?: RawRequires;
   choices: RawChoice[];
+}
+
+export interface RawBiasName {
+  [key: string]: string;
 }
 
 export const RAW_ACTIONS = actionsJson.actions as RawAction[];

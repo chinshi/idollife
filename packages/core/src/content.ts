@@ -52,8 +52,7 @@ export const ACTIONS: Record<string, ActionDef> = Object.fromEntries(
 
 export const ACTION_LIST = Object.values(ACTIONS);
 
-export const CATEGORY_LABEL: Record<string, string> = {
-  growth: '提升属性',
-  recover: '恢复状态',
-  work: '赚钱',
-};
+/** 行动分类中文名（来自 data/actions.json 的 categoryName） */
+export const CATEGORY_LABEL: Record<string, string> = Object.fromEntries(
+  RAW_ACTIONS.map((a) => [a.category, a.categoryName ?? a.category]),
+);

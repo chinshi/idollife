@@ -15751,69 +15751,79 @@ var cors = (options) => {
 
 // ../core/data/actions.json
 var actions_default = {
-  _\u8BF4\u660E: "\u884C\u52A8\u8868\uFF1A\u73A9\u5BB6\u53EF\u5B89\u6392\u7684\u8BAD\u7EC3/\u5DE5\u4F5C/\u4F11\u606F\u3002category \u51B3\u5B9A\u754C\u9762\u5206\u7EC4\uFF1Bgain \u662F\u5C5E\u6027\u6210\u957F\u533A\u95F4\uFF1Bcost \u82B1\u591A\u5C11\u94B1\uFF1Bmoney \u8D5A\u591A\u5C11\u94B1",
+  _\u8BF4\u660E: "\u884C\u52A8\u8868\uFF1A\u73A9\u5BB6\u53EF\u5B89\u6392\u7684\u8BAD\u7EC3/\u5DE5\u4F5C/\u4F11\u606F\u3002category/categoryName \u662F\u5206\u7C7B\u7684\u5B57\u6BB5\u540D\u4E0E\u4E2D\u6587\u540D\uFF1Bstat/statName \u662F\u5C5E\u6027\u5B57\u6BB5\u540D\u4E0E\u4E2D\u6587\u540D",
   actions: [
     {
       id: "vocal-karaoke",
       name: "\u5531 K",
       category: "growth",
-      stamina: -10,
-      text: "\u4F60\u5728\u5305\u53A2\u91CC\u5531\u4E86\u4E24\u5C0F\u65F6\uFF0C\u55D3\u5B50\u6709\u70B9\u70ED\u3002\uFF08\u6F14\u5531 +{n}\uFF09",
+      categoryName: "\u63D0\u5347\u5C5E\u6027",
       stat: "vocal",
+      statName: "\u6F14\u5531",
+      stamina: -10,
       gain: [
         1,
         3
       ],
-      cost: 50
+      cost: 50,
+      text: "\u4F60\u5728\u5305\u53A2\u91CC\u5531\u4E86\u4E24\u5C0F\u65F6\uFF0C\u55D3\u5B50\u6709\u70B9\u70ED\u3002\uFF08\u6F14\u5531 +{n}\uFF09"
     },
     {
       id: "dance-otaku",
       name: "\u8DF3\u5B85\u821E",
       category: "growth",
-      stamina: -12,
-      text: "\u5BF9\u7740\u955C\u5B50\u628A\u540C\u4E00\u6BB5\u526F\u6B4C\u8DF3\u4E86\u4E8C\u5341\u904D\u3002\uFF08\u821E\u8E48 +{n}\uFF09",
+      categoryName: "\u63D0\u5347\u5C5E\u6027",
       stat: "dance",
+      statName: "\u821E\u8E48",
+      stamina: -12,
       gain: [
         1,
         3
-      ]
+      ],
+      text: "\u5BF9\u7740\u955C\u5B50\u628A\u540C\u4E00\u6BB5\u526F\u6B4C\u8DF3\u4E86\u4E8C\u5341\u904D\u3002\uFF08\u821E\u8E48 +{n}\uFF09"
     },
     {
       id: "acting-short",
       name: "\u81EA\u62CD\u5C0F\u77ED\u5267",
       category: "growth",
-      stamina: -10,
-      text: "\u81EA\u5BFC\u81EA\u6F14\u62CD\u4E86\u4E09\u6761\uFF0C\u7B2C\u4E8C\u6761\u6700\u597D\u3002\uFF08\u6F14\u6280 +{n}\uFF09",
+      categoryName: "\u63D0\u5347\u5C5E\u6027",
       stat: "acting",
+      statName: "\u6F14\u6280",
+      stamina: -10,
       gain: [
         1,
         2
-      ]
+      ],
+      text: "\u81EA\u5BFC\u81EA\u6F14\u62CD\u4E86\u4E09\u6761\uFF0C\u7B2C\u4E8C\u6761\u6700\u597D\u3002\uFF08\u6F14\u6280 +{n}\uFF09"
     },
     {
       id: "talk-selftalk",
       name: "\u81EA\u8BF4\u81EA\u8BDD",
       category: "growth",
-      stamina: -8,
-      text: "\u5BF9\u7740\u955C\u5934\u7EC3\u4E86\u4E00\u4E0B\u5348\u4E32\u573A\u8BCD\u3002\uFF08\u53E3\u624D +{n}\uFF09",
+      categoryName: "\u63D0\u5347\u5C5E\u6027",
       stat: "talk",
+      statName: "\u53E3\u624D",
+      stamina: -8,
       gain: [
         1,
         2
-      ]
+      ],
+      text: "\u5BF9\u7740\u955C\u5934\u7EC3\u4E86\u4E00\u4E0B\u5348\u4E32\u573A\u8BCD\u3002\uFF08\u53E3\u624D +{n}\uFF09"
     },
     {
       id: "work-part-time",
       name: "\u6253\u5DE5",
       category: "work",
+      categoryName: "\u8D5A\u94B1",
       stamina: -20,
-      text: "\u5728\u4FBF\u5229\u5E97\u7AD9\u4E86\u56DB\u4E2A\u5C0F\u65F6\uFF0C\u811A\u6709\u70B9\u9EBB\u3002\uFF08\u6536\u5165 +320\uFF09",
-      money: 320
+      money: 320,
+      text: "\u5728\u4FBF\u5229\u5E97\u7AD9\u4E86\u56DB\u4E2A\u5C0F\u65F6\uFF0C\u811A\u6709\u70B9\u9EBB\u3002\uFF08\u6536\u5165 +320\uFF09"
     },
     {
       id: "rest-sleep",
       name: "\u7206\u7761",
       category: "recover",
+      categoryName: "\u6062\u590D\u72B6\u6001",
       stamina: 25,
       text: "\u7761\u4E86\u4E00\u89C9\uFF0C\u611F\u89C9\u6D3B\u8FC7\u6765\u4E86\u3002"
     }
@@ -15967,6 +15977,7 @@ var events_default = {
       text: "\u6392\u7EC3\u5BA4\u7A7A\u7740\uFF0C\u4F60\u591A\u7EC3\u4E86\u534A\u5C0F\u65F6\u3002",
       stamina: -3,
       stat: "dance",
+      statName: "\u821E\u8E48",
       gain: 1
     },
     {
@@ -15979,6 +15990,7 @@ var events_default = {
       text: "\u672B\u73ED\u8F66\u4E0A\u6709\u4EBA\u8BA4\u51FA\u4F60\uFF0C\u5C0F\u58F0\u8BF4\u4E86\u53E5\u52A0\u6CB9\u3002",
       stamina: 2,
       stat: "vocal",
+      statName: "\u6F14\u5531",
       gain: 1
     },
     {
@@ -15986,6 +15998,7 @@ var events_default = {
       text: "\u4F60\u5728\u624B\u673A\u5907\u5FD8\u5F55\u91CC\u5199\u4E0B\u4E00\u53E5\u6B4C\u8BCD\u3002",
       stamina: -1,
       stat: "acting",
+      statName: "\u6F14\u6280",
       gain: 1
     },
     {
@@ -15998,6 +16011,7 @@ var events_default = {
       text: "\u5BF9\u7740\u955C\u5B50\u8C03\u6574\u4E86\u5F88\u4E45\u7684\u8868\u60C5\u3002",
       stamina: -2,
       stat: "talk",
+      statName: "\u53E3\u624D",
       gain: 1
     },
     {
@@ -16015,6 +16029,7 @@ var events_default = {
       text: "\u5BA4\u53CB\u5728\u5BA2\u5385\u770B\u7535\u89C6\uFF0C\u4F60\u6234\u7740\u8033\u673A\u7EC3\u52A8\u4F5C\u3002",
       stamina: -2,
       stat: "dance",
+      statName: "\u821E\u8E48",
       gain: 1
     },
     {
@@ -16027,6 +16042,7 @@ var events_default = {
       text: "\u4F60\u7FFB\u5230\u81EA\u5DF1\u4E00\u5E74\u524D\u7684\u7EC3\u4E60\u89C6\u9891\uFF0C\u770B\u5B8C\u4E86\u3002",
       stamina: -1,
       stat: "acting",
+      statName: "\u6F14\u6280",
       gain: 1
     },
     {
@@ -16034,6 +16050,7 @@ var events_default = {
       text: "\u51CC\u6668\u7684\u4FBF\u5229\u5E97\uFF0C\u53EA\u6709\u4F60\u548C\u5E97\u5458\u3002",
       stamina: 2,
       stat: "talk",
+      statName: "\u53E3\u624D",
       gain: 1
     }
   ],
@@ -16302,6 +16319,9 @@ var ACTIONS = Object.fromEntries(
   ])
 );
 var ACTION_LIST = Object.values(ACTIONS);
+var CATEGORY_LABEL = Object.fromEntries(
+  RAW_ACTIONS.map((a) => [a.category, a.categoryName ?? a.category])
+);
 
 // ../core/src/rng.ts
 function hashSeed(seed) {
@@ -16376,7 +16396,7 @@ function promoteOnce(fans) {
 
 // ../core/data/shop.json
 var shop_default = {
-  _\u8BF4\u660E: "\u88C5\u5907\u8868\u3002common=\u666E\u901A\uFF08\u6BCF\u5468\u8D27\u67B6 3 \u4EF6\uFF09\uFF0Crare=\u7A00\u6709\uFF08\u6BCF\u5468 1 \u4EF6\uFF09",
+  _\u8BF4\u660E: "\u88C5\u5907\u8868\u3002common=\u666E\u901A\uFF08\u6BCF\u5468\u8D27\u67B6 3 \u4EF6\uFF09\uFF0Crare=\u7A00\u6709\uFF08\u6BCF\u5468 1 \u4EF6\uFF09\uFF1Bstat/statName \u662F\u5C5E\u6027\u5B57\u6BB5\u540D\u4E0E\u4E2D\u6587\u540D",
   shop: {
     commonPrice: 800,
     rarePrice: 2e3,
@@ -16384,31 +16404,37 @@ var shop_default = {
       {
         name: "\u7D20\u8272\u7EC3\u4E60\u670D",
         stat: "dance",
+        statName: "\u821E\u8E48",
         value: 2
       },
       {
         name: "\u65E7\u536B\u8863",
         stat: "dance",
+        statName: "\u821E\u8E48",
         value: 2
       },
       {
         name: "\u767D\u886C\u886B",
         stat: "acting",
+        statName: "\u6F14\u6280",
         value: 2
       },
       {
         name: "\u9488\u7EC7\u5F00\u886B",
         stat: "vocal",
+        statName: "\u6F14\u5531",
         value: 2
       },
       {
         name: "\u8FD0\u52A8\u5916\u5957",
         stat: "dance",
+        statName: "\u821E\u8E48",
         value: 2
       },
       {
         name: "\u5BBD\u677ET\u6064",
         stat: "talk",
+        statName: "\u53E3\u624D",
         value: 2
       }
     ],
@@ -16416,21 +16442,25 @@ var shop_default = {
       {
         name: "\u6253\u6B4C\u670D\xB7\u521D\u7248",
         stat: "dance",
+        statName: "\u821E\u8E48",
         value: 5
       },
       {
         name: "\u53E4\u98CE\u957F\u88D9",
         stat: "acting",
+        statName: "\u6F14\u6280",
         value: 5
       },
       {
         name: "Lolita \u5957\u88C5",
         stat: "talk",
+        statName: "\u53E3\u624D",
         value: 5
       },
       {
         name: "\u6447\u6EDA\u5939\u514B",
         stat: "vocal",
+        statName: "\u6F14\u5531",
         value: 5
       }
     ]
@@ -16443,11 +16473,13 @@ var RARE_PRICE = shop_default.shop.rarePrice;
 var OUTFITS = shop_default.shop.common.map((o) => ({
   name: o.name,
   stat: o.stat,
+  statName: o.statName,
   value: o.value
 }));
 var RARE_OUTFITS = shop_default.shop.rare.map((o) => ({
   name: o.name,
   stat: o.stat,
+  statName: o.statName,
   value: o.value
 }));
 function effectiveStats(state) {
@@ -16738,258 +16770,300 @@ function settle(run, schedule, from, to, seed, opts = {}) {
 
 // ../core/data/endings.json
 var endings_default = {
-  _\u8BF4\u660E: "\u7ED3\u5C40\u8868\uFF1Agroup \u51B3\u5B9A\u5F52\u7C7B\uFF1B\u5224\u5B9A\u903B\u8F91\u5728 endings.ts",
+  _\u8BF4\u660E: "\u7ED3\u5C40\u8868\uFF1Agroup=\u5206\u7EC4\u5B57\u6BB5\u540D\uFF0CgroupName=\u5206\u7EC4\u4E2D\u6587\u540D\uFF1B\u5224\u5B9A\u903B\u8F91\u5728 endings.ts",
   endings: [
     {
       id: "int-burnout",
       title: "\u79EF\u52B3\u6210\u75BE",
       group: "interrupt",
+      groupName: "\u4E2D\u65AD\u7ED3\u5C40",
       text: "\u4F60\u5728\u6392\u7EC3\u5BA4\u6655\u5012\uFF0C\u533B\u751F\u8BF4\u5FC5\u987B\u505C\u4E0B\u6765\u3002"
     },
     {
       id: "int-void",
       title: "\u6D51\u6D51\u5669\u5669",
       group: "interrupt",
+      groupName: "\u4E2D\u65AD\u7ED3\u5C40",
       text: "\u4F60\u5F00\u59CB\u8BB0\u4E0D\u6E05\u4E0A\u5468\u53D1\u751F\u4E86\u4EC0\u4E48\u3002"
     },
     {
       id: "int-desire",
       title: "\u60F3\u5165\u975E\u975E",
       group: "interrupt",
+      groupName: "\u4E2D\u65AD\u7ED3\u5C40",
       text: "\u4E00\u6BB5\u6CA1\u5904\u7406\u597D\u7684\u5173\u7CFB\u4F20\u904D\u4E86\u5708\u5B50\u3002"
     },
     {
       id: "int-condemn",
       title: "\u5343\u592B\u6240\u6307",
       group: "interrupt",
+      groupName: "\u4E2D\u65AD\u7ED3\u5C40",
       text: "\u8BC4\u8BBA\u533A\u5173\u4E86\u53C8\u5F00\uFF0C\u9A82\u58F0\u8FD8\u5728\u3002"
     },
     {
       id: "int-injury",
       title: "\u56E0\u4F24\u9000\u573A",
       group: "interrupt",
+      groupName: "\u4E2D\u65AD\u7ED3\u5C40",
       text: "\u533B\u751F\u8BF4\u8FD9\u4E2A\u4F24\uFF0C\u4E0D\u80FD\u518D\u8DF3\u4E86\u3002"
     },
     {
       id: "int-broke",
       title: "\u5C71\u7A77\u6C34\u5C3D",
       group: "interrupt",
+      groupName: "\u4E2D\u65AD\u7ED3\u5C40",
       text: "\u623F\u79DF\u6B20\u4E86\u4E24\u4E2A\u6708\uFF0C\u4F60\u6536\u62FE\u884C\u674E\u56DE\u4E86\u5BB6\u3002"
     },
     {
       id: "int-cold",
       title: "\u5FC3\u7070\u610F\u51B7",
       group: "interrupt",
+      groupName: "\u4E2D\u65AD\u7ED3\u5C40",
       text: "\u67D0\u5929\u4F60\u53D1\u73B0\uFF0C\u81EA\u5DF1\u5DF2\u7ECF\u4E09\u5468\u6CA1\u6253\u5F00\u6392\u7EC3\u5BA4\u7684\u95E8\u3002"
     },
     {
       id: "int-quit",
       title: "\u6025\u6D41\u52C7\u9000",
       group: "interrupt",
+      groupName: "\u4E2D\u65AD\u7ED3\u5C40",
       text: "\u4F60\u9009\u5728\u4E00\u4E2A\u8FD8\u7B97\u4F53\u9762\u7684\u65F6\u523B\uFF0C\u8BF4\u4E86\u518D\u89C1\u3002"
     },
     {
       id: "fan-gachi",
       title: "\u56FD\u6C11\u521D\u604B",
       group: "stage-fan",
+      groupName: "\u7C89\u4E1D\u5411\u7ED3\u5C40",
       text: "\u7C89\u4E1D\u8BF4\u4F60\u662F\u300C\u53EF\u4EE5\u5E26\u56DE\u8001\u5BB6\u7684\u90A3\u79CD\u4EBA\u300D\u3002"
     },
     {
       id: "fan-stage",
       title: "\u5267\u573A\u5973\u795E",
       group: "stage-fan",
+      groupName: "\u7C89\u4E1D\u5411\u7ED3\u5C40",
       text: "\u5C0F\u573A\u5B50\u7684\u706F\u4E00\u4EAE\uFF0C\u6240\u6709\u4EBA\u90FD\u5728\u770B\u4F60\u3002"
     },
     {
       id: "fan-music",
       title: "\u91D1\u66F2\u6B4C\u540E",
       group: "stage-fan",
+      groupName: "\u7C89\u4E1D\u5411\u7ED3\u5C40",
       text: "\u90A3\u9996\u6B4C\u5728\u699C\u5355\u4E0A\u6302\u4E86\u5F88\u4E45\u3002"
     },
     {
       id: "fan-live",
       title: "\u73B0\u573A\u4F20\u8BF4",
       group: "stage-fan",
+      groupName: "\u7C89\u4E1D\u5411\u7ED3\u5C40",
       text: "\u63D0\u8D77\u90A3\u4E00\u665A\u7684\u5E94\u63F4\uFF0C\u8001\u7C89\u773C\u775B\u8FD8\u4F1A\u4EAE\u3002"
     },
     {
       id: "fan-growth",
       title: "\u957F\u60C5\u5076\u50CF",
       group: "stage-fan",
+      groupName: "\u7C89\u4E1D\u5411\u7ED3\u5C40",
       text: "\u6709\u4EBA\u4ECE\u7B2C\u4E00\u573A\u8DDF\u5230\u4E86\u6700\u540E\u4E00\u573A\u3002"
     },
     {
       id: "fan-power",
       title: "\u5B9E\u529B\u6807\u6746",
       group: "stage-fan",
+      groupName: "\u7C89\u4E1D\u5411\u7ED3\u5C40",
       text: "\u540E\u8F88\u88AB\u6559\u5BFC\uFF1A\u5148\u53BB\u770B\u5979\u7684\u73B0\u573A\u3002"
     },
     {
       id: "stat-vocal",
       title: "\u6B4C\u575B\u5929\u540E",
       group: "stage-stat",
+      groupName: "\u5C5E\u6027\u5411\u7ED3\u5C40",
       text: "\u4F60\u7684\u58F0\u97F3\u6210\u4E86\u8FD9\u4E2A\u5708\u5B50\u7684\u6807\u51C6\u3002"
     },
     {
       id: "stat-dance",
       title: "\u821E\u53F0\u5973\u738B",
       group: "stage-stat",
+      groupName: "\u5C5E\u6027\u5411\u7ED3\u5C40",
       text: "\u4F60\u8DF3\u8FC7\u7684\u5730\u677F\uFF0C\u522B\u4EBA\u4E0D\u6562\u518D\u7AD9\u3002"
     },
     {
       id: "stat-acting",
       title: "\u94F6\u5E55\u5F71\u540E",
       group: "stage-stat",
+      groupName: "\u5C5E\u6027\u5411\u7ED3\u5C40",
       text: "\u955C\u5934\u7EC8\u4E8E\u613F\u610F\u505C\u5728\u4F60\u7684\u8138\u4E0A\u3002"
     },
     {
       id: "stat-talk",
       title: "\u7EFC\u827A\u5973\u738B",
       group: "stage-stat",
+      groupName: "\u5C5E\u6027\u5411\u7ED3\u5C40",
       text: "\u4F60\u4E00\u53E5\u8BDD\u80FD\u8BA9\u5168\u573A\u7B11\uFF0C\u4E5F\u80FD\u8BA9\u5168\u573A\u9759\u3002"
     },
     {
       id: "stat-visual",
       title: "T\u53F0\u540D\u6A21",
       group: "stage-stat",
+      groupName: "\u5C5E\u6027\u5411\u7ED3\u5C40",
       text: "\u4F60\u7AD9\u5728\u90A3\u513F\uFF0C\u5C31\u5DF2\u7ECF\u662F\u753B\u9762\u3002"
     },
     {
       id: "low-corner",
       title: "\u89D2\u843D\u4F34\u821E",
       group: "stage-low",
+      groupName: "\u4F4E\u8C37\u7ED3\u5C40",
       text: "\u4F60\u8FD8\u5728\u53F0\u4E0A\uFF0C\u53EA\u662F\u6CA1\u4EBA\u8BB0\u5F97\u540D\u5B57\u3002"
     },
     {
       id: "low-short",
       title: "\u7AD6\u5C4F\u6F14\u5458",
       group: "stage-low",
+      groupName: "\u4F4E\u8C37\u7ED3\u5C40",
       text: "\u4F60\u5F00\u59CB\u63A5\u7AD6\u5C4F\u77ED\u5267\uFF0C\u4E00\u5929\u62CD\u5B8C\u3002"
     },
     {
       id: "low-mid",
       title: "\u8170\u90E8\u7F51\u7EA2",
       group: "stage-low",
+      groupName: "\u4F4E\u8C37\u7ED3\u5C40",
       text: "\u6709\u70B9\u6D41\u91CF\uFF0C\u4F46\u4E0A\u4E0D\u53BB\uFF0C\u4E5F\u4E0B\u4E0D\u6765\u3002"
     },
     {
       id: "low-fade",
       title: "\u9EEF\u7136\u9000\u573A",
       group: "stage-low",
+      groupName: "\u4F4E\u8C37\u7ED3\u5C40",
       text: "\u6CA1\u6709\u4EBA\u9001\u522B\uFF0C\u4F60\u4E5F\u5C31\u6CA1\u6253\u6270\u8C01\u3002"
     },
     {
       id: "back-talk",
       title: "\u91D1\u724C\u7ECF\u7EAA",
       group: "backstage",
+      groupName: "\u5E55\u540E\u7ED3\u5C40",
       text: "\u4F60\u5E26\u7684\u65B0\u4EBA\uFF0C\u7B2C\u4E00\u6B21\u4E0A\u7535\u89C6\u65F6\u8BF4\u8C22\u8C22\u59D0\u3002"
     },
     {
       id: "back-dance",
       title: "\u7F16\u821E\u5BFC\u5E08",
       group: "backstage",
+      groupName: "\u5E55\u540E\u7ED3\u5C40",
       text: "\u4F60\u7F16\u7684\u821E\uFF0C\u88AB\u522B\u7684\u56E2\u8DF3\u706B\u4E86\u3002"
     },
     {
       id: "back-vocal",
       title: "\u5E55\u540E\u5236\u4F5C",
       group: "backstage",
+      groupName: "\u5E55\u540E\u7ED3\u5C40",
       text: "\u4F60\u5728\u8C03\u97F3\u53F0\u540E\u9762\uFF0C\u628A\u4E00\u9996\u6B4C\u6551\u6D3B\u4E86\u3002"
     },
     {
       id: "back-acting",
       title: "\u8868\u6F14\u6307\u5BFC",
       group: "backstage",
+      groupName: "\u5E55\u540E\u7ED3\u5C40",
       text: "\u4F60\u6559\u4ED6\u4EEC\u600E\u4E48\u54ED\uFF0C\u81EA\u5DF1\u5374\u5F88\u4E45\u6CA1\u54ED\u8FC7\u3002"
     },
     {
       id: "back-boss",
       title: "\u5382\u724C\u4E3B\u7406",
       group: "backstage",
+      groupName: "\u5E55\u540E\u7ED3\u5C40",
       text: "\u4F60\u5F00\u4E86\u81EA\u5DF1\u7684\u5C0F\u5382\u724C\u3002"
     },
     {
       id: "job-police",
       title: "\u8B66\u5FBD\u5728\u8EAB",
       group: "job",
+      groupName: "\u5DE5\u4F5C\u7ED3\u5C40",
       text: "\u4F60\u7A7F\u4E0A\u4E86\u53E6\u4E00\u5957\u5236\u670D\u3002"
     },
     {
       id: "job-office",
       title: "\u671D\u4E5D\u665A\u4E94",
       group: "job",
+      groupName: "\u5DE5\u4F5C\u7ED3\u5C40",
       text: "\u6253\u5361\u3001\u5348\u4F11\u3001\u4E0B\u73ED\uFF0C\u65E5\u5B50\u610F\u5916\u5730\u7A33\u3002"
     },
     {
       id: "job-teach",
       title: "\u6843\u674E\u6EE1\u95E8",
       group: "job",
+      groupName: "\u5DE5\u4F5C\u7ED3\u5C40",
       text: "\u4F60\u6559\u7684\u5B69\u5B50\uFF0C\u540E\u6765\u4E5F\u4E0A\u4E86\u53F0\u3002"
     },
     {
       id: "job-back",
       title: "\u91CD\u8FD4\u804C\u573A",
       group: "job",
+      groupName: "\u5DE5\u4F5C\u7ED3\u5C40",
       text: "\u7B80\u5386\u4E0A\u90A3\u4E24\u5E74\uFF0C\u4F60\u53EA\u5199\u300C\u81EA\u7531\u804C\u4E1A\u300D\u3002"
     },
     {
       id: "job-code",
       title: "\u4EE3\u7801\u4EBA\u751F",
       group: "job",
+      groupName: "\u5DE5\u4F5C\u7ED3\u5C40",
       text: "\u4F60\u56DE\u5230\u4E86\u90A3\u53F0\u7B14\u8BB0\u672C\u524D\u3002"
     },
     {
       id: "job-live",
       title: "\u5E26\u8D27\u4E3B\u64AD",
       group: "job",
+      groupName: "\u5DE5\u4F5C\u7ED3\u5C40",
       text: "\u955C\u5934\u6362\u6210\u7AD6\u5C4F\uFF0C\u8BDD\u672F\u6362\u4E86\u4E00\u5957\u3002"
     },
     {
       id: "life-plain",
       title: "\u5E73\u6DE1\u662F\u798F",
       group: "life",
+      groupName: "\u751F\u6D3B\u7ED3\u5C40",
       text: "\u4F60\u5AC1\u4E86\u4EBA\uFF0C\u5076\u5C14\u8FD8\u4F1A\u54FC\u90A3\u9996\u6CA1\u5531\u5B8C\u7684\u6B4C\u3002"
     },
     {
       id: "life-rich",
       title: "\u5AC1\u5165\u8C6A\u95E8",
       group: "life",
+      groupName: "\u751F\u6D3B\u7ED3\u5C40",
       text: "\u5A5A\u793C\u4E0A\u6CA1\u4EBA\u63D0\u8D77\u4F60\u4EE5\u524D\u7684\u540D\u5B57\u3002"
     },
     {
       id: "life-exec",
       title: "\u897F\u88C5\u9769\u5C65",
       group: "life",
+      groupName: "\u751F\u6D3B\u7ED3\u5C40",
       text: "\u4F60\u6210\u4E86\u90A3\u4E2A\u7B7E\u5408\u540C\u7684\u4EBA\u3002"
     },
     {
       id: "life-startup",
       title: "\u767D\u624B\u8D77\u5BB6",
       group: "life",
+      groupName: "\u751F\u6D3B\u7ED3\u5C40",
       text: "\u4F60\u5F00\u4E86\u5BB6\u5C0F\u5E97\uFF0C\u751F\u610F\u8FD8\u4E0D\u9519\u3002"
     },
     {
       id: "bad-hard",
       title: "\u8270\u96BE\u7EF4\u751F",
       group: "bad",
+      groupName: "\u574F\u7ED3\u5C40",
       text: "\u4F60\u5728\u4FBF\u5229\u5E97\u4E0A\u591C\u73ED\uFF0C\u5076\u5C14\u5237\u5230\u4EE5\u524D\u7684\u89C6\u9891\u3002"
     },
     {
       id: "bad-cold",
       title: "\u4EBA\u8D70\u8336\u51C9",
       group: "bad",
+      groupName: "\u574F\u7ED3\u5C40",
       text: "\u7FA4\u91CC\u8FD8\u5728\u804A\u5929\uFF0C\u53EA\u662F\u6CA1\u4EBA\u827E\u7279\u4F60\u3002"
     },
     {
       id: "bad-ignore",
       title: "\u65E0\u4EBA\u95EE\u6D25",
       group: "bad",
+      groupName: "\u574F\u7ED3\u5C40",
       text: "\u641C\u7D22\u4F60\u7684\u540D\u5B57\uFF0C\u53EA\u5269\u51E0\u6761\u65E7\u94FE\u63A5\u3002"
     },
     {
       id: "bad-ruin",
       title: "\u6F66\u5012\u6536\u573A",
       group: "bad",
+      groupName: "\u574F\u7ED3\u5C40",
       text: "\u4F60\u628A\u6700\u540E\u4E00\u7BB1\u5468\u8FB9\u5356\u7ED9\u4E86\u6536\u5E9F\u54C1\u7684\u3002"
     }
   ]
@@ -16999,10 +17073,13 @@ var endings_default = {
 var ENDINGS = Object.fromEntries(
   endings_default.endings.map((e) => [e.id, e])
 );
+var ENDING_GROUP_LABEL = Object.fromEntries(
+  Object.values(ENDINGS).map((e) => [e.group, e.groupName ?? e.group])
+);
 
 // ../core/data/members.json
 var members_default = {
-  _\u8BF4\u660E: "NPC \u961F\u53CB\u8868\uFF1AnamePool \u662F\u968F\u673A\u540D\u5B57\u6C60\uFF1Bbiases \u662F\u504F\u5411\u5206\u5E03",
+  _\u8BF4\u660E: "NPC \u961F\u53CB\u8868\uFF1AnamePool \u662F\u968F\u673A\u540D\u5B57\u6C60\uFF1Bbiases \u662F\u504F\u5411\u5B57\u6BB5\u540D\uFF0CbiasNames \u662F\u504F\u5411\u4E2D\u6587\u540D",
   members: {
     namePool: [
       "\u6797\u5C0F\u6EE1",
@@ -17024,7 +17101,14 @@ var members_default = {
       "acting",
       "talk",
       "balanced"
-    ]
+    ],
+    biasNames: {
+      vocal: "\u5531\u529F\u578B",
+      dance: "\u821E\u8E48\u578B",
+      acting: "\u6F14\u6280\u578B",
+      talk: "\u53E3\u624D\u578B",
+      balanced: "\u5747\u8861\u578B"
+    }
   }
 };
 
@@ -17034,6 +17118,10 @@ var DUP_CAP = BALANCE.dupCap;
 var NPC_BASE_RATIO = BALANCE.npcBaseRatio;
 var NAMES = members_default.members.namePool;
 var BIASES = members_default.members.biases;
+var BIAS_NAMES = members_default.members.biasNames;
+var BIAS_LABEL = Object.fromEntries(
+  BIASES.map((b) => [b, BIAS_NAMES?.[b] ?? b])
+);
 
 // ../core/src/divination.ts
 var DIVINATION_BASE = BALANCE.divinationBase;

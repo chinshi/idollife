@@ -14,6 +14,12 @@ export const NPC_BASE_RATIO = BALANCE.npcBaseRatio;
 
 const NAMES = membersJson.members.namePool;
 const BIASES = membersJson.members.biases as Bias[];
+const BIAS_NAMES = membersJson.members.biasNames as Record<string, string>;
+
+/** 倾向中文名：唱功型 / 舞蹈型 / ... */
+export const BIAS_LABEL: Record<string, string> = Object.fromEntries(
+  BIASES.map((b) => [b, BIAS_NAMES?.[b] ?? b]),
+);
 
 export type PartyResult = 'ok' | 'not-debuted' | 'not-found' | 'no-party';
 export type RecruitResult = 'new' | 'dup' | 'poor' | 'no-party';

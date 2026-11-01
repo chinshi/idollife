@@ -2,7 +2,7 @@
  * 把 content/*.xlsx 导入成 JSON 配置表：node scripts/content-import.mjs
  * 每个 xlsx 对应一张（或一组）表；缺文件会跳过并提示。
  */
-import { access, readFile, writeFile } from 'node:fs/promises';
+import { access, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import ExcelJS from 'exceljs';
@@ -89,23 +89,27 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
         id: str(cell(r, 1)),
         name: str(cell(r, 2)),
         category: str(cell(r, 3)),
-        stamina: num(cell(r, 5)) ?? 0,
-        text: str(cell(r, 10)),
+        categoryName: str(cell(r, 4)),
       };
-      const stat = str(cell(r, 4));
-      if (stat) a.stat = stat;
-      const g0 = num(cell(r, 6));
-      const g1 = num(cell(r, 7));
+      const stat = str(cell(r, 5));
+      if (stat) {
+        a.stat = stat;
+        a.statName = str(cell(r, 6));
+      }
+      a.stamina = num(cell(r, 7)) ?? 0;
+      const g0 = num(cell(r, 8));
+      const g1 = num(cell(r, 9));
       if (g0 !== undefined && g1 !== undefined) a.gain = [g0, g1];
-      const cost = num(cell(r, 8));
+      const cost = num(cell(r, 10));
       if (cost !== undefined) a.cost = cost;
-      const money = num(cell(r, 9));
+      const money = num(cell(r, 11));
       if (money !== undefined) a.money = money;
+      a.text = str(cell(r, 12));
       return a;
     });
     await writeJson('actions.json', {
       _说明:
-        '行动表：玩家可安排的训练/工作/休息。category 决定界面分组；gain 是属性成长区间；cost 花多少钱；money 赚多少钱',
+        '行动表：玩家可安排的训练/工作/休息。category/categoryName 是分类的字段名与中文名；stat/statName 是属性字段名与中文名',
       actions,
     });
     done++;
@@ -120,8 +124,11 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
     const routine = rowsOf(wb, 'routine').map((r) => {
       const o = { id: str(cell(r, 1)), text: str(cell(r, 2)), stamina: num(cell(r, 3)) ?? 0 };
       const stat = str(cell(r, 4));
-      if (stat) o.stat = stat;
-      const gain = num(cell(r, 5));
+      if (stat) {
+        o.stat = stat;
+        o.statName = str(cell(r, 5));
+      }
+      const gain = num(cell(r, 6));
       if (gain !== undefined) o.gain = gain;
       return o;
     });
@@ -189,14 +196,18 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
       id: str(cell(r, 1)),
       title: str(cell(r, 2)),
       group: str(cell(r, 3)),
-      text: str(cell(r, 4)),
+      groupName: str(cell(r, 4)),
+      text: str(cell(r, 5)),
     }));
-    await writeJson('endings.json', { _说明: '结局表：group 决定归类；判定逻辑在 endings.ts', endings });
+    await writeJson('endings.json', {
+      _说明: '结局表：group=分组字段名，groupName=分组中文名；判定逻辑在 endings.ts',
+      endings,
+    });
     done++;
   }
 }
 
-// 5) 装备 + 6) 全局数值（装备价格来自 balance）
+// 5) 装备 + 6) 全局数值
 {
   const shopWb = await openWb('shop.xlsx');
   const balanceWb = await openWb('balance.xlsx');
@@ -223,11 +234,16 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
     const rare = [];
     for (const r of rowsOf(shopWb, 'shop')) {
       const kind = str(cell(r, 1));
-      const item = { name: str(cell(r, 2)), stat: str(cell(r, 3)), value: num(cell(r, 4)) ?? 0 };
+      const item = {
+        name: str(cell(r, 2)),
+        stat: str(cell(r, 3)),
+        statName: str(cell(r, 4)),
+        value: num(cell(r, 5)) ?? 0,
+      };
       (kind === 'rare' ? rare : common).push(item);
     }
     await writeJson('shop.json', {
-      _说明: '装备表。common=普通（每周货架 3 件），rare=稀有（每周 1 件）',
+      _说明: '装备表。common=普通（每周货架 3 件），rare=稀有（每周 1 件）；stat/statName 是属性字段名与中文名',
       shop: { commonPrice, rarePrice, common, rare },
     });
     done++;
@@ -241,15 +257,20 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
   else {
     const namePool = [];
     const biases = [];
+    const biasNames = {};
     for (const r of rowsOf(wb, 'members')) {
       const type = str(cell(r, 1));
       const value = str(cell(r, 2));
+      const name = str(cell(r, 3));
       if (type === 'name') namePool.push(value);
-      else if (type === 'bias') biases.push(value);
+      else if (type === 'bias') {
+        biases.push(value);
+        if (name) biasNames[value] = name;
+      }
     }
     await writeJson('members.json', {
-      _说明: 'NPC 队友表：namePool 是随机名字池；biases 是偏向分布',
-      members: { namePool, biases },
+      _说明: 'NPC 队友表：namePool 是随机名字池；biases 是偏向字段名，biasNames 是偏向中文名',
+      members: { namePool, biases, biasNames },
     });
     done++;
   }
@@ -290,7 +311,7 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
       logs[key] = str(cell(r, 2));
     }
     await writeJson('logs.json', {
-      _说明: '日志/系统文案表。{n} 会被替换成数值，{name} 会被替换成名字',
+      _说明: '日志/系统文案表。key 是代码里用的键名，text 是中文文案；{n} 会被替换成数值，{name} 会被替换成名字',
       logs,
     });
     done++;

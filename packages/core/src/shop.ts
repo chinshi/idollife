@@ -10,12 +10,14 @@ const RARE_PRICE = shopJson.shop.rarePrice;
 const OUTFITS = shopJson.shop.common.map((o) => ({
   name: o.name,
   stat: o.stat as StatKey,
+  statName: o.statName,
   value: o.value,
 }));
 
 const RARE_OUTFITS = shopJson.shop.rare.map((o) => ({
   name: o.name,
   stat: o.stat as StatKey,
+  statName: o.statName,
   value: o.value,
 }));
 

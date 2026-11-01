@@ -9,13 +9,21 @@ export type Decision = 'stay' | 'backstage' | 'leave';
 export interface Ending {
   id: string;
   title: string;
+  /** 分组字段名：interrupt / stage-fan / ... */
   group: EndingGroup;
+  /** 分组中文名：中断结局 / 粉丝向结局 / ... */
+  groupName?: string;
   text: string;
 }
+
 
 /** 42 个结局（4 字标题） */
 export const ENDINGS: Record<string, Ending> = Object.fromEntries(
   (endingsJson.endings as Ending[]).map((e) => [e.id, e]),
+);
+/** 结局分组中文名（来自 data/endings.json） */
+export const ENDING_GROUP_LABEL: Record<string, string> = Object.fromEntries(
+  Object.values(ENDINGS).map((e) => [e.group, e.groupName ?? e.group]),
 );
 
 const FAN_ENDING: Record<FanType, string> = {

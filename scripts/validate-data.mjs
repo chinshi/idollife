@@ -130,6 +130,25 @@ if (endings) {
   }
 }
 
+// 枚举字段必须同时有「字段名 + 中文名」
+for (const a of actions?.actions ?? []) {
+  need(typeof a.categoryName === 'string' && a.categoryName, `actions.${a.id}: 缺少 categoryName（分类中文名）`);
+  if (a.stat) need(typeof a.statName === 'string' && a.statName, `actions.${a.id}: 缺少 statName（属性中文名）`);
+}
+for (const r of events?.routine ?? []) {
+  if (r.stat) need(typeof r.statName === 'string' && r.statName, `routine.${r.id}: 缺少 statName（属性中文名）`);
+}
+for (const e of endings?.endings ?? []) {
+  need(typeof e.groupName === 'string' && e.groupName, `endings.${e.id}: 缺少 groupName（分组中文名）`);
+}
+for (const i of [...(shop?.shop?.common ?? []), ...(shop?.shop?.rare ?? [])]) {
+  need(typeof i.statName === 'string' && i.statName, `shop.${i.name}: 缺少 statName（属性中文名）`);
+}
+const bm = members?.members ?? {};
+for (const b of bm.biases ?? []) {
+  need(bm.biasNames?.[b], `members: 倾向 ${b} 缺少中文名（biasNames）`);
+}
+
 if (errors.length > 0) {
   console.error(`\n✗ 配置表校验失败（${errors.length} 处）\n`);
   for (const e of errors) console.error('  - ' + e);

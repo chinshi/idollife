@@ -1,5 +1,5 @@
 {
-  "_说明": "装备表。common=普通（每周货架 3 件），rare=稀有（每周 1 件）",
+  "_说明": "装备表。common=普通（每周货架 3 件），rare=稀有（每周 1 件）；stat/statName 是属性字段名与中文名",
   "shop": {
     "commonPrice": 800,
     "rarePrice": 2000,
@@ -7,31 +7,37 @@
       {
         "name": "素色练习服",
         "stat": "dance",
+        "statName": "舞蹈",
         "value": 2
       },
       {
         "name": "旧卫衣",
         "stat": "dance",
+        "statName": "舞蹈",
         "value": 2
       },
       {
         "name": "白衬衫",
         "stat": "acting",
+        "statName": "演技",
         "value": 2
       },
       {
         "name": "针织开衫",
         "stat": "vocal",
+        "statName": "演唱",
         "value": 2
       },
       {
         "name": "运动外套",
         "stat": "dance",
+        "statName": "舞蹈",
         "value": 2
       },
       {
         "name": "宽松T恤",
         "stat": "talk",
+        "statName": "口才",
         "value": 2
       }
     ],
@@ -39,21 +45,25 @@
       {
         "name": "打歌服·初版",
         "stat": "dance",
+        "statName": "舞蹈",
         "value": 5
       },
       {
         "name": "古风长裙",
         "stat": "acting",
+        "statName": "演技",
         "value": 5
       },
       {
         "name": "Lolita 套装",
         "stat": "talk",
+        "statName": "口才",
         "value": 5
       },
       {
         "name": "摇滚夹克",
         "stat": "vocal",
+        "statName": "演唱",
         "value": 5
       }
     ]

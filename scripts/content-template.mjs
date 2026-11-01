@@ -1,8 +1,6 @@
 /**
  * 生成拆分的 Excel 内容模板：node scripts/content-template.mjs
- * 每张表一个 xlsx，放在 content/ 下：
- *   attributes.xlsx  actions.xlsx  events.xlsx  endings.xlsx
- *   shop.xlsx  members.xlsx  balance.xlsx  characters.xlsx  logs.xlsx
+ * 每张表一个 xlsx，放在 content/ 下（枚举字段都带「字段名 + 中文名」两列）
  */
 import { readFile, mkdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -63,15 +61,20 @@ await build('attributes.xlsx', [
 await build('actions.xlsx', [
   {
     name: 'actions',
-    headers: ['id', 'name', 'category', 'stat', 'stamina', 'gainMin', 'gainMax', 'cost', 'money', 'text'],
+    headers: [
+      'id', 'name', 'category', 'categoryName', 'stat', 'statName',
+      'stamina', 'gainMin', 'gainMax', 'cost', 'money', 'text',
+    ],
     rows: actions.actions.map((a) => [
-      a.id, a.name, a.category, a.stat ?? '', a.stamina,
-      a.gain?.[0] ?? '', a.gain?.[1] ?? '', a.cost ?? '', a.money ?? '', a.text,
+      a.id, a.name, a.category, a.categoryName ?? '',
+      a.stat ?? '', a.statName ?? '',
+      a.stamina, a.gain?.[0] ?? '', a.gain?.[1] ?? '',
+      a.cost ?? '', a.money ?? '', a.text,
     ]),
   },
 ]);
 
-// 3) 事件表（3 个工作表：常规 / 剧情 / 选项）
+// 3) 事件表（routine / story / choices）
 const choiceRows = [];
 for (const e of events.story) {
   for (const c of e.choices) {
@@ -88,8 +91,10 @@ for (const e of events.story) {
 await build('events.xlsx', [
   {
     name: 'routine',
-    headers: ['id', 'text', 'stamina', 'stat', 'gain'],
-    rows: events.routine.map((r) => [r.id, r.text, r.stamina, r.stat ?? '', r.gain ?? '']),
+    headers: ['id', 'text', 'stamina', 'stat', 'statName', 'gain'],
+    rows: events.routine.map((r) => [
+      r.id, r.text, r.stamina, r.stat ?? '', r.statName ?? '', r.gain ?? '',
+    ]),
   },
   {
     name: 'story',
@@ -110,8 +115,8 @@ await build('events.xlsx', [
 await build('endings.xlsx', [
   {
     name: 'endings',
-    headers: ['id', 'title', 'group', 'text'],
-    rows: endings.endings.map((e) => [e.id, e.title, e.group, e.text]),
+    headers: ['id', 'title', 'group', 'groupName', 'text'],
+    rows: endings.endings.map((e) => [e.id, e.title, e.group, e.groupName ?? '', e.text]),
   },
 ]);
 
@@ -119,10 +124,10 @@ await build('endings.xlsx', [
 await build('shop.xlsx', [
   {
     name: 'shop',
-    headers: ['kind', 'name', 'stat', 'value'],
+    headers: ['kind', 'name', 'stat', 'statName', 'value'],
     rows: [
-      ...shop.shop.common.map((i) => ['common', i.name, i.stat, i.value]),
-      ...shop.shop.rare.map((i) => ['rare', i.name, i.stat, i.value]),
+      ...shop.shop.common.map((i) => ['common', i.name, i.stat, i.statName ?? '', i.value]),
+      ...shop.shop.rare.map((i) => ['rare', i.name, i.stat, i.statName ?? '', i.value]),
     ],
   },
 ]);
@@ -131,10 +136,10 @@ await build('shop.xlsx', [
 await build('members.xlsx', [
   {
     name: 'members',
-    headers: ['type', 'value'],
+    headers: ['type', 'value', 'name'],
     rows: [
-      ...members.members.namePool.map((n) => ['name', n]),
-      ...members.members.biases.map((b) => ['bias', b]),
+      ...members.members.namePool.map((n) => ['name', n, '']),
+      ...members.members.biases.map((b) => ['bias', b, members.members.biasNames?.[b] ?? '']),
     ],
   },
 ]);
@@ -172,7 +177,4 @@ await build('logs.xlsx', [
   },
 ]);
 
-console.log('✓ 已生成 9 个模板文件到 content/');
-console.log('  attributes.xlsx actions.xlsx events.xlsx endings.xlsx');
-console.log('  shop.xlsx members.xlsx balance.xlsx characters.xlsx logs.xlsx');
-console.log('  改完后运行：pnpm content:import');
+console.log('✓ 已生成 9 个模板文件到 content/（枚举字段均含中英文两列）');

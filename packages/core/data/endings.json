@@ -1,256 +1,298 @@
 {
-  "_说明": "结局表：group 决定归类；判定逻辑在 endings.ts",
+  "_说明": "结局表：group=分组字段名，groupName=分组中文名；判定逻辑在 endings.ts",
   "endings": [
     {
       "id": "int-burnout",
       "title": "积劳成疾",
       "group": "interrupt",
+      "groupName": "中断结局",
       "text": "你在排练室晕倒，医生说必须停下来。"
     },
     {
       "id": "int-void",
       "title": "浑浑噩噩",
       "group": "interrupt",
+      "groupName": "中断结局",
       "text": "你开始记不清上周发生了什么。"
     },
     {
       "id": "int-desire",
       "title": "想入非非",
       "group": "interrupt",
+      "groupName": "中断结局",
       "text": "一段没处理好的关系传遍了圈子。"
     },
     {
       "id": "int-condemn",
       "title": "千夫所指",
       "group": "interrupt",
+      "groupName": "中断结局",
       "text": "评论区关了又开，骂声还在。"
     },
     {
       "id": "int-injury",
       "title": "因伤退场",
       "group": "interrupt",
+      "groupName": "中断结局",
       "text": "医生说这个伤，不能再跳了。"
     },
     {
       "id": "int-broke",
       "title": "山穷水尽",
       "group": "interrupt",
+      "groupName": "中断结局",
       "text": "房租欠了两个月，你收拾行李回了家。"
     },
     {
       "id": "int-cold",
       "title": "心灰意冷",
       "group": "interrupt",
+      "groupName": "中断结局",
       "text": "某天你发现，自己已经三周没打开排练室的门。"
     },
     {
       "id": "int-quit",
       "title": "急流勇退",
       "group": "interrupt",
+      "groupName": "中断结局",
       "text": "你选在一个还算体面的时刻，说了再见。"
     },
     {
       "id": "fan-gachi",
       "title": "国民初恋",
       "group": "stage-fan",
+      "groupName": "粉丝向结局",
       "text": "粉丝说你是「可以带回老家的那种人」。"
     },
     {
       "id": "fan-stage",
       "title": "剧场女神",
       "group": "stage-fan",
+      "groupName": "粉丝向结局",
       "text": "小场子的灯一亮，所有人都在看你。"
     },
     {
       "id": "fan-music",
       "title": "金曲歌后",
       "group": "stage-fan",
+      "groupName": "粉丝向结局",
       "text": "那首歌在榜单上挂了很久。"
     },
     {
       "id": "fan-live",
       "title": "现场传说",
       "group": "stage-fan",
+      "groupName": "粉丝向结局",
       "text": "提起那一晚的应援，老粉眼睛还会亮。"
     },
     {
       "id": "fan-growth",
       "title": "长情偶像",
       "group": "stage-fan",
+      "groupName": "粉丝向结局",
       "text": "有人从第一场跟到了最后一场。"
     },
     {
       "id": "fan-power",
       "title": "实力标杆",
       "group": "stage-fan",
+      "groupName": "粉丝向结局",
       "text": "后辈被教导：先去看她的现场。"
     },
     {
       "id": "stat-vocal",
       "title": "歌坛天后",
       "group": "stage-stat",
+      "groupName": "属性向结局",
       "text": "你的声音成了这个圈子的标准。"
     },
     {
       "id": "stat-dance",
       "title": "舞台女王",
       "group": "stage-stat",
+      "groupName": "属性向结局",
       "text": "你跳过的地板，别人不敢再站。"
     },
     {
       "id": "stat-acting",
       "title": "银幕影后",
       "group": "stage-stat",
+      "groupName": "属性向结局",
       "text": "镜头终于愿意停在你的脸上。"
     },
     {
       "id": "stat-talk",
       "title": "综艺女王",
       "group": "stage-stat",
+      "groupName": "属性向结局",
       "text": "你一句话能让全场笑，也能让全场静。"
     },
     {
       "id": "stat-visual",
       "title": "T台名模",
       "group": "stage-stat",
+      "groupName": "属性向结局",
       "text": "你站在那儿，就已经是画面。"
     },
     {
       "id": "low-corner",
       "title": "角落伴舞",
       "group": "stage-low",
+      "groupName": "低谷结局",
       "text": "你还在台上，只是没人记得名字。"
     },
     {
       "id": "low-short",
       "title": "竖屏演员",
       "group": "stage-low",
+      "groupName": "低谷结局",
       "text": "你开始接竖屏短剧，一天拍完。"
     },
     {
       "id": "low-mid",
       "title": "腰部网红",
       "group": "stage-low",
+      "groupName": "低谷结局",
       "text": "有点流量，但上不去，也下不来。"
     },
     {
       "id": "low-fade",
       "title": "黯然退场",
       "group": "stage-low",
+      "groupName": "低谷结局",
       "text": "没有人送别，你也就没打扰谁。"
     },
     {
       "id": "back-talk",
       "title": "金牌经纪",
       "group": "backstage",
+      "groupName": "幕后结局",
       "text": "你带的新人，第一次上电视时说谢谢姐。"
     },
     {
       "id": "back-dance",
       "title": "编舞导师",
       "group": "backstage",
+      "groupName": "幕后结局",
       "text": "你编的舞，被别的团跳火了。"
     },
     {
       "id": "back-vocal",
       "title": "幕后制作",
       "group": "backstage",
+      "groupName": "幕后结局",
       "text": "你在调音台后面，把一首歌救活了。"
     },
     {
       "id": "back-acting",
       "title": "表演指导",
       "group": "backstage",
+      "groupName": "幕后结局",
       "text": "你教他们怎么哭，自己却很久没哭过。"
     },
     {
       "id": "back-boss",
       "title": "厂牌主理",
       "group": "backstage",
+      "groupName": "幕后结局",
       "text": "你开了自己的小厂牌。"
     },
     {
       "id": "job-police",
       "title": "警徽在身",
       "group": "job",
+      "groupName": "工作结局",
       "text": "你穿上了另一套制服。"
     },
     {
       "id": "job-office",
       "title": "朝九晚五",
       "group": "job",
+      "groupName": "工作结局",
       "text": "打卡、午休、下班，日子意外地稳。"
     },
     {
       "id": "job-teach",
       "title": "桃李满门",
       "group": "job",
+      "groupName": "工作结局",
       "text": "你教的孩子，后来也上了台。"
     },
     {
       "id": "job-back",
       "title": "重返职场",
       "group": "job",
+      "groupName": "工作结局",
       "text": "简历上那两年，你只写「自由职业」。"
     },
     {
       "id": "job-code",
       "title": "代码人生",
       "group": "job",
+      "groupName": "工作结局",
       "text": "你回到了那台笔记本前。"
     },
     {
       "id": "job-live",
       "title": "带货主播",
       "group": "job",
+      "groupName": "工作结局",
       "text": "镜头换成竖屏，话术换了一套。"
     },
     {
       "id": "life-plain",
       "title": "平淡是福",
       "group": "life",
+      "groupName": "生活结局",
       "text": "你嫁了人，偶尔还会哼那首没唱完的歌。"
     },
     {
       "id": "life-rich",
       "title": "嫁入豪门",
       "group": "life",
+      "groupName": "生活结局",
       "text": "婚礼上没人提起你以前的名字。"
     },
     {
       "id": "life-exec",
       "title": "西装革履",
       "group": "life",
+      "groupName": "生活结局",
       "text": "你成了那个签合同的人。"
     },
     {
       "id": "life-startup",
       "title": "白手起家",
       "group": "life",
+      "groupName": "生活结局",
       "text": "你开了家小店，生意还不错。"
     },
     {
       "id": "bad-hard",
       "title": "艰难维生",
       "group": "bad",
+      "groupName": "坏结局",
       "text": "你在便利店上夜班，偶尔刷到以前的视频。"
     },
     {
       "id": "bad-cold",
       "title": "人走茶凉",
       "group": "bad",
+      "groupName": "坏结局",
       "text": "群里还在聊天，只是没人艾特你。"
     },
     {
       "id": "bad-ignore",
       "title": "无人问津",
       "group": "bad",
+      "groupName": "坏结局",
       "text": "搜索你的名字，只剩几条旧链接。"
     },
     {
       "id": "bad-ruin",
       "title": "潦倒收场",
       "group": "bad",
+      "groupName": "坏结局",
       "text": "你把最后一箱周边卖给了收废品的。"
     }
   ]
