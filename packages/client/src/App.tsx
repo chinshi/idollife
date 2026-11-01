@@ -313,6 +313,7 @@ function AppInner() {
   const [managing, setManaging] = useState(false);
   const [showStops, setShowStops] = useState(false);
   const [showInvite, setShowInvite] = useState(false);
+  const [friendsTab, setFriendsTab] = useState<'list' | 'meet'>('list');
   const statTotal = run.stats.vocal + run.stats.dance + run.stats.acting + run.stats.talk;
   const STOP_TEXT: Record<string, string> = {
     stamina: '体力不足，行程停下来了',
@@ -1692,12 +1693,30 @@ function AppInner() {
               <>
                 <div className="mod-head">
                   <h2>朋友圈</h2>
+                  <span className="seg-inline">
+                    <button
+                      className={friendsTab === 'list' ? 'seg-item active' : 'seg-item'}
+                      onClick={() => setFriendsTab('list')}
+                    >
+                      我的朋友圈
+                    </button>
+                    <button
+                      className={friendsTab === 'meet' ? 'seg-item active' : 'seg-item'}
+                      onClick={() => setFriendsTab('meet')}
+                    >
+                      认识新朋友
+                    </button>
+                  </span>
+                  <span className="spacer" />
                   <span className="muted small">
                     共 {run.friends.length} 人 · 可邀请 {run.friends.filter((f) => !f.partyId).length}
                   </span>
                 </div>
 
-                <div className="friend-block">
+                <div
+                  className="friend-block"
+                  style={{ display: friendsTab === 'meet' ? undefined : 'none' }}
+                >
                   <h4>认识新朋友</h4>
                   <div className="row wrap">
                     {CHANNELS.map((c) => (
@@ -1714,7 +1733,10 @@ function AppInner() {
                   </div>
                 </div>
 
-                <div className="friend-block">
+                <div
+                  className="friend-block"
+                  style={{ display: friendsTab === 'list' ? undefined : 'none' }}
+                >
                   <h4>我的朋友圈</h4>
                   {run.friends.length === 0 ? (
                     <p className="muted small">还没有认识的人，去上面挑个渠道试试。</p>
@@ -1743,10 +1765,11 @@ function AppInner() {
                             <div className="mcard-inner">
                               <div className="mcard-face front">
                                 <span className="mcard-name">{f.name}</span>
-                                <span className="mcard-set">{biasLabel(f.bias)}</span>
-                                <span className="mcard-dup">
-                                  {inParty ? `已入团 · ${teamName}` : `资质 ${Math.round(f.quality * 100)}%`}
+                                <span className="mcard-set">
+                                  {biasLabel(f.bias)} · 资质 {Math.round(f.quality * 100)}%
                                 </span>
+                                <span className="mcard-dup">默契 +0%</span>
+                                {inParty && <span className="mcard-team">已入团 · {teamName}</span>}
 
                               </div>
                               <div className="mcard-face back">

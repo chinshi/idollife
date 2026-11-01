@@ -2075,3 +2075,8 @@ body { overflow: hidden; }
 .invite-list .spacer { flex: 1 1 auto; }
 .invite-list button { padding: 4px 12px; font-size: 12px; border-radius: 8px; }
 .invite-list button:disabled { opacity: 0.5; cursor: not-allowed; }
+/* 朋友圈头部：分段切换 */
+.seg-inline { display: flex; align-items: center; gap: 6px; margin-left: 6px; }
+.seg-inline .seg-item { padding: 3px 12px; font-size: 11px; }
+/* 卡片归属团标签 */
+.mcard-team { font-size: 11px; color: #9aa2b3; }
