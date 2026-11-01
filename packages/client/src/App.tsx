@@ -305,15 +305,42 @@ function AppInner() {
   const [forceLogin, setForceLogin] = useState(false);
   const [running, setRunning] = useState(false);
   const [speed, setSpeed] = useState(1);
-  const clockKey = 'idollife:clock:v1';
-  const bootClock = (() => {
+  const clockKey = 'idollife:clock:v2';
+
+  /**
+   * 读取本地记录的「行动时钟」：
+   * 存的是 { 游戏时间, 墙上时间 }，用墙上时间差把离线期间的时间补回来。
+   */
+  const bootClockRef = useRef<number>(-1);
+  if (bootClockRef.current < 0) bootClockRef.current = (() => {
     try {
-      const raw = Number(localStorage.getItem(clockKey));
-      return Number.isFinite(raw) && raw > 0 ? raw : 0;
+      const raw = localStorage.getItem(clockKey);
+      if (!raw) return 0;
+      const data = JSON.parse(raw) as { t?: number; w?: number; speed?: number };
+      const t = Number(data.t ?? 0);
+      const w = Number(data.w ?? 0);
+      if (!Number.isFinite(t) || t <= 0) return 0;
+
+      const speed = Number(data.speed ?? 1) || 1;
+      const offline = w > 0 ? Math.max(0, Date.now() - w) : 0;
+      const capped = Math.min(offline, 6 * 3600 * 1000); // 最多补 6 小时，防止离谱跳变
+      let next = Math.round(t + capped * speed);
+
+      // 不超过最后一条行程的结束时间（避免离线补出天文数字）
+      try {
+        const saved = loadSave();
+        const maxEnd = (saved?.schedule ?? []).reduce((m, s) => Math.max(m, s.endAt), 0);
+        if (maxEnd > 0) next = Math.min(next, maxEnd);
+      } catch {
+        /* 忽略 */
+      }
+
+      return next;
     } catch {
       return 0;
     }
   })();
+  const bootClock = bootClockRef.current;
 
   const [gameNow, setGameNow] = useState<number>(
     Math.max(boot?.run?.at ?? T0, bootClock),
@@ -415,13 +442,20 @@ function AppInner() {
   useEffect(() => {
     const id = window.setInterval(() => {
       try {
-        localStorage.setItem(clockKey, String(Math.round(gameNowRef.current)));
+        localStorage.setItem(
+          clockKey,
+          JSON.stringify({
+            t: Math.round(gameNowRef.current),
+            w: Date.now(),
+            speed,
+          }),
+        );
       } catch {
         /* 忽略 */
       }
     }, 1000);
     return () => window.clearInterval(id);
-  }, [clockKey]);
+  }, [clockKey, speed]);
 
   useEffect(() => {
     runRef.current = run;
@@ -766,10 +800,22 @@ function AppInner() {
     }
 
     if (outcome.kind === 'stale') {
-      setRun(normalizeRun(outcome.data.state));
+      // 服务器校验失败：以服务器为准，校准本地时钟与排程时间
+      const serverRun = normalizeRun(outcome.data.state);
+      const fixedSchedule = repairChain(scheduleRef.current, serverRun.at);
+
+      runRef.current = serverRun;
+      scheduleRef.current = fixedSchedule;
+      setRun(serverRun);
+      setSchedule(fixedSchedule);
+      setGameNow(serverRun.at);
       setRevision(outcome.data.revision);
-      setNotice('服务器上的进度更新，已回滚到云端。');
+      setRunning(false);
+      batchRef.current = null;
+      setSnapshot(null);
+      setNotice('服务器校验没过，已按云端的进度校准时间，可以重新推进。');
       setSyncStatus('synced');
+      dbg('校准 at=' + String(serverRun.at));
       return;
     }
 
@@ -1001,7 +1047,10 @@ function AppInner() {
     // 当前行动还没结算，run.at 就停在它的开始时间，无需回滚
     setGameNow(runRef.current.at);
     try {
-      localStorage.setItem('idollife:clock:v1', String(Math.round(runRef.current.at)));
+      localStorage.setItem(
+        'idollife:clock:v2',
+        JSON.stringify({ t: Math.round(runRef.current.at), w: Date.now(), speed }),
+      );
     } catch {
       /* 忽略 */
     }
