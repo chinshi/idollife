@@ -4,7 +4,6 @@ import { BALANCE } from './data';
 import { createFans } from './fans';
 import { applyFanAction } from './fans';
 import { ROUTINE_TEMPLATES, findStoryEvent } from './events';
-import { checkTaskCompletions } from './tasks';
 import { hashSeed, mulberry32, randInt } from './rng';
 import type { RunState, ScheduleItem, SettleResult, Stats, StopReason } from './types';
 
@@ -190,6 +189,5 @@ export function settle(
     stoppedReason = 'ending';
   }
 
-  // 任务：进行中的任务若满足完成条件，自动完成并发奖
-  return { state: checkTaskCompletions(state), executed, stoppedReason };
+  return { state, executed, stoppedReason };
 }

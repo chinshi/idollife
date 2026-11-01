@@ -16,7 +16,7 @@ import type { RunState, Stats } from './types';
 
 export type TaskType = 'once' | 'repeat';
 
-export type TaskStatus = 'hidden' | 'locked' | 'claimable' | 'active' | 'done';
+export type TaskStatus = 'hidden' | 'locked' | 'claimable' | 'active' | 'completable' | 'done';
 
 export interface TaskRewards {
   money?: number;
@@ -78,8 +78,9 @@ export function taskStatus(state: RunState, task: TaskDef): TaskStatus {
 
   const accepted = acceptedAt(state, task.id) > 0;
   if (accepted) {
+    if (doneAt(state, task.id) > 0) return 'done';
     const complete = matchesCondition(state, task.completeCondition as never);
-    return complete ? 'done' : 'active';
+    return complete ? 'completable' : 'active';
   }
 
   const canAccept = matchesCondition(state, task.acceptCondition as never);
@@ -119,62 +120,62 @@ export function acceptTask(
 }
 
 /**
- * 结算任务完成：进行中的任务一旦满足完成条件，自动完成并发奖。
- * 在 settle 结束时调用（纯函数，返回新状态）。
+ * 领取任务奖励：任务处于「可领奖」状态时调用，发奖并标记完成。
  */
-export function checkTaskCompletions(state: RunState): RunState {
-  let next = state;
+export function claimTaskReward(
+  state: RunState,
+  taskId: string,
+): { state: RunState; result: 'ok' | 'not-ready' | 'not-found' } {
+  const task = TASKS.find((t) => t.id === taskId);
+  if (!task) return { state, result: 'not-found' };
+  if (taskStatus(state, task) !== 'completable') return { state, result: 'not-ready' };
 
-  for (const task of TASKS) {
-    if (acceptedAt(next, task.id) <= 0) continue;
-    if (!matchesCondition(next, task.completeCondition as never)) continue;
-    if (doneAt(next, task.id) > 0) continue;
-    if (taskExhausted(next, task)) continue;
+  const rewards = task.rewards ?? {};
+  const stats = { ...state.stats };
+  for (const [k, v] of Object.entries(rewards.stats ?? {})) {
+    const key = k as keyof Stats;
+    stats[key] = Math.max(0, Math.min(100, stats[key] + (v ?? 0)));
+  }
 
-    const rewards = task.rewards ?? {};
-    const stats = { ...next.stats };
-    for (const [k, v] of Object.entries(rewards.stats ?? {})) {
-      const key = k as keyof Stats;
-      stats[key] = Math.max(0, Math.min(100, stats[key] + (v ?? 0)));
-    }
+  const fanGain = rewards.fans ?? 0;
+  const fans = fanGain > 0 ? applyFanAction(state.fans, 'stage', fanGain, 0.2) : state.fans;
 
-    const fanGain = rewards.fans ?? 0;
-    const fans = fanGain > 0 ? applyFanAction(next.fans, 'stage', fanGain, 0.2) : next.fans;
+  const rewardText =
+    [
+      rewards.money ? `+¥${rewards.money}` : '',
+      rewards.stamina ? `体力 +${rewards.stamina}` : '',
+      rewards.fans ? `粉丝 +${rewards.fans}` : '',
+    ]
+      .filter(Boolean)
+      .join(' · ') || '已记录';
 
-    next = {
-      ...next,
-      money: next.money + (rewards.money ?? 0),
-      stamina: Math.max(0, Math.min(100, next.stamina + (rewards.stamina ?? 0))),
+  return {
+    state: {
+      ...state,
+      money: state.money + (rewards.money ?? 0),
+      stamina: Math.max(0, Math.min(100, state.stamina + (rewards.stamina ?? 0))),
       stats,
       fans,
       flags: {
-        ...next.flags,
-        [doneKey(task.id)]: next.at,
-        [countKey(task.id)]: doneTimes(next, task.id) + 1,
+        ...state.flags,
+        [doneKey(task.id)]: state.at,
+        [countKey(task.id)]: doneTimes(state, task.id) + 1,
       },
       log: [
-        ...next.log,
+        ...state.log,
         {
-          at: next.at,
+          at: state.at,
           actionId: `task-done:${task.id}`,
-          text: `完成任务「${task.name}」。（${[
-            rewards.money ? `+¥${rewards.money}` : '',
-            rewards.stamina ? `体力 +${rewards.stamina}` : '',
-            rewards.fans ? `粉丝 +${rewards.fans}` : '',
-          ]
-            .filter(Boolean)
-            .join(' · ') || '已记录'}）`,
+          text: `完成任务「${task.name}」。（${rewardText}）`,
           staminaDelta: rewards.stamina ?? 0,
           statDelta: rewards.stats ?? {},
           kind: 'action',
         },
       ],
-    };
-  }
-
-  return next;
+    },
+    result: 'ok',
+  };
 }
-
 /** 已完成任务（按完成时间倒序；没有完成时间的排最后） */
 export function completedTasks(state: RunState): Array<{ task: TaskDef; at: number }> {
   return TASKS.filter((task) => taskStatus(state, task) === 'done')
@@ -200,4 +201,61 @@ export function claimableTasks(state: RunState): TaskDef[] {
 /** 需要玩家注意的任务（可领取 + 已完成未看） */
 export function taskBadgeCount(state: RunState): number {
   return claimableTasks(state).length;
+}
+
+const LABELS: Record<string, string> = {
+  vocal: '演唱',
+  dance: '舞蹈',
+  acting: '演技',
+  talk: '口才',
+  self: '自我',
+  others: '他人',
+  fit: '适配',
+  stage: '舞台粉',
+  gachi: '嘎起粉',
+  music: '音乐粉',
+  live: '现场粉',
+  growth: '养成粉',
+  power: '实力粉',
+};
+
+/** 把条件翻译成中文，给界面展示 */
+export function describeCondition(cond?: Record<string, unknown>): string {
+  if (!cond || Object.keys(cond).length === 0) return '无';
+  const c = cond as Record<string, Record<string, number> | number | string[] | undefined>;
+  const parts: string[] = [];
+
+  const sum = c.statsSumAtLeast as number | undefined;
+  if (typeof sum === 'number') parts.push(`四项属性总和 ≥ ${sum}`);
+  for (const [k, v] of Object.entries((c.statsAtLeast as Record<string, number>) ?? {})) {
+    parts.push(`${LABELS[k] ?? k} ≥ ${v}`);
+  }
+  for (const [k, v] of Object.entries((c.axesAtLeast as Record<string, number>) ?? {})) {
+    parts.push(`${LABELS[k] ?? k} ≥ ${v}`);
+  }
+  for (const [k, v] of Object.entries((c.axesBelow as Record<string, number>) ?? {})) {
+    parts.push(`${LABELS[k] ?? k} < ${v}`);
+  }
+  if (typeof c.staminaBelow === 'number') parts.push(`体力 < ${c.staminaBelow}`);
+  if (typeof c.moneyAtLeast === 'number') parts.push(`资金 ≥ ${c.moneyAtLeast}`);
+  if (typeof c.friendsAtLeast === 'number') parts.push(`朋友圈 ≥ ${c.friendsAtLeast} 人`);
+  for (const [k, v] of Object.entries((c.fansAtLeast as Record<string, number>) ?? {})) {
+    parts.push(`${LABELS[k] ?? k} ≥ ${v}`);
+  }
+  for (const f of (c.flagsContain as string[]) ?? []) {
+    parts.push(f === 'ev:debut' ? '完成出道' : `标记 ${f}`);
+  }
+  return parts.join('、') || '无';
+}
+
+/** 奖励文案 */
+export function describeRewards(task: TaskDef): string {
+  const r = task.rewards ?? {};
+  const parts = [
+    r.money ? `¥${r.money}` : '',
+    r.stamina ? `体力 +${r.stamina}` : '',
+    r.fans ? `粉丝 +${r.fans}` : '',
+    ...Object.entries(r.stats ?? {}).map(([k, v]) => `${LABELS[k] ?? k} +${v}`),
+  ].filter(Boolean);
+  return parts.join(' · ') || '无';
 }

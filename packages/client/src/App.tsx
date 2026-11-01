@@ -24,7 +24,9 @@ import {
   taskStatus,
   acceptTask,
   activeTasks,
-  checkTaskCompletions,
+  claimTaskReward,
+  describeCondition,
+  describeRewards,
   completedTasks,
   claimableTasks,
   taskBadgeCount,
@@ -474,11 +476,6 @@ function AppInner() {
     }, 10 * 60 * 1000);
     return () => window.clearInterval(id);
   }, [user]);
-  // 任务自动结算：满足完成条件的进行中任务，立刻完成并发奖
-  useEffect(() => {
-    const next = checkTaskCompletions(run);
-    if (next !== run) setRun(next);
-  }, [run]);
   // 记住「当前时钟位置」，刷新后从那里继续，而不是回到行动开始
   useEffect(() => {
     const id = window.setInterval(() => {
@@ -1179,6 +1176,16 @@ function AppInner() {
     setNotice(r.friend ? `认识了 ${r.friend.name}，已加入朋友圈。` : '认识了一个新朋友。');
   }
 
+  function doReward(taskId: string) {
+    const r = claimTaskReward(run, taskId);
+    if (r.result === 'ok') {
+      setRun(r.state);
+      setNotice('任务奖励已领取。');
+      return;
+    }
+    setNotice('任务还没完成。');
+  }
+
   function doAccept(taskId: string) {
     const r = acceptTask(run, taskId);
     if (r.result === 'ok') {
@@ -1672,19 +1679,7 @@ function AppInner() {
               <>
                 <div className="mod-head">
                   <h2>任务</h2>
-                  <span className="muted small">
-                    共{TASKS.length} · 可{
-                      TASKS.filter((x) => taskStatus(run, x) === 'claimable').length
-                    } · 进{
-                      TASKS.filter((x) => taskStatus(run, x) === 'active').length
-                    } · 见{
-                      TASKS.filter((x) => taskStatus(run, x) === 'locked').length
-                    } · 完{
-                      TASKS.filter((x) => taskStatus(run, x) === 'done').length
-                    } · 隐{
-                      TASKS.filter((x) => taskStatus(run, x) === 'hidden').length
-                    }
-                  </span>
+
                   <div className="seg-inline">
                     {(
                       [
@@ -1708,12 +1703,22 @@ function AppInner() {
                 {(() => {
                   const renderTask = (task: (typeof TASKS)[number]) => {
                     const status = taskStatus(run, task);
+                    const label =
+                      status === 'claimable'
+                        ? '可领取'
+                        : status === 'active'
+                          ? '进行中'
+                          : status === 'completable'
+                            ? '可领奖'
+                            : status === 'done'
+                              ? '已完成'
+                              : '未达成';
                     return (
                       <li
                         key={task.id}
                         className={[
                           'task',
-                          status === 'claimable' ? 'claimable' : '',
+                          status === 'claimable' || status === 'completable' ? 'claimable' : '',
                           status === 'done' ? 'done' : '',
                         ]
                           .filter(Boolean)
@@ -1721,20 +1726,18 @@ function AppInner() {
                       >
                         <div className="task-top">
                           <span className="task-name">{task.name}</span>
-                          <span className={`task-state ${status}`}>
-                            {status === 'claimable'
-                              ? '可领取'
-                              : status === 'active'
-                                ? '进行中'
-                                : status === 'done'
-                                  ? '已完成'
-                                  : '未达成'}
-                          </span>
+                          <span className={`task-state ${status}`}>{label}</span>
                           <span className="spacer" />
                           {status === 'done' ? (
                             <span className="muted small">
-                              {dayLabel(Number(run.flags[`task:${task.id}:doneAt`] ?? run.at), run.at)}
+                              {Number(run.flags[`task:${task.id}:doneAt`] ?? 0) > 0
+                                ? dayLabel(Number(run.flags[`task:${task.id}:doneAt`]), run.at)
+                                : '已完成'}
                             </span>
+                          ) : status === 'completable' ? (
+                            <button className="primary" onClick={() => doReward(task.id)}>
+                              领取奖励
+                            </button>
                           ) : (
                             <button
                               className={status === 'claimable' ? 'primary' : ''}
@@ -1745,27 +1748,28 @@ function AppInner() {
                             </button>
                           )}
                         </div>
-                        <p className="task-brief-line">{task.brief}</p>
-                        {status !== 'done' && (
-                          <p className="muted small">{task.content}</p>
-                        )}
-                        {status !== 'done' && (
-                          <p className="muted small">
-                            奖励：
-                            {[
-                              task.rewards.money ? `¥${task.rewards.money}` : '',
-                              task.rewards.stamina ? `体力 +${task.rewards.stamina}` : '',
-                              task.rewards.fans ? `粉丝 +${task.rewards.fans}` : '',
-                            ]
-                              .filter(Boolean)
-                              .join(' · ') || '无'}
-                          </p>
-                        )}
+
+                        <p className="task-desc">{task.content}</p>
+
+                        <div className="task-req">
+                          <span>
+                            <em>可领要求</em>
+                            {describeCondition(task.acceptCondition)}
+                          </span>
+                          <span>
+                            <em>任务要求</em>
+                            {describeCondition(task.completeCondition)}
+                          </span>
+                          <span>
+                            <em>奖励</em>
+                            {describeRewards(task)}
+                          </span>
+                        </div>
                       </li>
                     );
                   };
 
-                  if (taskTab === 'done') {
+                                    if (taskTab === 'done') {
                     const done = completedTasks(run);
                     if (done.length === 0) return <p className="muted small">还没有完成的任务。</p>;
                     return <ul className="task-list">{done.map(({ task }) => renderTask(task))}</ul>;
@@ -1782,7 +1786,12 @@ function AppInner() {
                   if (taskTab === 'accept') {
                     const list = TASKS.filter((task) => {
                       const s = taskStatus(run, task);
-                      return s === 'claimable' || s === 'locked' || s === 'active';
+                      return (
+                        s === 'claimable' ||
+                        s === 'completable' ||
+                        s === 'locked' ||
+                        s === 'active'
+                      );
                     });
                     if (list.length === 0) return <p className="muted small">暂时没有可领取的任务。</p>;
                     return <ul className="task-list">{list.map(renderTask)}</ul>;
@@ -1790,6 +1799,11 @@ function AppInner() {
 
                   // 全部：可领取 → 进行中 → 可见 → 已完成，用分割线隔开
                   const sections: Array<{ key: string; title: string; list: (typeof TASKS)[number][] }> = [
+                    {
+                      key: 'completable',
+                      title: '可领奖',
+                      list: TASKS.filter((task) => taskStatus(run, task) === 'completable'),
+                    },
                     {
                       key: 'claimable',
                       title: '可领取',

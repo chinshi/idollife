@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { TASKS, acceptTask, activeTasks, checkTaskCompletions, completedTasks, taskStatus } from '../src/tasks';
+import { TASKS, acceptTask, activeTasks, claimTaskReward, completedTasks, taskStatus } from '../src/tasks';
 import { createFans } from '../src/fans';
 import type { RunState } from '../src/types';
 
@@ -49,9 +49,13 @@ describe('任务状态机', () => {
     let state = base({ stats: { vocal: 10, dance: 25, acting: 10, talk: 10 } });
     state = acceptTask(state, danceTask.id).state;
 
-    // 把舞蹈练到 30
+    // 把舞蹈练到 30 → 变成「可领奖」
     state = { ...state, stats: { ...state.stats, dance: 30 }, money: 1000 };
-    state = checkTaskCompletions(state);
+    expect(taskStatus(state, danceTask)).toBe('completable');
+
+    const claimed = claimTaskReward(state, danceTask.id);
+    expect(claimed.result).toBe('ok');
+    state = claimed.state;
 
     expect(taskStatus(state, danceTask)).toBe('done');
     expect(state.money).toBe(1500);
@@ -61,7 +65,6 @@ describe('任务状态机', () => {
 
   it('未领取的任务即使满足完成条件也不会自动完成', () => {
     const state = base({ stats: { vocal: 10, dance: 30, acting: 10, talk: 10 } });
-    const next = checkTaskCompletions(state);
-    expect(completedTasks(next).length).toBe(0);
+    expect(completedTasks(state).length).toBe(0);
   });
 });
