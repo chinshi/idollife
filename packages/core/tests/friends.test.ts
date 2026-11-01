@@ -53,7 +53,7 @@ describe('朋友圈', () => {
   });
 
   it('重复遇到同一个人会累积默契，不会新增卡片', () => {
-    let state = base();
+    let state = base({ money: 100000 });
     const first = meetFriend(state, CHANNELS[0]!.id, 'seed-0');
     state = first.state;
     const name = state.friends[0]!.name;

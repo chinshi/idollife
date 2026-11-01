@@ -2,6 +2,7 @@
  * 朋友圈：认识新朋友（花钱）+ 邀请加入组合
  */
 import channelsJson from '../data/channels.json';
+import membersJson from '../data/members.json';
 import { BALANCE } from './data';
 import { DAY_MS } from './content';
 import { hashSeed, mulberry32 } from './rng';
@@ -18,10 +19,8 @@ export interface Channel {
 
 export const CHANNELS: Channel[] = channelsJson.channels as Channel[];
 
-const NAMES = [
-  '林小满', '周予', '陈一诺', '苏晚', '何昭', '许知',
-  '郑夏', '唐澄', '白露', '顾南', '沈青', '叶绫',
-];
+/** 名字池与成员表共用一份配置 */
+const NAMES = membersJson.members.namePool;
 
 export type MeetResult = 'ok' | 'dup' | 'poor' | 'unknown';
 
@@ -39,7 +38,13 @@ export function meetFriend(
 
   const rng = mulberry32(hashSeed(`${seed}:${channelId}:${state.at}:${state.friends.length}`));
   // 从全量名字池抽人：如果这个人已经认识，就累积默契，而不是新增
-  const name = NAMES[Math.floor(rng() * NAMES.length)]!;
+  const known = new Set([
+    ...state.friends.map((f) => f.name),
+    ...state.parties.flatMap((p) => p.members.map((m) => m.name)),
+  ]);
+  const fresh = NAMES.filter((n) => !known.has(n));
+  const pool = fresh.length > 0 ? fresh : NAMES;
+  const name = pool[Math.floor(rng() * pool.length)]!;
 
   const existingMember = state.parties
     .flatMap((p) => p.members)
