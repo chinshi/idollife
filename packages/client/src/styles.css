@@ -1509,3 +1509,12 @@ body { overflow: hidden; }
   color: var(--muted);
   white-space: nowrap;
 }
+/* 上方：行动名称（可带已完成）；下方：行动编号 */
+.tlx-above { color: var(--text); }
+.tlx-above em {
+  display: block;
+  font-style: normal;
+  font-size: 10px;
+  color: var(--muted);
+}
+.tlx-below { color: var(--muted); }

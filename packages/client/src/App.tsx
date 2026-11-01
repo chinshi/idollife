@@ -1145,12 +1145,12 @@ function AppInner() {
                       data-date={dayBreakLabels.get(it.id) ?? ''}
                       style={{ width: '84px' }}
                     >
-                      <span className="tlx-above">行动{actionNo(it)}</span>
-                      <span className="tlx-dot" />
-                      <span className="tlx-below">
+                      <span className="tlx-above">
                         {a?.name ?? it.actionId}
                         <em>已完成</em>
                       </span>
+                      <span className="tlx-dot" />
+                      <span className="tlx-below">行动{actionNo(it)}</span>
                     </div>
                   );
                 })}
@@ -1184,9 +1184,9 @@ function AppInner() {
                       data-date={dayBreakLabels.get(it.id) ?? ''}
                       style={{ width: '84px' }}
                     >
-                      <span className="tlx-above">行动{actionNo(it)}</span>
+                      <span className="tlx-above">{a?.name ?? it.actionId}</span>
                       <span className="tlx-dot" />
-                      <span className="tlx-below">{a?.name ?? it.actionId}</span>
+                      <span className="tlx-below">行动{actionNo(it)}</span>
                     </div>
                   );
                 })}
