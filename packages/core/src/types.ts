@@ -49,6 +49,8 @@ export interface Friend {
   metAt: number;
   /** 强度系数：0.8 ~ 1.15 */
   quality: number;
+  /** 已加入的组合 id；null=还在朋友圈 */
+  partyId: string | null;
 }
 
 /** 组合（一个玩家可以有多个） */

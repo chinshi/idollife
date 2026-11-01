@@ -1145,6 +1145,10 @@ function AppInner() {
       setNotice('钱不够，先攒一点。');
       return;
     }
+    if (r.result === 'exhausted') {
+      setNotice('能认识的人都认识过了。');
+      return;
+    }
     if (r.result !== 'ok') {
       setNotice('这个渠道暂时去不了。');
       return;
@@ -1172,11 +1176,15 @@ function AppInner() {
   function doKick(memberId: string) {
     const partyId = run.activePartyId;
     if (!partyId) return;
+    const target = run.parties.find((p) => p.id === partyId)?.members.find((m) => m.id === memberId);
     setRun({
       ...run,
       parties: run.parties.map((p) =>
         p.id === partyId ? { ...p, members: p.members.filter((m) => m.id !== memberId) } : p,
       ),
+      friends: target
+        ? run.friends.map((f) => (f.name === target.name ? { ...f, partyId: null } : f))
+        : run.friends,
     });
     setNotice('已移出组合。');
   }
@@ -1919,11 +1927,11 @@ function AppInner() {
 
                 <div className="friend-block">
                   <h4>朋友圈 {run.friends.length > 0 ? `（${run.friends.length}）` : ''}</h4>
-                  {run.friends.length === 0 ? (
+                  {run.friends.filter((f) => !f.partyId).length === 0 ? (
                     <p className="muted small">还没有认识的人，去上面挑个渠道试试。</p>
                   ) : (
                     <ul className="friends">
-                      {run.friends.map((f) => (
+                      {run.friends.filter((f) => !f.partyId).map((f) => (
                         <li key={f.id}>
                           <span className="name">{f.name}</span>
                           <span className="muted">

@@ -22,7 +22,7 @@ const NAMES = [
   '郑夏', '唐澄', '白露', '顾南', '沈青', '叶绫',
 ];
 
-export type MeetResult = 'ok' | 'poor' | 'unknown';
+export type MeetResult = 'ok' | 'poor' | 'unknown' | 'exhausted';
 
 /** 花一笔钱，认识一个新朋友，放进朋友圈 */
 export function meetFriend(
@@ -35,11 +35,14 @@ export function meetFriend(
   if (state.money < channel.cost) return { state, result: 'poor' };
 
   const rng = mulberry32(hashSeed(`${seed}:${channelId}:${state.at}:${state.friends.length}`));
-  const existing = new Set(state.friends.map((f) => f.name));
+  // 全局去重：朋友圈里的人 + 所有组合里的成员都不能再抽到
+  const existing = new Set<string>([
+    ...state.friends.map((f) => f.name),
+    ...state.parties.flatMap((p) => p.members.map((m) => m.name)),
+  ]);
   const available = NAMES.filter((n) => !existing.has(n));
-  const name = (available.length > 0 ? available : NAMES)[
-    Math.floor(rng() * (available.length > 0 ? available.length : NAMES.length))
-  ]!;
+  if (available.length === 0) return { state, result: 'exhausted' };
+  const name = available[Math.floor(rng() * available.length)]!;
 
   const bias = channel.biasPool[Math.floor(rng() * channel.biasPool.length)] ?? 'balanced';
   const quality =
@@ -52,6 +55,7 @@ export function meetFriend(
     from: channel.id,
     metAt: state.at,
     quality: Math.round(quality * 100) / 100,
+    partyId: null,
   };
 
   return {
@@ -88,6 +92,7 @@ export function inviteFriend(
 ): { state: RunState; result: InviteResult } {
   const friend = state.friends.find((f) => f.id === friendId);
   if (!friend) return { state, result: 'not-found' };
+  if (friend.partyId) return { state, result: 'taken' };
 
   const partyId = state.activePartyId;
   const party = partyId ? state.parties.find((p) => p.id === partyId) : undefined;
@@ -111,7 +116,7 @@ export function inviteFriend(
   return {
     state: {
       ...state,
-      friends: state.friends.filter((f) => f.id !== friendId),
+      friends: state.friends.map((f) => (f.id === friendId ? { ...f, partyId: party.id } : f)),
       parties: state.parties.map((p) =>
         p.id === party.id ? { ...p, members: [...p.members, member] } : p,
       ),

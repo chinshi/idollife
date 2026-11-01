@@ -52,6 +52,21 @@ describe('朋友圈', () => {
     expect(r.result).toBe('no-party');
   });
 
+  it('已进团的人不会再被抽到（全局去重）', () => {
+    let state = base({ debuted: true });
+    state = createParty(state, 'SEK48').state;
+    const met = meetFriend(state, CHANNELS[0]!.id, 'seed');
+    const invited = inviteFriend(met.state, met.state.friends[0]!.id).state;
+
+    // 再抽 30 次，名字都不能和已入团的人重复
+    let cur = invited;
+    for (let i = 0; i < 8; i++) {
+      cur = meetFriend(cur, CHANNELS[0]!.id, `seed-${i}`).state;
+    }
+    const names = cur.friends.map((f) => f.name);
+    expect(new Set(names).size).toBe(names.length);
+  });
+
   it('邀请后从朋友圈进入组合', () => {
     let state = base({ debuted: true });
     state = createParty(state, 'SEK48').state;
@@ -60,7 +75,9 @@ describe('朋友圈', () => {
 
     const r = inviteFriend(met.state, friend.id);
     expect(r.result).toBe('ok');
-    expect(r.state.friends.length).toBe(0);
+    // 邀请后仍留在朋友圈，但标记了归属组合
+    expect(r.state.friends.length).toBe(1);
+    expect(r.state.friends[0]!.partyId).toBe(r.state.activePartyId);
 
     const party = r.state.parties.find((p) => p.id === r.state.activePartyId)!;
     expect(party.members.length).toBe(1);
