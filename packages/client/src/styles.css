@@ -2019,3 +2019,22 @@ body { overflow: hidden; }
   background: #c0392b;
   border-radius: 1px;
 }
+/* 朋友圈卡片 */
+.mcard.friend .mcard-face { justify-content: space-between; }
+.mcard.friend.in-team .mcard-face.front {
+  background: #f4f6fb;
+  border-color: #dfe5f0;
+}
+.mcard.friend.in-team .mcard-name { color: var(--muted); }
+.friend-invite {
+  width: 100%;
+  margin-top: 6px;
+  padding: 4px 0;
+  font-size: 11px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: #fff;
+  cursor: pointer;
+}
+.friend-invite:not(:disabled):hover { background: #fff2e4; border-color: #f2bd85; }
+.friend-invite:disabled { opacity: 0.55; cursor: not-allowed; }

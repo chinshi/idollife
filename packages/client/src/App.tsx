@@ -1690,7 +1690,7 @@ function AppInner() {
                 <div className="mod-head">
                   <h2>朋友圈</h2>
                   <span className="muted small">
-                    {run.friends.filter((f) => !f.partyId).length} 人待邀请
+                    共 {run.friends.length} 人 · 可邀请 {run.friends.filter((f) => !f.partyId).length}
                   </span>
                 </div>
 
@@ -1712,48 +1712,66 @@ function AppInner() {
                 </div>
 
                 <div className="friend-block">
-                  <h4>朋友圈</h4>
-                  {run.friends.filter((f) => !f.partyId).length === 0 ? (
-                    <p className="muted small">还没有可以邀请的人，去上面挑个渠道认识几个。</p>
+                  <h4>我的朋友圈</h4>
+                  {run.friends.length === 0 ? (
+                    <p className="muted small">还没有认识的人，去上面挑个渠道试试。</p>
                   ) : (
-                    <ul className="friends">
-                      {run.friends
-                        .filter((f) => !f.partyId)
-                        .map((f) => (
-                          <li key={f.id}>
-                            <span className="name">{f.name}</span>
-                            <span className="muted">
-                              {biasLabel(f.bias)} · 资质 {Math.round(f.quality * 100)}%
-                            </span>
-                            <button onClick={() => doInvite(f.id)} disabled={!party}>
-                              邀请
-                            </button>
-                          </li>
-                        ))}
-                    </ul>
-                  )}
-                </div>
-
-                <div className="friend-block">
-                  <h4>已在组合</h4>
-                  {run.friends.filter((f) => f.partyId).length === 0 ? (
-                    <p className="muted small">还没有人加入组合。</p>
-                  ) : (
-                    <ul className="friends">
-                      {run.friends
-                        .filter((f) => f.partyId)
-                        .map((f) => {
-                          const p = run.parties.find((x) => x.id === f.partyId);
-                          return (
-                            <li key={f.id}>
-                              <span className="name">{f.name}</span>
-                              <span className="muted">
-                                {biasLabel(f.bias)} · 在「{p?.name ?? '组合'}」
-                              </span>
-                            </li>
-                          );
-                        })}
-                    </ul>
+                    <div className="mcards">
+                      {run.friends.map((f) => {
+                        const on = flippedIds.includes(`f:${f.id}`);
+                        const inParty = !!f.partyId;
+                        const teamName = f.partyId
+                          ? run.parties.find((x) => x.id === f.partyId)?.name
+                          : null;
+                        return (
+                          <div
+                            key={f.id}
+                            className={[
+                              'mcard',
+                              'friend',
+                              on ? 'flipped' : '',
+                              inParty ? 'in-team' : '',
+                            ]
+                              .filter(Boolean)
+                              .join(' ')}
+                            onClick={() => toggleFlip(`f:${f.id}`)}
+                            title={inParty ? `已在「${teamName}」` : '点击翻转查看预估属性'}
+                          >
+                            <div className="mcard-inner">
+                              <div className="mcard-face front">
+                                <span className="mcard-name">{f.name}</span>
+                                <span className="mcard-set">{biasLabel(f.bias)}</span>
+                                <span className="mcard-dup">
+                                  {inParty ? `已入团 · ${teamName}` : `资质 ${Math.round(f.quality * 100)}%`}
+                                </span>
+                                <button
+                                  className="friend-invite"
+                                  disabled={inParty || !party}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    doInvite(f.id);
+                                  }}
+                                >
+                                  {inParty ? '已在组合' : '邀请'}
+                                </button>
+                              </div>
+                              <div className="mcard-face back">
+                                <span className="mcard-name">{f.name}</span>
+                                <div className="mcard-stats">
+                                  {(['vocal', 'dance', 'acting', 'talk'] as const).map((k) => (
+                                    <span key={k}>
+                                      <em>{STAT_LABEL[k]}</em>
+                                      {Math.round(run.stats[k] * f.quality)}
+                                    </span>
+                                  ))}
+                                </div>
+                                <span className="mcard-dup">预估属性</span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   )}
                 </div>
               </>
