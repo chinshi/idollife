@@ -2159,3 +2159,12 @@ body { overflow: hidden; }
   white-space: nowrap;
 }
 .menu-badge { margin-left: auto; }
+/* 角标改成绝对定位贴在右侧，任何情况下都不会换行 */
+.menu-item { position: relative; padding-right: 34px; }
+.menu-badge {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+}
