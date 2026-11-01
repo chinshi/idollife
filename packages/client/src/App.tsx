@@ -17,6 +17,7 @@ import {
   biasLabel,
   buyItem,
   canDebut,
+  DEBUT_THRESHOLD,
   TASKS,
   TASK_TYPE_LABEL,
   claimTask,
@@ -312,6 +313,7 @@ function AppInner() {
   const [managing, setManaging] = useState(false);
   const [showStops, setShowStops] = useState(false);
   const [showInvite, setShowInvite] = useState(false);
+  const statTotal = run.stats.vocal + run.stats.dance + run.stats.acting + run.stats.talk;
   const STOP_TEXT: Record<string, string> = {
     stamina: '体力不足，行程停下来了',
     money: '钱不够，行程停下来了',
@@ -1801,11 +1803,13 @@ function AppInner() {
                     .join(' · ')}
                 </p>
                 <div className="row">
-                  {canDebut(run) && (
-                    <button className="primary" onClick={doDebut}>
-                      出道
-                    </button>
-                  )}
+                  <button
+                    className={canDebut(run) ? 'primary' : ''}
+                    onClick={doDebut}
+                    disabled={!canDebut(run)}
+                  >
+                    {run.debuted ? '已出道' : `出道 ${statTotal}/${DEBUT_THRESHOLD}`}
+                  </button>
                   <button onClick={() => setShowDivination(true)}>占卜</button>
                 </div>
               </>
@@ -2143,11 +2147,13 @@ function AppInner() {
                 </p>
 
                 <div className="row">
-                  {canDebut(run) && (
-                    <button className="primary" onClick={doDebut}>
-                      出道
-                    </button>
-                  )}
+                  <button
+                    className={canDebut(run) ? 'primary' : ''}
+                    onClick={doDebut}
+                    disabled={!canDebut(run)}
+                  >
+                    {run.debuted ? '已出道' : `出道 ${statTotal}/${DEBUT_THRESHOLD}`}
+                  </button>
                   <button onClick={() => setShowDivination(true)}>占卜</button>
                 </div>
               </div>
