@@ -310,6 +310,7 @@ function AppInner() {
     setFlippedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   };
   const [managing, setManaging] = useState(false);
+  const [showStops, setShowStops] = useState(false);
   const STOP_TEXT: Record<string, string> = {
     stamina: '体力不足，行程停下来了',
     money: '钱不够，行程停下来了',
@@ -1445,7 +1446,10 @@ function AppInner() {
                         <em>已完成</em>
                       </span>
                       <span className="tlx-dot" />
-                      <span className="tlx-below">行动{actionNo(it)}</span>
+                      <span className="tlx-below">
+                        行动{actionNo(it)}
+                        {it.stopAfter && <em className="stop-mark">完成后停止</em>}
+                      </span>
                     </div>
                   );
                 })}
@@ -1481,25 +1485,50 @@ function AppInner() {
                     >
                       <span className="tlx-above">{a?.name ?? it.actionId}</span>
                       <span className="tlx-dot" />
-                      <span className="tlx-below">行动{actionNo(it)}</span>
+                      <span className="tlx-below">
+                        行动{actionNo(it)}
+                        {it.stopAfter && <em className="stop-mark">完成后停止</em>}
+                      </span>
                     </div>
                   );
                 })}
                 {futureItems.length === 0 && <span className="tlx-empty">没有后续行程</span>}
               </div>
             </div>
-            <div className="tlx-toolbar">
-              <button className="primary" onClick={advance} disabled={pending.length === 0 || running}>
-                {running ? '推进中…' : '开始推进'}
-              </button>
-              <button onClick={stopCurrent} disabled={!running}>
-                停止
-              </button>
-              <button onClick={() => setMainTab('plan')}>查看历史日程</button>
-              <button onClick={openPlan}>安排行程</button>
-              <span className="muted small">
-                {running ? '推进中' : '已停止'} · 待办 {pending.length} · 上次停止：{lastStop || '—'}
-              </span>
+            <div className="tlx-tools">
+              <div className="tools-left">
+                <button onClick={() => setShowStops(true)}>设置暂停时间点</button>
+              </div>
+
+              <div className="tools-center">
+                <button
+                  className="primary"
+                  onClick={advance}
+                  disabled={pending.length === 0 || running}
+                >
+                  {running ? '推进中…' : '开始推进'}
+                </button>
+                <button onClick={stopCurrent} disabled={!running}>
+                  停止
+                </button>
+                <span className="tools-date">
+                  第 {todayIndex + 1} 天 · 第 {Math.floor(todayIndex / 7) + 1} 周 {weekdayName(todayIndex)}
+                </span>
+                <button
+                  className={pending.length === 0 ? 'primary arrange-hint' : ''}
+                  onClick={openPlan}
+                >
+                  安排行程
+                </button>
+              </div>
+
+              <div className="tools-right">
+                <button onClick={() => setMainTab('plan')}>历史行程</button>
+                <span className="muted small">
+                  {running ? '推进中' : '已停止'} · 待办 {pending.length}
+                  {lastStop && lastStop !== 'time' ? ` · ${lastStop}` : ''}
+                </span>
+              </div>
             </div>
           </section>
         </div>
@@ -2145,6 +2174,30 @@ function AppInner() {
               确定
             </button>
           </div>
+        </Modal>
+      )}
+      {showStops && (
+        <Modal title="设置暂停时间点" onClose={() => setShowStops(false)}>
+          <p className="muted small">点一条行程：推进到它完成后就停下，方便你中途回来看看。</p>
+          {pending.length === 0 ? (
+            <p className="muted">还没有待执行行程。</p>
+          ) : (
+            <ul className="stop-list">
+              {pending.map((s, i) => {
+                const a = ACTIONS[s.actionId];
+                return (
+                  <li key={s.id} className={s.stopAfter ? 'on' : ''}>
+                    <button onClick={() => toggleStop(s.id)}>
+                      <span className="idx">{i + 1}</span>
+                      <span className="nm">{a?.name ?? s.actionId}</span>
+                      <span className="when">{dayLabel(s.startAt, run.at)}</span>
+                      {s.stopAfter && <em>完成后停止</em>}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </Modal>
       )}
       {showActions && (

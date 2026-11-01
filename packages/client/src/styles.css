@@ -1911,3 +1911,73 @@ body { overflow: hidden; }
 
 /* 菜单栏恢复单行撑满 */
 .col-left { grid-template-rows: minmax(0, 1fr); }
+/* 时间轴下方三段式工具条 */
+.tlx-tools {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 6px 2px 2px;
+  border-top: 1px dashed var(--line);
+}
+.tools-left { display: flex; justify-content: flex-start; }
+.tools-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.tools-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.tlx-tools button {
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.tlx-tools button:disabled { opacity: 0.55; cursor: not-allowed; }
+.tools-date { font-size: 12px; color: var(--text); white-space: nowrap; padding: 0 4px; }
+.arrange-hint {
+  animation: arrange-pulse 1.6s ease-in-out infinite;
+}
+@keyframes arrange-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(249, 124, 18, 0.45); }
+  50% { box-shadow: 0 0 0 6px rgba(249, 124, 18, 0); }
+}
+
+/* 暂停时间点：圆点标红 + 标注 */
+.tlx-point.stopped .tlx-dot {
+  background: #c0392b !important;
+  border-color: #c0392b !important;
+}
+.tlx-point.stopped .tlx-below em.stop-mark {
+  display: block;
+  font-style: normal;
+  font-size: 10px;
+  color: #c0392b;
+}
+
+/* 暂停点选择列表 */
+.stop-list { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; max-height: 50vh; overflow-y: auto; }
+.stop-list button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+.stop-list li.on button { border-color: #c0392b; background: #fdecec; }
+.stop-list .idx { color: var(--muted); width: 18px; }
+.stop-list .nm { flex: 1 1 auto; }
+.stop-list .when { color: var(--muted); }
+.stop-list em { font-style: normal; color: #c0392b; font-size: 11px; }
