@@ -1381,9 +1381,32 @@ function AppInner() {
             第 {todayIndex + 1} 天 · {weekdayName(todayIndex)} · 今日剩余{' '}
             {Math.max(0, 3 - usedToday)}/3
           </span>
-          {syncStatus !== 'local' && (
-            <span className={`chip chip-${syncStatus}`}>{SYNC_TEXT[syncStatus]}</span>
-          )}
+          <div className="title-account">
+            <span className="acct-email" title={user?.email ?? ''}>
+              {user?.email ?? '已离线'}
+            </span>
+            {syncStatus !== 'local' && (
+              <span className={`chip chip-${syncStatus}`}>{SYNC_TEXT[syncStatus]}</span>
+            )}
+            <span className="acct-icons">
+              <button
+                className="icon-btn"
+                title="调试日志"
+                onClick={() => {
+                  setDebugText(localStorage.getItem('idollife:debug:v1') ?? '(空)');
+                  setShowDebug(true);
+                }}
+              >
+                日志
+              </button>
+              <button className="icon-btn" title="重新开始" onClick={restartForTest}>
+                重开
+              </button>
+              <button className="icon-btn" title="退出" onClick={() => void signOut()}>
+                退出
+              </button>
+            </span>
+          </div>
         </div>
 
         <div className="bar-center">
@@ -1536,29 +1559,6 @@ function AppInner() {
             </button>
           </nav>
 
-          <section className="mod mod-account">
-            <div className="acct-email" title={user?.email ?? ''}>
-              {user?.email ?? '已离线'}
-            </div>
-            <div className="acct-icons">
-              <button
-                className="icon-btn"
-                title="调试日志"
-                onClick={() => {
-                  setDebugText(localStorage.getItem('idollife:debug:v1') ?? '(空)');
-                  setShowDebug(true);
-                }}
-              >
-                日志
-              </button>
-              <button className="icon-btn" title="重新开始" onClick={restartForTest}>
-                重开
-              </button>
-              <button className="icon-btn" title="退出" onClick={() => void signOut()}>
-                退出
-              </button>
-            </div>
-          </section>
         </aside>
 
         {/* 中：时间轴 / 待办 / 主系统 / 日志 */}
