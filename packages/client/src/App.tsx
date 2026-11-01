@@ -873,6 +873,17 @@ function AppInner() {
     if (patched.size === 0) return list;
     return list.map((s) => patched.get(s.id) ?? s);
   }
+  const advanceRef = useRef<() => void>(() => {});
+
+  // 记住速度档位
+  useEffect(() => {
+    try {
+      localStorage.setItem('idollife:speed', String(speed));
+    } catch {
+      /* 忽略 */
+    }
+  }, [speed]);
+
   function markExecuted(prev: ScheduleItem[], executed: string[]): ScheduleItem[] {
     const marked = prev.map((s) => (executed.includes(s.id) ? { ...s, done: true } : s));
     const doneIds = marked.filter((s) => s.done).map((s) => s.id);
@@ -947,6 +958,8 @@ function AppInner() {
     setRunning(true);
     dbg('开始推进 pending=' + String(pending.length) + ' at=' + String(run.at));
   }
+
+  advanceRef.current = advance;
 
   function stopCurrent() {
     if (!running) return;
@@ -1070,6 +1083,16 @@ function AppInner() {
     setNotice('演出安排在周末，占满当天 3 个行动位。');
   }
 
+  // 刷新后：如果还有待执行行程，自动续跑（离线设计，读档即继续）
+  const bootResumeRef = useRef(false);
+  useEffect(() => {
+    if (bootResumeRef.current) return;
+    if (!user) return;
+    if (!schedule.some((s) => !s.done)) return;
+    bootResumeRef.current = true;
+    const t = window.setTimeout(() => advanceRef.current(), 400);
+    return () => window.clearTimeout(t);
+  }, [user, schedule]);
   function doDivine() {
     const { state, result, cost } = divine(run);
     if (result === 'poor') {
