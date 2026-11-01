@@ -14,3 +14,4 @@ export * from './data';
 export * from './attributes';
 export * from './results';
 export * from './friends';
+export * from './tasks';

@@ -1,0 +1,65 @@
+{
+  "_说明": "任务表：type=once 一次性 / repeat 长期；displayCondition 显示条件；claimCondition 领取条件；rewards 奖励；times 可执行次数（0=无限制）；priority 越小越靠前",
+  "tasks": [
+    {
+      "id": "task-first-debut",
+      "type": "once",
+      "name": "第一次出道",
+      "displayCondition": {},
+      "claimCondition": { "flagsContain": ["ev:debut"] },
+      "rewards": { "money": 3000, "fans": 100 },
+      "times": 1,
+      "content": "四项属性总和达到出道门槛后，点「出道」。完成后回来领奖。",
+      "brief": "达到出道条件并完成出道",
+      "priority": 10
+    },
+    {
+      "id": "task-dance-30",
+      "type": "once",
+      "name": "舞蹈三十",
+      "displayCondition": {},
+      "claimCondition": { "statsAtLeast": { "dance": 30 } },
+      "rewards": { "money": 500, "stamina": 10 },
+      "times": 1,
+      "content": "把舞蹈练到 30，说明你已经不是新人了。",
+      "brief": "舞蹈属性达到 30",
+      "priority": 20
+    },
+    {
+      "id": "task-first-show",
+      "type": "repeat",
+      "name": "站上舞台",
+      "displayCondition": { "statsSumAtLeast": 60 },
+      "claimCondition": { "fansAtLeast": { "stage": 100 } },
+      "rewards": { "money": 800 },
+      "times": 5,
+      "content": "演出会把路人变成粉丝。攒到 100 舞台粉就能领一次。",
+      "brief": "舞台粉累计到 100",
+      "priority": 30
+    },
+    {
+      "id": "task-money-10000",
+      "type": "once",
+      "name": "攒到一万",
+      "displayCondition": {},
+      "claimCondition": { "moneyAtLeast": 10000 },
+      "rewards": { "stamina": 20 },
+      "times": 1,
+      "content": "房租很贵，手里有一万块会踏实一点。",
+      "brief": "资金达到 10000",
+      "priority": 40
+    },
+    {
+      "id": "task-friend",
+      "type": "once",
+      "name": "认识一个人",
+      "displayCondition": {},
+      "claimCondition": { "friendsAtLeast": 1 },
+      "rewards": { "money": 200 },
+      "times": 1,
+      "content": "去漫展或者看演出，认识第一个朋友。",
+      "brief": "朋友圈至少有 1 个人",
+      "priority": 50
+    }
+  ]
+}

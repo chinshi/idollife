@@ -17,6 +17,13 @@ import {
   biasLabel,
   buyItem,
   canDebut,
+  TASKS,
+  TASK_TYPE_LABEL,
+  claimTask,
+  taskVisible,
+  taskClaimable,
+  taskRemaining,
+  claimedTimes,
   CHANNELS,
   meetFriend,
   inviteFriend,
@@ -98,7 +105,7 @@ type SyncStatus = 'local' | 'syncing' | 'synced' | 'offline' | 'expired';
 type SysTab = 'shop' | 'bag';
 type BagTab = 'equip' | 'consume' | 'other';
 type LogTab = 'all' | 'event' | 'stat';
-type MainTab = 'stats' | 'plan' | 'party' | 'shop' | 'divine' | 'bag';
+type MainTab = 'task' | 'stats' | 'plan' | 'party' | 'shop' | 'divine' | 'bag';
 
 function totalFans(run: RunState): number {
   return Object.values(run.fans.byType).reduce((a, b) => a + b, 0);
@@ -1145,6 +1152,22 @@ function AppInner() {
     setNotice(r.friend ? `认识了 ${r.friend.name}，已加入朋友圈。` : '认识了一个新朋友。');
   }
 
+  function doClaim(taskId: string) {
+    const r = claimTask(run, taskId);
+    if (r.result === 'ok') {
+      setRun(r.state);
+      setNotice('任务奖励已领取。');
+      return;
+    }
+    setNotice(
+      r.result === 'not-ready'
+        ? '条件还没达成。'
+        : r.result === 'used-up'
+          ? '这个任务已经领完了。'
+          : '现在不能领取。',
+    );
+  }
+
   function doKick(memberId: string) {
     const partyId = run.activePartyId;
     if (!partyId) return;
@@ -1459,24 +1482,18 @@ function AppInner() {
         </div>
 
         <div className="bar-right">
-          <span className="muted small">{user?.email ?? '已离线'}</span>
-          <button
-            className="link-btn"
-            onClick={() => {
-              setDebugText(localStorage.getItem('idollife:debug:v1') ?? '(空)');
-              setShowDebug(true);
-            }}
-          >
-            日志
-          </button>
-          <button className="link-btn" onClick={restartForTest}>
-            重新开始
-          </button>
-          <button className="link-btn" onClick={() => void signOut()}>
-            退出
-          </button>
-        </div>
-      </header>
+          <div className="brief-head">任务简报</div>
+          <ul className="brief-list">
+            {TASKS.filter((task) => taskVisible(run, task))
+              .slice(0, 6)
+              .map((task) => (
+                <li key={task.id} className={taskClaimable(run, task) ? 'claimable' : ''}>
+                  <span className={taskClaimable(run, task) ? 'dot on' : 'dot'} />
+                  <span className="brief-text">{task.brief}</span>
+                </li>
+              ))}
+          </ul>
+        </div>      </header>
 
 
       <main className="shell">
@@ -1485,6 +1502,7 @@ function AppInner() {
           <nav className="mod mod-menu">
             {(
               [
+                ['task', '任务'],
                 ['plan', '行程'],
                 ['party', '组合'],
                 ['shop', '商店'],
@@ -1517,6 +1535,30 @@ function AppInner() {
               背包
             </button>
           </nav>
+
+          <section className="mod mod-account">
+            <div className="acct-email" title={user?.email ?? ''}>
+              {user?.email ?? '已离线'}
+            </div>
+            <div className="acct-icons">
+              <button
+                className="icon-btn"
+                title="调试日志"
+                onClick={() => {
+                  setDebugText(localStorage.getItem('idollife:debug:v1') ?? '(空)');
+                  setShowDebug(true);
+                }}
+              >
+                日志
+              </button>
+              <button className="icon-btn" title="重新开始" onClick={restartForTest}>
+                重开
+              </button>
+              <button className="icon-btn" title="退出" onClick={() => void signOut()}>
+                退出
+              </button>
+            </div>
+          </section>
         </aside>
 
         {/* 中：时间轴 / 待办 / 主系统 / 日志 */}
@@ -1545,6 +1587,55 @@ function AppInner() {
           )}
 
           <section className="mod mod-main">
+            {mainTab === 'task' && (
+              <>
+                <div className="mod-head">
+                  <h2>任务</h2>
+                  <span className="muted small">
+                    可领取 {TASKS.filter((task) => taskVisible(run, task) && taskClaimable(run, task)).length}
+                  </span>
+                </div>
+                <ul className="task-list">
+                  {TASKS.filter((task) => taskVisible(run, task)).map((task) => {
+                    const claimable = taskClaimable(run, task);
+                    const left = taskRemaining(run, task);
+                    const done = claimedTimes(run, task.id);
+                    return (
+                      <li key={task.id} className={claimable ? 'task claimable' : 'task'}>
+                        <div className="task-top">
+                          <span className="task-name">{task.name}</span>
+                          <span className="tag">{TASK_TYPE_LABEL[task.type] ?? task.type}</span>
+                          {Number.isFinite(left) && (
+                            <span className="muted small">剩 {left} 次</span>
+                          )}
+                          {done > 0 && <span className="muted small">已领 {done}</span>}
+                          <span className="spacer" />
+                          <button
+                            className={claimable ? 'primary' : ''}
+                            disabled={!claimable}
+                            onClick={() => doClaim(task.id)}
+                          >
+                            {claimable ? '领取' : '未达成'}
+                          </button>
+                        </div>
+                        <p className="task-brief-line">{task.brief}</p>
+                        <p className="muted small">{task.content}</p>
+                        <p className="muted small">
+                          奖励：
+                          {[
+                            task.rewards.money ? `¥${task.rewards.money}` : '',
+                            task.rewards.stamina ? `体力 +${task.rewards.stamina}` : '',
+                            task.rewards.fans ? `粉丝 +${task.rewards.fans}` : '',
+                          ]
+                            .filter(Boolean)
+                            .join(' · ') || '无'}
+                        </p>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
+            )}
             {mainTab === 'stats' && (
               <>
                 <div className="mod-head">

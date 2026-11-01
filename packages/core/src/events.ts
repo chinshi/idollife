@@ -82,6 +82,15 @@ function makeRequires(req?: RawRequires): (s: RunState) => boolean {
         if (((s.fans.byType as Record<string, number>)[k] ?? 0) < v) return false;
       }
     }
+    if (typeof req?.moneyAtLeast === 'number' && s.money < req.moneyAtLeast) return false;
+    if (typeof req?.friendsAtLeast === 'number' && (s.friends ?? []).length < req.friendsAtLeast) {
+      return false;
+    }
+    if (req?.flagsContain) {
+      for (const f of req.flagsContain) {
+        if (!s.flags[f]) return false;
+      }
+    }
     if (req?.flagsNot) {
       for (const f of req.flagsNot) {
         if (s.flags[f]) return false;

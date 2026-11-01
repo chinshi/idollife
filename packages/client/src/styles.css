@@ -1807,3 +1807,79 @@ body { overflow: hidden; }
   border-color: #f2bd85;
 }
 .mcard { position: relative; }
+/* 左栏底部的账户区（图标式，紧凑） */
+.col-left { grid-template-rows: minmax(0, 1fr) auto; }
+.mod-account {
+  flex: 0 0 auto;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.acct-email {
+  font-size: 11px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.acct-icons { display: flex; gap: 6px; }
+.icon-btn {
+  flex: 1 1 auto;
+  padding: 4px 0;
+  font-size: 11px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #f7f9fc;
+  color: var(--text);
+  cursor: pointer;
+}
+.icon-btn:hover { background: #eef2f9; }
+
+/* 头部右侧：任务简报 */
+.bar-right {
+  min-width: 0;
+  overflow: hidden;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 4px;
+}
+.brief-head { font-size: 12px; font-weight: 600; }
+.brief-list { list-style: none; margin: 0; padding: 0; overflow-y: auto; min-height: 0; }
+.brief-list li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--muted);
+  padding: 2px 0;
+}
+.brief-list li.claimable { color: #b35a00; font-weight: 600; }
+.brief-list .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #cfd7e6;
+  flex: 0 0 auto;
+}
+.brief-list .dot.on { background: var(--accent); }
+.brief-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* 任务列表 */
+.task-list { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.task {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px;
+  background: #fff;
+}
+.task.claimable { border-color: #f2bd85; background: #fffaf4; }
+.task-top { display: flex; align-items: center; gap: 8px; }
+.task-name { font-weight: 600; font-size: 13px; }
+.task-brief-line { margin: 6px 0 2px; font-size: 12px; }
+.task .tag { font-size: 10px; color: var(--muted); background: #f2f4f9; border-radius: 4px; padding: 0 5px; }
+
+@media (max-width: 800px) {
+  .bar-right { display: none; }
+}

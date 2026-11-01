@@ -68,6 +68,12 @@ export interface RawRequires {
   statsSumBelow?: number;
   fansAtLeast?: Record<string, number>;
   flagsNot?: string[];
+  /** 这些标记都存在才满足 */
+  flagsContain?: string[];
+  /** 资金不少于 */
+  moneyAtLeast?: number;
+  /** 朋友圈人数不少于 */
+  friendsAtLeast?: number;
 }
 
 export interface RawChoice {
