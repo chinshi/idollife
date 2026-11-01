@@ -79,7 +79,7 @@ export function meetFriend(
 /** 组合人数上限（含主角自己） */
 export const PARTY_MAX = BALANCE.partyMax ?? 10;
 
-export type InviteResult = 'ok' | 'no-party' | 'not-found' | 'full';
+export type InviteResult = 'ok' | 'no-party' | 'not-found' | 'full' | 'taken';
 
 /** 从朋友圈邀请一个人加入当前组合 */
 export function inviteFriend(
@@ -94,6 +94,12 @@ export function inviteFriend(
   if (!party) return { state, result: 'no-party' };
   // 主角自己占 1 个位置
   if (party.members.length >= PARTY_MAX - 1) return { state, result: 'full' };
+
+  // NPC 只能属于一个组合（主角不受限）
+  const taken = state.parties.some(
+    (p) => p.id !== party.id && p.members.some((m) => m.name === friend.name),
+  );
+  if (taken) return { state, result: 'taken' };
 
   const member = {
     id: `m-${friend.id}`,

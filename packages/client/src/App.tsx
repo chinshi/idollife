@@ -297,7 +297,10 @@ function AppInner() {
   const [lastStop, setLastStop] = useState('');
   const [confirmAction, setConfirmAction] = useState<null | 'stop' | 'restart'>(null);
   const [rightTab, setRightTab] = useState<'stats' | 'bag'>('stats');
-  const [flipped, setFlipped] = useState<string | null>(null);
+  const [flippedIds, setFlippedIds] = useState<string[]>([]);
+  const toggleFlip = (id: string) => {
+    setFlippedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  };
   const [managing, setManaging] = useState(false);
   const STOP_TEXT: Record<string, string> = {
     stamina: '体力不足，行程停下来了',
@@ -1143,6 +1146,10 @@ function AppInner() {
       setNotice('组合满了（最多 10 人）。');
       return;
     }
+    if (r.result === 'taken') {
+      setNotice('这个人已经在别的组合里了。');
+      return;
+    }
     if (r.result !== 'ok') return;
     setRun(r.state);
     setNotice('已经邀请进组合了。');
@@ -1671,8 +1678,8 @@ function AppInner() {
                 ) : (
                   <div className="mcards">
                     <div
-                      className={flipped === '__me' ? 'mcard flipped me' : 'mcard me'}
-                      onClick={() => setFlipped(flipped === '__me' ? null : '__me')}
+                      className={flippedIds.includes('__me') ? 'mcard flipped me' : 'mcard me'}
+                      onClick={() => toggleFlip('__me')}
                       title="你自己"
                     >
                       <div className="mcard-inner">
@@ -1696,13 +1703,13 @@ function AppInner() {
                     </div>
                     {party.members.map((m) => {
                       const s = memberStats(m, run.stats);
-                      const on = flipped === m.id;
+
                       return (
                         <div
                           key={m.id}
-                          className={on ? 'mcard flipped' : 'mcard'}
+                          className={flippedIds.includes(m.id) ? 'mcard flipped' : 'mcard'}
                           onClick={() => {
-                            if (!managing) setFlipped(on ? null : m.id);
+                            if (!managing) toggleFlip(m.id);
                           }}
                           title="点击翻转查看属性"
                         >
