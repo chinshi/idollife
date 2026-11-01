@@ -1922,8 +1922,6 @@ function AppInner() {
                   <p className="muted">
                     {run.debuted ? '还没有组合。先创建一个。' : '出道后才能组建组合。'}
                   </p>
-                ) : party.members.length === 0 ? (
-                  <p className="muted">组合里还没有成员。</p>
                 ) : (
                   <div className="mcards">
                     <div
