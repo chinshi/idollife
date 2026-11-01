@@ -64,11 +64,14 @@ export const RAW_ROUTINE = eventsJson.routine as RawRoutine[];
 export const RAW_STORY = eventsJson.story as RawStory[];
 
 export interface RawAttribute {
+  /** 分类英文名：visible / hidden / status / fans */
   category: string;
+  /** 分类中文名：显性属性 / 隐藏属性 / 状态 / 粉丝属性 */
+  categoryName: string;
   name: string;
   key: string;
   hidden: boolean;
-  /** 0=完全隐藏，1=完全可见，2=隐藏仅占比 */
+  /** 0=完全隐藏，1=完全可见，2=隐藏仅占卜可见 */
   linked: number;
 }
 

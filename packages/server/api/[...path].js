@@ -15822,101 +15822,115 @@ var actions_default = {
 
 // ../core/data/attributes.json
 var attributes_default = {
-  _\u8BF4\u660E: "\u5C5E\u6027\u8868\uFF1Acategory \u662F\u5206\u7C7B\uFF1Bhidden=true \u4E0D\u5728\u4E3B\u754C\u9762\u663E\u793A\uFF1Blinked \u662F\u5173\u8054\u5C5E\u6027\uFF080=\u5B8C\u5168\u9690\u85CF\uFF0C1=\u5B8C\u5168\u53EF\u89C1\uFF0C2=\u9690\u85CF\u4EC5\u5360\u6BD4\uFF09",
+  _\u8BF4\u660E: "\u5C5E\u6027\u8868\uFF1Acategory=\u5206\u7C7B\u82F1\u6587\u540D\uFF08visible/hidden/status/fans\uFF09\uFF0CcategoryName=\u5206\u7C7B\u4E2D\u6587\u540D\uFF1Bkey=\u5C5E\u6027\u5B57\u6BB5\u540D\uFF0Cname=\u663E\u793A\u540D\uFF1Bhidden=true \u4E0D\u5728\u4E3B\u754C\u9762\u663E\u793A\uFF1Blinked \u5173\u8054\u5C5E\u6027\uFF080=\u5B8C\u5168\u9690\u85CF\uFF0C1=\u5B8C\u5168\u53EF\u89C1\uFF0C2=\u9690\u85CF\u4EC5\u5360\u535C\u53EF\u89C1\uFF09",
   attributes: [
     {
-      category: "\u663E\u6027\u5C5E\u6027",
+      category: "visible",
+      categoryName: "\u663E\u6027\u5C5E\u6027",
       name: "\u6F14\u5531",
       key: "vocal",
       hidden: false,
       linked: 1
     },
     {
-      category: "\u663E\u6027\u5C5E\u6027",
+      category: "visible",
+      categoryName: "\u663E\u6027\u5C5E\u6027",
       name: "\u821E\u8E48",
       key: "dance",
       hidden: false,
       linked: 1
     },
     {
-      category: "\u663E\u6027\u5C5E\u6027",
+      category: "visible",
+      categoryName: "\u663E\u6027\u5C5E\u6027",
       name: "\u6F14\u6280",
       key: "acting",
       hidden: false,
       linked: 1
     },
     {
-      category: "\u663E\u6027\u5C5E\u6027",
+      category: "visible",
+      categoryName: "\u663E\u6027\u5C5E\u6027",
       name: "\u53E3\u624D",
       key: "talk",
       hidden: false,
       linked: 1
     },
     {
-      category: "\u9690\u85CF\u5C5E\u6027",
+      category: "hidden",
+      categoryName: "\u9690\u85CF\u5C5E\u6027",
       name: "\u81EA\u6211",
       key: "self",
       hidden: true,
-      linked: 0
+      linked: 2
     },
     {
-      category: "\u9690\u85CF\u5C5E\u6027",
+      category: "hidden",
+      categoryName: "\u9690\u85CF\u5C5E\u6027",
       name: "\u4ED6\u4EBA",
       key: "others",
       hidden: true,
-      linked: 0
+      linked: 2
     },
     {
-      category: "\u9690\u85CF\u5C5E\u6027",
+      category: "hidden",
+      categoryName: "\u9690\u85CF\u5C5E\u6027",
       name: "\u9002\u914D",
       key: "fit",
       hidden: true,
-      linked: 0
+      linked: 2
     },
     {
-      category: "\u72B6\u6001",
+      category: "status",
+      categoryName: "\u72B6\u6001",
       name: "\u4F53\u529B",
       key: "stamina",
       hidden: false,
       linked: 1
     },
     {
-      category: "\u7C89\u4E1D\u5C5E\u6027",
+      category: "fans",
+      categoryName: "\u7C89\u4E1D\u5C5E\u6027",
       name: "\u821E\u53F0\u7C89",
       key: "stage",
       hidden: false,
       linked: 1
     },
     {
-      category: "\u7C89\u4E1D\u5C5E\u6027",
+      category: "fans",
+      categoryName: "\u7C89\u4E1D\u5C5E\u6027",
       name: "\u560E\u8D77\u7C89",
       key: "gachi",
       hidden: false,
       linked: 1
     },
     {
-      category: "\u7C89\u4E1D\u5C5E\u6027",
+      category: "fans",
+      categoryName: "\u7C89\u4E1D\u5C5E\u6027",
       name: "\u97F3\u4E50\u7C89",
       key: "music",
       hidden: false,
       linked: 1
     },
     {
-      category: "\u7C89\u4E1D\u5C5E\u6027",
+      category: "fans",
+      categoryName: "\u7C89\u4E1D\u5C5E\u6027",
       name: "\u73B0\u573A\u7C89",
       key: "live",
       hidden: false,
       linked: 1
     },
     {
-      category: "\u7C89\u4E1D\u5C5E\u6027",
+      category: "fans",
+      categoryName: "\u7C89\u4E1D\u5C5E\u6027",
       name: "\u517B\u6210\u7C89",
       key: "growth",
       hidden: false,
       linked: 1
     },
     {
-      category: "\u7C89\u4E1D\u5C5E\u6027",
+      category: "fans",
+      categoryName: "\u7C89\u4E1D\u5C5E\u6027",
       name: "\u5B9E\u529B\u7C89",
       key: "power",
       hidden: false,
@@ -17033,9 +17047,9 @@ var ATTRIBUTE_MAP = Object.fromEntries(
   ATTRIBUTES.map((a) => [a.key, a])
 );
 var byCategory = (cat) => ATTRIBUTES.filter((a) => a.category === cat);
-var STAT_KEYS = byCategory("\u663E\u6027\u5C5E\u6027").map((a) => a.key);
-var AXIS_KEYS = byCategory("\u9690\u85CF\u5C5E\u6027").map((a) => a.key);
-var FAN_KEYS = byCategory("\u7C89\u4E1D\u5C5E\u6027").map((a) => a.key);
+var STAT_KEYS = byCategory("visible").map((a) => a.key);
+var AXIS_KEYS = byCategory("hidden").map((a) => a.key);
+var FAN_KEYS = byCategory("fans").map((a) => a.key);
 var STAT_LABEL = Object.fromEntries(
   ATTRIBUTES.map((a) => [a.key, a.name])
 );
