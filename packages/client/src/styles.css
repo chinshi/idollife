@@ -1542,3 +1542,9 @@ body { overflow: hidden; }
 }
 /* 工具条按钮居中 */
 .tlx-toolbar { justify-content: center; }
+/* 模块高度固定：主系统模块与日志模块等高，左右两栏撑满 */
+.col-left { grid-template-rows: minmax(0, 1fr); }
+.col-right { grid-template-rows: minmax(0, 1fr); }
+.col-center { grid-template-rows: auto auto minmax(0, 1fr) minmax(0, 1fr); }
+.mod-menu, .mod-aux { height: 100%; }
+.mod-main, .mod-log { min-height: 0; }
