@@ -2,7 +2,7 @@
  * 把 content/*.xlsx 导入成 JSON 配置表：node scripts/content-import.mjs
  * 每个 xlsx 对应一张（或一组）表；缺文件会跳过并提示。
  */
-import { access, writeFile } from 'node:fs/promises';
+import { access, stat as fsStat, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import ExcelJS from 'exceljs';
@@ -18,19 +18,38 @@ const cell = (row, i) => {
   if (typeof v === 'object' && 'result' in v) return v.result ?? '';
   return v;
 };
-const num = (v) => (v === '' || v === null || v === undefined ? undefined : Number(v));
+const num = (v) => {
+  if (v === '' || v === null || v === undefined) return undefined;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : undefined;
+};
 const str = (v) => (v === null || v === undefined ? '' : String(v).trim());
 const bool = (v) => {
   const s = str(v).toUpperCase();
   return s === 'TRUE' || s === '1' || s === '是' || s === 'YES';
 };
 
-async function openWb(file) {
+async function openWb(file, jsonName) {
   const path = join(outDir, file);
   try {
     await access(path);
   } catch {
     return null;
+  }
+  // 防止拿旧表覆盖新数据：表比 JSON 旧就跳过
+  if (jsonName) {
+    try {
+      const [x, j] = await Promise.all([
+        fsStat(path),
+        fsStat(join(dataDir, jsonName)),
+      ]);
+      if (x.mtimeMs < j.mtimeMs) {
+        console.warn(`  ⚠ 跳过 ${file}：表格比 ${jsonName} 旧，请先运行 pnpm content:template`);
+        return null;
+      }
+    } catch {
+      /* JSON 不存在时照常导入 */
+    }
   }
   const wb = new ExcelJS.Workbook();
   await wb.xlsx.readFile(path);
@@ -59,7 +78,7 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
 
 // 1) 属性表
 {
-  const wb = await openWb('attributes.xlsx');
+  const wb = await openWb('attributes.xlsx', 'attributes.json');
   if (!wb) skip('attributes.xlsx');
   else {
     const attributes = rowsOf(wb, 'attributes').map((r) => ({
@@ -81,7 +100,7 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
 
 // 2) 行为表
 {
-  const wb = await openWb('actions.xlsx');
+  const wb = await openWb('actions.xlsx', 'actions.json');
   if (!wb) skip('actions.xlsx');
   else {
     const actions = rowsOf(wb, 'actions').map((r) => {
@@ -113,7 +132,7 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
 
 // 2.5) 行为结果表
 {
-  const wb = await openWb('action_results.xlsx');
+  const wb = await openWb('action_results.xlsx', 'action_results.json');
   if (!wb) skip('action_results.xlsx');
   else {
     const parseStat = (raw) => {
@@ -123,7 +142,8 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
         const [a, b] = s.split('~').map((x) => Number(x.trim()));
         return [a, b];
       }
-      return Number(s);
+      const n = Number(s);
+      return Number.isFinite(n) ? n : undefined;
     };
 
     const results = rowsOf(wb, 'results').map((r) => {
@@ -132,8 +152,10 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
       if (stamina !== undefined) effects.stamina = stamina;
       const money = num(cell(r, 7));
       if (money !== undefined) effects.money = money;
+      const fans = num(cell(r, 8));
+      if (fans !== undefined) effects.fans = fans;
       const stats = {};
-      for (const [i2, key] of [[8, 'vocal'], [9, 'dance'], [10, 'acting'], [11, 'talk']]) {
+      for (const [i2, key] of [[9, 'vocal'], [10, 'dance'], [11, 'acting'], [12, 'talk']]) {
         const v = parseStat(cell(r, i2));
         if (v !== undefined) stats[key] = v;
       }
@@ -148,7 +170,7 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
       o.condition = cond ? JSON.parse(cond) : {};
       o.priority = num(cell(r, 5)) ?? 99;
       o.effects = effects;
-      o.text = str(cell(r, 12));
+      o.text = str(cell(r, 13));
       return o;
     });
 
@@ -162,7 +184,7 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
 }
 // 3) 事件表
 {
-  const wb = await openWb('events.xlsx');
+  const wb = await openWb('events.xlsx', 'events.json');
   if (!wb) skip('events.xlsx');
   else {
     const routine = rowsOf(wb, 'routine').map((r) => {
@@ -233,7 +255,7 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
 
 // 4) 结局
 {
-  const wb = await openWb('endings.xlsx');
+  const wb = await openWb('endings.xlsx', 'endings.json');
   if (!wb) skip('endings.xlsx');
   else {
     const endings = rowsOf(wb, 'endings').map((r) => ({
@@ -253,8 +275,8 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
 
 // 5) 装备 + 6) 全局数值
 {
-  const shopWb = await openWb('shop.xlsx');
-  const balanceWb = await openWb('balance.xlsx');
+  const shopWb = await openWb('shop.xlsx', 'shop.json');
+  const balanceWb = await openWb('balance.xlsx', 'balance.json');
 
   const balance = {};
   let commonPrice = 800;
@@ -296,7 +318,7 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
 
 // 7) NPC 池
 {
-  const wb = await openWb('members.xlsx');
+  const wb = await openWb('members.xlsx', 'members.json');
   if (!wb) skip('members.xlsx');
   else {
     const namePool = [];
@@ -322,7 +344,7 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
 
 // 8) 主角模板
 {
-  const wb = await openWb('characters.xlsx');
+  const wb = await openWb('characters.xlsx', 'characters.json');
   if (!wb) skip('characters.xlsx');
   else {
     const characters = rowsOf(wb, 'characters').map((r) => {
@@ -345,7 +367,7 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
 
 // 9) 日志文案
 {
-  const wb = await openWb('logs.xlsx');
+  const wb = await openWb('logs.xlsx', 'logs.json');
   if (!wb) skip('logs.xlsx');
   else {
     const logs = {};

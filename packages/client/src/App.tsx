@@ -931,6 +931,14 @@ function AppInner() {
   /** 参加演出：排在最近的周六/周日，占满当天 3 个行动位 */
   function addShow() {
     if (phase !== 'playing') return;
+    if (!canShowAction(run, SHOW_ACTION_ID)) {
+      setNotice('现在还没到能上台的时候。');
+      return;
+    }
+    if (remainingTimes(run, SHOW_ACTION_ID) <= 0) {
+      setNotice('这一周的演出次数已经用完了。');
+      return;
+    }
 
     let dayIndex = Math.floor((Math.max(lastEnd, run.at) - T0) / DAY_MS);
     let dayStart = T0 + dayIndex * DAY_MS;

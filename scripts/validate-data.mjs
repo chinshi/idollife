@@ -10,7 +10,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dataDir = join(root, 'packages', 'core', 'data');
 
 const STATS = ['vocal', 'dance', 'acting', 'talk'];
-const CATEGORIES = ['growth', 'recover', 'work'];
+const CATEGORIES = ['growth', 'recover', 'work', 'performance'];
 const errors = [];
 
 async function load(name) {
@@ -77,6 +77,9 @@ if (actions && actionResults) {
     need(actionIds.has(r.actionId), `action_results.${r.id}: actionId 不存在 → ${r.actionId}`);
     need(typeof r.text === 'string' && r.text, `action_results.${r.id}: 缺少 text（行为文案）`);
     need(r.effects && typeof r.effects === 'object', `action_results.${r.id}: 缺少 effects`);
+    if (r.effects?.fans !== undefined) {
+      need(typeof r.effects.fans === 'number', `action_results.: fans 必须是数字`);
+    }
     if (r.effects?.stats) {
       for (const [k, val] of Object.entries(r.effects.stats)) {
         need(STATS.includes(k), `action_results.${r.id}: effects.stats 含非法属性 ${k}`);

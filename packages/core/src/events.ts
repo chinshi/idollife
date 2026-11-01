@@ -69,6 +69,14 @@ function makeRequires(req?: RawRequires): (s: RunState) => boolean {
       }
     }
     if (typeof req?.staminaBelow === 'number' && s.stamina >= req.staminaBelow) return false;
+    if (typeof req?.statsSumAtLeast === 'number') {
+      const sum = s.stats.vocal + s.stats.dance + s.stats.acting + s.stats.talk;
+      if (sum < req.statsSumAtLeast) return false;
+    }
+    if (typeof req?.statsSumBelow === 'number') {
+      const sum = s.stats.vocal + s.stats.dance + s.stats.acting + s.stats.talk;
+      if (sum >= req.statsSumBelow) return false;
+    }
     if (req?.fansAtLeast) {
       for (const [k, v] of Object.entries(req.fansAtLeast)) {
         if (((s.fans.byType as Record<string, number>)[k] ?? 0) < v) return false;

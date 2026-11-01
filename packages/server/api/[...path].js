@@ -15751,7 +15751,7 @@ var cors = (options) => {
 
 // ../core/data/action_results.json
 var action_results_default = {
-  _\u8BF4\u660E: "\u884C\u4E3A\u7ED3\u679C\u8868\uFF1A\u540C\u4E00\u4E2A\u884C\u4E3A\u5728\u4E0D\u540C\u6761\u4EF6\u4E0B\u53EF\u4EE5\u6709\u4E0D\u540C\u7684\u6570\u503C\u548C\u6587\u6848\u3002condition \u4E3A\u7A7A=\u9ED8\u8BA4\u7ED3\u679C\uFF1Bpriority \u5C0F\u7684\u4F18\u5148\u5339\u914D\u3002stats \u91CC\u7684\u6570\u503C\u53EF\u4EE5\u662F\u6570\u5B57\u6216 [\u6700\u5C0F\u503C,\u6700\u5927\u503C] \u533A\u95F4",
+  _\u8BF4\u660E: "\u884C\u4E3A\u7ED3\u679C\u8868\uFF1A\u540C\u4E00\u4E2A\u884C\u4E3A\u5728\u4E0D\u540C\u6761\u4EF6\u4E0B\u53EF\u4EE5\u6709\u4E0D\u540C\u7684\u6570\u503C\u548C\u6587\u6848\u3002condition \u4E3A\u7A7A=\u9ED8\u8BA4\u7ED3\u679C\uFF1Bpriority \u5C0F\u7684\u4F18\u5148\u5339\u914D\u3002stats \u91CC\u7684\u6570\u503C\u53EF\u4EE5\u662F\u6570\u5B57\u6216 [\u6700\u5C0F\u503C,\u6700\u5927\u503C] \u533A\u95F4\uFF1Bfans \u662F\u7C89\u4E1D\u589E\u52A0\u91CF",
   results: [
     {
       id: "res-vocal-default",
@@ -15759,36 +15759,16 @@ var action_results_default = {
       actionName: "\u5531 K",
       condition: {},
       priority: 99,
-      effects: {
-        stamina: -10,
-        money: -50,
-        stats: {
-          vocal: [
-            1,
-            3
-          ]
-        }
-      },
+      effects: { stamina: -10, money: -50, stats: { vocal: [1, 3] } },
       text: "\u4F60\u5728\u5305\u53A2\u91CC\u5531\u4E86\u4E24\u5C0F\u65F6\uFF0C\u55D3\u5B50\u6709\u70B9\u70ED\u3002\uFF08\u6F14\u5531 +{vocal}\uFF09"
     },
     {
       id: "res-vocal-tired",
       actionId: "vocal-karaoke",
       actionName: "\u5531 K",
-      condition: {
-        staminaBelow: 30
-      },
+      condition: { staminaBelow: 30 },
       priority: 10,
-      effects: {
-        stamina: -10,
-        money: -50,
-        stats: {
-          vocal: [
-            1,
-            1
-          ]
-        }
-      },
+      effects: { stamina: -10, money: -50, stats: { vocal: [1, 1] } },
       text: "\u55D3\u5B50\u6709\u70B9\u54D1\uFF0C\u4F60\u53EA\u5531\u4E86\u4E00\u5C0F\u65F6\u5C31\u5750\u4E0B\u4E86\u3002\uFF08\u6F14\u5531 +{vocal}\uFF09"
     },
     {
@@ -15797,34 +15777,16 @@ var action_results_default = {
       actionName: "\u8DF3\u5B85\u821E",
       condition: {},
       priority: 99,
-      effects: {
-        stamina: -12,
-        stats: {
-          dance: [
-            1,
-            3
-          ]
-        }
-      },
+      effects: { stamina: -12, stats: { dance: [1, 3] } },
       text: "\u5BF9\u7740\u955C\u5B50\u628A\u540C\u4E00\u6BB5\u526F\u6B4C\u8DF3\u4E86\u4E8C\u5341\u904D\u3002\uFF08\u821E\u8E48 +{dance}\uFF09"
     },
     {
       id: "res-dance-tired",
       actionId: "dance-otaku",
       actionName: "\u8DF3\u5B85\u821E",
-      condition: {
-        staminaBelow: 25
-      },
+      condition: { staminaBelow: 25 },
       priority: 10,
-      effects: {
-        stamina: -12,
-        stats: {
-          dance: [
-            1,
-            1
-          ]
-        }
-      },
+      effects: { stamina: -12, stats: { dance: [1, 1] } },
       text: "\u817F\u6709\u70B9\u62AC\u4E0D\u8D77\u6765\uFF0C\u7EC3\u5230\u4E00\u534A\u5C31\u5750\u5728\u5730\u677F\u4E0A\u4E86\u3002\uFF08\u821E\u8E48 +{dance}\uFF09"
     },
     {
@@ -15833,15 +15795,7 @@ var action_results_default = {
       actionName: "\u81EA\u62CD\u5C0F\u77ED\u5267",
       condition: {},
       priority: 99,
-      effects: {
-        stamina: -10,
-        stats: {
-          acting: [
-            1,
-            2
-          ]
-        }
-      },
+      effects: { stamina: -10, stats: { acting: [1, 2] } },
       text: "\u81EA\u5BFC\u81EA\u6F14\u62CD\u4E86\u4E09\u6761\uFF0C\u7B2C\u4E8C\u6761\u6700\u597D\u3002\uFF08\u6F14\u6280 +{acting}\uFF09"
     },
     {
@@ -15850,15 +15804,7 @@ var action_results_default = {
       actionName: "\u81EA\u8BF4\u81EA\u8BDD",
       condition: {},
       priority: 99,
-      effects: {
-        stamina: -8,
-        stats: {
-          talk: [
-            1,
-            2
-          ]
-        }
-      },
+      effects: { stamina: -8, stats: { talk: [1, 2] } },
       text: "\u5BF9\u7740\u955C\u5934\u7EC3\u4E86\u4E00\u4E0B\u5348\u4E32\u573A\u8BCD\u3002\uFF08\u53E3\u624D +{talk}\uFF09"
     },
     {
@@ -15867,24 +15813,16 @@ var action_results_default = {
       actionName: "\u6253\u5DE5",
       condition: {},
       priority: 99,
-      effects: {
-        stamina: -20,
-        money: 320
-      },
+      effects: { stamina: -20, money: 320 },
       text: "\u5728\u4FBF\u5229\u5E97\u7AD9\u4E86\u56DB\u4E2A\u5C0F\u65F6\uFF0C\u811A\u6709\u70B9\u9EBB\u3002\uFF08\u6536\u5165 +320\uFF09"
     },
     {
       id: "res-work-tired",
       actionId: "work-part-time",
       actionName: "\u6253\u5DE5",
-      condition: {
-        staminaBelow: 25
-      },
+      condition: { staminaBelow: 25 },
       priority: 10,
-      effects: {
-        stamina: -20,
-        money: 240
-      },
+      effects: { stamina: -20, money: 240 },
       text: "\u56F0\u5F97\u5DEE\u70B9\u7B97\u9519\u94B1\uFF0C\u5E97\u957F\u8BA9\u4F60\u63D0\u524D\u4E0B\u73ED\u3002\uFF08\u6536\u5165 +240\uFF09"
     },
     {
@@ -15893,10 +15831,44 @@ var action_results_default = {
       actionName: "\u7206\u7761",
       condition: {},
       priority: 99,
-      effects: {
-        stamina: 25
-      },
+      effects: { stamina: 25 },
       text: "\u7761\u4E86\u4E00\u89C9\uFF0C\u611F\u89C9\u6D3B\u8FC7\u6765\u4E86\u3002"
+    },
+    {
+      id: "res-show-s",
+      actionId: "show",
+      actionName: "\u6F14\u51FA",
+      condition: { statsSumAtLeast: 240 },
+      priority: 10,
+      effects: { stamina: -30, money: 1500, fans: 300 },
+      text: "\u706F\u4EAE\u8D77\u6765\u7684\u90A3\u4E00\u523B\uFF0C\u5168\u573A\u5B89\u9759\u4E86\u3002\uFF08\u7C89\u4E1D +300 \xB7 \u6536\u5165 +1500\uFF09"
+    },
+    {
+      id: "res-show-a",
+      actionId: "show",
+      actionName: "\u6F14\u51FA",
+      condition: { statsSumAtLeast: 180 },
+      priority: 20,
+      effects: { stamina: -30, money: 900, fans: 180 },
+      text: "\u53D1\u6325\u5F88\u7A33\uFF0C\u53F0\u4E0B\u6709\u4EBA\u8DDF\u7740\u558A\u3002\uFF08\u7C89\u4E1D +180 \xB7 \u6536\u5165 +900\uFF09"
+    },
+    {
+      id: "res-show-b",
+      actionId: "show",
+      actionName: "\u6F14\u51FA",
+      condition: { statsSumAtLeast: 120 },
+      priority: 30,
+      effects: { stamina: -30, money: 500, fans: 100 },
+      text: "\u4E2D\u89C4\u4E2D\u77E9\uFF0C\u4F46\u6CA1\u51FA\u9519\u3002\uFF08\u7C89\u4E1D +100 \xB7 \u6536\u5165 +500\uFF09"
+    },
+    {
+      id: "res-show-c",
+      actionId: "show",
+      actionName: "\u6F14\u51FA",
+      condition: {},
+      priority: 99,
+      effects: { stamina: -30, money: 200, fans: 40 },
+      text: "\u4E2D\u95F4\u5FD8\u4E86\u4E00\u4E2A\u52A8\u4F5C\uFF0C\u4F60\u7B11\u7740\u5706\u8FC7\u53BB\u4E86\u3002\uFF08\u7C89\u4E1D +40 \xB7 \u6536\u5165 +200\uFF09"
     }
   ]
 };
@@ -15913,9 +15885,7 @@ var actions_default = {
       displayCondition: {},
       times: 0,
       timesScope: "run",
-      affectedStats: [
-        "vocal"
-      ],
+      affectedStats: ["vocal"],
       durationMinutes: 1
     },
     {
@@ -15926,9 +15896,7 @@ var actions_default = {
       displayCondition: {},
       times: 0,
       timesScope: "run",
-      affectedStats: [
-        "dance"
-      ],
+      affectedStats: ["dance"],
       durationMinutes: 1
     },
     {
@@ -15939,9 +15907,7 @@ var actions_default = {
       displayCondition: {},
       times: 0,
       timesScope: "run",
-      affectedStats: [
-        "acting"
-      ],
+      affectedStats: ["acting"],
       durationMinutes: 1
     },
     {
@@ -15952,9 +15918,7 @@ var actions_default = {
       displayCondition: {},
       times: 0,
       timesScope: "run",
-      affectedStats: [
-        "talk"
-      ],
+      affectedStats: ["talk"],
       durationMinutes: 1
     },
     {
@@ -15978,6 +15942,17 @@ var actions_default = {
       timesScope: "run",
       affectedStats: [],
       durationMinutes: 1
+    },
+    {
+      id: "show",
+      name: "\u6F14\u51FA",
+      category: "performance",
+      categoryName: "\u6F14\u51FA",
+      displayCondition: { statsSumAtLeast: 60 },
+      times: 0,
+      timesScope: "week",
+      affectedStats: ["vocal", "dance", "acting", "talk"],
+      durationMinutes: 3
     }
   ]
 };
@@ -16470,6 +16445,14 @@ function makeRequires(req) {
       }
     }
     if (typeof req?.staminaBelow === "number" && s.stamina >= req.staminaBelow) return false;
+    if (typeof req?.statsSumAtLeast === "number") {
+      const sum = s.stats.vocal + s.stats.dance + s.stats.acting + s.stats.talk;
+      if (sum < req.statsSumAtLeast) return false;
+    }
+    if (typeof req?.statsSumBelow === "number") {
+      const sum = s.stats.vocal + s.stats.dance + s.stats.acting + s.stats.talk;
+      if (sum >= req.statsSumBelow) return false;
+    }
     if (req?.fansAtLeast) {
       for (const [k, v] of Object.entries(req.fansAtLeast)) {
         if ((s.fans.byType[k] ?? 0) < v) return false;
@@ -16522,7 +16505,6 @@ var RUN_LENGTH_MS = BALANCE.runDays * DAY_MS;
 var RENT_PER_WEEK = BALANCE.rentPerWeek;
 var START_MONEY = BALANCE.startMoney;
 var DEBUT_THRESHOLD = BALANCE.debutThreshold;
-var SHOW_ACTION_ID = "show";
 var SHOW_DURATION_MS = SHOW_SLOTS * ACTION_MINUTES * MIN;
 function defaultResultOf(actionId) {
   const list = RAW_RESULTS.filter((r) => r.actionId === actionId);
@@ -16606,119 +16588,6 @@ function mulberry32(seed) {
 }
 function randInt(rng, min, max) {
   return min + Math.floor(rng() * (max - min + 1));
-}
-
-// ../core/src/results.ts
-var ACTION_RESULTS = RAW_RESULTS.map((r) => ({
-  id: r.id,
-  actionId: r.actionId,
-  actionName: r.actionName,
-  condition: r.condition,
-  priority: r.priority ?? 99,
-  effects: r.effects ?? {},
-  text: r.text
-}));
-var byAction = /* @__PURE__ */ new Map();
-for (const r of ACTION_RESULTS) {
-  const list = byAction.get(r.actionId) ?? [];
-  list.push(r);
-  byAction.set(r.actionId, list);
-}
-for (const list of byAction.values()) list.sort((a, b) => a.priority - b.priority);
-function resultsFor(actionId) {
-  return byAction.get(actionId) ?? [];
-}
-function pickActionResult(state, actionId) {
-  const list = resultsFor(actionId);
-  for (const r of list) {
-    if (matchesCondition(state, r.condition)) return r;
-  }
-  return list[list.length - 1] ?? null;
-}
-var rollValue = (v, rng) => {
-  if (Array.isArray(v)) return randInt(rng, v[0], v[1]);
-  return v;
-};
-function resolveAction(state, actionId, rng) {
-  const result = pickActionResult(state, actionId);
-  if (!result) return null;
-  const stats = {};
-  for (const [k, v] of Object.entries(result.effects.stats ?? {})) {
-    stats[k] = rollValue(v, rng);
-  }
-  const stamina = result.effects.stamina ?? 0;
-  const money = result.effects.money ?? 0;
-  let text = result.text;
-  for (const [k, v] of Object.entries(stats)) {
-    text = text.split(`{${k}}`).join(String(v));
-  }
-  const firstStat = Object.values(stats)[0] ?? 0;
-  text = text.split("{n}").join(String(firstStat));
-  text = text.split("{stamina}").join(String(stamina));
-  text = text.split("{money}").join(String(money));
-  return { resultId: result.id, stamina, money, stats, text };
-}
-function previewAction(state, actionId) {
-  const result = pickActionResult(state, actionId);
-  if (!result) return null;
-  const stats = {};
-  for (const [k, v] of Object.entries(result.effects.stats ?? {})) {
-    stats[k] = Array.isArray(v) ? [v[0], v[1]] : [v, v];
-  }
-  return {
-    stamina: result.effects.stamina ?? 0,
-    money: result.effects.money ?? 0,
-    stats,
-    text: result.text
-  };
-}
-
-// ../core/src/fans.ts
-var FAN_TYPES = ["stage", "gachi", "music", "live", "growth", "power"];
-var LOYALTY_ORDER = ["casual", "dd", "group", "solo"];
-var AFFECTION_MAX = 100;
-var PROMOTE_RATIO = 0.05;
-function zeroed(keys) {
-  return keys.reduce((acc, k) => {
-    acc[k] = 0;
-    return acc;
-  }, {});
-}
-function createFans(total = 0) {
-  return {
-    byType: zeroed(FAN_TYPES),
-    loyalty: { casual: total, dd: 0, group: 0, solo: 0 },
-    affection: zeroed(FAN_TYPES)
-  };
-}
-function applyFanAction(fans, type, newFans, affection) {
-  const next = {
-    byType: { ...fans.byType },
-    loyalty: { ...fans.loyalty },
-    affection: { ...fans.affection }
-  };
-  const added = Math.max(0, Math.floor(newFans));
-  next.byType[type] += added;
-  next.loyalty.casual += added;
-  next.affection[type] = Math.min(AFFECTION_MAX, next.affection[type] + Math.max(0, affection));
-  while (next.affection[type] >= AFFECTION_MAX) {
-    next.affection[type] -= AFFECTION_MAX;
-    promoteOnce(next);
-  }
-  return next;
-}
-function promoteOnce(fans) {
-  for (let i = 0; i < LOYALTY_ORDER.length - 1; i++) {
-    const from = LOYALTY_ORDER[i];
-    const to = LOYALTY_ORDER[i + 1];
-    const movable = Math.max(1, Math.floor(fans.loyalty[from] * PROMOTE_RATIO));
-    const moved = Math.min(movable, fans.loyalty[from]);
-    if (moved > 0) {
-      fans.loyalty[from] -= moved;
-      fans.loyalty[to] += moved;
-      return;
-    }
-  }
 }
 
 // ../core/data/shop.json
@@ -16821,63 +16690,126 @@ function effectiveStats(state) {
   return stats;
 }
 
-// ../core/src/shows.ts
-var GRADE_TEXT = {
-  S: ["\u706F\u4EAE\u8D77\u6765\u7684\u90A3\u4E00\u523B\uFF0C\u5168\u573A\u5B89\u9759\u4E86\u3002", "\u4F60\u8DF3\u5B8C\u6700\u540E\u4E00\u6BB5\uFF0C\u638C\u58F0\u6BD4\u97F3\u4E50\u8FD8\u54CD\u3002"],
-  A: ["\u53D1\u6325\u5F88\u7A33\uFF0C\u53F0\u4E0B\u6709\u4EBA\u8DDF\u7740\u558A\u3002", "\u7ED3\u675F\u540E\u6709\u4EBA\u6324\u5230\u524D\u6392\u8981\u7B7E\u540D\u3002"],
-  B: ["\u4E2D\u89C4\u4E2D\u77E9\uFF0C\u4F46\u6CA1\u51FA\u9519\u3002", "\u6709\u4EBA\u5728\u95E8\u53E3\u72B9\u8C6B\u4E86\u4E00\u4E0B\uFF0C\u8FD8\u662F\u8D70\u4E86\u3002"],
-  C: ["\u4E2D\u95F4\u5FD8\u4E86\u4E00\u4E2A\u52A8\u4F5C\uFF0C\u4F60\u7B11\u7740\u5706\u8FC7\u53BB\u4E86\u3002", "\u53F0\u4E0B\u7A00\u7A00\u62C9\u62C9\u7684\u638C\u58F0\uFF0C\u4F60\u8BF4\u4E86\u8C22\u8C22\u3002"]
-};
-function pickFanType(state) {
+// ../core/src/results.ts
+var ACTION_RESULTS = RAW_RESULTS.map((r) => ({
+  id: r.id,
+  actionId: r.actionId,
+  actionName: r.actionName,
+  condition: r.condition,
+  priority: r.priority ?? 99,
+  effects: r.effects ?? {},
+  text: r.text
+}));
+var byAction = /* @__PURE__ */ new Map();
+for (const r of ACTION_RESULTS) {
+  const list = byAction.get(r.actionId) ?? [];
+  list.push(r);
+  byAction.set(r.actionId, list);
+}
+for (const list of byAction.values()) list.sort((a, b) => a.priority - b.priority);
+function resultsFor(actionId) {
+  return byAction.get(actionId) ?? [];
+}
+function pickActionResult(state, actionId) {
+  const list = resultsFor(actionId);
+  for (const r of list) {
+    if (matchesCondition(state, r.condition)) return r;
+  }
+  return list[list.length - 1] ?? null;
+}
+function showFanType(state) {
   const s = effectiveStats(state);
   if (s.dance >= s.vocal && s.dance >= s.acting && s.dance >= s.talk) return "stage";
   if (s.vocal >= s.acting && s.vocal >= s.talk) return "music";
   if (s.acting >= s.talk) return "growth";
   return "gachi";
 }
-function performShow(state, seed) {
-  const rng = mulberry32(hashSeed(seed));
-  const s = effectiveStats(state);
-  const base = (s.vocal + s.dance + s.acting + s.talk) / 4;
-  const fitBonus = state.axes.fit / 20;
-  const staminaPenalty = state.stamina < 30 ? 8 : 0;
-  const noise = rng() * 10 - 5;
-  const score = Math.round(base + fitBonus - staminaPenalty + noise);
-  const grade = score >= 45 ? "S" : score >= 32 ? "A" : score >= 20 ? "B" : "C";
-  const multiplier = grade === "S" ? 3 : grade === "A" ? 2 : grade === "B" ? 1.2 : 0.5;
-  const fanGain = Math.max(1, Math.round(score / 10 * multiplier * 3));
-  const moneyGain = Math.round(400 * multiplier);
-  const fanType = pickFanType(state);
+var rollValue = (v, rng) => {
+  if (Array.isArray(v)) return randInt(rng, v[0], v[1]);
+  return v;
+};
+function resolveAction(state, actionId, rng) {
+  const result = pickActionResult(state, actionId);
+  if (!result) return null;
+  const stats = {};
+  for (const [k, v] of Object.entries(result.effects.stats ?? {})) {
+    stats[k] = rollValue(v, rng);
+  }
+  const stamina = result.effects.stamina ?? 0;
+  const money = result.effects.money ?? 0;
+  const fans = result.effects.fans ?? 0;
+  let text = result.text;
+  for (const [k, v] of Object.entries(stats)) {
+    text = text.split(`{${k}}`).join(String(v));
+  }
+  const firstStat = Object.values(stats)[0] ?? 0;
+  text = text.split("{n}").join(String(firstStat));
+  text = text.split("{stamina}").join(String(stamina));
+  text = text.split("{money}").join(String(money));
+  return { resultId: result.id, stamina, money, fans, stats, text };
+}
+function previewAction(state, actionId) {
+  const result = pickActionResult(state, actionId);
+  if (!result) return null;
+  const stats = {};
+  for (const [k, v] of Object.entries(result.effects.stats ?? {})) {
+    stats[k] = Array.isArray(v) ? [v[0], v[1]] : [v, v];
+  }
   return {
-    grade,
-    score,
-    fanType,
-    fanGain,
-    moneyGain,
-    report: [...GRADE_TEXT[grade], `\u8FD9\u573A\u5927\u6982\u5438\u5F15\u4E86\u4E24\u767E\u591A\u4EBA\u91CC\u7684 ${Math.round(fanGain)} \u4E2A\u3002`]
+    stamina: result.effects.stamina ?? 0,
+    money: result.effects.money ?? 0,
+    fans: result.effects.fans ?? 0,
+    stats,
+    text: result.text
   };
 }
-function applyShow(state, result) {
-  const stamina = Math.max(0, state.stamina - 30);
-  let fans = state.fans;
-  fans = applyFanAction(fans, result.fanType, result.fanGain, 8);
+
+// ../core/src/fans.ts
+var FAN_TYPES = ["stage", "gachi", "music", "live", "growth", "power"];
+var LOYALTY_ORDER = ["casual", "dd", "group", "solo"];
+var AFFECTION_MAX = 100;
+var PROMOTE_RATIO = 0.05;
+function zeroed(keys) {
+  return keys.reduce((acc, k) => {
+    acc[k] = 0;
+    return acc;
+  }, {});
+}
+function createFans(total = 0) {
   return {
-    ...state,
-    stamina,
-    money: state.money + result.moneyGain,
-    fans,
-    log: [
-      ...state.log,
-      {
-        at: state.at,
-        actionId: `show:${result.grade}`,
-        text: `\u6F14\u51FA\u7ED3\u675F\uFF08${result.grade}\uFF09\u3002${result.report.join(" ")}`,
-        staminaDelta: -30,
-        statDelta: {},
-        kind: "action"
-      }
-    ]
+    byType: zeroed(FAN_TYPES),
+    loyalty: { casual: total, dd: 0, group: 0, solo: 0 },
+    affection: zeroed(FAN_TYPES)
   };
+}
+function applyFanAction(fans, type, newFans, affection) {
+  const next = {
+    byType: { ...fans.byType },
+    loyalty: { ...fans.loyalty },
+    affection: { ...fans.affection }
+  };
+  const added = Math.max(0, Math.floor(newFans));
+  next.byType[type] += added;
+  next.loyalty.casual += added;
+  next.affection[type] = Math.min(AFFECTION_MAX, next.affection[type] + Math.max(0, affection));
+  while (next.affection[type] >= AFFECTION_MAX) {
+    next.affection[type] -= AFFECTION_MAX;
+    promoteOnce(next);
+  }
+  return next;
+}
+function promoteOnce(fans) {
+  for (let i = 0; i < LOYALTY_ORDER.length - 1; i++) {
+    const from = LOYALTY_ORDER[i];
+    const to = LOYALTY_ORDER[i + 1];
+    const movable = Math.max(1, Math.floor(fans.loyalty[from] * PROMOTE_RATIO));
+    const moved = Math.min(movable, fans.loyalty[from]);
+    if (moved > 0) {
+      fans.loyalty[from] -= moved;
+      fans.loyalty[to] += moved;
+      return;
+    }
+  }
 }
 
 // ../core/src/settle.ts
@@ -16917,26 +16849,6 @@ function settle(run, schedule, from, to, seed, opts = {}) {
       stoppedReason = "time";
       break;
     }
-    if (item.actionId === SHOW_ACTION_ID) {
-      if (state.stamina < 30) {
-        stoppedReason = "stamina";
-        break;
-      }
-      const show = performShow(state, `${seed}:${item.id}`);
-      const applied = applyShow(state, show);
-      state.stamina = applied.stamina;
-      state.money = applied.money;
-      state.fans = applied.fans;
-      state.log = applied.log;
-      state.at = item.endAt;
-      cursor = item.endAt;
-      executed.push(item.id);
-      if (item.stopAfter) {
-        stoppedReason = "stopped";
-        break;
-      }
-      continue;
-    }
     const action = ACTIONS[item.actionId];
     if (!action) continue;
     if (remainingTimes(state, item.actionId) <= 0) {
@@ -16957,6 +16869,9 @@ function settle(run, schedule, from, to, seed, opts = {}) {
     if (!resolved) continue;
     state.stamina = clamp(state.stamina + resolved.stamina, 0, 100);
     state.money += resolved.money;
+    if (resolved.fans > 0) {
+      state.fans = applyFanAction(state.fans, showFanType(state), resolved.fans, 0.3);
+    }
     const statDelta = {};
     for (const [k, v] of Object.entries(resolved.stats)) {
       const key = k;

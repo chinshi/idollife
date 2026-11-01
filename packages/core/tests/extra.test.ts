@@ -98,6 +98,8 @@ describe('演出占位', () => {
     expect(r.executed).toEqual(['show1']);
     expect(r.state.stamina).toBe(70);
     expect(r.state.money).toBeGreaterThan(0);
-    expect(r.state.log.some((l) => l.actionId.startsWith('show:'))).toBe(true);
+    expect(r.state.log.some((l) => l.actionId === 'show')).toBe(true);
+    const totalFans = Object.values(r.state.fans.byType).reduce((sum, v) => sum + v, 0);
+    expect(totalFans).toBeGreaterThan(0);
   });
 });

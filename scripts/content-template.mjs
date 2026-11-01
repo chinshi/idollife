@@ -39,7 +39,13 @@ function build(file, sheets) {
       c.width = Math.max(12, Math.min(60, (headers[i]?.length ?? 8) * 2 + 10));
     });
   }
-  return wb.xlsx.writeFile(join(outDir, file));
+  return wb.xlsx.writeFile(join(outDir, file)).catch((err) => {
+    if (err.code === 'EBUSY') {
+      console.warn(`  ⚠ ${file} 正被 Excel 打开，已跳过（关掉后重新运行）`);
+      return;
+    }
+    throw err;
+  });
 }
 
 // 1) 属性表
@@ -81,7 +87,7 @@ await build('actions.xlsx', [
 await build('action_results.xlsx', [
   {
     name: 'results',
-    headers: ['结果id', '行为id', '行为名称', '行为条件', '优先级', '体力', '金钱', '演唱', '舞蹈', '演技', '口才', '行为文案'],
+    headers: ['结果id', '行为id', '行为名称', '行为条件', '优先级', '体力', '金钱', '粉丝', '演唱', '舞蹈', '演技', '口才', '行为文案'],
     rows: actionResults.results.map((r) => {
       const fx = r.effects ?? {};
       const st = fx.stats ?? {};
@@ -90,7 +96,7 @@ await build('action_results.xlsx', [
         r.id, r.actionId, r.actionName,
         r.condition && Object.keys(r.condition).length ? JSON.stringify(r.condition) : '',
         r.priority ?? 99,
-        fx.stamina ?? '', fx.money ?? '',
+        fx.stamina ?? '', fx.money ?? '', fx.fans ?? '',
         cell(st.vocal), cell(st.dance), cell(st.acting), cell(st.talk),
         r.text,
       ];

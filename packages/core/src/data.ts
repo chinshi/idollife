@@ -40,6 +40,8 @@ export interface RawResult {
   effects: {
     stamina?: number;
     money?: number;
+    /** 粉丝增加量（按当前最强属性决定粉丝类型） */
+    fans?: number;
     stats?: Record<string, number | [number, number]>;
   };
   /** 文案，支持 {属性字段名} / {n} / {stamina} / {money} */
@@ -60,6 +62,10 @@ export interface RawRequires {
   axesAtLeast?: Record<string, number>;
   axesBelow?: Record<string, number>;
   staminaBelow?: number;
+  /** 四项属性总和 ≥ */
+  statsSumAtLeast?: number;
+  /** 四项属性总和 < */
+  statsSumBelow?: number;
   fansAtLeast?: Record<string, number>;
   flagsNot?: string[];
 }
