@@ -1234,3 +1234,28 @@ body { overflow: hidden; }
   box-sizing: border-box;
 }
 .shell { box-sizing: border-box; }
+/* 头部左右同样是模块卡片 */
+.bar-left,
+.bar-right {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 8px 10px;
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.04);
+  box-sizing: border-box;
+}
+.bar-left {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+}
+.bar-right {
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+}
+.bar-left .brand { font-size: 14px; font-weight: 700; }
+.bar-left .clock { font-size: 11px; color: var(--muted); }
+.bar-right .muted { font-size: 11px; }
