@@ -459,7 +459,31 @@ function AppInner() {
 
       const stillPending = scheduleRef.current.some((s) => !s.done);
       if (result.stoppedReason === 'exhausted' && stillPending) {
-        dbg('等待下一个行动 startAt=' + String(nextStart()));
+        const next = scheduleRef.current
+          .filter((s) => !s.done)
+          .sort((a, b) => a.startAt - b.startAt)[0];
+
+        const unknown =
+          next && (!ACTIONS[next.actionId] || !previewAction(runRef.current, next.actionId));
+
+        if (unknown) {
+          const cleaned = scheduleRef.current.filter((s) => s.id !== next!.id);
+          scheduleRef.current = cleaned;
+          setSchedule(cleaned);
+          dbg('丢弃未知行为 ' + next!.actionId + '（配置里没有）');
+        } else if (next && next.startAt > runRef.current.at) {
+          // 中间有空档：把时间对齐到它的开始，避免空转
+          const healed = { ...runRef.current, at: next.startAt };
+          runRef.current = healed;
+          setRun(healed);
+          dbg('对齐到下一个行动 at=' + String(next.startAt));
+        } else if (next) {
+          // 行动已经开始却没被执行（重叠/脏数据）：丢掉它，防止死锁
+          const cleaned = scheduleRef.current.filter((s) => s.id !== next.id);
+          scheduleRef.current = cleaned;
+          setSchedule(cleaned);
+          dbg('丢弃无法执行的行程序 ' + next.id + ' startAt=' + String(next.startAt));
+        }
         return;
       }
 
