@@ -93,6 +93,7 @@ type SyncStatus = 'local' | 'syncing' | 'synced' | 'offline' | 'expired';
 type SysTab = 'shop' | 'bag';
 type BagTab = 'equip' | 'consume' | 'other';
 type LogTab = 'all' | 'event' | 'stat';
+type MainTab = 'plan' | 'party' | 'shop' | 'divine';
 
 function totalFans(run: RunState): number {
   return Object.values(run.fans.byType).reduce((a, b) => a + b, 0);
@@ -288,6 +289,7 @@ function AppInner() {
   const [bagTab, setBagTab] = useState<BagTab>('equip');
   const [sysTab, setSysTab] = useState<SysTab>('shop');
   const [logTab, setLogTab] = useState<LogTab>('all');
+  const [mainTab, setMainTab] = useState<MainTab>('plan');
   const [historyLimit, setHistoryLimit] = useState(9);
   const [forceLogin, setForceLogin] = useState(false);
   const [running, setRunning] = useState(false);
@@ -578,29 +580,18 @@ function AppInner() {
     prevRunningRef.current = running;
     prevNextIdRef.current = nextItem?.id ?? null;
 
-    // 直接用这一行的真实布局位置来居中，避免任何公式/测量误差
+    // 横向时间轴：把当前行动滚到可视区中间
     const cur = nextItem;
-    const rowEl = cur
-      ? el.querySelector<HTMLElement>(`[data-node-id="${cur.id}"]`)
-      : null;
+    const cellEl = cur ? el.querySelector<HTMLElement>(`[data-h-id="${cur.id}"]`) : null;
+    if (!cellEl) return;
 
-    const offset = ((cur?.startAt ?? run.at) - baseTime) * pxPerMs;
-    const rowH = cur ? Math.max(34, (cur.endAt - cur.startAt) * pxPerMs) : 0;
-
-    const top = rowEl
-      ? Math.max(0, Math.round(rowEl.offsetTop + rowEl.offsetHeight / 2 - el.clientHeight / 2))
-      : Math.max(0, Math.round(offset + rowH / 2));
-    dbg(
-
-      '滚动 off=' + String(Math.round(offset)) +
-      ' rowH=' + String(Math.round(rowH)) +
-      ' top=' + String(top) +
-      ' clientH=' + String(el.clientHeight) +
-      ' scrollH=' + String(el.scrollHeight) +
-      ' boxH=' + String(boxH) +
-      ' padY=' + String(padY),
+    const left = Math.max(
+      0,
+      Math.round(cellEl.offsetLeft + cellEl.offsetWidth / 2 - el.clientWidth / 2),
     );
-    el.scrollTo({ top, behavior: 'smooth' });
+    dbg('滚动 left=' + String(left) + ' w=' + String(el.clientWidth));
+
+    el.scrollTo({ left, behavior: 'smooth' });
   }, [running, nextItem?.id, run.at, baseTime, pxPerMs, boxH, padY]);
 
   const dayMarks = useMemo(() => {
@@ -1095,202 +1086,435 @@ function AppInner() {
         </button>
       </header>
 
-      <main className="cols">
-        <div className="col-main">
-      <section className="panel">
-        <div className="panel-head">
-          <h2>日志</h2>
-        </div>
-        <div className="mini-tabs">
-          {(['all', 'event', 'stat'] as LogTab[]).map((t) => (
-            <button
-              key={t}
-              className={logTab === t ? 'mini-tab active' : 'mini-tab'}
-              onClick={() => setLogTab(t)}
-            >
-              {t === 'all' ? '全部' : t === 'event' ? '事件' : '属性'}
-            </button>
-          ))}
-        </div>
-        {visibleLog.length === 0 ? (
-          <p className="muted small">还没有记录。</p>
-        ) : (
-          <div className="log-scroll" ref={logRef}>
-            <ul className="log dense">
-            {visibleLog.map((l, i) => {
-              const day = Math.floor((l.at - T0) / DAY_MS);
-              const prev = i > 0 ? visibleLog[i - 1] : undefined;
-              const prevDay = prev ? Math.floor((prev.at - T0) / DAY_MS) : -1;
-              const isNewDay = day !== prevDay;
-
-              return (
-                <Fragment key={`${l.at}-${i}`}>
-                  {isNewDay && (
-                    <li className="log-day">
-                      第 {Math.floor(day / 7) + 1} 周 {weekdayName(day)}
-                    </li>
-                  )}
-                  <li>
-                    <span className="log-text">{l.text}</span>
-                    {l.axesChanged && <em className="tag hidden-tag">隐藏属性变动</em>}
-                  </li>
-                </Fragment>
-              );
-            })}
-          </ul>
-          </div>
-        )}
-      </section>
-
-      <section className="panel">
-        <div className="stats">
-          {(['vocal', 'dance', 'acting', 'talk'] as const).map((k) => (
-            <div key={k} className="stat">
-              <span className="k">{STAT_LABEL[k]}</span>
-              <span className="v">{run.stats[k]}</span>
+      <main className="shell">
+        {/* 左：主信息 + 功能切换 */}
+        <aside className="mod col-left">
+          <section className="mod-info">
+            <div className="who">
+              <div className="who-name">{run.debuted ? '已出道' : '练习生'}</div>
+              <div className="who-meta">
+                第 {todayIndex + 1} 天 · {weekdayName(todayIndex)}
+              </div>
             </div>
-          ))}
-          <div className="stat">
-            <span className="k">体力</span>
-            <span className="v">{run.stamina}</span>
-          </div>
-          <div className="stat">
-            <span className="k">资金</span>
-            <span className="v">{run.money}</span>
-          </div>
-          <div className="stat">
-            <span className="k">粉丝</span>
-            <span className="v">{totalFans(run)}</span>
-          </div>
-        </div>
-        <div className="row">
-          <button onClick={() => setShowDivination(true)}>占卜</button>
-          {canDebut(run) && (
-            <button className="primary" onClick={doDebut}>
-              出道
-            </button>
-          )}
-          {syncStatus !== 'local' && (
-            <span className={`chip chip-${syncStatus}`}>{SYNC_TEXT[syncStatus]}</span>
-          )}
-        </div>
-        <p className="muted saved">
-          {savedAt ? `已保存 ${new Date(savedAt).toLocaleTimeString()}` : '尚未保存'}
-        </p>
-      </section>
 
+            <div className="stats">
+              {(['vocal', 'dance', 'acting', 'talk'] as const).map((k) => (
+                <div key={k} className="stat">
+                  <span className="k">{STAT_LABEL[k]}</span>
+                  <span className="v">{run.stats[k]}</span>
+                </div>
+              ))}
+              <div className="stat">
+                <span className="k">体力</span>
+                <span className="v">{run.stamina}</span>
+              </div>
+              <div className="stat">
+                <span className="k">资金</span>
+                <span className="v">{run.money}</span>
+              </div>
+              <div className="stat">
+                <span className="k">粉丝</span>
+                <span className="v">{totalFans(run)}</span>
+              </div>
+            </div>
 
+            <div className="row wrap">
+              <button onClick={() => setShowDivination(true)}>占卜</button>
+              {canDebut(run) && (
+                <button className="primary" onClick={doDebut}>
+                  出道
+                </button>
+              )}
+            </div>
+          </section>
 
-
-      <section className="panel">
-        <div className="panel-head">
-          <h2>组合{party ? ` · ${party.name}` : ''}</h2>
-          <button onClick={openPartyModal}>{party ? '创建新组合' : '创建组合'}</button>
-        </div>
-
-        {run.parties.length > 1 && (
-          <div className="row wrap">
-            {run.parties.map((p) => (
+          <nav className="mod-menu">
+            {(
+              [
+                ['plan', '行程'],
+                ['party', '组合'],
+                ['shop', '商店'],
+                ['divine', '占卜'],
+              ] as Array<[MainTab, string]>
+            ).map(([key, label]) => (
               <button
-                key={p.id}
-                className={p.id === run.activePartyId ? 'tab active' : 'tab'}
-                onClick={() => doSwitchParty(p.id)}
+                key={key}
+                className={mainTab === key ? 'menu-item active' : 'menu-item'}
+                onClick={() => setMainTab(key)}
               >
-                {p.name}
+                {label}
               </button>
             ))}
-          </div>
-        )}
+          </nav>
+        </aside>
 
-        {!party ? (
-          <p className="muted">
-            {run.debuted ? '还没有组合。先创建一个。' : '出道后才能组建组合。'}
-          </p>
-        ) : party.members.length === 0 ? (
-          <p className="muted">组合里还没有成员。</p>
-        ) : (
-          <ul className="party">
-            {party.members.map((m) => {
-              const s = memberStats(m, run.stats);
-              return (
-                <li key={m.id}>
-                  <span className="name">{m.name}</span>
-                  <span className="muted">
-                    {biasLabel(m.bias)} · 默契 +{m.dupCount}%
-                  </span>
-                  <span className="dur">
-                    {s.vocal}/{s.dance}/{s.acting}/{s.talk}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        )}
+        {/* 中：时间轴 / 待办 / 主系统 / 日志 */}
+        <section className="col-center">
+          <section className="mod mod-timeline">
+            <div className="mod-head">
+              <h2>时间轴</h2>
+              <div className="speed-row">
+                {[1, 10, 60].map((v) => (
+                  <button
+                    key={v}
+                    className={speed === v ? 'mini-tab active' : 'mini-tab'}
+                    onClick={() => setSpeed(v)}
+                  >
+                    {v}×
+                  </button>
+                ))}
+              </div>
+              <span className="spacer" />
+              <button className="primary" onClick={advance} disabled={pending.length === 0 || running}>
+                {running ? '推进中…' : '开始推进'}
+              </button>
+              <button onClick={stopCurrent} disabled={!running}>
+                停止
+              </button>
+            </div>
 
-        <div className="row">
-          <button
-            className="primary"
-            onClick={doRecruit}
-            disabled={!party || run.money < RECRUIT_COST}
-          >
-            招募
-            <small>-{RECRUIT_COST}</small>
-          </button>
-        </div>
-      </section>
+            <div className="tlh" ref={timelineRef}>
+              <div className="tlh-inner">
+                {visibleItems.length === 0 && (
+                  <p className="muted small">还没有安排，去「行程」里加几个。</p>
+                )}
 
-      <section className="panel">
-        <div className="panel-head">
-          <h2>系统</h2>
-          <span className="muted small">装备 {run.inventory.length} 件</span>
-        </div>
+                {visibleItems.map((it, idx) => {
+                  const a = ACTIONS[it.actionId];
+                  const name = a?.name ?? (it.actionId === SHOW_ACTION_ID ? '演出' : it.actionId);
+                  const done = !!it.done;
+                  const isCurrent = nextItem?.id === it.id;
+                  const day = Math.floor((it.startAt - T0) / DAY_MS);
+                  const prev = idx > 0 ? visibleItems[idx - 1] : undefined;
+                  const prevDay = prev ? Math.floor((prev.startAt - T0) / DAY_MS) : -1;
+                  const isNewDay = day !== prevDay;
+                  const span = Math.max(1, Math.round((it.endAt - it.startAt) / MIN));
+                  const w = Math.max(80, span * 84);
+                  const pct = isCurrent && running
+                    ? Math.min(1, Math.max(0, (gameNow - it.startAt) / Math.max(1, it.endAt - it.startAt)))
+                    : done
+                      ? 1
+                      : 0;
 
-        <div className="tabs">
-          {(['shop', 'bag'] as SysTab[]).map((t) => (
-            <button
-              key={t}
-              className={sysTab === t ? 'tab active' : 'tab'}
-              onClick={() => setSysTab(t)}
-            >
-              {t === 'shop' ? '商店' : '物品'}
-            </button>
-          ))}
-        </div>
+                  return (
+                    <div
+                      key={it.id}
+                      className={[
+                        'tlh-cell',
+                        done ? 'done' : '',
+                        isCurrent ? 'current' : '',
+                        it.fixed ? 'fixed' : '',
+                      ]
+                        .filter(Boolean)
+                        .join(' ')}
+                      style={{ width: `${w}px` }}
+                      data-h-id={it.id}
+                    >
+                      <div className="tlh-date">
+                        {isNewDay ? `第 ${Math.floor(day / 7) + 1} 周 ${weekdayName(day)}` : ''}
+                      </div>
+                      <div className="tlh-axis">
+                        <span className="tlh-dot" />
+                      </div>
+                      <div className="tlh-label">
+                        <span className="tlh-name">{name}</span>
+                        {done && <em className="tlh-tag">已完成</em>}
+                        {isCurrent && running && (
+                          <em className="tlh-tag now">{Math.ceil(remainMs / 1000)}s</em>
+                        )}
+                        {it.stopAfter && !done && <em className="tlh-tag">到此停</em>}
+                      </div>
+                      {isCurrent && (
+                        <div className="tlh-bar">
+                          <i style={{ width: `${Math.round(pct * 100)}%` }} />
+                        </div>
+                      )}
+                      {!it.fixed && !done && (
+                        <div className="tlh-actions">
+                          <button
+                            className={it.stopAfter ? 'stop-btn on' : 'stop-btn'}
+                            title="执行到这里就停止"
+                            onClick={() => toggleStop(it.id)}
+                          >
+                            ⏹
+                          </button>
+                          <button className="del" onClick={() => removeItem(it.id)}>
+                            ×
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
 
-        {sysTab === 'shop' && (
-          <ul className="shop">
-            {getShop(run, seed).map((item) => (
-              <li key={item.id}>
-                <span className="name">{item.name}</span>
-                <span className="muted">
-                  {STAT_LABEL[item.affix.stat]} +{item.affix.value}
-                  {item.rarity === 'rare' ? ' · 稀有' : ''}
-                </span>
-                <button onClick={() => doBuy(item)} disabled={run.money < item.price}>
-                  ¥{item.price}
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {sysTab === 'bag' && (
-          <>
-            <div className="tabs sub">
-              {(['equip', 'consume', 'other'] as BagTab[]).map((t) => (
+          {(run.pendingEvent || run.eventQueue.length > 0) && (
+            <section className={run.pendingEvent ? 'mod mod-todo major' : 'mod mod-todo'}>
+              <div className="mod-head">
+                <h2>{run.pendingEvent ? '重点事件 · 时间已暂停' : '待处理事项'}</h2>
+              </div>
+              {run.pendingEvent && (
                 <button
-                  key={t}
-                  className={bagTab === t ? 'tab active' : 'tab'}
-                  onClick={() => setBagTab(t)}
+                  className="event-item major"
+                  onClick={() => setActiveEventId(run.pendingEvent)}
                 >
-                  {t === 'equip' ? '装备' : t === 'consume' ? '消耗' : '其他'}
+                  <span>{getStoryEvent(run.pendingEvent)?.title ?? '事件'}</span>
+                  <em>立刻处理 →</em>
+                </button>
+              )}
+              {run.eventQueue.map((id) => (
+                <button key={id} className="event-item" onClick={() => setActiveEventId(id)}>
+                  <span>{getStoryEvent(id)?.title ?? id}</span>
+                  <em>处理 →</em>
                 </button>
               ))}
+            </section>
+          )}
+
+          <section className="mod mod-main">
+            {mainTab === 'plan' && (
+              <>
+                <div className="mod-head">
+                  <h2>行程</h2>
+                  <span className="spacer" />
+                  <button className="primary" onClick={openPlan}>
+                    安排行程
+                  </button>
+                  <button onClick={addShow} disabled={phase !== 'playing'}>
+                    参加演出
+                  </button>
+                </div>
+                {pending.length === 0 ? (
+                  <p className="muted small">还没有待执行行程。</p>
+                ) : (
+                  <ul className="plan-list">
+                    {pending.map((s) => {
+                      const a = ACTIONS[s.actionId];
+                      return (
+                        <li key={s.id}>
+                          <span className="plan-day">{dayLabel(s.startAt, run.at)}</span>
+                          <span className="plan-name">
+                            {a?.name ?? (s.actionId === SHOW_ACTION_ID ? '演出' : s.actionId)}
+                          </span>
+                          <button className="del" onClick={() => removeItem(s.id)}>
+                            ×
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </>
+            )}
+
+            {mainTab === 'party' && (
+              <>
+                <div className="mod-head">
+                  <h2>组合{party ? ` · ${party.name}` : ''}</h2>
+                  <span className="spacer" />
+                  <button onClick={openPartyModal}>{party ? '创建新组合' : '创建组合'}</button>
+                </div>
+
+                {run.parties.length > 1 && (
+                  <div className="row wrap">
+                    {run.parties.map((p) => (
+                      <button
+                        key={p.id}
+                        className={p.id === run.activePartyId ? 'tab active' : 'tab'}
+                        onClick={() => doSwitchParty(p.id)}
+                      >
+                        {p.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {!party ? (
+                  <p className="muted">
+                    {run.debuted ? '还没有组合。先创建一个。' : '出道后才能组建组合。'}
+                  </p>
+                ) : party.members.length === 0 ? (
+                  <p className="muted">组合里还没有成员。</p>
+                ) : (
+                  <ul className="party">
+                    {party.members.map((m) => {
+                      const s = memberStats(m, run.stats);
+                      return (
+                        <li key={m.id}>
+                          <span className="name">{m.name}</span>
+                          <span className="muted">
+                            {biasLabel(m.bias)} · 默契 +{m.dupCount}%
+                          </span>
+                          <span className="dur">
+                            {s.vocal}/{s.dance}/{s.acting}/{s.talk}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+
+                <div className="row">
+                  <button
+                    className="primary"
+                    onClick={doRecruit}
+                    disabled={!party || run.money < RECRUIT_COST}
+                  >
+                    招募
+                    <small>-{RECRUIT_COST}</small>
+                  </button>
+                </div>
+              </>
+            )}
+
+            {mainTab === 'shop' && (
+              <>
+                <div className="mod-head">
+                  <h2>商店</h2>
+                  <span className="muted small">装备 {run.inventory.length} 件</span>
+                </div>
+                <ul className="shop">
+                  {getShop(run, seed).map((item) => (
+                    <li key={item.id}>
+                      <span className="name">{item.name}</span>
+                      <span className="muted">
+                        {STAT_LABEL[item.affix.stat]} +{item.affix.value}
+                        {item.rarity === 'rare' ? ' · 稀有' : ''}
+                      </span>
+                      <button onClick={() => doBuy(item)} disabled={run.money < item.price}>
+                        ¥{item.price}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {mainTab === 'divine' && (
+              <>
+                <div className="mod-head">
+                  <h2>占卜</h2>
+                </div>
+                <p className="muted small">
+                  隐藏属性不会直接显示，只能通过占卜窥见一档。同一天内重复占卜，价格翻倍。
+                </p>
+                <div className="row">
+                  <button className="primary" onClick={() => setShowDivination(true)}>
+                    开始占卜
+                  </button>
+                </div>
+              </>
+            )}
+          </section>
+
+          <section className="mod mod-log">
+            <div className="mod-head">
+              <h2>日志</h2>
+              <div className="mini-tabs">
+                {(['all', 'event', 'stat'] as LogTab[]).map((t) => (
+                  <button
+                    key={t}
+                    className={logTab === t ? 'mini-tab active' : 'mini-tab'}
+                    onClick={() => setLogTab(t)}
+                  >
+                    {t === 'all' ? '全部' : t === 'event' ? '事件' : '属性'}
+                  </button>
+                ))}
+              </div>
             </div>
+
+            <div className="log-scroll" ref={logRef}>
+              {visibleLog.length === 0 ? (
+                <p className="muted small">还没有记录。</p>
+              ) : (
+                <ul className="log dense">
+                  {visibleLog.map((l, i) => {
+                    const day = Math.floor((l.at - T0) / DAY_MS);
+                    const prev = i > 0 ? visibleLog[i - 1] : undefined;
+                    const prevDay = prev ? Math.floor((prev.at - T0) / DAY_MS) : -1;
+                    const isNewDay = day !== prevDay;
+
+                    return (
+                      <Fragment key={`${l.at}-${i}`}>
+                        {isNewDay && (
+                          <li className="log-day">
+                            第 {Math.floor(day / 7) + 1} 周 {weekdayName(day)}
+                          </li>
+                        )}
+                        <li>
+                          <span className="log-text">{l.text}</span>
+                          {l.axesChanged && <em className="tag hidden-tag">隐藏属性变动</em>}
+                        </li>
+                      </Fragment>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+
+            {notice && <p className="notice">{notice}</p>}
+          </section>
+        </section>
+
+        {/* 右：账户信息 + 辅助（背包） */}
+        <aside className="col-right">
+          <section className="mod mod-account">
+            <div className="mod-head">
+              <h2>账户</h2>
+              {syncStatus !== 'local' && (
+                <span className={`chip chip-${syncStatus}`}>{SYNC_TEXT[syncStatus]}</span>
+              )}
+            </div>
+            <p className="muted small">{user?.email ?? '已离线'}</p>
+            <p className="muted small">
+              {savedAt ? `已保存 ${new Date(savedAt).toLocaleTimeString()}` : '尚未保存'}
+            </p>
+            <div className="row wrap">
+              <button
+                className="link-btn"
+                onClick={() => {
+                  setDebugText(localStorage.getItem('idollife:debug:v1') ?? '(空)');
+                  setShowDebug(true);
+                }}
+              >
+                调试日志
+              </button>
+              <button className="link-btn" onClick={restartForTest}>
+                重新开始
+              </button>
+              <button className="link-btn" onClick={() => void signOut()}>
+                退出
+              </button>
+            </div>
+          </section>
+
+          <section className="mod mod-aux">
+            <div className="mod-head">
+              <h2>背包</h2>
+              <span className="muted small">{run.inventory.length} 件</span>
+            </div>
+
+            <nav className="crumb">
+              <span className="crumb-root">物品</span>
+              <span className="crumb-sep">›</span>
+              {(['equip', 'consume', 'other'] as BagTab[]).map((t) => (
+                <Fragment key={t}>
+                  <button
+                    className={bagTab === t ? 'crumb-item active' : 'crumb-item'}
+                    onClick={() => setBagTab(t)}
+                  >
+                    {t === 'equip' ? '装备' : t === 'consume' ? '消耗' : '其他'}
+                  </button>
+                  {t !== 'other' && <span className="crumb-sep">/</span>}
+                </Fragment>
+              ))}
+            </nav>
 
             {bagTab === 'equip' &&
               (run.inventory.length === 0 ? (
-                <p className="muted">还没有装备。</p>
+                <p className="muted small">还没有装备。</p>
               ) : (
                 <ul className="shop">
                   {run.inventory.map((item) => {
@@ -1314,182 +1538,19 @@ function AppInner() {
               ))}
 
             {(bagTab === 'consume' || bagTab === 'other') && (
-              <p className="muted">暂无物品。</p>
+              <p className="muted small">暂无物品。</p>
             )}
-          </>
-        )}
 
-        <p className="muted small">
-          实际属性：
-          {Object.entries(effectiveStats(run))
-            .map(([k, v]) => `${STAT_LABEL[k]} ${v}`)
-            .join(' · ')}
-        </p>
-      </section>
-
-
-        </div>
-
-        <aside className="col-side">
-          {(run.pendingEvent || run.eventQueue.length > 0) && (
-            <div className={run.pendingEvent ? 'event-box major' : 'event-box'}>
-              <div className="event-head">
-                {run.pendingEvent ? '重点事件 · 时间已暂停' : '待处理事件'}
-              </div>
-              {run.pendingEvent && (
-                <button
-                  className="event-item major"
-                  onClick={() => setActiveEventId(run.pendingEvent)}
-                >
-                  <span>{getStoryEvent(run.pendingEvent)?.title ?? '事件'}</span>
-                  <em>立刻处理 →</em>
-                </button>
-              )}
-              {run.eventQueue.map((id) => (
-                <button key={id} className="event-item" onClick={() => setActiveEventId(id)}>
-                  <span>{getStoryEvent(id)?.title ?? id}</span>
-                  <em>处理 →</em>
-                </button>
-              ))}
-            </div>
-          )}
-
-          <div className="side-head">
-            <button className="primary wide" onClick={openPlan}>
-              安排行程
-            </button>
-          </div>
-
-          <div className="speed-row">
-            <span className="muted small">速度</span>
-            {[1, 10, 60].map((v) => (
-              <button
-                key={v}
-                className={speed === v ? 'tab active' : 'tab'}
-                onClick={() => setSpeed(v)}
-              >
-                {v}×
-              </button>
-            ))}
-          </div>
-
-          <div className="side-status">
-            <div className="side-date">
-              第 {todayIndex + 1} 天 · {weekdayName(todayIndex)} · 今日剩余{' '}
-              {Math.max(0, 3 - usedToday)}/3
-            </div>
-
-            <div className="side-now">
-              {running
-                ? nextItem
-                  ? `进行中 · 还剩 ${Math.ceil(remainMs / 1000)} 秒完成「${
-                      ACTIONS[nextItem.actionId]?.name ??
-                      (nextItem.actionId === SHOW_ACTION_ID ? '演出' : nextItem.actionId)
-                    }」`
-                  : '进行中…'
-                : '时间已停止'}
-            </div>
-          </div>
-
-          <div className="timeline">
-            <div className="timeline-scroll" ref={timelineRef}>
-              <div className="timeline-track" style={{ height: `${trackHeight}px` }}>
-                {visibleItems.length === 0 && (
-                  <p className="muted tl-empty">还没有安排。点「安排行程」加几个。</p>
-                )}
-
-                {hiddenCount > 0 && (
-                  <button
-                    className="tl-more"
-                    style={{ top: `${Math.round((visibleItems[0]!.startAt - baseTime) * pxPerMs) - 30}px` }}
-                    onClick={() => setHistoryLimit((n) => n + 9)}
-                  >
-                    更多（还有 {hiddenCount} 条更早的日程）
-                  </button>
-                )}
-
-                {visibleItems.map((it) => {
-                  const a = ACTIONS[it.actionId];
-                  const name = a?.name ?? (it.actionId === SHOW_ACTION_ID ? '演出' : it.actionId);
-                  const done = !!it.done;
-                  const isCurrent = nextItem?.id === it.id;
-                  const cls = [
-                    'tl-item',
-                    done ? 'done' : '',
-                    isCurrent ? 'current' : '',
-                    it.fixed ? 'fixed' : '',
-                    it.stopAfter ? 'stopped' : '',
-                  ]
-                    .filter(Boolean)
-                    .join(' ');
-
-                  return (
-                    <div
-                      key={it.id}
-                      className={cls}
-                      style={{
-                        top: `${Math.round((it.startAt - baseTime) * pxPerMs)}px`,
-                        height: `${Math.max(34, Math.round((it.endAt - it.startAt) * pxPerMs))}px`,
-                      }}
-                      data-node-id={it.id}
-                    >
-                      <span className="tl-node" />
-                      <div className="tl-body">
-                        <div className="tl-title">
-                          <span className="tl-idx">{dayLabel(it.startAt, run.at)}</span>
-                          <span className="tl-name">{name}</span>
-                          {it.fixed && <span className="tag fixed-tag">固定</span>}
-                          {done && <span className="tag done-tag">已完成</span>}
-                        </div>
-                        <div className="tl-meta">
-                          {Math.round((it.endAt - it.startAt) / MIN)} 分
-                          {it.stopAfter && ' · 预计到此停止'}
-                          {isCurrent && running && (
-                            <em className="tl-remain"> · 还剩 {Math.ceil(remainMs / 1000)} 秒</em>
-                          )}
-                        </div>
-                      </div>
-                      {!it.fixed && !done && (
-                        <div className="tl-actions">
-                          <button
-                            className={it.stopAfter ? 'stop-btn on' : 'stop-btn'}
-                            title="执行到这里就停止推进"
-                            onClick={() => toggleStop(it.id)}
-                          >
-                            ⏹
-                          </button>
-                          <button className="del" onClick={() => removeItem(it.id)}>
-                            ×
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-
-
-              </div>
-            </div>
-
-          </div>
-          <div className="side-foot">
-            <button
-              className="primary"
-              onClick={advance}
-              disabled={pending.length === 0 || running}
-            >
-              {running ? '推进中…' : '开始推进'}
-            </button>
-            <button onClick={stopCurrent} disabled={!running}>
-              停止当前行程
-            </button>
-            <button onClick={addShow} disabled={phase !== 'playing'}>
-              参加演出
-            </button>
-          </div>
-          {notice && <p className="notice">{notice}</p>}
+            <p className="muted small eff">
+              实际属性：
+              {Object.entries(effectiveStats(run))
+                .map(([k, v]) => `${STAT_LABEL[k]} ${v}`)
+                .join(' · ')}
+            </p>
+          </section>
         </aside>
       </main>
+
 
       {activeEventId &&
         (() => {

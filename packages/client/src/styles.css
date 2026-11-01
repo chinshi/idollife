@@ -919,3 +919,216 @@ button.primary small { color: #fff; opacity: 0.8; }
   color: var(--muted);
   border-top: none !important;
 }
+/* ============================================================
+   新版三栏布局（左信息/菜单 · 中时间轴+主系统+日志 · 右账户+背包）
+   每个模块独立滚动，页面整体不滚动
+   ============================================================ */
+html, body, #root { height: 100%; }
+body { overflow: hidden; }
+
+.app { height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+.bar { flex: 0 0 auto; }
+
+.shell {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 208px minmax(0, 1fr) 268px;
+  gap: 10px;
+  padding: 10px;
+  overflow: hidden;
+}
+
+.col-left,
+.col-right {
+  display: grid;
+  gap: 10px;
+  min-height: 0;
+  overflow: hidden;
+}
+.col-left { grid-template-rows: auto minmax(0, 1fr); }
+.col-right { grid-template-rows: auto minmax(0, 1fr); }
+.col-center {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) minmax(0, 0.7fr);
+  gap: 10px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.mod {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.mod-head {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+}
+.mod-head h2 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.mod-info { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+.who-name { font-size: 15px; font-weight: 700; }
+.who-meta { font-size: 12px; color: var(--muted); }
+.mod-info .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+
+.mod-menu { padding: 8px; display: flex; flex-direction: column; gap: 4px; overflow: auto; }
+.menu-item {
+  text-align: left;
+  padding: 9px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+.menu-item:hover { background: #f5f7fb; }
+.menu-item.active { background: #fff2e4; color: #b35a00; font-weight: 600; }
+
+/* 横向时间轴 */
+.mod-timeline { flex: 0 0 auto; }
+.speed-row { display: flex; align-items: center; gap: 8px; }
+
+.tlh {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 8px 10px 12px;
+  scrollbar-width: thin;
+}
+.tlh::-webkit-scrollbar { height: 6px; }
+.tlh::-webkit-scrollbar-thumb { background: #ccd4e3; border-radius: 3px; }
+
+.tlh-inner {
+  display: flex;
+  align-items: stretch;
+  min-height: 96px;
+}
+.tlh-cell {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 6px;
+  border-radius: 8px;
+}
+.tlh-date {
+  height: 16px;
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.tlh-axis { position: relative; height: 22px; }
+.tlh-axis::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  background: #e3e8f2;
+}
+.tlh-dot {
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin-top: -5px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #c9d2e3;
+  z-index: 1;
+}
+.tlh-cell.done .tlh-dot { background: #c9d2e3; border-color: #c9d2e3; }
+.tlh-cell.fixed .tlh-dot { border-color: var(--accent); }
+.tlh-cell.current {
+  background: linear-gradient(180deg, rgba(249, 124, 18, 0.1), rgba(249, 124, 18, 0));
+}
+.tlh-cell.current .tlh-dot {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(249, 124, 18, 0.18);
+}
+.tlh-label { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.tlh-name { font-size: 12px; }
+.tlh-cell.done .tlh-name { color: var(--muted); text-decoration: line-through; }
+.tlh-tag {
+  font-style: normal;
+  font-size: 10px;
+  color: var(--muted);
+  background: #f2f4f9;
+  border-radius: 4px;
+  padding: 0 4px;
+}
+.tlh-tag.now { color: #b35a00; background: #ffeada; }
+.tlh-cell.current .tlh-tag.now { font-weight: 600; }
+.tlh-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: #f1f3f8;
+  overflow: hidden;
+}
+.tlh-bar i { display: block; height: 100%; background: var(--accent); }
+.tlh-actions { display: flex; gap: 4px; }
+
+/* 待处理事项 */
+.mod-todo { flex: 0 0 auto; max-height: 180px; overflow: auto; }
+.mod-todo.major { border-color: #f0a25a; box-shadow: 0 0 0 2px rgba(249, 124, 18, 0.12); }
+
+.mod-main { padding: 10px; overflow: auto; }
+.mod-main > .row { margin-top: 8px; }
+
+.mod-log { min-height: 0; }
+.mod-log .log-scroll { max-height: none; flex: 1 1 auto; overflow-y: auto; padding: 8px 10px; }
+
+.mod-account { padding: 10px; display: flex; flex-direction: column; gap: 6px; flex: 0 0 auto; }
+.mod-account .row { gap: 8px; }
+
+.mod-aux { min-height: 0; }
+.mod-aux .shop { flex: 1 1 auto; overflow-y: auto; margin: 0; padding: 0 10px; }
+.crumb {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  font-size: 12px;
+  border-bottom: 1px dashed var(--line);
+}
+.crumb-root { color: var(--muted); }
+.crumb-sep { color: #c9d2e3; }
+.crumb-item {
+  border: none;
+  background: transparent;
+  padding: 0 2px;
+  font: inherit;
+  color: var(--muted);
+  cursor: pointer;
+}
+.crumb-item.active { color: #b35a00; font-weight: 600; }
+.mod-aux .eff { padding: 6px 10px 10px; }
+
+/* 窄屏：退化成单列（仍不整页滚动） */
+@media (max-width: 1080px) {
+  .shell { grid-template-columns: 168px minmax(0, 1fr) 220px; }
+}
+@media (max-width: 900px) {
+  .shell { grid-template-columns: minmax(0, 1fr); grid-auto-rows: minmax(0, auto); overflow-y: auto; }
+  .col-left, .col-center, .col-right { min-height: auto; }
+}
