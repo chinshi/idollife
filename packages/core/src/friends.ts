@@ -94,14 +94,8 @@ export function meetFriend(
   const pool = poolMembers(channel.poolId);
   if (pool.length === 0) return { state, result: 'unknown' };
 
-  const known = new Set<string>([
-    ...state.friends.map((f) => f.name),
-    ...state.parties.flatMap((p) => p.members.map((m) => m.name)),
-  ]);
-  const fresh = pool.filter((n) => !known.has(n));
-
-  // 还有新人 → 只在新人里抽；抽完了 → 全池加权（满默契权重减半）
-  const candidates = fresh.length > 0 ? fresh : pool;
+  // 卡池内所有人同概率（满默契的人权重减半）
+  const candidates = pool;
   const weights = candidates.map((n) => (chemistryOf(state, n) >= DUP_CAP ? 0.5 : 1));
   const total = weights.reduce((a, b) => a + b, 0);
   let roll = rng() * total;
