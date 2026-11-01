@@ -20,6 +20,7 @@ const endings = await load('endings.json');
 const shop = await load('shop.json');
 const members = await load('members.json');
 const characters = await load('characters.json');
+const attributes = await load('attributes.json');
 
 await mkdir(outDir, { recursive: true });
 
@@ -144,6 +145,13 @@ sheet(
   characters.characters.map((c) => [c.id, c.name, c.desc, c.initial?.money ?? '', c.initial?.stamina ?? '']),
 );
 
+
+// 10) 属性表
+sheet(
+  'attributes',
+  ['属性分类', '属性名称', '属性字段名', '是否隐藏', '关联属性'],
+  attributes.attributes.map((a) => [a.category, a.name, a.key, a.hidden ? 'TRUE' : 'FALSE', a.linked]),
+);
 const file = join(outDir, 'content.xlsx');
 await wb.xlsx.writeFile(file);
 console.log(`✓ 已生成模板：${file}`);

@@ -18,6 +18,7 @@ import {
   buyItem,
   canDebut,
   createFans,
+  STAT_LABEL,
   createParty,
   debut,
   divine,
@@ -84,13 +85,7 @@ function weekdayName(dayIndex: number): string {
   return WEEKDAY_NAMES[dayIndex % 7]!;
 }
 
-const STAT_LABEL: Record<string, string> = {
-  vocal: '演唱',
-  dance: '舞蹈',
-  acting: '演技',
-  talk: '口才',
-};
-
+// 属性名称统一来自 packages/core/data/attributes.json
 type SyncStatus = 'local' | 'syncing' | 'synced' | 'offline' | 'expired';
 type SysTab = 'shop' | 'bag';
 type BagTab = 'equip' | 'consume' | 'other';

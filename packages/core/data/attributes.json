@@ -1,0 +1,103 @@
+{
+  "_说明": "属性表：category 是分类；hidden=true 不在主界面显示；linked 是关联属性（0=完全隐藏，1=完全可见，2=隐藏仅占比）",
+  "attributes": [
+    {
+      "category": "显性属性",
+      "name": "演唱",
+      "key": "vocal",
+      "hidden": false,
+      "linked": 1
+    },
+    {
+      "category": "显性属性",
+      "name": "舞蹈",
+      "key": "dance",
+      "hidden": false,
+      "linked": 1
+    },
+    {
+      "category": "显性属性",
+      "name": "演技",
+      "key": "acting",
+      "hidden": false,
+      "linked": 1
+    },
+    {
+      "category": "显性属性",
+      "name": "口才",
+      "key": "talk",
+      "hidden": false,
+      "linked": 1
+    },
+    {
+      "category": "隐藏属性",
+      "name": "自我",
+      "key": "self",
+      "hidden": true,
+      "linked": 0
+    },
+    {
+      "category": "隐藏属性",
+      "name": "他人",
+      "key": "others",
+      "hidden": true,
+      "linked": 0
+    },
+    {
+      "category": "隐藏属性",
+      "name": "适配",
+      "key": "fit",
+      "hidden": true,
+      "linked": 0
+    },
+    {
+      "category": "状态",
+      "name": "体力",
+      "key": "stamina",
+      "hidden": false,
+      "linked": 1
+    },
+    {
+      "category": "粉丝属性",
+      "name": "舞台粉",
+      "key": "stage",
+      "hidden": false,
+      "linked": 1
+    },
+    {
+      "category": "粉丝属性",
+      "name": "嘎起粉",
+      "key": "gachi",
+      "hidden": false,
+      "linked": 1
+    },
+    {
+      "category": "粉丝属性",
+      "name": "音乐粉",
+      "key": "music",
+      "hidden": false,
+      "linked": 1
+    },
+    {
+      "category": "粉丝属性",
+      "name": "现场粉",
+      "key": "live",
+      "hidden": false,
+      "linked": 1
+    },
+    {
+      "category": "粉丝属性",
+      "name": "养成粉",
+      "key": "growth",
+      "hidden": false,
+      "linked": 1
+    },
+    {
+      "category": "粉丝属性",
+      "name": "实力粉",
+      "key": "power",
+      "hidden": false,
+      "linked": 1
+    }
+  ]
+}

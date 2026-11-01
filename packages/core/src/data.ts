@@ -3,6 +3,7 @@
  * 这里只做加载与类型收口，不要在代码里写死文案/数值。
  */
 import actionsJson from '../data/actions.json';
+import attributesJson from '../data/attributes.json';
 import balanceJson from '../data/balance.json';
 import eventsJson from '../data/events.json';
 
@@ -61,3 +62,14 @@ export interface RawStory {
 export const RAW_ACTIONS = actionsJson.actions as RawAction[];
 export const RAW_ROUTINE = eventsJson.routine as RawRoutine[];
 export const RAW_STORY = eventsJson.story as RawStory[];
+
+export interface RawAttribute {
+  category: string;
+  name: string;
+  key: string;
+  hidden: boolean;
+  /** 0=完全隐藏，1=完全可见，2=隐藏仅占比 */
+  linked: number;
+}
+
+export const RAW_ATTRIBUTES = attributesJson.attributes as RawAttribute[];

@@ -223,4 +223,20 @@ await writeJson('characters.json', {
   characters,
 });
 
+
+// 10) attributes（属性表）
+const attributes = rows('attributes').map((r) => {
+  const hiddenRaw = str(cell(r, 4)).toUpperCase();
+  return {
+    category: str(cell(r, 1)),
+    name: str(cell(r, 2)),
+    key: str(cell(r, 3)),
+    hidden: hiddenRaw === 'TRUE' || hiddenRaw === '1' || hiddenRaw === '是' || hiddenRaw === 'YES',
+    linked: num(cell(r, 5)) ?? 1,
+  };
+});
+await writeJson('attributes.json', {
+  _说明: '属性表：category 是分类；hidden=true 不在主界面显示；linked 是关联属性（0=完全隐藏，1=完全可见，2=隐藏仅占比）',
+  attributes,
+});
 console.log('✓ 导入完成，接着跑 pnpm check:data 校验');

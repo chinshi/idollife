@@ -15820,6 +15820,111 @@ var actions_default = {
   ]
 };
 
+// ../core/data/attributes.json
+var attributes_default = {
+  _\u8BF4\u660E: "\u5C5E\u6027\u8868\uFF1Acategory \u662F\u5206\u7C7B\uFF1Bhidden=true \u4E0D\u5728\u4E3B\u754C\u9762\u663E\u793A\uFF1Blinked \u662F\u5173\u8054\u5C5E\u6027\uFF080=\u5B8C\u5168\u9690\u85CF\uFF0C1=\u5B8C\u5168\u53EF\u89C1\uFF0C2=\u9690\u85CF\u4EC5\u5360\u6BD4\uFF09",
+  attributes: [
+    {
+      category: "\u663E\u6027\u5C5E\u6027",
+      name: "\u6F14\u5531",
+      key: "vocal",
+      hidden: false,
+      linked: 1
+    },
+    {
+      category: "\u663E\u6027\u5C5E\u6027",
+      name: "\u821E\u8E48",
+      key: "dance",
+      hidden: false,
+      linked: 1
+    },
+    {
+      category: "\u663E\u6027\u5C5E\u6027",
+      name: "\u6F14\u6280",
+      key: "acting",
+      hidden: false,
+      linked: 1
+    },
+    {
+      category: "\u663E\u6027\u5C5E\u6027",
+      name: "\u53E3\u624D",
+      key: "talk",
+      hidden: false,
+      linked: 1
+    },
+    {
+      category: "\u9690\u85CF\u5C5E\u6027",
+      name: "\u81EA\u6211",
+      key: "self",
+      hidden: true,
+      linked: 0
+    },
+    {
+      category: "\u9690\u85CF\u5C5E\u6027",
+      name: "\u4ED6\u4EBA",
+      key: "others",
+      hidden: true,
+      linked: 0
+    },
+    {
+      category: "\u9690\u85CF\u5C5E\u6027",
+      name: "\u9002\u914D",
+      key: "fit",
+      hidden: true,
+      linked: 0
+    },
+    {
+      category: "\u72B6\u6001",
+      name: "\u4F53\u529B",
+      key: "stamina",
+      hidden: false,
+      linked: 1
+    },
+    {
+      category: "\u7C89\u4E1D\u5C5E\u6027",
+      name: "\u821E\u53F0\u7C89",
+      key: "stage",
+      hidden: false,
+      linked: 1
+    },
+    {
+      category: "\u7C89\u4E1D\u5C5E\u6027",
+      name: "\u560E\u8D77\u7C89",
+      key: "gachi",
+      hidden: false,
+      linked: 1
+    },
+    {
+      category: "\u7C89\u4E1D\u5C5E\u6027",
+      name: "\u97F3\u4E50\u7C89",
+      key: "music",
+      hidden: false,
+      linked: 1
+    },
+    {
+      category: "\u7C89\u4E1D\u5C5E\u6027",
+      name: "\u73B0\u573A\u7C89",
+      key: "live",
+      hidden: false,
+      linked: 1
+    },
+    {
+      category: "\u7C89\u4E1D\u5C5E\u6027",
+      name: "\u517B\u6210\u7C89",
+      key: "growth",
+      hidden: false,
+      linked: 1
+    },
+    {
+      category: "\u7C89\u4E1D\u5C5E\u6027",
+      name: "\u5B9E\u529B\u7C89",
+      key: "power",
+      hidden: false,
+      linked: 1
+    }
+  ]
+};
+
 // ../core/data/balance.json
 var balance_default = {
   _\u8BF4\u660E: "\u5168\u5C40\u6570\u503C\u8868\u3002\u6539\u8FD9\u91CC\u5C31\u80FD\u8C03\u5E73\u8861\uFF0C\u4E0D\u9700\u8981\u78B0\u4EE3\u7801",
@@ -16150,6 +16255,7 @@ var BALANCE = balance_default.balance;
 var RAW_ACTIONS = actions_default.actions;
 var RAW_ROUTINE = events_default.routine;
 var RAW_STORY = events_default.story;
+var RAW_ATTRIBUTES = attributes_default.attributes;
 
 // ../core/src/content.ts
 var MIN = 6e4;
@@ -16917,6 +17023,22 @@ var BIASES = members_default.members.biases;
 
 // ../core/src/divination.ts
 var DIVINATION_BASE = BALANCE.divinationBase;
+
+// ../core/src/attributes.ts
+var ATTRIBUTES = RAW_ATTRIBUTES.map((a) => ({
+  ...a,
+  visible: !a.hidden && a.linked !== 0
+}));
+var ATTRIBUTE_MAP = Object.fromEntries(
+  ATTRIBUTES.map((a) => [a.key, a])
+);
+var byCategory = (cat) => ATTRIBUTES.filter((a) => a.category === cat);
+var STAT_KEYS = byCategory("\u663E\u6027\u5C5E\u6027").map((a) => a.key);
+var AXIS_KEYS = byCategory("\u9690\u85CF\u5C5E\u6027").map((a) => a.key);
+var FAN_KEYS = byCategory("\u7C89\u4E1D\u5C5E\u6027").map((a) => a.key);
+var STAT_LABEL = Object.fromEntries(
+  ATTRIBUTES.map((a) => [a.key, a.name])
+);
 
 // ../../node_modules/.pnpm/@supabase+supabase-js@2.118.0/node_modules/@supabase/supabase-js/dist/index.mjs
 var dist_exports = {};

@@ -35,6 +35,20 @@ function uniqueIds(list, label) {
   }
 }
 
+const attributes = await load('attributes.json');
+if (attributes) {
+  need(Array.isArray(attributes.attributes) && attributes.attributes.length > 0, 'attributes.json: attributes 必须是非空数组');
+  uniqueIds(
+    (attributes.attributes ?? []).map((a) => ({ id: a.key })),
+    'attributes',
+  );
+  for (const a of attributes.attributes ?? []) {
+    need(typeof a.category === 'string' && a.category, `attributes.${a.key}: 缺少 category`);
+    need(typeof a.name === 'string' && a.name, `attributes.${a.key}: 缺少 name`);
+    need(typeof a.hidden === 'boolean', `attributes.${a.key}: hidden 必须是 true/false`);
+    need([0, 1, 2].includes(a.linked), `attributes.${a.key}: 关联属性只能是 0/1/2`);
+  }
+}
 const actions = await load('actions.json');
 if (actions) {
   need(Array.isArray(actions.actions) && actions.actions.length > 0, 'actions.json: actions 必须是非空数组');
