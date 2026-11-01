@@ -1424,7 +1424,14 @@ function AppInner() {
                   return (
                     <div
                       key={it.id}
-                      className={dayBreakLabels.has(it.id) ? 'tlx-point done newday' : 'tlx-point done'}
+                      className={[
+                        'tlx-point',
+                        'done',
+                        dayBreakLabels.has(it.id) ? 'newday' : '',
+                        it.stopAfter ? 'stopped' : '',
+                      ]
+                        .filter(Boolean)
+                        .join(' ')}
                       data-date={dayBreakLabels.get(it.id) ?? ''}
                       style={{ width: '84px' }}
                     >
@@ -1466,7 +1473,13 @@ function AppInner() {
                   return (
                     <div
                       key={it.id}
-                      className={dayBreakLabels.has(it.id) ? 'tlx-point newday' : 'tlx-point'}
+                      className={[
+                        'tlx-point',
+                        dayBreakLabels.has(it.id) ? 'newday' : '',
+                        it.stopAfter ? 'stopped' : '',
+                      ]
+                        .filter(Boolean)
+                        .join(' ')}
                       data-date={dayBreakLabels.get(it.id) ?? ''}
                       style={{ width: '84px' }}
                     >

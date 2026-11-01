@@ -1950,10 +1950,7 @@ body { overflow: hidden; }
 }
 
 /* 暂停时间点：圆点标红 + 标注 */
-.tlx-point.stopped .tlx-dot {
-  background: #c0392b !important;
-  border-color: #c0392b !important;
-}
+
 .tlx-point.stopped .tlx-below em.stop-mark {
   display: block;
   font-style: normal;
