@@ -1466,3 +1466,5 @@ body { overflow: hidden; }
 }
 .tlx-past .tlx-tick, .tlx-future .tlx-tick { left: 2px; }
 .tlx-past .tlx-date, .tlx-future .tlx-date { left: 6px; }
+/* 左右两侧等分，保证卡片中心 = 模块中心 */
+.tlx-side { flex: 1 1 0; }
