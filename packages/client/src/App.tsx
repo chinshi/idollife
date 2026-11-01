@@ -68,6 +68,14 @@ import { CrashBanner, Modal } from './components/Modal';
 import { TimeAxis } from './components/TimeAxis';
 import { LogPanel } from './components/LogPanel';
 import { TaskPanel, type TaskTab } from './components/TaskPanel';
+import { FriendsPanel } from './components/FriendsPanel';
+import { StatsPanel } from './components/StatsPanel';
+import { PlanPanel } from './components/PlanPanel';
+import { BagPanel } from './components/BagPanel';
+import { PartyPanel } from './components/PartyPanel';
+import { ShopPanel } from './components/ShopPanel';
+import { DivinePanel } from './components/DivinePanel';
+import type { AppApi } from './components/api';
 import { syncRun, fetchLatestRun, pushChoice } from './api/sync';
 import {
   getAccessToken,
@@ -1297,6 +1305,82 @@ function AppInner() {
     );
   }
 
+  const api: AppApi = {
+    run,
+    seed,
+    removeItem,
+    party,
+    pending,
+    visibleItems,
+    pastItems,
+    futureItems,
+    nextItem,
+    dayBreakLabels,
+    visibleLog,
+    running,
+    gameNow,
+    remainMs,
+    currentPct,
+    speed,
+    lastStop,
+    stopText: STOP_TEXT,
+    mainTab,
+    setMainTab,
+    taskTab,
+    setTaskTab,
+    friendsTab,
+    setFriendsTab,
+    rightTab,
+    setRightTab,
+    bagTab,
+    setBagTab,
+    logTab,
+    setLogTab,
+    flippedIds,
+    toggleFlip,
+    managing,
+    setManaging,
+    historyLimit,
+    setHistoryLimit,
+    todayIndex,
+    usedToday,
+    statTotal,
+    totalFans,
+    syncStatus,
+    syncText: SYNC_TEXT,
+    savedAt,
+    user,
+    notice,
+    setNotice,
+    advance,
+    stopCurrent,
+    openPlan,
+    addShow,
+    doAccept,
+    doReward,
+    doMeet,
+    doInvite,
+    doKick,
+    doBuy,
+    doEquip,
+    doDebut,
+    doSwitchParty,
+    openPartyModal,
+    doDivine,
+    signOut,
+    restartForTest,
+    setShowInvite,
+    setShowDivination,
+    setActiveEventId,
+    setKickTarget,
+    setShowStops,
+    setShowDebug,
+    setDebugText,
+    dayLabel,
+    biasLabel,
+    weekdayName,
+  };
+
   return (
     <div className="app">
       <CrashBanner msg={crash} onClose={() => setCrash(null)} />
@@ -1459,407 +1543,21 @@ function AppInner() {
                 dayLabel={dayLabel}
               />
             )}
-            {mainTab === 'friends' && (
-              <>
-                <div className="mod-head">
-                  <h2>朋友圈</h2>
-                  <span className="seg-inline">
-                    <button
-                      className={friendsTab === 'list' ? 'seg-item active' : 'seg-item'}
-                      onClick={() => setFriendsTab('list')}
-                    >
-                      我的朋友圈
-                    </button>
-                    <button
-                      className={friendsTab === 'meet' ? 'seg-item active' : 'seg-item'}
-                      onClick={() => setFriendsTab('meet')}
-                    >
-                      认识新朋友
-                    </button>
-                  </span>
-                  <span className="spacer" />
-                  <span className="muted small">
-                    共 {run.friends.length} 人 · 可邀请 {run.friends.filter((f) => !f.partyId).length}
-                  </span>
-                </div>
+            {mainTab === 'friends' && <FriendsPanel api={api} />}
 
-                <div
-                  className="friend-block"
-                  style={{ display: friendsTab === 'meet' ? undefined : 'none' }}
-                >
-                  <h4>认识新朋友</h4>
-                  <div className="row wrap">
-                    {CHANNELS.map((c) => (
-                      <button
-                        key={c.id}
-                        className={run.money < c.cost ? 'meet-poor' : ''}
-                        onClick={() => doMeet(c.id)}
-                        title={c.text}
-                      >
-                        {c.name}
-                        <small>¥{c.cost}</small>
-                      </button>
-                    ))}
-                  </div>
+{mainTab === 'stats' && <StatsPanel api={api} />}
 
-                  <div className="meet-log-wrap">
-                    <div className="meet-log-head">抽取记录</div>
-                    <ul className="meet-log">
-                      {run.log
-                        .filter((l) => l.actionId.startsWith('meet:'))
-                        .slice(-30)
-                        .reverse()
-                        .map((l, i) => (
-                          <li key={`${l.at}-${i}`}>{l.text}</li>
-                        ))}
-                      {run.log.filter((l) => l.actionId.startsWith('meet:')).length === 0 && (
-                        <li className="muted">还没有抽取记录</li>
-                      )}
-                    </ul>
-                  </div>
-                </div>
+{mainTab === 'plan' && <PlanPanel api={api} />}
 
-                <div
-                  className="friend-block"
-                  style={{ display: friendsTab === 'list' ? undefined : 'none' }}
-                >
-                  <h4>我的朋友圈</h4>
-                  {run.friends.length === 0 ? (
-                    <p className="muted small">还没有认识的人，去上面挑个渠道试试。</p>
-                  ) : (
-                    <div className="mcards">
-                      {run.friends.map((f) => {
-                        const on = flippedIds.includes(`f:${f.id}`);
-                        const inParty = !!f.partyId;
-                        const teamName = f.partyId
-                          ? run.parties.find((x) => x.id === f.partyId)?.name
-                          : null;
-                        return (
-                          <div
-                            key={f.id}
-                            className={[
-                              'mcard',
-                              'friend',
-                              on ? 'flipped' : '',
-                              inParty ? 'in-team' : '',
-                              !inParty && cooldownLeftDays(run, f) > 0 ? 'cooling' : '',
-                            ]
-                              .filter(Boolean)
-                              .join(' ')}
-                            onClick={() => toggleFlip(`f:${f.id}`)}
-                            title={inParty ? `已在「${teamName}」` : '点击翻转查看预估属性'}
-                          >
-                            <div className="mcard-inner">
-                              <div className="mcard-face front">
-                                <span className="mcard-name">{f.name}</span>
-                                <span className="mcard-set">
-                                  {biasLabel(f.bias)} · 资质 {Math.round(f.quality * 100)}%
-                                </span>
-                                <span className="mcard-dup">默契 +{f.dupCount ?? 0}%</span>
-                                {inParty && <span className="mcard-team">已入团 · {teamName}</span>}
-                                {!inParty && cooldownLeftDays(run, f) > 0 && (
-                                  <span className="mcard-cool">
-                                    冷却中 · 剩余 {cooldownLeftDays(run, f)} 天
-                                  </span>
-                                )}
+{mainTab === 'bag' && <BagPanel api={api} />}
 
-                              </div>
-                              <div className="mcard-face back">
-                                <span className="mcard-name">{f.name}</span>
-                                <div className="mcard-stats">
-                                  {(['vocal', 'dance', 'acting', 'talk'] as const).map((k) => (
-                                    <span key={k}>
-                                      <em>{STAT_LABEL[k]}</em>
-                                      {Math.round(run.stats[k] * f.quality)}
-                                    </span>
-                                  ))}
-                                </div>
-                                <span className="mcard-dup">预估属性</span>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
+{mainTab === 'party' && <PartyPanel api={api} />}
 
-            {mainTab === 'stats' && (
-              <>
-                <div className="mod-head">
-                  <h2>属性</h2>
-                </div>
-                <div className="stats big">
-                  {(['vocal', 'dance', 'acting', 'talk'] as const).map((k) => (
-                    <div key={k} className="stat">
-                      <span className="k">{STAT_LABEL[k]}</span>
-                      <span className="v">{run.stats[k]}</span>
-                    </div>
-                  ))}
-                  <div className="stat">
-                    <span className="k">体力</span>
-                    <span className="v">{run.stamina}</span>
-                  </div>
-                  <div className="stat">
-                    <span className="k">资金</span>
-                    <span className="v">{run.money}</span>
-                  </div>
-                  <div className="stat">
-                    <span className="k">粉丝</span>
-                    <span className="v">{totalFans(run)}</span>
-                  </div>
-                </div>
-                <p className="muted small">
-                  实际属性：
-                  {Object.entries(effectiveStats(run))
-                    .map(([k, v]) => `${STAT_LABEL[k]} ${v}`)
-                    .join(' · ')}
-                </p>
-                <div className="row">
-                  <button
-                    className={canDebut(run) ? 'primary' : ''}
-                    onClick={doDebut}
-                    disabled={!canDebut(run)}
-                  >
-                    {run.debuted ? '已出道' : `出道 ${statTotal}/${DEBUT_THRESHOLD}`}
-                  </button>
-                  <button onClick={() => setShowDivination(true)}>占卜</button>
-                </div>
-              </>
-            )}
-            {mainTab === 'plan' && (
-              <>
-                <div className="mod-head">
-                  <h2>行程</h2>
-                </div>
-                {pending.length === 0 ? (
-                  <p className="muted small">还没有待执行行程。</p>
-                ) : (
-                  <ul className="plan-list">
-                    {pending.map((s) => {
-                      const a = ACTIONS[s.actionId];
-                      return (
-                        <li key={s.id}>
-                          <span className="plan-day">{dayLabel(s.startAt, run.at)}</span>
-                          <span className="plan-name">
-                            {a?.name ?? (s.actionId === SHOW_ACTION_ID ? '演出' : s.actionId)}
-                          </span>
-                          <button className="del" onClick={() => removeItem(s.id)}>
-                            ×
-                          </button>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
-              </>
-            )}
+{mainTab === 'shop' && <ShopPanel api={api} />}
 
-            {mainTab === 'bag' && (
-              <>
-                <div className="mod-head">
-                  <h2>背包</h2>
-                  <span className="muted small">{run.inventory.length} 件</span>
-                </div>
-                <nav className="crumb">
-                  <span className="crumb-root">物品</span>
-                  <span className="crumb-sep">›</span>
-                  {(['equip', 'consume', 'other'] as BagTab[]).map((t) => (
-                    <Fragment key={t}>
-                      <button
-                        className={bagTab === t ? 'crumb-item active' : 'crumb-item'}
-                        onClick={() => setBagTab(t)}
-                      >
-                        {t === 'equip' ? '装备' : t === 'consume' ? '消耗' : '其他'}
-                      </button>
-                      {t !== 'other' && <span className="crumb-sep">/</span>}
-                    </Fragment>
-                  ))}
-                </nav>
-                {bagTab === 'equip' && (
-                  run.inventory.length === 0 ? (
-                    <p className="muted small">还没有装备。</p>
-                  ) : (
-                    <ul className="shop">
-                      {run.inventory.map((item) => {
-                        const on = run.equipped.outfit === item.id;
-                        return (
-                          <li key={item.id}>
-                            <span className="name">
-                              {item.name}
-                              {on ? '（已装备）' : ''}
-                            </span>
-                            <span className="muted">
-                              {STAT_LABEL[item.affix.stat]} +{item.affix.value}
-                            </span>
-                            <button onClick={() => doEquip(item)} disabled={on}>
-                              装备
-                            </button>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  )
-                )}
-                {(bagTab === 'consume' || bagTab === 'other') && (
-                  <p className="muted small">暂无物品。</p>
-                )}
-              </>
-            )}
-            {mainTab === 'party' && (
-              <>
-                <div className="mod-head">
-                  <h2>组合{party ? ` · ${party.name}` : ''}</h2>
-                  {run.parties.length > 1 && (
-                    <div className="row wrap party-switch">
-                      {run.parties.map((p) => (
-                        <button
-                          key={p.id}
-                          className={p.id === run.activePartyId ? 'mini-tab active' : 'mini-tab'}
-                          onClick={() => doSwitchParty(p.id)}
-                        >
-                          {p.name}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                  <span className="spacer" />
-                  <button onClick={() => setNotice('组合配置还没做，先留个位置。')}>配置</button>
-                  <button onClick={() => setManaging((v) => !v)}>
-                    {managing ? '完成' : '管理'}
-                  </button>
-                  <button onClick={openPartyModal}>{party ? '创建新组合' : '创建组合'}</button>
-                </div>
+{mainTab === 'divine' && <DivinePanel api={api} />}
 
-                {!party ? (
-                  <p className="muted">
-                    {run.debuted ? '还没有组合。先创建一个。' : '出道后才能组建组合。'}
-                  </p>
-                ) : (
-                  <div className="mcards">
-                    <div
-                      className={flippedIds.includes('__me') ? 'mcard flipped me' : 'mcard me'}
-                      onClick={() => toggleFlip('__me')}
-                      title="你自己"
-                    >
-                      <div className="mcard-inner">
-                        <div className="mcard-face front">
-                          <span className="mcard-name">我</span>
-                          <span className="mcard-set">主角</span>
-                          <span className="mcard-dup">队长</span>
-                        </div>
-                        <div className="mcard-face back">
-                          <span className="mcard-name">我</span>
-                          <div className="mcard-stats">
-                            {(['vocal', 'dance', 'acting', 'talk'] as const).map((k) => (
-                              <span key={k}>
-                                <em>{STAT_LABEL[k]}</em>
-                                {run.stats[k]}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    {party.members.map((m) => {
-                      const s = memberStats(m, run.stats);
 
-                      return (
-                        <div
-                          key={m.id}
-                          className={flippedIds.includes(m.id) ? 'mcard flipped' : 'mcard'}
-                          onClick={() => {
-                            if (!managing) toggleFlip(m.id);
-                          }}
-                          title="点击翻转查看属性"
-                        >
-                          {managing && (
-                            <button
-                              className="mcard-kick"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setKickTarget(m.id);
-                              }}
-                            >
-                              退团
-                            </button>
-                          )}
-                          <div className="mcard-inner">
-                            <div className="mcard-face front">
-                              <span className="mcard-name">{m.name}</span>
-                              <span className="mcard-set">{biasLabel(m.bias)}</span>
-                              <span className="mcard-dup">默契 +{m.dupCount}%</span>
-                            </div>
-                            <div className="mcard-face back">
-                              <span className="mcard-name">{m.name}</span>
-                              <div className="mcard-stats">
-                                {(['vocal', 'dance', 'acting', 'talk'] as const).map((k) => (
-                                  <span key={k}>
-                                    <em>{STAT_LABEL[k]}</em>
-                                    {s[k]}
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                    <div
-                      className="mcard invite-card"
-                      onClick={() => setShowInvite(true)}
-                      title="从朋友圈邀请"
-                    >
-                      <div className="invite-inner">
-                        <span className="plus">＋</span>
-                        <span className="hint">点击邀请朋友</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </>
-            )}
-
-            {mainTab === 'shop' && (
-              <>
-                <div className="mod-head">
-                  <h2>商店</h2>
-                  <span className="muted small">装备 {run.inventory.length} 件</span>
-                </div>
-                <ul className="shop">
-                  {getShop(run, seed).map((item) => (
-                    <li key={item.id}>
-                      <span className="name">{item.name}</span>
-                      <span className="muted">
-                        {STAT_LABEL[item.affix.stat]} +{item.affix.value}
-                        {item.rarity === 'rare' ? ' · 稀有' : ''}
-                      </span>
-                      <button onClick={() => doBuy(item)} disabled={run.money < item.price}>
-                        ¥{item.price}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </>
-            )}
-
-            {mainTab === 'divine' && (
-              <>
-                <div className="mod-head">
-                  <h2>占卜</h2>
-                </div>
-                <p className="muted small">
-                  隐藏属性不会直接显示，只能通过占卜窥见一档。同一天内重复占卜，价格翻倍。
-                </p>
-                <div className="row">
-                  <button className="primary" onClick={() => setShowDivination(true)}>
-                    开始占卜
-                  </button>
-                </div>
-              </>
-            )}
           </section>
 
           <LogPanel
