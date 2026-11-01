@@ -2,7 +2,7 @@
  * 属性表派生：分类、标签、可见性
  */
 import { RAW_ATTRIBUTES, type RawAttribute } from './data';
-import type { Axes, Stats } from './types';
+import type { Axes, RunState, Stats } from './types';
 
 export interface AttributeDef extends RawAttribute {
   /** 是否在主界面显示 */
@@ -19,7 +19,16 @@ export const ATTRIBUTE_MAP: Record<string, AttributeDef> = Object.fromEntries(
 );
 
 /** 分类英文名 */
-export const ATTRIBUTE_CATEGORIES = ['visible', 'hidden', 'status', 'fans'] as const;
+export const ATTRIBUTE_CATEGORIES = [
+  'innate',
+  'visible',
+  'status',
+  'trait',
+  'negative',
+  'proficient',
+  'hidden',
+  'fans',
+] as const;
 export type AttributeCategory = (typeof ATTRIBUTE_CATEGORIES)[number];
 
 const byCategory = (cat: AttributeCategory) => ATTRIBUTES.filter((a) => a.category === cat);
@@ -49,4 +58,51 @@ export function isHidden(key: string): boolean {
 /** 该属性是否只有占卜才可见 */
 export function isDivineOnly(key: string): boolean {
   return ATTRIBUTE_MAP[key]?.linked === LINKED.DIVINE_ONLY;
+}
+
+/** 读取某个属性在当前存档里的数值（只读，缺省给合理默认） */
+export function attrValue(state: RunState, key: string): number {
+  const stats = state.stats as unknown as Record<string, number>;
+  if (key in stats) return stats[key] ?? 0;
+
+  const axes = state.axes as unknown as Record<string, number>;
+  if (key in axes) return axes[key] ?? 50;
+
+  if (key === 'stamina') return state.stamina;
+  if (key === 'mood') return state.mood ?? 100;
+  if (key === 'satiety') return state.satiety ?? 100;
+
+  const fan = (state.fans.byType as unknown as Record<string, number>)[key];
+  if (fan !== undefined) return fan;
+
+  if (state.innate && key in state.innate) return state.innate[key] ?? 50;
+  if (state.traits && key in state.traits) return state.traits[key] ?? 0;
+  if (state.negatives && key in state.negatives) return state.negatives[key] ?? 0;
+  if (state.proficiency && key in state.proficiency) return state.proficiency[key] ?? 0;
+
+  return 0;
+}
+
+/** 按分类列出属性（含数值） */
+export function attributesByCategory(state: RunState): Array<{
+  category: string;
+  categoryName: string;
+  items: Array<{ key: string; name: string; value: number; hidden: boolean }>;
+}> {
+  const groups = new Map<string, { category: string; categoryName: string; items: never[] }>();
+  for (const a of ATTRIBUTES) {
+    const g = groups.get(a.category) ?? {
+      category: a.category,
+      categoryName: a.categoryName,
+      items: [] as never[],
+    };
+    (g.items as unknown as Array<{ key: string; name: string; value: number; hidden: boolean }>).push({
+      key: a.key,
+      name: a.name,
+      value: attrValue(state, a.key),
+      hidden: isHidden(a.key),
+    });
+    groups.set(a.category, g);
+  }
+  return [...groups.values()];
 }

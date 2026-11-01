@@ -1,117 +1,46 @@
 {
-  "_说明": "属性表：category=分类英文名（visible/hidden/status/fans），categoryName=分类中文名；key=属性字段名，name=显示名；hidden=true 不在主界面显示；linked 关联属性（0=完全隐藏，1=完全可见，2=隐藏仅占卜可见）",
+  "_说明": "属性表：category=分类英文名，categoryName=分类中文名；key=属性字段名，name=显示名；hidden=true 不在主界面直接显示；linked 关联属性（0=完全隐藏，1=完全可见，2=隐藏仅占卜可见）。对应 docs/04 的八层结构",
   "attributes": [
-    {
-      "category": "visible",
-      "categoryName": "显性属性",
-      "name": "演唱",
-      "key": "vocal",
-      "hidden": false,
-      "linked": 1
-    },
-    {
-      "category": "visible",
-      "categoryName": "显性属性",
-      "name": "舞蹈",
-      "key": "dance",
-      "hidden": false,
-      "linked": 1
-    },
-    {
-      "category": "visible",
-      "categoryName": "显性属性",
-      "name": "演技",
-      "key": "acting",
-      "hidden": false,
-      "linked": 1
-    },
-    {
-      "category": "visible",
-      "categoryName": "显性属性",
-      "name": "口才",
-      "key": "talk",
-      "hidden": false,
-      "linked": 1
-    },
-    {
-      "category": "hidden",
-      "categoryName": "隐藏属性",
-      "name": "自我",
-      "key": "self",
-      "hidden": true,
-      "linked": 2
-    },
-    {
-      "category": "hidden",
-      "categoryName": "隐藏属性",
-      "name": "他人",
-      "key": "others",
-      "hidden": true,
-      "linked": 2
-    },
-    {
-      "category": "hidden",
-      "categoryName": "隐藏属性",
-      "name": "适配",
-      "key": "fit",
-      "hidden": true,
-      "linked": 2
-    },
-    {
-      "category": "status",
-      "categoryName": "状态",
-      "name": "体力",
-      "key": "stamina",
-      "hidden": false,
-      "linked": 1
-    },
-    {
-      "category": "fans",
-      "categoryName": "粉丝属性",
-      "name": "舞台粉",
-      "key": "stage",
-      "hidden": false,
-      "linked": 1
-    },
-    {
-      "category": "fans",
-      "categoryName": "粉丝属性",
-      "name": "嘎起粉",
-      "key": "gachi",
-      "hidden": false,
-      "linked": 1
-    },
-    {
-      "category": "fans",
-      "categoryName": "粉丝属性",
-      "name": "音乐粉",
-      "key": "music",
-      "hidden": false,
-      "linked": 1
-    },
-    {
-      "category": "fans",
-      "categoryName": "粉丝属性",
-      "name": "现场粉",
-      "key": "live",
-      "hidden": false,
-      "linked": 1
-    },
-    {
-      "category": "fans",
-      "categoryName": "粉丝属性",
-      "name": "养成粉",
-      "key": "growth",
-      "hidden": false,
-      "linked": 1
-    },
-    {
-      "category": "fans",
-      "categoryName": "粉丝属性",
-      "name": "实力粉",
-      "key": "power",
-      "hidden": false,
-      "linked": 1
-    }
+    { "category": "innate", "categoryName": "固有属性", "name": "身高", "key": "height", "hidden": false, "linked": 1 },
+    { "category": "innate", "categoryName": "固有属性", "name": "体重", "key": "weight", "hidden": false, "linked": 1 },
+    { "category": "innate", "categoryName": "固有属性", "name": "样貌", "key": "appearance", "hidden": false, "linked": 1 },
+    { "category": "innate", "categoryName": "固有属性", "name": "身材比例", "key": "proportion", "hidden": false, "linked": 1 },
+
+    { "category": "visible", "categoryName": "显性属性", "name": "演唱", "key": "vocal", "hidden": false, "linked": 1 },
+    { "category": "visible", "categoryName": "显性属性", "name": "舞蹈", "key": "dance", "hidden": false, "linked": 1 },
+    { "category": "visible", "categoryName": "显性属性", "name": "演技", "key": "acting", "hidden": false, "linked": 1 },
+    { "category": "visible", "categoryName": "显性属性", "name": "口才", "key": "talk", "hidden": false, "linked": 1 },
+
+    { "category": "status", "categoryName": "状态", "name": "体力", "key": "stamina", "hidden": false, "linked": 1 },
+    { "category": "status", "categoryName": "状态", "name": "心情", "key": "mood", "hidden": false, "linked": 1 },
+    { "category": "status", "categoryName": "状态", "name": "饱腹", "key": "satiety", "hidden": false, "linked": 1 },
+
+    { "category": "trait", "categoryName": "性格", "name": "体贴", "key": "kind", "hidden": true, "linked": 2 },
+    { "category": "trait", "categoryName": "性格", "name": "领导", "key": "lead", "hidden": true, "linked": 2 },
+    { "category": "trait", "categoryName": "性格", "name": "合作", "key": "coop", "hidden": true, "linked": 2 },
+    { "category": "trait", "categoryName": "性格", "name": "独立", "key": "independent", "hidden": true, "linked": 2 },
+    { "category": "trait", "categoryName": "性格", "name": "好强", "key": "ambitious", "hidden": true, "linked": 2 },
+    { "category": "trait", "categoryName": "性格", "name": "热情", "key": "passion", "hidden": true, "linked": 2 },
+
+    { "category": "negative", "categoryName": "负向", "name": "精神压力", "key": "stress", "hidden": true, "linked": 2 },
+    { "category": "negative", "categoryName": "负向", "name": "焦躁", "key": "restless", "hidden": true, "linked": 2 },
+    { "category": "negative", "categoryName": "负向", "name": "积劳", "key": "fatigue", "hidden": true, "linked": 2 },
+    { "category": "negative", "categoryName": "负向", "name": "情欲", "key": "desire", "hidden": true, "linked": 2 },
+    { "category": "negative", "categoryName": "负向", "name": "黑历史", "key": "scandal", "hidden": true, "linked": 2 },
+
+    { "category": "proficient", "categoryName": "熟练度", "name": "舞台场所", "key": "stage_prof", "hidden": true, "linked": 0 },
+    { "category": "proficient", "categoryName": "熟练度", "name": "歌曲", "key": "song_prof", "hidden": true, "linked": 0 },
+    { "category": "proficient", "categoryName": "熟练度", "name": "编舞", "key": "choreo_prof", "hidden": true, "linked": 0 },
+
+    { "category": "hidden", "categoryName": "隐藏属性", "name": "自我", "key": "self", "hidden": true, "linked": 2 },
+    { "category": "hidden", "categoryName": "隐藏属性", "name": "他人", "key": "others", "hidden": true, "linked": 2 },
+    { "category": "hidden", "categoryName": "隐藏属性", "name": "适配", "key": "fit", "hidden": true, "linked": 2 },
+
+    { "category": "fans", "categoryName": "粉丝属性", "name": "舞台粉", "key": "stage", "hidden": false, "linked": 1 },
+    { "category": "fans", "categoryName": "粉丝属性", "name": "嘎起粉", "key": "gachi", "hidden": false, "linked": 1 },
+    { "category": "fans", "categoryName": "粉丝属性", "name": "音乐粉", "key": "music", "hidden": false, "linked": 1 },
+    { "category": "fans", "categoryName": "粉丝属性", "name": "现场粉", "key": "live", "hidden": false, "linked": 1 },
+    { "category": "fans", "categoryName": "粉丝属性", "name": "养成粉", "key": "growth", "hidden": false, "linked": 1 },
+    { "category": "fans", "categoryName": "粉丝属性", "name": "实力粉", "key": "power", "hidden": false, "linked": 1 }
   ]
 }

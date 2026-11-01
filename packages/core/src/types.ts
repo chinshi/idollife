@@ -87,6 +87,18 @@ export interface RunState {
   stats: Stats;
   axes: Axes;
   fans: Fans;
+  /** 固有属性：身高/体重/样貌/身材比例 */
+  innate?: Record<string, number>;
+  /** 心情 0-100 */
+  mood?: number;
+  /** 饱腹 0-100 */
+  satiety?: number;
+  /** 性格（隐藏） */
+  traits?: Record<string, number>;
+  /** 负向属性（隐藏） */
+  negatives?: Record<string, number>;
+  /** 熟练度（隐藏） */
+  proficiency?: Record<string, number>;
   /** 是否已出道（出道后才能组组合） */
   debuted: boolean;
   /** 拥有 / 加入的组合 */

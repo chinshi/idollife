@@ -88,11 +88,17 @@ function toData(state: RunState): Record<string, unknown> {
     fit: state.axes.fit,
     stamina: state.stamina,
     money: state.money,
+    mood: state.mood ?? 100,
+    satiety: state.satiety ?? 100,
     friends: (state.friends ?? []).length,
     total: STAT_KEYS.reduce((sum, k) => sum + state.stats[k], 0),
     flags: state.flags,
   };
   for (const key of declaredFlagKeys) data[key] = false;
+  for (const [k, v] of Object.entries(state.innate ?? {})) data['innate.' + k] = v;
+  for (const [k, v] of Object.entries(state.traits ?? {})) data['trait.' + k] = v;
+  for (const [k, v] of Object.entries(state.negatives ?? {})) data['neg.' + k] = v;
+  for (const [k, v] of Object.entries(state.proficiency ?? {})) data['prof.' + k] = v;
   for (const [flag, on] of Object.entries(state.flags ?? {})) {
     data[sanitizeFlag(flag)] = Boolean(on);
   }
@@ -126,6 +132,7 @@ export function compileExpression(src: string): (s: RunState) => boolean {
       continue;
     }
     if (KNOWN.has(name) || name.startsWith('flag_')) continue;
+    if (/^(innate|trait|neg|prof)\\./.test(name)) continue;
     throw new ReferenceError(`未知变量「${name}」`);
   }
 
