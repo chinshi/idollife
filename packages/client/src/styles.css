@@ -2125,3 +2125,5 @@ body { overflow: hidden; }
 }
 /* 管理模式下给名字留出位置 */
 .mcard .mcard-face.front { padding-top: 14px; }
+/* 钱不够的认识按钮：视觉提示但仍可点 */
+.meet-poor { opacity: 0.6; }
