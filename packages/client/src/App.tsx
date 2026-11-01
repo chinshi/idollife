@@ -1698,22 +1698,6 @@ function AppInner() {
                       </button>
                     ))}
                   </div>
-
-                  <div className="meet-log-wrap">
-                    <div className="meet-log-head">抽取记录</div>
-                    <ul className="meet-log">
-                      {run.log
-                        .filter((l) => l.actionId.startsWith('meet:'))
-                        .slice(-30)
-                        .reverse()
-                        .map((l, i) => (
-                          <li key={`${l.at}-${i}`}>{l.text}</li>
-                        ))}
-                      {run.log.filter((l) => l.actionId.startsWith('meet:')).length === 0 && (
-                        <li className="muted">还没有抽取记录</li>
-                      )}
-                    </ul>
-                  </div>
                 </div>
 
                 {(() => {
