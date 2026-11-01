@@ -73,12 +73,12 @@ export function createParty(state: RunState, name: string): { state: RunState; r
 }
 
 export function switchParty(state: RunState, partyId: string): RunState {
-  if (!state.parties.some((p) => p.id === partyId)) return state;
+  if (!(state.parties ?? []).some((p) => p.id === partyId)) return state;
   return { ...state, activePartyId: partyId };
 }
 
-export function activeParty(state: RunState): Party | undefined {
-  return state.parties.find((p) => p.id === state.activePartyId);
+export function activeParty(state: RunState): Party | null {
+  return (state.parties ?? []).find((p) => p.id === state.activePartyId) ?? null;
 }
 
 /**

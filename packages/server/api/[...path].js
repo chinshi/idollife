@@ -15757,46 +15757,58 @@ var actions_default = {
       id: "vocal-karaoke",
       name: "\u5531 K",
       category: "growth",
-      stat: "vocal",
       stamina: -10,
-      gain: [1, 3],
-      cost: 50,
-      text: "\u4F60\u5728\u5305\u53A2\u91CC\u5531\u4E86\u4E24\u5C0F\u65F6\uFF0C\u55D3\u5B50\u6709\u70B9\u70ED\u3002\uFF08\u6F14\u5531 +{n}\uFF09"
+      text: "\u4F60\u5728\u5305\u53A2\u91CC\u5531\u4E86\u4E24\u5C0F\u65F6\uFF0C\u55D3\u5B50\u6709\u70B9\u70ED\u3002\uFF08\u6F14\u5531 +{n}\uFF09",
+      stat: "vocal",
+      gain: [
+        1,
+        3
+      ],
+      cost: 50
     },
     {
       id: "dance-otaku",
       name: "\u8DF3\u5B85\u821E",
       category: "growth",
-      stat: "dance",
       stamina: -12,
-      gain: [1, 3],
-      text: "\u5BF9\u7740\u955C\u5B50\u628A\u540C\u4E00\u6BB5\u526F\u6B4C\u8DF3\u4E86\u4E8C\u5341\u904D\u3002\uFF08\u821E\u8E48 +{n}\uFF09"
+      text: "\u5BF9\u7740\u955C\u5B50\u628A\u540C\u4E00\u6BB5\u526F\u6B4C\u8DF3\u4E86\u4E8C\u5341\u904D\u3002\uFF08\u821E\u8E48 +{n}\uFF09",
+      stat: "dance",
+      gain: [
+        1,
+        3
+      ]
     },
     {
       id: "acting-short",
       name: "\u81EA\u62CD\u5C0F\u77ED\u5267",
       category: "growth",
-      stat: "acting",
       stamina: -10,
-      gain: [1, 2],
-      text: "\u81EA\u5BFC\u81EA\u6F14\u62CD\u4E86\u4E09\u6761\uFF0C\u7B2C\u4E8C\u6761\u6700\u597D\u3002\uFF08\u6F14\u6280 +{n}\uFF09"
+      text: "\u81EA\u5BFC\u81EA\u6F14\u62CD\u4E86\u4E09\u6761\uFF0C\u7B2C\u4E8C\u6761\u6700\u597D\u3002\uFF08\u6F14\u6280 +{n}\uFF09",
+      stat: "acting",
+      gain: [
+        1,
+        2
+      ]
     },
     {
       id: "talk-selftalk",
       name: "\u81EA\u8BF4\u81EA\u8BDD",
       category: "growth",
-      stat: "talk",
       stamina: -8,
-      gain: [1, 2],
-      text: "\u5BF9\u7740\u955C\u5934\u7EC3\u4E86\u4E00\u4E0B\u5348\u4E32\u573A\u8BCD\u3002\uFF08\u53E3\u624D +{n}\uFF09"
+      text: "\u5BF9\u7740\u955C\u5934\u7EC3\u4E86\u4E00\u4E0B\u5348\u4E32\u573A\u8BCD\u3002\uFF08\u53E3\u624D +{n}\uFF09",
+      stat: "talk",
+      gain: [
+        1,
+        2
+      ]
     },
     {
       id: "work-part-time",
       name: "\u6253\u5DE5",
       category: "work",
       stamina: -20,
-      money: 320,
-      text: "\u5728\u4FBF\u5229\u5E97\u7AD9\u4E86\u56DB\u4E2A\u5C0F\u65F6\uFF0C\u811A\u6709\u70B9\u9EBB\u3002\uFF08\u6536\u5165 +320\uFF09"
+      text: "\u5728\u4FBF\u5229\u5E97\u7AD9\u4E86\u56DB\u4E2A\u5C0F\u65F6\uFF0C\u811A\u6709\u70B9\u9EBB\u3002\uFF08\u6536\u5165 +320\uFF09",
+      money: 320
     },
     {
       id: "rest-sleep",
@@ -15831,46 +15843,136 @@ var balance_default = {
 var events_default = {
   _\u8BF4\u660E: "\u4E8B\u4EF6\u8868\u3002routine=\u5E38\u89C4\u4E8B\u4EF6\uFF08\u4E0D\u6682\u505C\u65F6\u95F4\uFF0C\u53EA\u6539\u6570\u503C\uFF09\uFF1Bstory=\u5267\u60C5\u4E8B\u4EF6\uFF08major=true \u65F6\u6682\u505C\u65F6\u95F4\u7B49\u73A9\u5BB6\u6289\u62E9\uFF09\u3002requires \u662F\u89E6\u53D1\u6761\u4EF6\uFF0C\u89C1 docs/22 \u7684\u8BF4\u660E",
   routine: [
-    { id: "r-rehearsal", text: "\u6392\u7EC3\u5BA4\u7A7A\u7740\uFF0C\u4F60\u591A\u7EC3\u4E86\u534A\u5C0F\u65F6\u3002", stamina: -3, stat: "dance", gain: 1 },
-    { id: "r-convenience", text: "\u4FBF\u5229\u5E97\u7684\u5173\u4E1C\u716E\u6253\u6298\uFF0C\u4F60\u4E70\u4E86\u4E00\u4EFD\u3002", stamina: 4 },
-    { id: "r-train", text: "\u672B\u73ED\u8F66\u4E0A\u6709\u4EBA\u8BA4\u51FA\u4F60\uFF0C\u5C0F\u58F0\u8BF4\u4E86\u53E5\u52A0\u6CB9\u3002", stamina: 2, stat: "vocal", gain: 1 },
-    { id: "r-note", text: "\u4F60\u5728\u624B\u673A\u5907\u5FD8\u5F55\u91CC\u5199\u4E0B\u4E00\u53E5\u6B4C\u8BCD\u3002", stamina: -1, stat: "acting", gain: 1 },
-    { id: "r-tired", text: "\u4ECA\u5929\u72B6\u6001\u4E00\u822C\uFF0C\u7EC3\u5F97\u6709\u70B9\u6563\u3002", stamina: -2 },
-    { id: "r-mirror", text: "\u5BF9\u7740\u955C\u5B50\u8C03\u6574\u4E86\u5F88\u4E45\u7684\u8868\u60C5\u3002", stamina: -2, stat: "talk", gain: 1 },
-    { id: "r-rain", text: "\u4E0B\u96E8\u4E86\uFF0C\u4F60\u5728\u5730\u94C1\u53E3\u7B49\u4E86\u5F88\u4E45\u3002", stamina: -1 },
-    { id: "r-fan-gift", text: "\u6709\u7C89\u4E1D\u585E\u7ED9\u4F60\u4E00\u5305\u7CD6\uFF0C\u6CA1\u6562\u591A\u8BF4\u8BDD\u3002", stamina: 3 },
-    { id: "r-roommate", text: "\u5BA4\u53CB\u5728\u5BA2\u5385\u770B\u7535\u89C6\uFF0C\u4F60\u6234\u7740\u8033\u673A\u7EC3\u52A8\u4F5C\u3002", stamina: -2, stat: "dance", gain: 1 },
-    { id: "r-callback", text: "\u7ECF\u7EAA\u4EBA\u53D1\u6765\u4E00\u6761\u6CA1\u5934\u6CA1\u5C3E\u7684\u6D88\u606F\uFF1A\u300C\u4E0B\u5468\u518D\u8BF4\u300D\u3002", stamina: 0 },
-    { id: "r-old-video", text: "\u4F60\u7FFB\u5230\u81EA\u5DF1\u4E00\u5E74\u524D\u7684\u7EC3\u4E60\u89C6\u9891\uFF0C\u770B\u5B8C\u4E86\u3002", stamina: -1, stat: "acting", gain: 1 },
-    { id: "r-night", text: "\u51CC\u6668\u7684\u4FBF\u5229\u5E97\uFF0C\u53EA\u6709\u4F60\u548C\u5E97\u5458\u3002", stamina: 2, stat: "talk", gain: 1 }
+    {
+      id: "r-rehearsal",
+      text: "\u6392\u7EC3\u5BA4\u7A7A\u7740\uFF0C\u4F60\u591A\u7EC3\u4E86\u534A\u5C0F\u65F6\u3002",
+      stamina: -3,
+      stat: "dance",
+      gain: 1
+    },
+    {
+      id: "r-convenience",
+      text: "\u4FBF\u5229\u5E97\u7684\u5173\u4E1C\u716E\u6253\u6298\uFF0C\u4F60\u4E70\u4E86\u4E00\u4EFD\u3002",
+      stamina: 4
+    },
+    {
+      id: "r-train",
+      text: "\u672B\u73ED\u8F66\u4E0A\u6709\u4EBA\u8BA4\u51FA\u4F60\uFF0C\u5C0F\u58F0\u8BF4\u4E86\u53E5\u52A0\u6CB9\u3002",
+      stamina: 2,
+      stat: "vocal",
+      gain: 1
+    },
+    {
+      id: "r-note",
+      text: "\u4F60\u5728\u624B\u673A\u5907\u5FD8\u5F55\u91CC\u5199\u4E0B\u4E00\u53E5\u6B4C\u8BCD\u3002",
+      stamina: -1,
+      stat: "acting",
+      gain: 1
+    },
+    {
+      id: "r-tired",
+      text: "\u4ECA\u5929\u72B6\u6001\u4E00\u822C\uFF0C\u7EC3\u5F97\u6709\u70B9\u6563\u3002",
+      stamina: -2
+    },
+    {
+      id: "r-mirror",
+      text: "\u5BF9\u7740\u955C\u5B50\u8C03\u6574\u4E86\u5F88\u4E45\u7684\u8868\u60C5\u3002",
+      stamina: -2,
+      stat: "talk",
+      gain: 1
+    },
+    {
+      id: "r-rain",
+      text: "\u4E0B\u96E8\u4E86\uFF0C\u4F60\u5728\u5730\u94C1\u53E3\u7B49\u4E86\u5F88\u4E45\u3002",
+      stamina: -1
+    },
+    {
+      id: "r-fan-gift",
+      text: "\u6709\u7C89\u4E1D\u585E\u7ED9\u4F60\u4E00\u5305\u7CD6\uFF0C\u6CA1\u6562\u591A\u8BF4\u8BDD\u3002",
+      stamina: 3
+    },
+    {
+      id: "r-roommate",
+      text: "\u5BA4\u53CB\u5728\u5BA2\u5385\u770B\u7535\u89C6\uFF0C\u4F60\u6234\u7740\u8033\u673A\u7EC3\u52A8\u4F5C\u3002",
+      stamina: -2,
+      stat: "dance",
+      gain: 1
+    },
+    {
+      id: "r-callback",
+      text: "\u7ECF\u7EAA\u4EBA\u53D1\u6765\u4E00\u6761\u6CA1\u5934\u6CA1\u5C3E\u7684\u6D88\u606F\uFF1A\u300C\u4E0B\u5468\u518D\u8BF4\u300D\u3002",
+      stamina: 0
+    },
+    {
+      id: "r-old-video",
+      text: "\u4F60\u7FFB\u5230\u81EA\u5DF1\u4E00\u5E74\u524D\u7684\u7EC3\u4E60\u89C6\u9891\uFF0C\u770B\u5B8C\u4E86\u3002",
+      stamina: -1,
+      stat: "acting",
+      gain: 1
+    },
+    {
+      id: "r-night",
+      text: "\u51CC\u6668\u7684\u4FBF\u5229\u5E97\uFF0C\u53EA\u6709\u4F60\u548C\u5E97\u5458\u3002",
+      stamina: 2,
+      stat: "talk",
+      gain: 1
+    }
   ],
   story: [
     {
       id: "first-audition",
       title: "\u4E00\u4E2A\u8BD5\u955C\u673A\u4F1A",
-      major: true,
       text: "\u7ECF\u7EAA\u4EBA\u63A8\u95E8\u8FDB\u6765\uFF1A\u300C\u6709\u4E2A\u5C0F\u573A\u5B50\u7684\u8BD5\u955C\uFF0C\u540E\u5929\u3002\u4F60\u6562\u4E0D\u6562\u53BB\uFF1F\u300D",
-      requires: { statsAtLeast: { dance: 15 }, flagsNot: ["ev:first-audition"] },
+      major: true,
+      requires: {
+        statsAtLeast: {
+          dance: 15
+        },
+        flagsNot: [
+          "ev:first-audition"
+        ]
+      },
       choices: [
         {
           id: "go",
           label: "\u53BB\uFF0C\u53CD\u6B63\u4E5F\u6CA1\u4EC0\u4E48\u53EF\u8F93\u7684",
           text: "\u4F60\u53BB\u4E86\u3002\u53F0\u4E0B\u53EA\u6709\u4E94\u4E2A\u4EBA\uFF0C\u4F46\u4F60\u8DF3\u5B8C\u4E86\u6574\u652F\u821E\u3002",
-          effects: { stamina: -10, axes: { self: 8, others: 4, fit: 3 } },
+          effects: {
+            stamina: -10,
+            axes: {
+              self: 8,
+              others: 4,
+              fit: 3
+            }
+          },
           setFlag: "first-audition"
         },
         {
           id: "prepare",
           label: "\u518D\u7EC3\u4E24\u5929\uFF0C\u51C6\u5907\u5145\u5206\u518D\u53BB",
           text: "\u4F60\u591A\u7EC3\u4E86\u4E24\u5929\uFF0C\u52A8\u4F5C\u66F4\u7A33\u4E86\uFF0C\u4F46\u4E5F\u9519\u8FC7\u4E86\u8FD9\u6B21\u673A\u4F1A\u3002",
-          effects: { stamina: -5, stats: { dance: 2 }, axes: { self: 3, fit: 5 } },
+          effects: {
+            stamina: -5,
+            axes: {
+              self: 3,
+              fit: 5
+            },
+            stats: {
+              dance: 2
+            }
+          },
           setFlag: "first-audition"
         },
         {
           id: "skip",
           label: "\u7B97\u4E86\uFF0C\u8FD8\u6CA1\u51C6\u5907\u597D",
           text: "\u4F60\u8BF4\u4E0B\u6B21\u5427\u3002\u7ECF\u7EAA\u4EBA\u6CA1\u518D\u8BF4\u4EC0\u4E48\u3002",
-          effects: { axes: { self: -6, others: -2 } },
+          effects: {
+            axes: {
+              self: -6,
+              others: -2
+            }
+          },
           setFlag: "first-audition"
         }
       ]
@@ -15879,20 +15981,36 @@ var events_default = {
       id: "fan-letter",
       title: "\u7B2C\u4E00\u5C01\u4FE1",
       text: "\u540E\u53F0\u6536\u5230\u4E00\u5C01\u624B\u5199\u4FE1\uFF0C\u5B57\u8FF9\u5F88\u8BA4\u771F\uFF1A\u300C\u8C22\u8C22\u4F60\u4E0A\u5468\u90A3\u573A\u6F14\u51FA\u3002\u300D",
-      requires: { axesAtLeast: { others: 45 }, flagsNot: ["ev:fan-letter"] },
+      requires: {
+        axesAtLeast: {
+          others: 45
+        },
+        flagsNot: [
+          "ev:fan-letter"
+        ]
+      },
       choices: [
         {
           id: "reply",
           label: "\u56DE\u4E00\u5C01",
           text: "\u4F60\u5199\u4E86\u56DE\u4FE1\u3002\u4E00\u5468\u540E\uFF0C\u5979\u53C8\u6765\u4E86\uFF0C\u8FD8\u5E26\u4E86\u670B\u53CB\u3002",
-          effects: { axes: { others: 6, self: 3 } },
+          effects: {
+            axes: {
+              self: 3,
+              others: 6
+            }
+          },
           setFlag: "fan-letter"
         },
         {
           id: "keep",
           label: "\u6536\u8D77\u6765\uFF0C\u597D\u597D\u4FDD\u5B58",
           text: "\u4F60\u628A\u4FE1\u5939\u8FDB\u7B14\u8BB0\u672C\u91CC\uFF0C\u6CA1\u8DDF\u4EFB\u4F55\u4EBA\u8BF4\u3002",
-          effects: { axes: { self: 5 } },
+          effects: {
+            axes: {
+              self: 5
+            }
+          },
           setFlag: "fan-letter"
         }
       ]
@@ -15900,22 +16018,41 @@ var events_default = {
     {
       id: "burnout",
       title: "\u6491\u4E0D\u4F4F\u4E86",
-      major: true,
       text: "\u8FDE\u7740\u51E0\u5929\u6CA1\u7761\u591F\uFF0C\u4F60\u5728\u6392\u7EC3\u5BA4\u7684\u5730\u677F\u4E0A\u5750\u4E86\u5F88\u4E45\u3002",
-      requires: { staminaBelow: 20, flagsNot: ["ev:burnout"] },
+      major: true,
+      requires: {
+        staminaBelow: 20,
+        flagsNot: [
+          "ev:burnout"
+        ]
+      },
       choices: [
         {
           id: "rest",
           label: "\u8BF7\u4E24\u5929\u5047\uFF0C\u597D\u597D\u7761\u4E00\u89C9",
           text: "\u4F60\u7761\u4E86\u4E00\u6574\u5929\uFF0C\u9192\u6765\u65F6\u5929\u5DF2\u7ECF\u9ED1\u4E86\u3002",
-          effects: { stamina: 40, axes: { self: 4 } },
+          effects: {
+            stamina: 40,
+            axes: {
+              self: 4
+            }
+          },
           setFlag: "burnout"
         },
         {
           id: "push",
           label: "\u54AC\u7259\u7EE7\u7EED",
           text: "\u4F60\u7EE7\u7EED\u7EC3\uFF0C\u4F46\u52A8\u4F5C\u5F00\u59CB\u53D8\u5F62\u3002",
-          effects: { stamina: -5, stats: { dance: 1 }, axes: { self: -5, fit: 2 } },
+          effects: {
+            stamina: -5,
+            axes: {
+              self: -5,
+              fit: 2
+            },
+            stats: {
+              dance: 1
+            }
+          },
           setFlag: "burnout"
         }
       ]
@@ -15924,20 +16061,41 @@ var events_default = {
       id: "crowded-fans",
       title: "\u6709\u4EBA\u4E3E\u4F60\u7684\u540D\u5B57",
       text: "\u524D\u6392\u6709\u4EBA\u4E3E\u8D77\u4E86\u5199\u7740\u4F60\u7684\u706F\u724C\uFF0C\u4F60\u5DEE\u70B9\u5FD8\u4E86\u4E0B\u4E00\u53E5\u6B4C\u8BCD\u3002",
-      requires: { fansAtLeast: { stage: 50 }, flagsNot: ["ev:crowded-fans"] },
+      requires: {
+        fansAtLeast: {
+          stage: 50
+        },
+        flagsNot: [
+          "ev:crowded-fans"
+        ]
+      },
       choices: [
         {
           id: "look",
           label: "\u770B\u8FC7\u53BB\uFF0C\u7B11\u4E00\u4E0B",
           text: "\u5979\u6123\u4E86\u4E00\u4E0B\uFF0C\u7136\u540E\u558A\u5F97\u66F4\u5927\u58F0\u4E86\u3002",
-          effects: { axes: { others: 6, self: 2 }, stamina: 3 },
+          effects: {
+            stamina: 3,
+            axes: {
+              self: 2,
+              others: 6
+            }
+          },
           setFlag: "crowded-fans"
         },
         {
           id: "focus",
           label: "\u4E13\u5FC3\u5531\u5B8C\u8FD9\u9996\u6B4C",
           text: "\u4F60\u6CA1\u6709\u62AC\u5934\uFF0C\u4F46\u628A\u8FD9\u9996\u6B4C\u5531\u5230\u4E86\u6700\u597D\u3002",
-          effects: { axes: { fit: 6, self: 4 }, stats: { vocal: 1 } },
+          effects: {
+            axes: {
+              self: 4,
+              fit: 6
+            },
+            stats: {
+              vocal: 1
+            }
+          },
           setFlag: "crowded-fans"
         }
       ]
@@ -15946,20 +16104,40 @@ var events_default = {
       id: "manager-doubt",
       title: "\u7ECF\u7EAA\u4EBA\u7684\u72B9\u8C6B",
       text: "\u300C\u4F60\u6700\u8FD1\u2026\u2026\u8FD8\u6491\u5F97\u4F4F\u5417\uFF1F\u300D\u4ED6\u628A\u8BDD\u8BF4\u5230\u4E00\u534A\u53C8\u54BD\u4E86\u56DE\u53BB\u3002",
-      requires: { axesBelow: { fit: 34 }, flagsNot: ["ev:manager-doubt"] },
+      requires: {
+        axesBelow: {
+          fit: 34
+        },
+        flagsNot: [
+          "ev:manager-doubt"
+        ]
+      },
       choices: [
         {
           id: "honest",
           label: "\u8BF4\u5B9E\u8BDD\uFF0C\u6211\u4E0D\u592A\u786E\u5B9A",
           text: "\u4ED6\u6C89\u9ED8\u4E86\u5F88\u4E45\uFF0C\u8BF4\u300C\u90A3\u5C31\u6162\u4E00\u70B9\u300D\u3002",
-          effects: { axes: { self: 7, others: 3 }, stamina: 5 },
+          effects: {
+            stamina: 5,
+            axes: {
+              self: 7,
+              others: 3
+            }
+          },
           setFlag: "manager-doubt"
         },
         {
           id: "brave",
           label: "\u6211\u6CA1\u4E8B\uFF0C\u518D\u7ED9\u6211\u70B9\u65F6\u95F4",
           text: "\u4ED6\u70B9\u70B9\u5934\uFF0C\u628A\u4E0B\u4E00\u573A\u6F14\u51FA\u7684\u8D44\u6599\u63A8\u7ED9\u4F60\u3002",
-          effects: { axes: { self: -3, others: 5, fit: 4 }, stamina: -5 },
+          effects: {
+            stamina: -5,
+            axes: {
+              self: -3,
+              others: 5,
+              fit: 4
+            }
+          },
           setFlag: "manager-doubt"
         }
       ]
@@ -16083,18 +16261,58 @@ var shop_default = {
     commonPrice: 800,
     rarePrice: 2e3,
     common: [
-      { name: "\u7D20\u8272\u7EC3\u4E60\u670D", stat: "dance", value: 2 },
-      { name: "\u65E7\u536B\u8863", stat: "dance", value: 2 },
-      { name: "\u767D\u886C\u886B", stat: "acting", value: 2 },
-      { name: "\u9488\u7EC7\u5F00\u886B", stat: "vocal", value: 2 },
-      { name: "\u8FD0\u52A8\u5916\u5957", stat: "dance", value: 2 },
-      { name: "\u5BBD\u677ET\u6064", stat: "talk", value: 2 }
+      {
+        name: "\u7D20\u8272\u7EC3\u4E60\u670D",
+        stat: "dance",
+        value: 2
+      },
+      {
+        name: "\u65E7\u536B\u8863",
+        stat: "dance",
+        value: 2
+      },
+      {
+        name: "\u767D\u886C\u886B",
+        stat: "acting",
+        value: 2
+      },
+      {
+        name: "\u9488\u7EC7\u5F00\u886B",
+        stat: "vocal",
+        value: 2
+      },
+      {
+        name: "\u8FD0\u52A8\u5916\u5957",
+        stat: "dance",
+        value: 2
+      },
+      {
+        name: "\u5BBD\u677ET\u6064",
+        stat: "talk",
+        value: 2
+      }
     ],
     rare: [
-      { name: "\u6253\u6B4C\u670D\xB7\u521D\u7248", stat: "dance", value: 5 },
-      { name: "\u53E4\u98CE\u957F\u88D9", stat: "acting", value: 5 },
-      { name: "Lolita \u5957\u88C5", stat: "talk", value: 5 },
-      { name: "\u6447\u6EDA\u5939\u514B", stat: "vocal", value: 5 }
+      {
+        name: "\u6253\u6B4C\u670D\xB7\u521D\u7248",
+        stat: "dance",
+        value: 5
+      },
+      {
+        name: "\u53E4\u98CE\u957F\u88D9",
+        stat: "acting",
+        value: 5
+      },
+      {
+        name: "Lolita \u5957\u88C5",
+        stat: "talk",
+        value: 5
+      },
+      {
+        name: "\u6447\u6EDA\u5939\u514B",
+        stat: "vocal",
+        value: 5
+      }
     ]
   }
 };
@@ -16117,7 +16335,7 @@ function effectiveStats(state) {
   for (const slot of Object.keys(state.equipped)) {
     const id = state.equipped[slot];
     if (!id) continue;
-    const item = state.inventory.find((i) => i.id === id);
+    const item = (state.inventory ?? []).find((i) => i.id === id);
     if (!item) continue;
     stats[item.affix.stat] = Math.min(100, stats[item.affix.stat] + item.affix.value);
   }
@@ -16680,7 +16898,13 @@ var members_default = {
       "\u6C88\u9752",
       "\u53F6\u7EEB"
     ],
-    biases: ["vocal", "dance", "acting", "talk", "balanced"]
+    biases: [
+      "vocal",
+      "dance",
+      "acting",
+      "talk",
+      "balanced"
+    ]
   }
 };
 

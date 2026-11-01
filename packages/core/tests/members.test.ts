@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, test } from 'vitest';
 import {
   activeParty,
   canDebut,
@@ -92,4 +92,11 @@ describe('招募', () => {
     expect(avg).toBeGreaterThan(36 * 0.95);
     expect(avg).toBeLessThan(40);
   });
+});
+
+test('旧存档缺少 parties 字段也不会崩', () => {
+  const bare = { ...base() } as Record<string, unknown>;
+  delete bare.parties;
+  delete bare.activePartyId;
+  expect(activeParty(bare as never)).toBeNull();
 });

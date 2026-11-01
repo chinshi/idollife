@@ -91,7 +91,7 @@ export function buyItem(state: RunState, item: EquipItem): { state: RunState; re
 }
 
 export function equipItem(state: RunState, itemId: string): RunState {
-  const item = state.inventory.find((i) => i.id === itemId);
+  const item = (state.inventory ?? []).find((i) => i.id === itemId);
   if (!item) return state;
   return {
     ...state,
@@ -105,7 +105,7 @@ export function effectiveStats(state: RunState): Stats {
   for (const slot of Object.keys(state.equipped) as (keyof typeof state.equipped)[]) {
     const id = state.equipped[slot];
     if (!id) continue;
-    const item = state.inventory.find((i) => i.id === id);
+    const item = (state.inventory ?? []).find((i) => i.id === id);
     if (!item) continue;
     stats[item.affix.stat] = Math.min(100, stats[item.affix.stat] + item.affix.value);
   }

@@ -42,7 +42,7 @@ import type {
   ScheduleItem,
   SettleResult,
 } from '@idollife/core';
-import { clearSave, createSave, loadSave, writeSave } from './state/save';
+import { clearSave, createSave, loadSave, normalizeRun, writeSave } from './state/save';
 import { syncRun, fetchLatestRun, pushChoice } from './api/sync';
 import {
   getAccessToken,
@@ -359,7 +359,7 @@ function AppInner() {
       const localEmpty = run.log.length === 0 && schedule.length === 0 && run.at === T0;
       if (localEmpty || latest.revision > revision) {
         setRunId(latest.runId);
-        setRun(latest.run);
+        setRun(normalizeRun(latest.run));
         setSchedule(latest.schedule);
         setRevision(latest.revision);
         setNotice('已从云端恢复进度。');
@@ -668,7 +668,7 @@ function AppInner() {
     }
 
     if (outcome.kind === 'stale') {
-      setRun(outcome.data.state);
+      setRun(normalizeRun(outcome.data.state));
       setRevision(outcome.data.revision);
       setNotice('服务器上的进度更新，已回滚到云端。');
       setSyncStatus('synced');
@@ -678,7 +678,7 @@ function AppInner() {
     const res = outcome.data;
     setRevision(res.revision);
     if (!sameState(res.state, local.state)) {
-      setRun(res.state);
+      setRun(normalizeRun(res.state));
       setNotice('服务器已校准进度（以服务器为准）。');
     }
     setSyncStatus('synced');
