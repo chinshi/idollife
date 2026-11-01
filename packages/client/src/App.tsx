@@ -297,6 +297,7 @@ function AppInner() {
   const [lastStop, setLastStop] = useState('');
   const [confirmAction, setConfirmAction] = useState<null | 'stop' | 'restart'>(null);
   const [rightTab, setRightTab] = useState<'stats' | 'bag'>('stats');
+  const [flipped, setFlipped] = useState<string | null>(null);
   const STOP_TEXT: Record<string, string> = {
     stamina: '体力不足，行程停下来了',
     money: '钱不够，行程停下来了',
@@ -1623,23 +1624,22 @@ function AppInner() {
               <>
                 <div className="mod-head">
                   <h2>组合{party ? ` · ${party.name}` : ''}</h2>
+                  {run.parties.length > 1 && (
+                    <div className="row wrap party-switch">
+                      {run.parties.map((p) => (
+                        <button
+                          key={p.id}
+                          className={p.id === run.activePartyId ? 'mini-tab active' : 'mini-tab'}
+                          onClick={() => doSwitchParty(p.id)}
+                        >
+                          {p.name}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                   <span className="spacer" />
                   <button onClick={openPartyModal}>{party ? '创建新组合' : '创建组合'}</button>
                 </div>
-
-                {run.parties.length > 1 && (
-                  <div className="row wrap">
-                    {run.parties.map((p) => (
-                      <button
-                        key={p.id}
-                        className={p.id === run.activePartyId ? 'tab active' : 'tab'}
-                        onClick={() => doSwitchParty(p.id)}
-                      >
-                        {p.name}
-                      </button>
-                    ))}
-                  </div>
-                )}
 
                 {!party ? (
                   <p className="muted">
@@ -1648,22 +1648,39 @@ function AppInner() {
                 ) : party.members.length === 0 ? (
                   <p className="muted">组合里还没有成员。</p>
                 ) : (
-                  <ul className="party">
+                  <div className="mcards">
                     {party.members.map((m) => {
                       const s = memberStats(m, run.stats);
+                      const on = flipped === m.id;
                       return (
-                        <li key={m.id}>
-                          <span className="name">{m.name}</span>
-                          <span className="muted">
-                            {biasLabel(m.bias)} · 默契 +{m.dupCount}%
-                          </span>
-                          <span className="dur">
-                            {s.vocal}/{s.dance}/{s.acting}/{s.talk}
-                          </span>
-                        </li>
+                        <div
+                          key={m.id}
+                          className={on ? 'mcard flipped' : 'mcard'}
+                          onClick={() => setFlipped(on ? null : m.id)}
+                          title="点击翻转查看属性"
+                        >
+                          <div className="mcard-inner">
+                            <div className="mcard-face front">
+                              <span className="mcard-name">{m.name}</span>
+                              <span className="mcard-set">{biasLabel(m.bias)}</span>
+                              <span className="mcard-dup">默契 +{m.dupCount}%</span>
+                            </div>
+                            <div className="mcard-face back">
+                              <span className="mcard-name">{m.name}</span>
+                              <div className="mcard-stats">
+                                {(['vocal', 'dance', 'acting', 'talk'] as const).map((k) => (
+                                  <span key={k}>
+                                    <em>{STAT_LABEL[k]}</em>
+                                    {s[k]}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       );
                     })}
-                  </ul>
+                  </div>
                 )}
 
                 <div className="friend-block">
