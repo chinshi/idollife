@@ -298,6 +298,7 @@ function AppInner() {
   const [confirmAction, setConfirmAction] = useState<null | 'stop' | 'restart'>(null);
   const [rightTab, setRightTab] = useState<'stats' | 'bag'>('stats');
   const [flipped, setFlipped] = useState<string | null>(null);
+  const [managing, setManaging] = useState(false);
   const STOP_TEXT: Record<string, string> = {
     stamina: '体力不足，行程停下来了',
     money: '钱不够，行程停下来了',
@@ -1120,10 +1121,26 @@ function AppInner() {
     setNotice(r.friend ? `认识了 ${r.friend.name}，已加入朋友圈。` : '认识了一个新朋友。');
   }
 
+  function doKick(memberId: string) {
+    const partyId = run.activePartyId;
+    if (!partyId) return;
+    setRun({
+      ...run,
+      parties: run.parties.map((p) =>
+        p.id === partyId ? { ...p, members: p.members.filter((m) => m.id !== memberId) } : p,
+      ),
+    });
+    setNotice('已移出组合。');
+  }
+
   function doInvite(friendId: string) {
     const r = inviteFriend(run, friendId);
     if (r.result === 'no-party') {
       setNotice('先创建或选择一个组合。');
+      return;
+    }
+    if (r.result === 'full') {
+      setNotice('组合满了（最多 10 人）。');
       return;
     }
     if (r.result !== 'ok') return;
@@ -1638,6 +1655,10 @@ function AppInner() {
                     </div>
                   )}
                   <span className="spacer" />
+                  <button onClick={() => setNotice('组合配置还没做，先留个位置。')}>配置</button>
+                  <button onClick={() => setManaging((v) => !v)}>
+                    {managing ? '完成' : '管理'}
+                  </button>
                   <button onClick={openPartyModal}>{party ? '创建新组合' : '创建组合'}</button>
                 </div>
 
@@ -1649,6 +1670,30 @@ function AppInner() {
                   <p className="muted">组合里还没有成员。</p>
                 ) : (
                   <div className="mcards">
+                    <div
+                      className={flipped === '__me' ? 'mcard flipped me' : 'mcard me'}
+                      onClick={() => setFlipped(flipped === '__me' ? null : '__me')}
+                      title="你自己"
+                    >
+                      <div className="mcard-inner">
+                        <div className="mcard-face front">
+                          <span className="mcard-name">我</span>
+                          <span className="mcard-set">主角</span>
+                          <span className="mcard-dup">队长</span>
+                        </div>
+                        <div className="mcard-face back">
+                          <span className="mcard-name">我</span>
+                          <div className="mcard-stats">
+                            {(['vocal', 'dance', 'acting', 'talk'] as const).map((k) => (
+                              <span key={k}>
+                                <em>{STAT_LABEL[k]}</em>
+                                {run.stats[k]}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     {party.members.map((m) => {
                       const s = memberStats(m, run.stats);
                       const on = flipped === m.id;
@@ -1656,9 +1701,22 @@ function AppInner() {
                         <div
                           key={m.id}
                           className={on ? 'mcard flipped' : 'mcard'}
-                          onClick={() => setFlipped(on ? null : m.id)}
+                          onClick={() => {
+                            if (!managing) setFlipped(on ? null : m.id);
+                          }}
                           title="点击翻转查看属性"
                         >
+                          {managing && (
+                            <button
+                              className="mcard-kick"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                doKick(m.id);
+                              }}
+                            >
+                              ✕
+                            </button>
+                          )}
                           <div className="mcard-inner">
                             <div className="mcard-face front">
                               <span className="mcard-name">{m.name}</span>

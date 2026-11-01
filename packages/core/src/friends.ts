@@ -2,6 +2,7 @@
  * 朋友圈：认识新朋友（花钱）+ 邀请加入组合
  */
 import channelsJson from '../data/channels.json';
+import { BALANCE } from './data';
 import { hashSeed, mulberry32 } from './rng';
 import type { Bias, Friend, RunState } from './types';
 
@@ -75,7 +76,10 @@ export function meetFriend(
   };
 }
 
-export type InviteResult = 'ok' | 'no-party' | 'not-found';
+/** 组合人数上限（含主角自己） */
+export const PARTY_MAX = BALANCE.partyMax ?? 10;
+
+export type InviteResult = 'ok' | 'no-party' | 'not-found' | 'full';
 
 /** 从朋友圈邀请一个人加入当前组合 */
 export function inviteFriend(
@@ -88,6 +92,8 @@ export function inviteFriend(
   const partyId = state.activePartyId;
   const party = partyId ? state.parties.find((p) => p.id === partyId) : undefined;
   if (!party) return { state, result: 'no-party' };
+  // 主角自己占 1 个位置
+  if (party.members.length >= PARTY_MAX - 1) return { state, result: 'full' };
 
   const member = {
     id: `m-${friend.id}`,

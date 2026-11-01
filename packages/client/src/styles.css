@@ -1782,3 +1782,28 @@ body { overflow: hidden; }
 }
 .mcard-stats span { display: flex; justify-content: space-between; }
 .mcard-stats em { font-style: normal; color: var(--muted); }
+/* 组合头部对齐 + 管理按钮 + 主角卡 */
+.mod-head { align-items: center; }
+.mod-head h2 { white-space: nowrap; }
+.party-switch { display: flex; align-items: center; gap: 8px; }
+.mcard-kick {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 3;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid #f0b9b9;
+  background: #fff;
+  color: #c0392b;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+.mcard.me .mcard-face.front {
+  background: #fff6ec;
+  border-color: #f2bd85;
+}
+.mcard { position: relative; }
