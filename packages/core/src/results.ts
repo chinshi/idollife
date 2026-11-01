@@ -67,10 +67,21 @@ export interface ResolvedAction {
 /** 这场演出/行动主要吸引哪类粉丝：看当前最高的显性属性 */
 export function showFanType(state: RunState): FanType {
   const s = effectiveStats(state);
-  if (s.dance >= s.vocal && s.dance >= s.acting && s.dance >= s.talk) return 'stage';
-  if (s.vocal >= s.acting && s.vocal >= s.talk) return 'music';
-  if (s.acting >= s.talk) return 'growth';
-  return 'gachi';
+  const innate = state.innate ?? {};
+  const traits = state.traits ?? {};
+
+  // 六类粉丝各有一个「吸引分」，取最高者
+  const scores: Record<FanType, number> = {
+    stage: s.dance + (innate.height ?? 50) / 4 + (innate.proportion ?? 50) / 4,
+    music: s.vocal,
+    growth: s.acting + (s.vocal + s.dance) / 4,
+    gachi: (innate.appearance ?? 50) + (traits.kind ?? 0) / 2,
+    live: s.talk + (traits.passion ?? 0) / 2,
+    power: (s.vocal + s.dance) / 2 + (traits.ambitious ?? 0) / 2,
+  };
+
+  const best = (Object.entries(scores) as Array<[FanType, number]>).sort((a, b) => b[1] - a[1])[0];
+  return best ? best[0] : 'stage';
 }
 
 const rollValue = (v: number | [number, number], rng: () => number): number => {

@@ -104,7 +104,12 @@ const initialRun: RunState = {
   axes: { self: 50, others: 50, fit: 50 },
   mood: 70,
   satiety: 70,
-  innate: { height: 60, weight: 60, appearance: 60, proportion: 60 },
+  innate: {
+    height: 40 + Math.round(Math.random() * 40),
+    weight: 40 + Math.round(Math.random() * 40),
+    appearance: 40 + Math.round(Math.random() * 40),
+    proportion: 40 + Math.round(Math.random() * 40),
+  },
   traits: { kind: 0, lead: 0, coop: 0, independent: 0, ambitious: 0, passion: 0 },
   negatives: { stress: 0, restless: 0, fatigue: 0, desire: 0, scandal: 0 },
   proficiency: { stage_prof: 0, song_prof: 0, choreo_prof: 0 },

@@ -267,6 +267,18 @@
             }
           },
           "setFlag": "crowded-fans"
+        },
+        {
+          "id": "wave",
+          "label": "朝那边挥挥手",
+          "text": "你冲着人群挥了挥手，欢呼声更大了。",
+          "effects": {
+            "stamina": -2,
+            "axes": {
+              "others": 4
+            }
+          },
+          "requires": "trait.passion >= 3"
         }
       ]
     },
@@ -311,6 +323,22 @@
             }
           },
           "setFlag": "manager-doubt"
+        },
+        {
+          "id": "firm",
+          "label": "我会证明给你看",
+          "text": "你把这句话说得没有一丝犹豫。",
+          "effects": {
+            "stamina": -3,
+            "axes": {
+              "self": 2,
+              "fit": 3
+            },
+            "traits": {
+              "ambitious": 2
+            }
+          },
+          "requires": "trait.ambitious >= 3"
         }
       ]
     }

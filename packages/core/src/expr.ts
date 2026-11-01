@@ -132,7 +132,7 @@ export function compileExpression(src: string): (s: RunState) => boolean {
       continue;
     }
     if (KNOWN.has(name) || name.startsWith('flag_')) continue;
-    if (/^(innate|trait|neg|prof)\\./.test(name)) continue;
+    if (/^(innate|trait|neg|prof)\./.test(name)) continue;
     throw new ReferenceError(`未知变量「${name}」`);
   }
 

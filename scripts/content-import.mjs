@@ -246,6 +246,8 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
       const c = { id: str(cell(r, 2)), label: str(cell(r, 3)), text: str(cell(r, 4)), effects };
       const flag = str(cell(r, 13));
       if (flag) c.setFlag = flag;
+      const req = str(cell(r, 18));
+      if (req) c.requires = req;
       const list = choicesByEvent.get(eventId) ?? [];
       list.push(c);
       choicesByEvent.set(eventId, list);

@@ -107,15 +107,23 @@ export function settle(
     const nextMood = Math.max(0, Math.min(100, (state.mood ?? 100) + resolved.mood));
     const nextSatiety = Math.max(0, Math.min(100, (state.satiety ?? 100) + resolved.satiety));
 
+    const negatives = state.negatives ?? {};
+    const proficiency = state.proficiency ?? {};
+
     let efficiency = 1;
     if (nextMood < 30) efficiency *= 0.7;
     else if (nextMood > 70) efficiency *= 1.05;
     if (nextSatiety < 20) efficiency *= 0.8;
+    if ((negatives.restless ?? 0) > 50) efficiency *= 0.95;
+    if ((negatives.stress ?? 0) > 60) efficiency *= 0.95;
+
+    // 积劳：体力消耗更大
+    const fatigueMul = (negatives.fatigue ?? 0) > 50 ? 1.2 : 1;
+    const staminaCost =
+      resolved.stamina < 0 ? Math.round(resolved.stamina * fatigueMul) : resolved.stamina;
 
     const staminaApplied =
-      resolved.stamina > 0 && nextSatiety < 20
-        ? Math.round(resolved.stamina * 0.5)
-        : resolved.stamina;
+      staminaCost > 0 && nextSatiety < 20 ? Math.round(staminaCost * 0.5) : staminaCost;
 
     state.stamina = clamp(state.stamina + staminaApplied, 0, 100);
     state.money += resolved.money;
@@ -126,15 +134,33 @@ export function settle(
       state.fans = applyFanAction(state.fans, showFanType(state), resolved.fans, 0.3);
     }
 
+    // 熟练度：放大对应能力的训练收益（乘区，上限 +50%）
+    const profFor: Partial<Record<keyof Stats, string>> = {
+      vocal: 'song_prof',
+      dance: 'choreo_prof',
+    };
+    const nextProf = { ...proficiency };
+
     const statDelta: Partial<Stats> = {};
     for (const [k, v] of Object.entries(resolved.stats)) {
       const key = k as keyof Stats;
       const before = state.stats[key];
       const raw = v ?? 0;
-      const gained = raw > 0 ? Math.floor(raw * efficiency) : raw;
+      const profKey = profFor[key];
+      const profMul = profKey ? 1 + (nextProf[profKey] ?? 0) / 200 : 1;
+      const gained = raw > 0 ? Math.floor(raw * efficiency * profMul) : raw;
       state.stats[key] = clamp(before + gained, 0, 100);
       statDelta[key] = state.stats[key] - before;
+
+      if (gained > 0 && profKey) {
+        nextProf[profKey] = Math.min(100, (nextProf[profKey] ?? 0) + 1);
+      }
     }
+
+    if (resolved.fans > 0) {
+      nextProf.stage_prof = Math.min(100, (nextProf.stage_prof ?? 0) + 2);
+    }
+    state.proficiency = nextProf;
 
     state.log.push({
       at: item.endAt,

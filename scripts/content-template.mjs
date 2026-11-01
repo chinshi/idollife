@@ -125,6 +125,7 @@ for (const e of events.story) {
       fx.mood ?? '', fx.satiety ?? '',
       fx.traits ? JSON.stringify(fx.traits) : '',
       fx.negatives ? JSON.stringify(fx.negatives) : '',
+      c.requires && Object.keys(c.requires).length ? condText(c.requires) : '',
     ]);
   }
 }
@@ -146,7 +147,7 @@ await build('events.xlsx', [
   },
   {
     name: 'choices',
-    headers: ['eventId', 'id', 'label', 'text', 'stamina', 'self', 'others', 'fit', 'vocal', 'dance', 'acting', 'talk', 'setFlag', 'mood', 'satiety', 'traits', 'negatives'],
+    headers: ['eventId', 'id', 'label', 'text', 'stamina', 'self', 'others', 'fit', 'vocal', 'dance', 'acting', 'talk', 'setFlag', 'mood', 'satiety', 'traits', 'negatives', 'requires'],
     rows: choiceRows,
   },
 ]);

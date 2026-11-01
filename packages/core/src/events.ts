@@ -21,6 +21,8 @@ export interface Choice {
   text: string;
   effects: ChoiceEffects;
   setFlag?: string;
+  /** 出现条件（性格/负向/属性不满足则不显示） */
+  requires: (s: RunState) => boolean;
 }
 
 export interface StoryEvent {
@@ -70,8 +72,11 @@ export const STORY_EVENTS: StoryEvent[] = RAW_STORY.map((e) => ({
       axes: c.effects.axes as Partial<Axes> | undefined,
       traits: c.effects.traits,
       negatives: c.effects.negatives,
+      mood: c.effects.mood,
+      satiety: c.effects.satiety,
     },
     setFlag: c.setFlag,
+    requires: (s: RunState) => matchesCondition(s, c.requires),
   })),
 }));
 
@@ -150,4 +155,19 @@ export function applyChoice(state: RunState, eventId: string, choiceId: string):
   });
 
   return next;
+}
+
+/** 当前状态下可选的项目（性格/负向/属性条件过滤） */
+export function availableChoices(
+  state: RunState,
+  eventId: string,
+): Array<{ id: string; label: string; text: string; effects: ChoiceEffects; requires: (s: RunState) => boolean }> {
+  const event = getStoryEvent(eventId);
+  if (!event) return [];
+  return event.choices.filter((c) => c.requires(state));
+}
+
+/** 某个选项是否满足出现条件 */
+export function choiceAvailable(state: RunState, eventId: string, choiceId: string): boolean {
+  return availableChoices(state, eventId).some((c) => c.id === choiceId);
 }

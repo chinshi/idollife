@@ -1,5 +1,5 @@
 import {
-  ACTIONS, ACTION_LIST, CATEGORY_LABEL, STAT_LABEL, SHOW_ACTION_ID, previewAction, getStoryEvent, remainingTimes, canShowAction, cooldownLeftDays, type ActionCategory,
+  ACTIONS, ACTION_LIST, CATEGORY_LABEL, STAT_LABEL, SHOW_ACTION_ID, previewAction, getStoryEvent, availableChoices, remainingTimes, canShowAction, cooldownLeftDays, type ActionCategory,
 } from '@idollife/core';
 import type { AppApi } from './api';
 import { AuthForm } from './AuthForm';
@@ -22,7 +22,7 @@ export function Modals({ ctx }: { ctx: ModalCtx }) {
               <h4>{ev.title}</h4>
               <p>{ev.text}</p>
               <div className="choices">
-                {ev.choices.map((c) => (
+                {availableChoices(run, activeEventId).map((c) => (
                   <button key={c.id} onClick={() => void choose(activeEventId, c.id)}>
                     {c.label}
                   </button>

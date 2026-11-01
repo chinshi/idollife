@@ -69,6 +69,8 @@ export type { RawRequires };
 
 export interface RawChoice {
   id: string;
+  /** 出现条件（表达式） */
+  requires?: RawRequires | string;
   label: string;
   text: string;
   effects: {
