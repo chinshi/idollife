@@ -1153,6 +1153,8 @@ function AppInner() {
       return;
     }
     if (r.result === 'dup') {
+      // 走的是「重复认识」分支：也要把新的状态写回去（扣钱 + 日志 + 默契）
+      setRun(r.state);
       setNotice('又见到了认识的人，默契 +1%。');
       return;
     }
