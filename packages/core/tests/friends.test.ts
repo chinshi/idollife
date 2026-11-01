@@ -52,21 +52,27 @@ describe('朋友圈', () => {
     expect(r.result).toBe('no-party');
   });
 
-  it('已进团的人不会再被抽到（全局去重）', () => {
-    let state = base({ debuted: true });
-    state = createParty(state, 'SEK48').state;
-    const met = meetFriend(state, CHANNELS[0]!.id, 'seed');
-    const invited = inviteFriend(met.state, met.state.friends[0]!.id).state;
+  it('重复遇到同一个人会累积默契，不会新增卡片', () => {
+    let state = base();
+    const first = meetFriend(state, CHANNELS[0]!.id, 'seed-0');
+    state = first.state;
+    const name = state.friends[0]!.name;
 
-    // 再抽 30 次，名字都不能和已入团的人重复
-    let cur = invited;
-    for (let i = 0; i < 8; i++) {
-      cur = meetFriend(cur, CHANNELS[0]!.id, `seed-${i}`).state;
+    let dips = 0;
+    for (let i = 1; i <= 40 && dips < 3; i++) {
+      const r = meetFriend(state, CHANNELS[0]!.id, `seed-${i}`);
+      state = r.state;
+      if (r.result === 'dup') dips++;
     }
-    const names = cur.friends.map((f) => f.name);
-    expect(new Set(names).size).toBe(names.length);
-  });
 
+    expect(dips).toBeGreaterThan(0);
+    const names = state.friends.map((f) => f.name);
+    // 同一个名字永远只有一张卡
+    expect(new Set(names).size).toBe(names.length);
+    // 重复遇到的人默契有累积
+    const anyDup = state.friends.some((f) => (f.dupCount ?? 0) > 0);
+    expect(anyDup || state.parties.some((p) => p.members.some((m) => m.dupCount > 0))).toBe(true);
+  });
   it('邀请后从朋友圈进入组合', () => {
     let state = base({ debuted: true });
     state = createParty(state, 'SEK48').state;

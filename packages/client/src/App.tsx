@@ -1152,8 +1152,8 @@ function AppInner() {
       setNotice('钱不够，先攒一点。');
       return;
     }
-    if (r.result === 'exhausted') {
-      setNotice('能认识的人都认识过了。');
+    if (r.result === 'dup') {
+      setNotice('又见到了认识的人，默契 +1%。');
       return;
     }
     if (r.result !== 'ok') {
@@ -1781,7 +1781,7 @@ function AppInner() {
                                 <span className="mcard-set">
                                   {biasLabel(f.bias)} · 资质 {Math.round(f.quality * 100)}%
                                 </span>
-                                <span className="mcard-dup">默契 +0%</span>
+                                <span className="mcard-dup">默契 +{f.dupCount ?? 0}%</span>
                                 {inParty && <span className="mcard-team">已入团 · {teamName}</span>}
                                 {!inParty && cooldownLeftDays(run, f) > 0 && (
                                   <span className="mcard-cool">

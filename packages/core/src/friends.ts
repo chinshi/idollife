@@ -23,7 +23,9 @@ const NAMES = [
   '郑夏', '唐澄', '白露', '顾南', '沈青', '叶绫',
 ];
 
-export type MeetResult = 'ok' | 'poor' | 'unknown' | 'exhausted';
+export type MeetResult = 'ok' | 'dup' | 'poor' | 'unknown';
+
+const DUP_CAP = BALANCE.dupCap ?? 10;
 
 /** 花一笔钱，认识一个新朋友，放进朋友圈 */
 export function meetFriend(
@@ -36,14 +38,69 @@ export function meetFriend(
   if (state.money < channel.cost) return { state, result: 'poor' };
 
   const rng = mulberry32(hashSeed(`${seed}:${channelId}:${state.at}:${state.friends.length}`));
-  // 全局去重：朋友圈里的人 + 所有组合里的成员都不能再抽到
-  const existing = new Set<string>([
-    ...state.friends.map((f) => f.name),
-    ...state.parties.flatMap((p) => p.members.map((m) => m.name)),
-  ]);
-  const available = NAMES.filter((n) => !existing.has(n));
-  if (available.length === 0) return { state, result: 'exhausted' };
-  const name = available[Math.floor(rng() * available.length)]!;
+  // 从全量名字池抽人：如果这个人已经认识，就累积默契，而不是新增
+  const name = NAMES[Math.floor(rng() * NAMES.length)]!;
+
+  const existingMember = state.parties
+    .flatMap((p) => p.members)
+    .find((m) => m.name === name);
+  if (existingMember) {
+    const parties = state.parties.map((p) => ({
+      ...p,
+      members: p.members.map((m) =>
+        m.id === existingMember.id
+          ? { ...m, dupCount: Math.min(DUP_CAP, m.dupCount + 1) }
+          : m,
+      ),
+    }));
+    return {
+      state: {
+        ...state,
+        money: state.money - channel.cost,
+        parties,
+        log: [
+          ...state.log,
+          {
+            at: state.at,
+            actionId: `meet:${channel.id}`,
+            text: `又见到了 ${name}，默契 +1%（上限 ${DUP_CAP}%）。`,
+            staminaDelta: 0,
+            statDelta: {},
+            kind: 'action',
+          },
+        ],
+      },
+      result: 'dup',
+    };
+  }
+
+  const existingFriend = state.friends.find((f) => f.name === name);
+  if (existingFriend) {
+    const friends = state.friends.map((f) =>
+      f.id === existingFriend.id
+        ? { ...f, dupCount: Math.min(DUP_CAP, (f.dupCount ?? 0) + 1) }
+        : f,
+    );
+    return {
+      state: {
+        ...state,
+        money: state.money - channel.cost,
+        friends,
+        log: [
+          ...state.log,
+          {
+            at: state.at,
+            actionId: `meet:${channel.id}`,
+            text: `又见到了 ${name}，默契 +1%（上限 ${DUP_CAP}%）。`,
+            staminaDelta: 0,
+            statDelta: {},
+            kind: 'action',
+          },
+        ],
+      },
+      result: 'dup',
+    };
+  }
 
   const bias = channel.biasPool[Math.floor(rng() * channel.biasPool.length)] ?? 'balanced';
   const quality =
@@ -57,6 +114,7 @@ export function meetFriend(
     metAt: state.at,
     quality: Math.round(quality * 100) / 100,
     partyId: null,
+    dupCount: 0,
   };
 
   return {
@@ -121,7 +179,7 @@ export function inviteFriend(
     id: `m-${friend.id}`,
     name: friend.name,
     bias: friend.bias,
-    dupCount: 0,
+    dupCount: Math.min(DUP_CAP, Number(friend.dupCount ?? 0)),
   };
 
   return {

@@ -53,6 +53,8 @@ export interface Friend {
   partyId: string | null;
   /** 退团冷却截止时间（游戏时间）；0 表示无冷却 */
   cooldownUntil?: number;
+  /** 重复遇到累积的默契（%），上限 10 */
+  dupCount?: number;
 }
 
 /** 组合（一个玩家可以有多个） */
