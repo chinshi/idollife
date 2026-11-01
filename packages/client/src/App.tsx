@@ -584,12 +584,12 @@ function AppInner() {
       )
     : 0;
 
-  function actionNo(it: { startAt: number }): number {
+  function actionNo(it: { id: string; startAt: number }): number {
     const day = Math.floor((it.startAt - T0) / DAY_MS);
-    const sameDay = visibleItems.filter(
-      (x) => Math.floor((x.startAt - T0) / DAY_MS) === day,
-    );
-    return Math.max(1, sameDay.findIndex((x) => x.startAt === it.startAt) + 1);
+    const sameDay = visibleItems
+      .filter((x) => Math.floor((x.startAt - T0) / DAY_MS) === day)
+      .sort((a, b) => a.startAt - b.startAt);
+    return Math.max(1, sameDay.findIndex((x) => x.id === it.id) + 1);
   }
   // 只在两种时机自动滚动：①开始推进 ②一条行动完成、进入下一条
   const prevRunningRef = useRef(false);
