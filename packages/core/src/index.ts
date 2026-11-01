@@ -12,3 +12,4 @@ export * from './shop';
 export * from './divination';
 export * from './data';
 export * from './attributes';
+export * from './results';

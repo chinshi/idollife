@@ -15749,83 +15749,235 @@ var cors = (options) => {
   };
 };
 
+// ../core/data/action_results.json
+var action_results_default = {
+  _\u8BF4\u660E: "\u884C\u4E3A\u7ED3\u679C\u8868\uFF1A\u540C\u4E00\u4E2A\u884C\u4E3A\u5728\u4E0D\u540C\u6761\u4EF6\u4E0B\u53EF\u4EE5\u6709\u4E0D\u540C\u7684\u6570\u503C\u548C\u6587\u6848\u3002condition \u4E3A\u7A7A=\u9ED8\u8BA4\u7ED3\u679C\uFF1Bpriority \u5C0F\u7684\u4F18\u5148\u5339\u914D\u3002stats \u91CC\u7684\u6570\u503C\u53EF\u4EE5\u662F\u6570\u5B57\u6216 [\u6700\u5C0F\u503C,\u6700\u5927\u503C] \u533A\u95F4",
+  results: [
+    {
+      id: "res-vocal-default",
+      actionId: "vocal-karaoke",
+      actionName: "\u5531 K",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -10,
+        money: -50,
+        stats: {
+          vocal: [
+            1,
+            3
+          ]
+        }
+      },
+      text: "\u4F60\u5728\u5305\u53A2\u91CC\u5531\u4E86\u4E24\u5C0F\u65F6\uFF0C\u55D3\u5B50\u6709\u70B9\u70ED\u3002\uFF08\u6F14\u5531 +{vocal}\uFF09"
+    },
+    {
+      id: "res-vocal-tired",
+      actionId: "vocal-karaoke",
+      actionName: "\u5531 K",
+      condition: {
+        staminaBelow: 30
+      },
+      priority: 10,
+      effects: {
+        stamina: -10,
+        money: -50,
+        stats: {
+          vocal: [
+            1,
+            1
+          ]
+        }
+      },
+      text: "\u55D3\u5B50\u6709\u70B9\u54D1\uFF0C\u4F60\u53EA\u5531\u4E86\u4E00\u5C0F\u65F6\u5C31\u5750\u4E0B\u4E86\u3002\uFF08\u6F14\u5531 +{vocal}\uFF09"
+    },
+    {
+      id: "res-dance-default",
+      actionId: "dance-otaku",
+      actionName: "\u8DF3\u5B85\u821E",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -12,
+        stats: {
+          dance: [
+            1,
+            3
+          ]
+        }
+      },
+      text: "\u5BF9\u7740\u955C\u5B50\u628A\u540C\u4E00\u6BB5\u526F\u6B4C\u8DF3\u4E86\u4E8C\u5341\u904D\u3002\uFF08\u821E\u8E48 +{dance}\uFF09"
+    },
+    {
+      id: "res-dance-tired",
+      actionId: "dance-otaku",
+      actionName: "\u8DF3\u5B85\u821E",
+      condition: {
+        staminaBelow: 25
+      },
+      priority: 10,
+      effects: {
+        stamina: -12,
+        stats: {
+          dance: [
+            1,
+            1
+          ]
+        }
+      },
+      text: "\u817F\u6709\u70B9\u62AC\u4E0D\u8D77\u6765\uFF0C\u7EC3\u5230\u4E00\u534A\u5C31\u5750\u5728\u5730\u677F\u4E0A\u4E86\u3002\uFF08\u821E\u8E48 +{dance}\uFF09"
+    },
+    {
+      id: "res-acting-default",
+      actionId: "acting-short",
+      actionName: "\u81EA\u62CD\u5C0F\u77ED\u5267",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -10,
+        stats: {
+          acting: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u81EA\u5BFC\u81EA\u6F14\u62CD\u4E86\u4E09\u6761\uFF0C\u7B2C\u4E8C\u6761\u6700\u597D\u3002\uFF08\u6F14\u6280 +{acting}\uFF09"
+    },
+    {
+      id: "res-talk-default",
+      actionId: "talk-selftalk",
+      actionName: "\u81EA\u8BF4\u81EA\u8BDD",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -8,
+        stats: {
+          talk: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u5BF9\u7740\u955C\u5934\u7EC3\u4E86\u4E00\u4E0B\u5348\u4E32\u573A\u8BCD\u3002\uFF08\u53E3\u624D +{talk}\uFF09"
+    },
+    {
+      id: "res-work-default",
+      actionId: "work-part-time",
+      actionName: "\u6253\u5DE5",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -20,
+        money: 320
+      },
+      text: "\u5728\u4FBF\u5229\u5E97\u7AD9\u4E86\u56DB\u4E2A\u5C0F\u65F6\uFF0C\u811A\u6709\u70B9\u9EBB\u3002\uFF08\u6536\u5165 +320\uFF09"
+    },
+    {
+      id: "res-work-tired",
+      actionId: "work-part-time",
+      actionName: "\u6253\u5DE5",
+      condition: {
+        staminaBelow: 25
+      },
+      priority: 10,
+      effects: {
+        stamina: -20,
+        money: 240
+      },
+      text: "\u56F0\u5F97\u5DEE\u70B9\u7B97\u9519\u94B1\uFF0C\u5E97\u957F\u8BA9\u4F60\u63D0\u524D\u4E0B\u73ED\u3002\uFF08\u6536\u5165 +240\uFF09"
+    },
+    {
+      id: "res-rest-default",
+      actionId: "rest-sleep",
+      actionName: "\u7206\u7761",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: 25
+      },
+      text: "\u7761\u4E86\u4E00\u89C9\uFF0C\u611F\u89C9\u6D3B\u8FC7\u6765\u4E86\u3002"
+    }
+  ]
+};
+
 // ../core/data/actions.json
 var actions_default = {
-  _\u8BF4\u660E: "\u884C\u52A8\u8868\uFF1A\u73A9\u5BB6\u53EF\u5B89\u6392\u7684\u8BAD\u7EC3/\u5DE5\u4F5C/\u4F11\u606F\u3002category/categoryName \u662F\u5206\u7C7B\u7684\u5B57\u6BB5\u540D\u4E0E\u4E2D\u6587\u540D\uFF1Bstat/statName \u662F\u5C5E\u6027\u5B57\u6BB5\u540D\u4E0E\u4E2D\u6587\u540D",
+  _\u8BF4\u660E: "\u884C\u4E3A\u8868\uFF1A\u5B9A\u4E49\u300C\u80FD\u505A\u4EC0\u4E48\u300D\u3002\u5F71\u54CD\u5C5E\u6027\u53EF\u591A\u4E2A\uFF1B\u663E\u793A\u6761\u4EF6\u4E3A\u7A7A=\u4E00\u76F4\u53EF\u89C1\uFF1B\u6B21\u6570 0=\u65E0\u9650\u5236\u3002\u5177\u4F53\u6536\u76CA/\u6587\u6848\u5728 action_results.json \u91CC\u6309\u6761\u4EF6\u5339\u914D",
   actions: [
     {
       id: "vocal-karaoke",
       name: "\u5531 K",
       category: "growth",
       categoryName: "\u63D0\u5347\u5C5E\u6027",
-      stat: "vocal",
-      statName: "\u6F14\u5531",
-      stamina: -10,
-      gain: [
-        1,
-        3
+      displayCondition: {},
+      times: 0,
+      timesScope: "run",
+      affectedStats: [
+        "vocal"
       ],
-      cost: 50,
-      text: "\u4F60\u5728\u5305\u53A2\u91CC\u5531\u4E86\u4E24\u5C0F\u65F6\uFF0C\u55D3\u5B50\u6709\u70B9\u70ED\u3002\uFF08\u6F14\u5531 +{n}\uFF09"
+      durationMinutes: 1
     },
     {
       id: "dance-otaku",
       name: "\u8DF3\u5B85\u821E",
       category: "growth",
       categoryName: "\u63D0\u5347\u5C5E\u6027",
-      stat: "dance",
-      statName: "\u821E\u8E48",
-      stamina: -12,
-      gain: [
-        1,
-        3
+      displayCondition: {},
+      times: 0,
+      timesScope: "run",
+      affectedStats: [
+        "dance"
       ],
-      text: "\u5BF9\u7740\u955C\u5B50\u628A\u540C\u4E00\u6BB5\u526F\u6B4C\u8DF3\u4E86\u4E8C\u5341\u904D\u3002\uFF08\u821E\u8E48 +{n}\uFF09"
+      durationMinutes: 1
     },
     {
       id: "acting-short",
       name: "\u81EA\u62CD\u5C0F\u77ED\u5267",
       category: "growth",
       categoryName: "\u63D0\u5347\u5C5E\u6027",
-      stat: "acting",
-      statName: "\u6F14\u6280",
-      stamina: -10,
-      gain: [
-        1,
-        2
+      displayCondition: {},
+      times: 0,
+      timesScope: "run",
+      affectedStats: [
+        "acting"
       ],
-      text: "\u81EA\u5BFC\u81EA\u6F14\u62CD\u4E86\u4E09\u6761\uFF0C\u7B2C\u4E8C\u6761\u6700\u597D\u3002\uFF08\u6F14\u6280 +{n}\uFF09"
+      durationMinutes: 1
     },
     {
       id: "talk-selftalk",
       name: "\u81EA\u8BF4\u81EA\u8BDD",
       category: "growth",
       categoryName: "\u63D0\u5347\u5C5E\u6027",
-      stat: "talk",
-      statName: "\u53E3\u624D",
-      stamina: -8,
-      gain: [
-        1,
-        2
+      displayCondition: {},
+      times: 0,
+      timesScope: "run",
+      affectedStats: [
+        "talk"
       ],
-      text: "\u5BF9\u7740\u955C\u5934\u7EC3\u4E86\u4E00\u4E0B\u5348\u4E32\u573A\u8BCD\u3002\uFF08\u53E3\u624D +{n}\uFF09"
+      durationMinutes: 1
     },
     {
       id: "work-part-time",
       name: "\u6253\u5DE5",
       category: "work",
       categoryName: "\u8D5A\u94B1",
-      stamina: -20,
-      money: 320,
-      text: "\u5728\u4FBF\u5229\u5E97\u7AD9\u4E86\u56DB\u4E2A\u5C0F\u65F6\uFF0C\u811A\u6709\u70B9\u9EBB\u3002\uFF08\u6536\u5165 +320\uFF09"
+      displayCondition: {},
+      times: 0,
+      timesScope: "run",
+      affectedStats: [],
+      durationMinutes: 1
     },
     {
       id: "rest-sleep",
       name: "\u7206\u7761",
       category: "recover",
       categoryName: "\u6062\u590D\u72B6\u6001",
-      stamina: 25,
-      text: "\u7761\u4E86\u4E00\u89C9\uFF0C\u611F\u89C9\u6D3B\u8FC7\u6765\u4E86\u3002"
+      displayCondition: {},
+      times: 0,
+      timesScope: "run",
+      affectedStats: [],
+      durationMinutes: 1
     }
   ]
 };
@@ -16284,9 +16436,80 @@ var events_default = {
 // ../core/src/data.ts
 var BALANCE = balance_default.balance;
 var RAW_ACTIONS = actions_default.actions;
+var RAW_RESULTS = action_results_default.results;
 var RAW_ROUTINE = events_default.routine;
 var RAW_STORY = events_default.story;
 var RAW_ATTRIBUTES = attributes_default.attributes;
+
+// ../core/src/events.ts
+var ROUTINE_TEMPLATES = RAW_ROUTINE.map((r) => ({
+  id: r.id,
+  text: r.text,
+  stamina: r.stamina,
+  stat: r.stat,
+  gain: r.gain
+}));
+function matchesCondition(s, req) {
+  return makeRequires(req)(s);
+}
+function makeRequires(req) {
+  return (s) => {
+    if (req?.statsAtLeast) {
+      for (const [k, v] of Object.entries(req.statsAtLeast)) {
+        if (s.stats[k] < v) return false;
+      }
+    }
+    if (req?.axesAtLeast) {
+      for (const [k, v] of Object.entries(req.axesAtLeast)) {
+        if (s.axes[k] < v) return false;
+      }
+    }
+    if (req?.axesBelow) {
+      for (const [k, v] of Object.entries(req.axesBelow)) {
+        if (s.axes[k] >= v) return false;
+      }
+    }
+    if (typeof req?.staminaBelow === "number" && s.stamina >= req.staminaBelow) return false;
+    if (req?.fansAtLeast) {
+      for (const [k, v] of Object.entries(req.fansAtLeast)) {
+        if ((s.fans.byType[k] ?? 0) < v) return false;
+      }
+    }
+    if (req?.flagsNot) {
+      for (const f of req.flagsNot) {
+        if (s.flags[f]) return false;
+      }
+    }
+    return true;
+  };
+}
+var STORY_EVENTS = RAW_STORY.map((e) => ({
+  id: e.id,
+  title: e.title,
+  text: e.text,
+  major: e.major,
+  requires: makeRequires(e.requires),
+  choices: e.choices.map((c) => ({
+    id: c.id,
+    label: c.label,
+    text: c.text,
+    effects: {
+      stamina: c.effects.stamina,
+      stats: c.effects.stats,
+      axes: c.effects.axes
+    },
+    setFlag: c.setFlag
+  }))
+}));
+function findStoryEvent(state) {
+  for (const ev of STORY_EVENTS) {
+    if (state.pendingEvent === ev.id) return ev;
+    if (!state.flags[`ev:${ev.id}`] && !state.flags[`ev:${ev.id}:queued`] && ev.requires(state)) {
+      return ev;
+    }
+  }
+  return null;
+}
 
 // ../core/src/content.ts
 var MIN = 6e4;
@@ -16301,27 +16524,66 @@ var START_MONEY = BALANCE.startMoney;
 var DEBUT_THRESHOLD = BALANCE.debutThreshold;
 var SHOW_ACTION_ID = "show";
 var SHOW_DURATION_MS = SHOW_SLOTS * ACTION_MINUTES * MIN;
-var ACTIONS = Object.fromEntries(
+function defaultResultOf(actionId) {
+  const list = RAW_RESULTS.filter((r) => r.actionId === actionId);
+  if (list.length === 0) return void 0;
+  return [...list].sort((a, b) => (a.priority ?? 99) - (b.priority ?? 99)).pop();
+}
+var ACTION_META = Object.fromEntries(
   RAW_ACTIONS.map((a) => [
     a.id,
     {
       id: a.id,
       name: a.name,
       category: a.category,
-      stat: a.stat,
-      stamina: a.stamina,
-      gain: a.gain,
-      cost: a.cost,
-      money: a.money,
-      durationMs: ACTION_MINUTES * MIN,
-      text: a.text
+      categoryName: a.categoryName ?? a.category,
+      displayCondition: a.displayCondition,
+      times: a.times ?? 0,
+      timesScope: a.timesScope ?? "run",
+      affectedStats: a.affectedStats ?? [],
+      durationMs: (a.durationMinutes ?? ACTION_MINUTES) * MIN
     }
   ])
+);
+var ACTIONS = Object.fromEntries(
+  RAW_ACTIONS.map((a) => {
+    const def = defaultResultOf(a.id);
+    const stats = def?.effects.stats ?? {};
+    const firstKey = Object.keys(stats)[0];
+    const raw2 = firstKey ? stats[firstKey] : void 0;
+    const gain = Array.isArray(raw2) ? [raw2[0], raw2[1]] : typeof raw2 === "number" ? [raw2, raw2] : void 0;
+    const money = def?.effects.money ?? 0;
+    return [
+      a.id,
+      {
+        id: a.id,
+        name: a.name,
+        category: a.category,
+        stat: firstKey,
+        stamina: def?.effects.stamina ?? 0,
+        gain,
+        cost: money < 0 ? -money : void 0,
+        money: money > 0 ? money : void 0,
+        durationMs: (a.durationMinutes ?? ACTION_MINUTES) * MIN,
+        text: def?.text ?? ""
+      }
+    ];
+  })
 );
 var ACTION_LIST = Object.values(ACTIONS);
 var CATEGORY_LABEL = Object.fromEntries(
   RAW_ACTIONS.map((a) => [a.category, a.categoryName ?? a.category])
 );
+function remainingTimes(state, actionId) {
+  const meta = ACTION_META[actionId];
+  if (!meta || meta.times <= 0) return Number.POSITIVE_INFINITY;
+  const scope = meta.timesScope;
+  const from = scope === "day" ? state.at - state.at % DAY_MS : scope === "week" ? state.at - state.at % WEEK_MS : 0;
+  const used = state.log.filter(
+    (l) => l.kind === "action" && l.actionId === actionId && l.at >= from
+  ).length;
+  return Math.max(0, meta.times - used);
+}
 
 // ../core/src/rng.ts
 function hashSeed(seed) {
@@ -16344,6 +16606,71 @@ function mulberry32(seed) {
 }
 function randInt(rng, min, max) {
   return min + Math.floor(rng() * (max - min + 1));
+}
+
+// ../core/src/results.ts
+var ACTION_RESULTS = RAW_RESULTS.map((r) => ({
+  id: r.id,
+  actionId: r.actionId,
+  actionName: r.actionName,
+  condition: r.condition,
+  priority: r.priority ?? 99,
+  effects: r.effects ?? {},
+  text: r.text
+}));
+var byAction = /* @__PURE__ */ new Map();
+for (const r of ACTION_RESULTS) {
+  const list = byAction.get(r.actionId) ?? [];
+  list.push(r);
+  byAction.set(r.actionId, list);
+}
+for (const list of byAction.values()) list.sort((a, b) => a.priority - b.priority);
+function resultsFor(actionId) {
+  return byAction.get(actionId) ?? [];
+}
+function pickActionResult(state, actionId) {
+  const list = resultsFor(actionId);
+  for (const r of list) {
+    if (matchesCondition(state, r.condition)) return r;
+  }
+  return list[list.length - 1] ?? null;
+}
+var rollValue = (v, rng) => {
+  if (Array.isArray(v)) return randInt(rng, v[0], v[1]);
+  return v;
+};
+function resolveAction(state, actionId, rng) {
+  const result = pickActionResult(state, actionId);
+  if (!result) return null;
+  const stats = {};
+  for (const [k, v] of Object.entries(result.effects.stats ?? {})) {
+    stats[k] = rollValue(v, rng);
+  }
+  const stamina = result.effects.stamina ?? 0;
+  const money = result.effects.money ?? 0;
+  let text = result.text;
+  for (const [k, v] of Object.entries(stats)) {
+    text = text.split(`{${k}}`).join(String(v));
+  }
+  const firstStat = Object.values(stats)[0] ?? 0;
+  text = text.split("{n}").join(String(firstStat));
+  text = text.split("{stamina}").join(String(stamina));
+  text = text.split("{money}").join(String(money));
+  return { resultId: result.id, stamina, money, stats, text };
+}
+function previewAction(state, actionId) {
+  const result = pickActionResult(state, actionId);
+  if (!result) return null;
+  const stats = {};
+  for (const [k, v] of Object.entries(result.effects.stats ?? {})) {
+    stats[k] = Array.isArray(v) ? [v[0], v[1]] : [v, v];
+  }
+  return {
+    stamina: result.effects.stamina ?? 0,
+    money: result.effects.money ?? 0,
+    stats,
+    text: result.text
+  };
 }
 
 // ../core/src/fans.ts
@@ -16553,73 +16880,6 @@ function applyShow(state, result) {
   };
 }
 
-// ../core/src/events.ts
-var ROUTINE_TEMPLATES = RAW_ROUTINE.map((r) => ({
-  id: r.id,
-  text: r.text,
-  stamina: r.stamina,
-  stat: r.stat,
-  gain: r.gain
-}));
-function makeRequires(req) {
-  return (s) => {
-    if (req?.statsAtLeast) {
-      for (const [k, v] of Object.entries(req.statsAtLeast)) {
-        if (s.stats[k] < v) return false;
-      }
-    }
-    if (req?.axesAtLeast) {
-      for (const [k, v] of Object.entries(req.axesAtLeast)) {
-        if (s.axes[k] < v) return false;
-      }
-    }
-    if (req?.axesBelow) {
-      for (const [k, v] of Object.entries(req.axesBelow)) {
-        if (s.axes[k] >= v) return false;
-      }
-    }
-    if (typeof req?.staminaBelow === "number" && s.stamina >= req.staminaBelow) return false;
-    if (req?.fansAtLeast) {
-      for (const [k, v] of Object.entries(req.fansAtLeast)) {
-        if ((s.fans.byType[k] ?? 0) < v) return false;
-      }
-    }
-    if (req?.flagsNot) {
-      for (const f of req.flagsNot) {
-        if (s.flags[f]) return false;
-      }
-    }
-    return true;
-  };
-}
-var STORY_EVENTS = RAW_STORY.map((e) => ({
-  id: e.id,
-  title: e.title,
-  text: e.text,
-  major: e.major,
-  requires: makeRequires(e.requires),
-  choices: e.choices.map((c) => ({
-    id: c.id,
-    label: c.label,
-    text: c.text,
-    effects: {
-      stamina: c.effects.stamina,
-      stats: c.effects.stats,
-      axes: c.effects.axes
-    },
-    setFlag: c.setFlag
-  }))
-}));
-function findStoryEvent(state) {
-  for (const ev of STORY_EVENTS) {
-    if (state.pendingEvent === ev.id) return ev;
-    if (!state.flags[`ev:${ev.id}`] && !state.flags[`ev:${ev.id}:queued`] && ev.requires(state)) {
-      return ev;
-    }
-  }
-  return null;
-}
-
 // ../core/src/settle.ts
 var clamp = (v, min, max) => Math.min(max, Math.max(min, v));
 var ROUTINE_CHANCE = BALANCE.routineChance;
@@ -16679,40 +16939,39 @@ function settle(run, schedule, from, to, seed, opts = {}) {
     }
     const action = ACTIONS[item.actionId];
     if (!action) continue;
-    if (state.stamina + action.stamina < 0) {
+    if (remainingTimes(state, item.actionId) <= 0) {
+      stoppedReason = "stopped";
+      break;
+    }
+    const preview = previewAction(state, item.actionId);
+    if (!preview) continue;
+    if (preview.stamina < 0 && state.stamina + preview.stamina < 0) {
       stoppedReason = "stamina";
       break;
     }
-    if (action.cost && state.money < action.cost) {
+    if (preview.money < 0 && state.money + preview.money < 0) {
       stoppedReason = "money";
       break;
     }
-    const gain = action.gain ? randInt(rng, action.gain[0], action.gain[1]) : 0;
-    state.stamina = clamp(state.stamina + action.stamina, 0, 100);
-    if (action.cost) state.money -= action.cost;
-    if (action.money) state.money += action.money;
-    if (action.stat && gain > 0) {
-      const before = state.stats[action.stat];
-      state.stats[action.stat] = clamp(before + gain, 0, 100);
-      const delta = state.stats[action.stat] - before;
-      state.log.push({
-        at: item.endAt,
-        actionId: action.id,
-        text: action.text.replace("{n}", String(delta)),
-        staminaDelta: action.stamina,
-        statDelta: { [action.stat]: delta },
-        kind: "action"
-      });
-    } else {
-      state.log.push({
-        at: item.endAt,
-        actionId: action.id,
-        text: action.text,
-        staminaDelta: action.stamina,
-        statDelta: {},
-        kind: "action"
-      });
+    const resolved = resolveAction(state, item.actionId, rng);
+    if (!resolved) continue;
+    state.stamina = clamp(state.stamina + resolved.stamina, 0, 100);
+    state.money += resolved.money;
+    const statDelta = {};
+    for (const [k, v] of Object.entries(resolved.stats)) {
+      const key = k;
+      const before = state.stats[key];
+      state.stats[key] = clamp(before + (v ?? 0), 0, 100);
+      statDelta[key] = state.stats[key] - before;
     }
+    state.log.push({
+      at: item.endAt,
+      actionId: action.id,
+      text: resolved.text,
+      staminaDelta: resolved.stamina,
+      statDelta,
+      kind: "action"
+    });
     state.at = item.endAt;
     cursor = item.endAt;
     executed.push(item.id);

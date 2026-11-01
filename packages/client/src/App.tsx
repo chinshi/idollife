@@ -17,6 +17,9 @@ import {
   biasLabel,
   buyItem,
   canDebut,
+  canShowAction,
+  previewAction,
+  remainingTimes,
   createFans,
   STAT_LABEL,
   createParty,
@@ -1507,22 +1510,40 @@ function AppInner() {
           <div className="plan">
             <div className="plan-actions">
               {(['growth', 'recover', 'work'] as ActionCategory[]).map((cat) => {
-                const list = ACTION_LIST.filter((a) => a.category === cat);
+                const list = ACTION_LIST.filter(
+                  (a) => a.category === cat && canShowAction(run, a.id),
+                );
                 if (list.length === 0) return null;
                 return (
                   <div key={cat} className="action-group">
                     <h4>{CATEGORY_LABEL[cat]}</h4>
                     <div className="actions">
-                      {list.map((a) => (
-                        <button key={a.id} onClick={() => addAction(a.id)}>
-                          {a.name}
-                          <small>
-                            {a.stamina > 0 ? `体力 +${a.stamina}` : `体力 ${a.stamina}`}
-                            {a.cost ? ` · ¥${a.cost}` : ''}
-                            {a.money ? ` · +¥${a.money}` : ''}
-                          </small>
-                        </button>
-                      ))}
+                      {list.map((a) => {
+                        const pv = previewAction(run, a.id);
+                        const left = remainingTimes(run, a.id);
+                        const statBits = pv
+                          ? Object.entries(pv.stats)
+                              .map(([k, r]) => `${STAT_LABEL[k] ?? k} +${r[0]}~${r[1]}`)
+                              .join(' / ')
+                          : '';
+                        return (
+                          <button
+                            key={a.id}
+                            onClick={() => addAction(a.id)}
+                            disabled={left <= 0}
+                            title={left <= 0 ? '次数已用完' : ''}
+                          >
+                            {a.name}
+                            <small>
+                              {statBits && `${statBits} · `}
+                              {pv && (pv.stamina > 0 ? `体力 +${pv.stamina}` : `体力 ${pv.stamina}`)}
+                              {pv && pv.money > 0 ? ` · +¥${pv.money}` : ''}
+                              {pv && pv.money < 0 ? ` · ¥${-pv.money}` : ''}
+                              {Number.isFinite(left) ? ` · 剩 ${left} 次` : ''}
+                            </small>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 );

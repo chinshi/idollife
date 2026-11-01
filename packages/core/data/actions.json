@@ -1,79 +1,79 @@
 {
-  "_说明": "行动表：玩家可安排的训练/工作/休息。category/categoryName 是分类的字段名与中文名；stat/statName 是属性字段名与中文名",
+  "_说明": "行为表：定义「能做什么」。影响属性可多个；显示条件为空=一直可见；次数 0=无限制。具体收益/文案在 action_results.json 里按条件匹配",
   "actions": [
     {
       "id": "vocal-karaoke",
       "name": "唱 K",
       "category": "growth",
       "categoryName": "提升属性",
-      "stat": "vocal",
-      "statName": "演唱",
-      "stamina": -10,
-      "gain": [
-        1,
-        3
+      "displayCondition": {},
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [
+        "vocal"
       ],
-      "cost": 50,
-      "text": "你在包厢里唱了两小时，嗓子有点热。（演唱 +{n}）"
+      "durationMinutes": 1
     },
     {
       "id": "dance-otaku",
       "name": "跳宅舞",
       "category": "growth",
       "categoryName": "提升属性",
-      "stat": "dance",
-      "statName": "舞蹈",
-      "stamina": -12,
-      "gain": [
-        1,
-        3
+      "displayCondition": {},
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [
+        "dance"
       ],
-      "text": "对着镜子把同一段副歌跳了二十遍。（舞蹈 +{n}）"
+      "durationMinutes": 1
     },
     {
       "id": "acting-short",
       "name": "自拍小短剧",
       "category": "growth",
       "categoryName": "提升属性",
-      "stat": "acting",
-      "statName": "演技",
-      "stamina": -10,
-      "gain": [
-        1,
-        2
+      "displayCondition": {},
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [
+        "acting"
       ],
-      "text": "自导自演拍了三条，第二条最好。（演技 +{n}）"
+      "durationMinutes": 1
     },
     {
       "id": "talk-selftalk",
       "name": "自说自话",
       "category": "growth",
       "categoryName": "提升属性",
-      "stat": "talk",
-      "statName": "口才",
-      "stamina": -8,
-      "gain": [
-        1,
-        2
+      "displayCondition": {},
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [
+        "talk"
       ],
-      "text": "对着镜头练了一下午串场词。（口才 +{n}）"
+      "durationMinutes": 1
     },
     {
       "id": "work-part-time",
       "name": "打工",
       "category": "work",
       "categoryName": "赚钱",
-      "stamina": -20,
-      "money": 320,
-      "text": "在便利店站了四个小时，脚有点麻。（收入 +320）"
+      "displayCondition": {},
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [],
+      "durationMinutes": 1
     },
     {
       "id": "rest-sleep",
       "name": "爆睡",
       "category": "recover",
       "categoryName": "恢复状态",
-      "stamina": 25,
-      "text": "睡了一觉，感觉活过来了。"
+      "displayCondition": {},
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [],
+      "durationMinutes": 1
     }
   ]
 }

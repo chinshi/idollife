@@ -2,6 +2,7 @@
  * 内容配置入口：所有「可以改内容」的东西都在 packages/core/data/*.json
  * 这里只做加载与类型收口，不要在代码里写死文案/数值。
  */
+import actionResultsJson from '../data/action_results.json';
 import actionsJson from '../data/actions.json';
 import attributesJson from '../data/attributes.json';
 import balanceJson from '../data/balance.json';
@@ -16,13 +17,32 @@ export interface RawAction {
   category: string;
   /** 分类中文名：提升属性 / 赚钱 / 恢复状态 */
   categoryName?: string;
-  stat?: string;
-  /** 属性中文名，例如 演唱 */
-  statName?: string;
-  stamina: number;
-  gain?: [number, number];
-  cost?: number;
-  money?: number;
+  /** 显示条件（空=一直可见） */
+  displayCondition?: RawRequires;
+  /** 可执行次数，0=无限制 */
+  times?: number;
+  /** 次数范围：run 整局 / week 每周 / day 每天 */
+  timesScope?: string;
+  /** 影响的属性（可多个） */
+  affectedStats?: string[];
+  /** 单次行动流逝的游戏分钟数 */
+  durationMinutes?: number;
+}
+
+export interface RawResult {
+  id: string;
+  actionId: string;
+  actionName: string;
+  /** 匹配条件（空=默认结果） */
+  condition?: RawRequires;
+  /** 小的优先匹配 */
+  priority?: number;
+  effects: {
+    stamina?: number;
+    money?: number;
+    stats?: Record<string, number | [number, number]>;
+  };
+  /** 文案，支持 {属性字段名} / {n} / {stamina} / {money} */
   text: string;
 }
 
@@ -70,6 +90,7 @@ export interface RawBiasName {
 }
 
 export const RAW_ACTIONS = actionsJson.actions as RawAction[];
+export const RAW_RESULTS = actionResultsJson.results as RawResult[];
 export const RAW_ROUTINE = eventsJson.routine as RawRoutine[];
 export const RAW_STORY = eventsJson.story as RawStory[];
 

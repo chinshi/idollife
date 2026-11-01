@@ -15,6 +15,7 @@ const load = async (f) => JSON.parse(await readFile(join(dataDir, f), 'utf8'));
 
 const attributes = await load('attributes.json');
 const actions = await load('actions.json');
+const actionResults = await load('action_results.json');
 const events = await load('events.json');
 const balance = await load('balance.json');
 const endings = await load('endings.json');
@@ -57,23 +58,45 @@ await build('attributes.xlsx', [
   },
 ]);
 
-// 2) 行动表
+// 2) 行为表
 await build('actions.xlsx', [
   {
     name: 'actions',
-    headers: [
-      'id', 'name', 'category', 'categoryName', 'stat', 'statName',
-      'stamina', 'gainMin', 'gainMax', 'cost', 'money', 'text',
-    ],
+    headers: ['id', '行为名称', '行为分类', '分类字段名', '显示条件', '次数', '次数范围', '影响属性', '单次分钟'],
     rows: actions.actions.map((a) => [
-      a.id, a.name, a.category, a.categoryName ?? '',
-      a.stat ?? '', a.statName ?? '',
-      a.stamina, a.gain?.[0] ?? '', a.gain?.[1] ?? '',
-      a.cost ?? '', a.money ?? '', a.text,
+      a.id,
+      a.name,
+      a.categoryName ?? '',
+      a.category,
+      a.displayCondition && Object.keys(a.displayCondition).length ? JSON.stringify(a.displayCondition) : '',
+      a.times ?? 0,
+      a.timesScope ?? 'run',
+      (a.affectedStats ?? []).join(','),
+      a.durationMinutes ?? '',
     ]),
   },
 ]);
 
+// 2.5) 行为结果表
+await build('action_results.xlsx', [
+  {
+    name: 'results',
+    headers: ['结果id', '行为id', '行为名称', '行为条件', '优先级', '体力', '金钱', '演唱', '舞蹈', '演技', '口才', '行为文案'],
+    rows: actionResults.results.map((r) => {
+      const fx = r.effects ?? {};
+      const st = fx.stats ?? {};
+      const cell = (v) => (Array.isArray(v) ? `${v[0]}~${v[1]}` : (v ?? ''));
+      return [
+        r.id, r.actionId, r.actionName,
+        r.condition && Object.keys(r.condition).length ? JSON.stringify(r.condition) : '',
+        r.priority ?? 99,
+        fx.stamina ?? '', fx.money ?? '',
+        cell(st.vocal), cell(st.dance), cell(st.acting), cell(st.talk),
+        r.text,
+      ];
+    }),
+  },
+]);
 // 3) 事件表（routine / story / choices）
 const choiceRows = [];
 for (const e of events.story) {

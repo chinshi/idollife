@@ -50,20 +50,51 @@ if (attributes) {
   }
 }
 const actions = await load('actions.json');
-if (actions) {
+const actionResults = await load('action_results.json');
+if (actions && actionResults) {
   need(Array.isArray(actions.actions) && actions.actions.length > 0, 'actions.json: actions 必须是非空数组');
+  need(Array.isArray(actionResults.results) && actionResults.results.length > 0, 'action_results.json: results 必须是非空数组');
+
   uniqueIds(actions.actions ?? [], 'actions');
+  uniqueIds(actionResults.results ?? [], 'action_results');
+
+  const actionIds = new Set((actions.actions ?? []).map((a) => a.id));
+  const scopes = ['run', 'week', 'day'];
+
   for (const a of actions.actions ?? []) {
     need(CATEGORIES.includes(a.category), `actions.${a.id}: category 必须是 ${CATEGORIES.join('/')}`);
+    need(typeof a.categoryName === 'string' && a.categoryName, `actions.${a.id}: 缺少 categoryName（分类中文名）`);
     need(typeof a.name === 'string' && a.name, `actions.${a.id}: 缺少 name`);
-    need(typeof a.stamina === 'number', `actions.${a.id}: stamina 必须是数字`);
-    if (a.stat !== undefined) need(STATS.includes(a.stat), `actions.${a.id}: stat 非法 → ${a.stat}`);
-    if (a.gain !== undefined) {
-      need(Array.isArray(a.gain) && a.gain.length === 2, `actions.${a.id}: gain 必须是 [min,max]`);
+    need(typeof a.times === 'number' && a.times >= 0, `actions.${a.id}: times 必须是非负数字（0=无限制）`);
+    need(scopes.includes(a.timesScope ?? 'run'), `actions.${a.id}: timesScope 必须是 ${scopes.join('/')}`);
+    need(Array.isArray(a.affectedStats), `actions.${a.id}: affectedStats 必须是数组`);
+    for (const s of a.affectedStats ?? []) {
+      need(STATS.includes(s), `actions.${a.id}: affectedStats 含非法属性 ${s}`);
     }
   }
-}
 
+  for (const r of actionResults.results ?? []) {
+    need(actionIds.has(r.actionId), `action_results.${r.id}: actionId 不存在 → ${r.actionId}`);
+    need(typeof r.text === 'string' && r.text, `action_results.${r.id}: 缺少 text（行为文案）`);
+    need(r.effects && typeof r.effects === 'object', `action_results.${r.id}: 缺少 effects`);
+    if (r.effects?.stats) {
+      for (const [k, val] of Object.entries(r.effects.stats)) {
+        need(STATS.includes(k), `action_results.${r.id}: effects.stats 含非法属性 ${k}`);
+        const okNum = typeof val === 'number';
+        const okRange = Array.isArray(val) && val.length === 2 && val.every((x) => typeof x === 'number');
+        need(okNum || okRange, `action_results.${r.id}: ${k} 必须是数字或 [min,max]`);
+      }
+    }
+  }
+
+  // 每个行为至少要有一条默认结果（condition 为空）
+  for (const id of actionIds) {
+    const hasDefault = (actionResults.results ?? []).some(
+      (r) => r.actionId === id && (!r.condition || Object.keys(r.condition).length === 0),
+    );
+    need(hasDefault, `action_results: 行为 ${id} 缺少默认结果（condition 为空的那条）`);
+  }
+}
 const events = await load('events.json');
 if (events) {
   need(Array.isArray(events.routine), 'events.json: routine 必须是数组');

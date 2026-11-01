@@ -1,4 +1,5 @@
-import { ACTIONS, RENT_PER_WEEK, SHOW_ACTION_ID, WEEK_MS } from './content';
+import { ACTIONS, RENT_PER_WEEK, remainingTimes, SHOW_ACTION_ID, WEEK_MS } from './content';
+import { previewAction, resolveAction } from './results';
 import { BALANCE } from './data';
 import { createFans } from './fans';
 import { applyShow, performShow } from './shows';
@@ -101,43 +102,48 @@ export function settle(
 
     const action = ACTIONS[item.actionId];
     if (!action) continue;
-    if (state.stamina + action.stamina < 0) {
-      stoppedReason = 'stamina';
+
+    // 次数限制（0 = 无限制）
+    if (remainingTimes(state, item.actionId) <= 0) {
+      stoppedReason = 'stopped';
       break;
     }
 
-    if (action.cost && state.money < action.cost) {
+    const preview = previewAction(state, item.actionId);
+    if (!preview) continue;
+
+    if (preview.stamina < 0 && state.stamina + preview.stamina < 0) {
+      stoppedReason = 'stamina';
+      break;
+    }
+    if (preview.money < 0 && state.money + preview.money < 0) {
       stoppedReason = 'money';
       break;
     }
 
-    const gain = action.gain ? randInt(rng, action.gain[0], action.gain[1]) : 0;
-    state.stamina = clamp(state.stamina + action.stamina, 0, 100);
-    if (action.cost) state.money -= action.cost;
-    if (action.money) state.money += action.money;
+    // 按条件匹配结果表：数值与文案都可能和预览不同
+    const resolved = resolveAction(state, item.actionId, rng);
+    if (!resolved) continue;
 
-    if (action.stat && gain > 0) {
-      const before = state.stats[action.stat];
-      state.stats[action.stat] = clamp(before + gain, 0, 100);
-      const delta = state.stats[action.stat] - before;
-      state.log.push({
-        at: item.endAt,
-        actionId: action.id,
-        text: action.text.replace('{n}', String(delta)),
-        staminaDelta: action.stamina,
-        statDelta: { [action.stat]: delta } as Partial<Stats>,
-        kind: 'action',
-      });
-    } else {
-      state.log.push({
-        at: item.endAt,
-        actionId: action.id,
-        text: action.text,
-        staminaDelta: action.stamina,
-        statDelta: {},
-        kind: 'action',
-      });
+    state.stamina = clamp(state.stamina + resolved.stamina, 0, 100);
+    state.money += resolved.money;
+
+    const statDelta: Partial<Stats> = {};
+    for (const [k, v] of Object.entries(resolved.stats)) {
+      const key = k as keyof Stats;
+      const before = state.stats[key];
+      state.stats[key] = clamp(before + (v ?? 0), 0, 100);
+      statDelta[key] = state.stats[key] - before;
     }
+
+    state.log.push({
+      at: item.endAt,
+      actionId: action.id,
+      text: resolved.text,
+      staminaDelta: resolved.stamina,
+      statDelta,
+      kind: 'action',
+    });
 
     state.at = item.endAt;
     cursor = item.endAt;

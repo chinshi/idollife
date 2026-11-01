@@ -45,6 +45,11 @@ export const ROUTINE_TEMPLATES: RoutineTemplate[] = RAW_ROUTINE.map((r) => ({
   gain: r.gain,
 }));
 
+/** 判断是否满足某个条件（供行为结果表复用） */
+export function matchesCondition(s: RunState, req?: RawRequires): boolean {
+  return makeRequires(req)(s);
+}
+
 /** 把 JSON 里的触发条件翻译成函数 */
 function makeRequires(req?: RawRequires): (s: RunState) => boolean {
   return (s: RunState) => {

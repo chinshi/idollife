@@ -79,7 +79,7 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
   }
 }
 
-// 2) 行动表
+// 2) 行为表
 {
   const wb = await openWb('actions.xlsx');
   if (!wb) skip('actions.xlsx');
@@ -88,34 +88,78 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
       const a = {
         id: str(cell(r, 1)),
         name: str(cell(r, 2)),
-        category: str(cell(r, 3)),
-        categoryName: str(cell(r, 4)),
+        category: str(cell(r, 4)),
+        categoryName: str(cell(r, 3)),
       };
-      const stat = str(cell(r, 5));
-      if (stat) {
-        a.stat = stat;
-        a.statName = str(cell(r, 6));
-      }
-      a.stamina = num(cell(r, 7)) ?? 0;
-      const g0 = num(cell(r, 8));
-      const g1 = num(cell(r, 9));
-      if (g0 !== undefined && g1 !== undefined) a.gain = [g0, g1];
-      const cost = num(cell(r, 10));
-      if (cost !== undefined) a.cost = cost;
-      const money = num(cell(r, 11));
-      if (money !== undefined) a.money = money;
-      a.text = str(cell(r, 12));
+      const dc = str(cell(r, 5));
+      a.displayCondition = dc ? JSON.parse(dc) : {};
+      a.times = num(cell(r, 6)) ?? 0;
+      a.timesScope = str(cell(r, 7)) || 'run';
+      a.affectedStats = str(cell(r, 8))
+        ? str(cell(r, 8)).split(',').map((s) => s.trim()).filter(Boolean)
+        : [];
+      const dm = num(cell(r, 9));
+      if (dm !== undefined) a.durationMinutes = dm;
       return a;
     });
     await writeJson('actions.json', {
       _说明:
-        '行动表：玩家可安排的训练/工作/休息。category/categoryName 是分类的字段名与中文名；stat/statName 是属性字段名与中文名',
+        '行为表：定义「能做什么」。影响属性可多个；显示条件为空=一直可见；次数 0=无限制。具体收益/文案在 action_results.json 里按条件匹配',
       actions,
     });
     done++;
   }
 }
 
+// 2.5) 行为结果表
+{
+  const wb = await openWb('action_results.xlsx');
+  if (!wb) skip('action_results.xlsx');
+  else {
+    const parseStat = (raw) => {
+      const s = str(raw);
+      if (!s) return undefined;
+      if (s.includes('~')) {
+        const [a, b] = s.split('~').map((x) => Number(x.trim()));
+        return [a, b];
+      }
+      return Number(s);
+    };
+
+    const results = rowsOf(wb, 'results').map((r) => {
+      const effects = {};
+      const stamina = num(cell(r, 6));
+      if (stamina !== undefined) effects.stamina = stamina;
+      const money = num(cell(r, 7));
+      if (money !== undefined) effects.money = money;
+      const stats = {};
+      for (const [i2, key] of [[8, 'vocal'], [9, 'dance'], [10, 'acting'], [11, 'talk']]) {
+        const v = parseStat(cell(r, i2));
+        if (v !== undefined) stats[key] = v;
+      }
+      if (Object.keys(stats).length) effects.stats = stats;
+
+      const o = {
+        id: str(cell(r, 1)),
+        actionId: str(cell(r, 2)),
+        actionName: str(cell(r, 3)),
+      };
+      const cond = str(cell(r, 4));
+      o.condition = cond ? JSON.parse(cond) : {};
+      o.priority = num(cell(r, 5)) ?? 99;
+      o.effects = effects;
+      o.text = str(cell(r, 12));
+      return o;
+    });
+
+    await writeJson('action_results.json', {
+      _说明:
+        '行为结果表：同一个行为在不同条件下可以有不同的数值和文案。condition 为空=默认结果；priority 小的优先匹配。stats 里的数值可以是数字或 [最小值,最大值] 区间',
+      results,
+    });
+    done++;
+  }
+}
 // 3) 事件表
 {
   const wb = await openWb('events.xlsx');
