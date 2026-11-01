@@ -1226,3 +1226,11 @@ body { overflow: hidden; }
   .col-right { display: none; }
   .menu-item.bag-entry { display: block; }
 }
+/* 时间轴卡片撑满中间列，左右边缘与主系统模块对齐 */
+.bar-center > .mod-timeline {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.shell { box-sizing: border-box; }
