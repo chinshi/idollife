@@ -36,6 +36,7 @@ export function debut(state: RunState): RunState {
   return {
     ...state,
     debuted: true,
+    flags: { ...state.flags, 'ev:debut': true },
     log: [
       ...state.log,
       {

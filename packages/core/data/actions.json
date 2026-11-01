@@ -9,7 +9,9 @@
       "displayCondition": {},
       "times": 0,
       "timesScope": "run",
-      "affectedStats": ["vocal"],
+      "affectedStats": [
+        "vocal"
+      ],
       "durationMinutes": 1
     },
     {
@@ -20,7 +22,9 @@
       "displayCondition": {},
       "times": 0,
       "timesScope": "run",
-      "affectedStats": ["dance"],
+      "affectedStats": [
+        "dance"
+      ],
       "durationMinutes": 1
     },
     {
@@ -31,7 +35,9 @@
       "displayCondition": {},
       "times": 0,
       "timesScope": "run",
-      "affectedStats": ["acting"],
+      "affectedStats": [
+        "acting"
+      ],
       "durationMinutes": 1
     },
     {
@@ -42,7 +48,9 @@
       "displayCondition": {},
       "times": 0,
       "timesScope": "run",
-      "affectedStats": ["talk"],
+      "affectedStats": [
+        "talk"
+      ],
       "durationMinutes": 1
     },
     {
@@ -72,10 +80,17 @@
       "name": "演出",
       "category": "performance",
       "categoryName": "演出",
-      "displayCondition": { "statsSumAtLeast": 60 },
+      "displayCondition": {
+        "statsSumAtLeast": 60
+      },
       "times": 0,
       "timesScope": "week",
-      "affectedStats": ["vocal", "dance", "acting", "talk"],
+      "affectedStats": [
+        "vocal",
+        "dance",
+        "acting",
+        "talk"
+      ],
       "durationMinutes": 3
     }
   ]

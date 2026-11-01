@@ -98,6 +98,39 @@ if (actions && actionResults) {
     need(hasDefault, `action_results: 行为 ${id} 缺少默认结果（condition 为空的那条）`);
   }
 }
+const pools = await load('pools.json');
+if (pools) {
+  need(Array.isArray(pools.pools) && pools.pools.length > 0, 'pools.json: pools 必须是非空数组');
+  uniqueIds(pools.pools ?? [], 'pools');
+  for (const p of pools.pools ?? []) {
+    need(Array.isArray(p.members) && p.members.length > 0, `pools.${p.id}: members 不能为空`);
+  }
+}
+const channels = await load('channels.json');
+if (channels) {
+  need(Array.isArray(channels.channels) && channels.channels.length > 0, 'channels.json: channels 必须是非空数组');
+  uniqueIds(channels.channels ?? [], 'channels');
+  for (const c of channels.channels ?? []) {
+    need(typeof c.name === 'string' && c.name, `channels.${c.id}: 缺少 name`);
+    need(typeof c.cost === 'number' && c.cost >= 0, `channels.${c.id}: cost 必须是非负数字`);
+    need(Array.isArray(c.biasPool) && c.biasPool.length > 0, `channels.${c.id}: biasPool 不能为空`);
+    need(Array.isArray(c.quality) && c.quality.length === 2, `channels.${c.id}: quality 必须是 [min,max]`);
+  }
+}
+const tasks = await load('tasks.json');
+if (tasks) {
+  need(Array.isArray(tasks.tasks) && tasks.tasks.length > 0, 'tasks.json: tasks 必须是非空数组');
+  uniqueIds(tasks.tasks ?? [], 'tasks');
+  for (const task of tasks.tasks ?? []) {
+    need(['once', 'repeat'].includes(task.type), `tasks.${task.id}: type 必须是 once/repeat`);
+    need(typeof task.name === 'string' && task.name, `tasks.${task.id}: 缺少 name`);
+    need(typeof task.brief === 'string' && task.brief, `tasks.${task.id}: 缺少 brief（任务简报）`);
+    need(typeof task.content === 'string' && task.content, `tasks.${task.id}: 缺少 content（任务内容）`);
+    need(typeof task.priority === 'number', `tasks.${task.id}: priority 必须是数字`);
+    need(typeof task.times === 'number' && task.times >= 0, `tasks.${task.id}: times 必须是非负数字（0=无限制）`);
+    need(task.rewards && typeof task.rewards === 'object', `tasks.${task.id}: 缺少 rewards`);
+  }
+}
 const events = await load('events.json');
 if (events) {
   need(Array.isArray(events.routine), 'events.json: routine 必须是数组');

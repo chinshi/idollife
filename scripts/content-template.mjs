@@ -23,6 +23,9 @@ const shop = await load('shop.json');
 const members = await load('members.json');
 const characters = await load('characters.json');
 const logs = await load('logs.json');
+const tasks = await load('tasks.json');
+const channels = await load('channels.json');
+const pools = await load('pools.json');
 
 await mkdir(outDir, { recursive: true });
 
@@ -206,4 +209,57 @@ await build('logs.xlsx', [
   },
 ]);
 
-console.log('✓ 已生成 9 个模板文件到 content/（枚举字段均含中英文两列）');
+
+// 10) 任务表
+await build('tasks.xlsx', [
+  {
+    name: 'tasks',
+    headers: ['id', '类型', '任务名', '显示条件', '领取条件', '完成条件', '资金', '体力', '粉丝', '属性奖励', '次数', '任务内容', '任务简报', '优先级'],
+    rows: tasks.tasks.map((x) => [
+      x.id,
+      x.type,
+      x.name,
+      x.displayCondition && Object.keys(x.displayCondition).length ? JSON.stringify(x.displayCondition) : '',
+      x.acceptCondition && Object.keys(x.acceptCondition).length ? JSON.stringify(x.acceptCondition) : '',
+      x.completeCondition && Object.keys(x.completeCondition).length
+        ? JSON.stringify(x.completeCondition)
+        : '',
+      x.rewards?.money ?? '',
+      x.rewards?.stamina ?? '',
+      x.rewards?.fans ?? '',
+      x.rewards?.stats ? JSON.stringify(x.rewards.stats) : '',
+      x.times ?? 0,
+      x.content,
+      x.brief,
+      x.priority,
+    ]),
+  },
+]);
+
+// 11) 朋友圈渠道表
+await build('channels.xlsx', [
+  {
+    name: 'channels',
+    headers: ['id', '名称', '花费', '偏向', '资质最小', '资质最大', '卡池id', '文案'],
+    rows: channels.channels.map((c) => [
+      c.id,
+      c.name,
+      c.cost,
+      (c.biasPool ?? []).join(','),
+      c.quality?.[0] ?? '',
+      c.quality?.[1] ?? '',
+      c.poolId ?? '',
+      c.text,
+    ]),
+  },
+]);
+
+// 12) NPC 卡池表
+await build('pools.xlsx', [
+  {
+    name: 'pools',
+    headers: ['id', '卡池名称', '成员（逗号分隔）'],
+    rows: pools.pools.map((p) => [p.id, p.name, (p.members ?? []).join(',')]),
+  },
+]);
+console.log('✓ 已生成模板文件到 content/（含 tasks / channels / pools）');

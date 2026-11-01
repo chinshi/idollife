@@ -5,7 +5,16 @@ const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 
 /** 没配置时返回 null，界面据此隐藏登录入口 */
 export const supabase: SupabaseClient | null =
-  url && anonKey ? createClient(url, anonKey) : null;
+  url && anonKey
+    ? createClient(url, anonKey, {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: false,
+          storageKey: 'idollife-auth',
+        },
+      })
+    : null;
 
 export interface AuthUser {
   id: string;
@@ -38,9 +47,21 @@ export async function getSessionUser(): Promise<AuthUser | null> {
   return u ? { id: u.id, email: u.email ?? null } : null;
 }
 
+/** 取 access token；过期会自动刷新一次 */
 export async function getAccessToken(): Promise<string | null> {
   if (!supabase) return null;
+
   const { data } = await supabase.auth.getSession();
+  if (data.session?.access_token) return data.session.access_token;
+
+  const refreshed = await supabase.auth.refreshSession();
+  return refreshed.data.session?.access_token ?? null;
+}
+
+/** 手动刷新一次 token（接口返回 401 时用） */
+export async function refreshAccessToken(): Promise<string | null> {
+  if (!supabase) return null;
+  const { data } = await supabase.auth.refreshSession();
   return data.session?.access_token ?? null;
 }
 

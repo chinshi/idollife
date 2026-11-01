@@ -384,4 +384,102 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
   }
 }
 
+// 10) 任务表
+{
+  const wb = await openWb('tasks.xlsx', 'tasks.json');
+  if (!wb) skip('tasks.xlsx');
+  else {
+    const parseJson = (raw, label) => {
+      const s = str(raw);
+      if (!s) return {};
+      try {
+        return JSON.parse(s);
+      } catch {
+        console.error(`✗ ${label} 不是合法 JSON：${s}`);
+        process.exit(1);
+      }
+    };
+
+    const tasks = rowsOf(wb, 'tasks').map((r) => {
+      const x = {
+        id: str(cell(r, 1)),
+        type: str(cell(r, 2)),
+        name: str(cell(r, 3)),
+      };
+      x.displayCondition = parseJson(cell(r, 4), `tasks.${x.id}.displayCondition`);
+      x.acceptCondition = parseJson(cell(r, 5), `tasks.${x.id}.acceptCondition`);
+      x.completeCondition = parseJson(cell(r, 6), `tasks.${x.id}.completeCondition`);
+
+      const rewards = {};
+      const money = num(cell(r, 7));
+      if (money !== undefined) rewards.money = money;
+      const stamina = num(cell(r, 8));
+      if (stamina !== undefined) rewards.stamina = stamina;
+      const fans = num(cell(r, 9));
+      if (fans !== undefined) rewards.fans = fans;
+      const stats = str(cell(r, 10)) ? parseJson(cell(r, 10), `tasks.${x.id}.rewards.stats`) : undefined;
+      if (stats && Object.keys(stats).length) rewards.stats = stats;
+      x.rewards = rewards;
+
+      x.times = num(cell(r, 11)) ?? 0;
+      x.content = str(cell(r, 12));
+      x.brief = str(cell(r, 13));
+      x.priority = num(cell(r, 14)) ?? 99;
+      return x;
+    });
+
+    await writeJson('tasks.json', {
+      _说明:
+        '任务表：displayCondition=可见条件；acceptCondition=可领取条件；completeCondition=完成条件。领取后进入进行中，条件达成自动完成并发奖',
+      tasks,
+    });
+    done++;
+  }
+}
+
+// 11) 朋友圈渠道表
+{
+  const wb = await openWb('channels.xlsx', 'channels.json');
+  if (!wb) skip('channels.xlsx');
+  else {
+    const channels = rowsOf(wb, 'channels').map((r) => ({
+      id: str(cell(r, 1)),
+      name: str(cell(r, 2)),
+      cost: num(cell(r, 3)) ?? 0,
+      biasPool: str(cell(r, 4))
+        ? str(cell(r, 4)).split(',').map((s) => s.trim()).filter(Boolean)
+        : [],
+      quality: [num(cell(r, 5)) ?? 0.8, num(cell(r, 6)) ?? 1.1],
+      poolId: str(cell(r, 7)),
+      text: str(cell(r, 8)),
+    }));
+    await writeJson('channels.json', {
+      _说明:
+        '认识新朋友的渠道表：每个渠道花钱认识一个人，biasPool 决定大概率是什么类型，quality 是强度系数区间，poolId 指向卡池',
+      channels,
+    });
+    done++;
+  }
+}
+
+// 12) NPC 卡池表
+{
+  const wb = await openWb('pools.xlsx', 'pools.json');
+  if (!wb) skip('pools.xlsx');
+  else {
+    const pools = rowsOf(wb, 'pools').map((r) => ({
+      id: str(cell(r, 1)),
+      name: str(cell(r, 2)),
+      members: str(cell(r, 3))
+        ? str(cell(r, 3)).split(',').map((s) => s.trim()).filter(Boolean)
+        : [],
+    }));
+    await writeJson('pools.json', {
+      _说明:
+        'NPC 卡池表：每个渠道从对应卡池里抽人。同一个卡池里，未满默契的角色等概率，满默契的权重减半',
+      pools,
+    });
+    done++;
+  }
+}
 console.log(`✓ 导入了 ${done} 张表，接着跑 pnpm check:data 校验`);

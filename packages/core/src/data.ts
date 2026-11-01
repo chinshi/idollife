@@ -7,6 +7,7 @@ import actionsJson from '../data/actions.json';
 import attributesJson from '../data/attributes.json';
 import balanceJson from '../data/balance.json';
 import eventsJson from '../data/events.json';
+import poolsJson from '../data/pools.json';
 
 export const BALANCE = balanceJson.balance;
 
@@ -68,6 +69,12 @@ export interface RawRequires {
   statsSumBelow?: number;
   fansAtLeast?: Record<string, number>;
   flagsNot?: string[];
+  /** 这些标记都存在才满足 */
+  flagsContain?: string[];
+  /** 资金不少于 */
+  moneyAtLeast?: number;
+  /** 朋友圈人数不少于 */
+  friendsAtLeast?: number;
 }
 
 export interface RawChoice {
@@ -113,3 +120,10 @@ export interface RawAttribute {
 }
 
 export const RAW_ATTRIBUTES = attributesJson.attributes as RawAttribute[];
+export interface RawPool {
+  id: string;
+  name: string;
+  members: string[];
+}
+
+export const RAW_POOLS = poolsJson.pools as RawPool[];

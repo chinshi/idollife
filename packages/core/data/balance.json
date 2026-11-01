@@ -12,6 +12,7 @@
     "dupCap": 10,
     "npcBaseRatio": 0.9,
     "runDays": 730,
-    "divinationBase": 100
+    "divinationBase": 100,
+    "partyMax": 10
   }
 }

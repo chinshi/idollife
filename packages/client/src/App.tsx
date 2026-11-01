@@ -17,6 +17,22 @@ import {
   biasLabel,
   buyItem,
   canDebut,
+  DEBUT_THRESHOLD,
+  RECRUIT_COOLDOWN_DAYS,
+  cooldownLeftDays,
+  TASKS,
+  taskStatus,
+  acceptTask,
+  activeTasks,
+  claimTaskReward,
+  describeCondition,
+  describeRewards,
+  completedTasks,
+  claimableTasks,
+  taskBadgeCount,
+  CHANNELS,
+  meetFriend,
+  inviteFriend,
   canShowAction,
   previewAction,
   remainingTimes,
@@ -51,6 +67,7 @@ import { syncRun, fetchLatestRun, pushChoice } from './api/sync';
 import {
   getAccessToken,
   getSessionUser,
+  refreshAccessToken,
   onAuthChange,
   signIn,
   signOut,
@@ -74,6 +91,7 @@ const initialRun: RunState = {
   debuted: false,
   parties: [],
   activePartyId: null,
+  friends: [],
   inventory: [],
   equipped: {},
   flags: {},
@@ -93,6 +111,7 @@ type SyncStatus = 'local' | 'syncing' | 'synced' | 'offline' | 'expired';
 type SysTab = 'shop' | 'bag';
 type BagTab = 'equip' | 'consume' | 'other';
 type LogTab = 'all' | 'event' | 'stat';
+type MainTab = 'task' | 'stats' | 'plan' | 'party' | 'friends' | 'shop' | 'divine' | 'bag';
 
 function totalFans(run: RunState): number {
   return Object.values(run.fans.byType).reduce((a, b) => a + b, 0);
@@ -288,18 +307,81 @@ function AppInner() {
   const [bagTab, setBagTab] = useState<BagTab>('equip');
   const [sysTab, setSysTab] = useState<SysTab>('shop');
   const [logTab, setLogTab] = useState<LogTab>('all');
+  const [mainTab, setMainTab] = useState<MainTab>('plan');
+  const [lastStop, setLastStop] = useState('');
+  const [confirmAction, setConfirmAction] = useState<null | 'stop' | 'restart'>(null);
+  const [rightTab, setRightTab] = useState<'stats' | 'bag'>('stats');
+  const [flippedIds, setFlippedIds] = useState<string[]>([]);
+  const toggleFlip = (id: string) => {
+    setFlippedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  };
+  const [managing, setManaging] = useState(false);
+  const [showStops, setShowStops] = useState(false);
+  const [showInvite, setShowInvite] = useState(false);
+  const [kickTarget, setKickTarget] = useState<string | null>(null);
+  const [friendsTab, setFriendsTab] = useState<'list' | 'meet'>('list');
+  const [taskTab, setTaskTab] = useState<'all' | 'accept' | 'active' | 'done'>('all');
+  const statTotal = run.stats.vocal + run.stats.dance + run.stats.acting + run.stats.talk;
+  const STOP_TEXT: Record<string, string> = {
+    stamina: '体力不足，行程停下来了',
+    money: '钱不够，行程停下来了',
+    exhausted: '这一批行程走完了',
+    stopped: '到指定的停止点停下了',
+    event: '有事件需要处理',
+    ending: '两年到了',
+    time: '',
+  };
   const [historyLimit, setHistoryLimit] = useState(9);
   const [forceLogin, setForceLogin] = useState(false);
   const [running, setRunning] = useState(false);
   const [speed, setSpeed] = useState(1);
-  const [gameNow, setGameNow] = useState<number>(boot?.run?.at ?? T0);
+  const clockKey = 'idollife:clock:v2';
+
+  /**
+   * 读取本地记录的「行动时钟」：
+   * 存的是 { 游戏时间, 墙上时间 }，用墙上时间差把离线期间的时间补回来。
+   */
+  const bootClockRef = useRef<number>(-1);
+  if (bootClockRef.current < 0) bootClockRef.current = (() => {
+    try {
+      const raw = localStorage.getItem(clockKey);
+      if (!raw) return 0;
+      const data = JSON.parse(raw) as { t?: number; w?: number; speed?: number };
+      const t = Number(data.t ?? 0);
+      const w = Number(data.w ?? 0);
+      if (!Number.isFinite(t) || t <= 0) return 0;
+
+      const speed = Number(data.speed ?? 1) || 1;
+      const offline = w > 0 ? Math.max(0, Date.now() - w) : 0;
+      const capped = Math.min(offline, 6 * 3600 * 1000); // 最多补 6 小时，防止离谱跳变
+      let next = Math.round(t + capped * speed);
+
+      // 不超过最后一条行程的结束时间（避免离线补出天文数字）
+      try {
+        const saved = loadSave();
+        const maxEnd = (saved?.schedule ?? []).reduce((m, s) => Math.max(m, s.endAt), 0);
+        if (maxEnd > 0) next = Math.min(next, maxEnd);
+      } catch {
+        /* 忽略 */
+      }
+
+      return next;
+    } catch {
+      return 0;
+    }
+  })();
+  const bootClock = bootClockRef.current;
+
+  const [gameNow, setGameNow] = useState<number>(
+    Math.max(boot?.run?.at ?? T0, bootClock),
+  );
 
   const runRef = useRef<RunState>(boot?.run ?? initialRun);
   const scheduleRef = useRef<ScheduleItem[]>(boot?.schedule ?? []);
   const batchRef = useRef<{ from: number; prevRun: RunState; prevSchedule: ScheduleItem[] } | null>(null);
   const timelineRef = useRef<HTMLDivElement | null>(null);
   const [boxH, setBoxH] = useState(0);
-  const gameNowRef = useRef<number>(boot?.run?.at ?? T0);
+  const gameNowRef = useRef<number>(Math.max(boot?.run?.at ?? T0, bootClock));
   const resumeAfterEvent = useRef(false);
   const dbgLines = useRef<string[]>([]);
   const [showDebug, setShowDebug] = useState(false);
@@ -386,6 +468,33 @@ function AppInner() {
     return () => clearTimeout(t);
   }, [runId, revision, run, schedule, seed]);
 
+  // 每 10 分钟续一次会话，避免长时间挂着后 token 过期
+  useEffect(() => {
+    if (!user) return;
+    const id = window.setInterval(() => {
+      void refreshAccessToken();
+    }, 10 * 60 * 1000);
+    return () => window.clearInterval(id);
+  }, [user]);
+  // 记住「当前时钟位置」，刷新后从那里继续，而不是回到行动开始
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      try {
+        localStorage.setItem(
+          clockKey,
+          JSON.stringify({
+            t: Math.round(gameNowRef.current),
+            w: Date.now(),
+            speed,
+          }),
+        );
+      } catch {
+        /* 忽略 */
+      }
+    }, 1000);
+    return () => window.clearInterval(id);
+  }, [clockKey, speed]);
+
   useEffect(() => {
     runRef.current = run;
   }, [run]);
@@ -457,9 +566,34 @@ function AppInner() {
 
       const stillPending = scheduleRef.current.some((s) => !s.done);
       if (result.stoppedReason === 'exhausted' && stillPending) {
-        dbg('等待下一个行动 startAt=' + String(nextStart()));
+        const next = scheduleRef.current
+          .filter((s) => !s.done)
+          .sort((a, b) => a.startAt - b.startAt)[0];
+
+        const unknown =
+          next && (!ACTIONS[next.actionId] || !previewAction(runRef.current, next.actionId));
+
+        if (unknown) {
+          const cleaned = scheduleRef.current.filter((s) => s.id !== next!.id);
+          scheduleRef.current = cleaned;
+          setSchedule(cleaned);
+          dbg('丢弃未知行为 ' + next!.actionId + '（配置里没有）');
+        } else if (next && next.startAt > runRef.current.at) {
+          // 中间有空档：把时间对齐到它的开始，避免空转
+          const healed = { ...runRef.current, at: next.startAt };
+          runRef.current = healed;
+          setRun(healed);
+          dbg('对齐到下一个行动 at=' + String(next.startAt));
+        } else if (next) {
+          // 重叠：把待执行行程整体顺延，让它们重新首尾相接
+          const fixed = repairChain(scheduleRef.current, runRef.current.at);
+          scheduleRef.current = fixed;
+          setSchedule(fixed);
+          dbg('修复重叠行程 at=' + String(runRef.current.at));
+        }
         return;
       }
+
 
       if (result.stoppedReason !== 'time') {
         dbg('停止 reason=' + String(result.stoppedReason) + ' 剩=' + String(
@@ -478,7 +612,7 @@ function AppInner() {
 
 
   const lastEnd = useMemo(
-    () => schedule.filter((s) => !s.fixed).reduce((max, s) => Math.max(max, s.endAt), run.at),
+    () => schedule.reduce((max, s) => Math.max(max, s.endAt), run.at),
     [schedule, run.at],
   );
 
@@ -562,6 +696,43 @@ function AppInner() {
     return padY * 2 + Math.max(0, Math.round((last.endAt - baseTime) * pxPerMs)) + 160;
   }, [visibleItems, baseTime, pxPerMs, padY]);
 
+  // 横向时间轴派生：当前行动在正中，左右分别是历史与未来
+  const pastItems = useMemo(
+    () => visibleItems.filter((s) => s.done).slice(-10),
+    [visibleItems],
+  );
+  const futureItems = useMemo(
+    () => visibleItems.filter((s) => !s.done && s.id !== nextItem?.id).slice(0, 10),
+    [visibleItems, nextItem?.id],
+  );
+
+  const dayBreakLabels = useMemo(() => {
+    const m = new Map<string, string>();
+    visibleItems.forEach((it, i) => {
+      const day = Math.floor((it.startAt - T0) / DAY_MS);
+      const prev = visibleItems[i - 1];
+      const prevDay = prev ? Math.floor((prev.startAt - T0) / DAY_MS) : -1;
+      if (day !== prevDay) m.set(it.id, dayLabel(it.startAt, run.at));
+    });
+    return m;
+  }, [visibleItems, run.at]);
+  const pastDateAt = pastItems[0]?.startAt ?? run.at;
+  const futureDateAt = futureItems[0]?.startAt ?? nextItem?.startAt ?? run.at;
+
+  const currentPct = nextItem
+    ? Math.min(
+        1,
+        Math.max(0, (gameNow - nextItem.startAt) / Math.max(1, nextItem.endAt - nextItem.startAt)),
+      )
+    : 0;
+
+  function actionNo(it: { id: string; startAt: number }): number {
+    const day = Math.floor((it.startAt - T0) / DAY_MS);
+    const sameDay = visibleItems
+      .filter((x) => Math.floor((x.startAt - T0) / DAY_MS) === day)
+      .sort((a, b) => a.startAt - b.startAt);
+    return Math.max(1, sameDay.findIndex((x) => x.id === it.id) + 1);
+  }
   // 只在两种时机自动滚动：①开始推进 ②一条行动完成、进入下一条
   const prevRunningRef = useRef(false);
   const prevNextIdRef = useRef<string | null>(null);
@@ -578,29 +749,18 @@ function AppInner() {
     prevRunningRef.current = running;
     prevNextIdRef.current = nextItem?.id ?? null;
 
-    // 直接用这一行的真实布局位置来居中，避免任何公式/测量误差
+    // 横向时间轴：把当前行动滚到可视区中间
     const cur = nextItem;
-    const rowEl = cur
-      ? el.querySelector<HTMLElement>(`[data-node-id="${cur.id}"]`)
-      : null;
+    const cellEl = cur ? el.querySelector<HTMLElement>(`[data-h-id="${cur.id}"]`) : null;
+    if (!cellEl) return;
 
-    const offset = ((cur?.startAt ?? run.at) - baseTime) * pxPerMs;
-    const rowH = cur ? Math.max(34, (cur.endAt - cur.startAt) * pxPerMs) : 0;
-
-    const top = rowEl
-      ? Math.max(0, Math.round(rowEl.offsetTop + rowEl.offsetHeight / 2 - el.clientHeight / 2))
-      : Math.max(0, Math.round(offset + rowH / 2));
-    dbg(
-
-      '滚动 off=' + String(Math.round(offset)) +
-      ' rowH=' + String(Math.round(rowH)) +
-      ' top=' + String(top) +
-      ' clientH=' + String(el.clientHeight) +
-      ' scrollH=' + String(el.scrollHeight) +
-      ' boxH=' + String(boxH) +
-      ' padY=' + String(padY),
+    const left = Math.max(
+      0,
+      Math.round(cellEl.offsetLeft + cellEl.offsetWidth / 2 - el.clientWidth / 2),
     );
-    el.scrollTo({ top, behavior: 'smooth' });
+    dbg('滚动 left=' + String(left) + ' w=' + String(el.clientWidth));
+
+    el.scrollTo({ left, behavior: 'smooth' });
   }, [running, nextItem?.id, run.at, baseTime, pxPerMs, boxH, padY]);
 
   const dayMarks = useMemo(() => {
@@ -613,12 +773,24 @@ function AppInner() {
     }
     return marks;
   }, [visibleItems, run.at]);
-  // 有新日志就滚到底（按时间正序，最新的在下面）
+  // 有新日志 / 刷新页面时，滚到最底部显示最新一条
   useEffect(() => {
     const el = logRef.current;
     if (!el) return;
-    el.scrollTop = el.scrollHeight;
-  }, [run.log.length, logTab]);
+
+    const toBottom = () => {
+      el.scrollTop = el.scrollHeight;
+    };
+
+    toBottom();
+    const raf = requestAnimationFrame(toBottom);
+    const timer = window.setTimeout(toBottom, 120);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(timer);
+    };
+  }, [run.log.length, logTab, mainTab]);
 
   const visibleLog = useMemo(() => {
     const filtered = run.log.filter((l) => {
@@ -656,6 +828,18 @@ function AppInner() {
     );
 
     if (outcome.kind === 'unauthorized') {
+      // token 过期：先刷新再重试一次，避免频繁被踢回登录
+      const fresh = await refreshAccessToken();
+      if (fresh) {
+        const retry = await syncRun(
+          { runId, run: prevRun, schedule: prevSchedule, from, to, seed },
+          fresh,
+        );
+        if (retry.kind !== 'unauthorized') {
+          setSyncStatus(retry.kind === 'error' ? 'offline' : 'synced');
+          return;
+        }
+      }
       setSyncStatus('expired');
       setForceLogin(true);
       return;
@@ -666,10 +850,22 @@ function AppInner() {
     }
 
     if (outcome.kind === 'stale') {
-      setRun(normalizeRun(outcome.data.state));
+      // 服务器校验失败：以服务器为准，校准本地时钟与排程时间
+      const serverRun = normalizeRun(outcome.data.state);
+      const fixedSchedule = repairChain(scheduleRef.current, serverRun.at);
+
+      runRef.current = serverRun;
+      scheduleRef.current = fixedSchedule;
+      setRun(serverRun);
+      setSchedule(fixedSchedule);
+      setGameNow(serverRun.at);
       setRevision(outcome.data.revision);
-      setNotice('服务器上的进度更新，已回滚到云端。');
+      setRunning(false);
+      batchRef.current = null;
+      setSnapshot(null);
+      setNotice('服务器校验没过，已按云端的进度校准时间，可以重新推进。');
       setSyncStatus('synced');
+      dbg('校准 at=' + String(serverRun.at));
       return;
     }
 
@@ -781,6 +977,34 @@ function AppInner() {
     return pend.length > 0 ? pend[0]!.startAt : 0;
   }
 
+  /** 修复排程重叠：待执行行程若开始时间早于已推进时间，则顺延成首尾相接 */
+  function repairChain(list: ScheduleItem[], fromAt: number): ScheduleItem[] {
+    const pending = list
+      .filter((s) => !s.done && !s.fixed)
+      .sort((a, b) => a.startAt - b.startAt);
+
+    let cursor = fromAt;
+    const patched = new Map<string, ScheduleItem>();
+    for (const it of pending) {
+      const dur = Math.max(1, it.endAt - it.startAt);
+      const start = Math.max(cursor, it.startAt);
+      if (start !== it.startAt) patched.set(it.id, { ...it, startAt: start, endAt: start + dur });
+      cursor = Math.max(cursor, start + dur);
+    }
+    if (patched.size === 0) return list;
+    return list.map((s) => patched.get(s.id) ?? s);
+  }
+  const advanceRef = useRef<() => void>(() => {});
+
+  // 记住速度档位
+  useEffect(() => {
+    try {
+      localStorage.setItem('idollife:speed', String(speed));
+    } catch {
+      /* 忽略 */
+    }
+  }, [speed]);
+
   function markExecuted(prev: ScheduleItem[], executed: string[]): ScheduleItem[] {
     const marked = prev.map((s) => (executed.includes(s.id) ? { ...s, done: true } : s));
     const doneIds = marked.filter((s) => s.done).map((s) => s.id);
@@ -795,7 +1019,7 @@ function AppInner() {
     } else {
       setNotice(
         result.stoppedReason === 'stamina'
-          ? '体力不足，行程停下了。'
+          ? `体力不足（剩 ${result.state.stamina}），没法继续下一条行动了。去练个「爆睡」吧。`
           : result.stoppedReason === 'money'
             ? '钱不够，行程停下了。'
             : result.stoppedReason === 'stopped'
@@ -805,7 +1029,8 @@ function AppInner() {
                 : '这一批行程走完了。',
       );
     }
-    dbg('批次结束 reason=' + String(result.stoppedReason) + ' at=' + String(result.state.at));
+    setLastStop(String(result.stoppedReason ?? 'exhausted'));
+    dbg('批次结束 reason=' + String(result.stoppedReason) + ' at=' + String(result.state.at) + ' 体力=' + String(result.state.stamina) + ' 钱=' + String(result.state.money));
     if (result.stoppedReason === 'event') resumeAfterEvent.current = true;
     void pushSync(batch.prevRun, batch.prevSchedule, batch.from, result.state.at, result);
     setSnapshot(null);
@@ -826,8 +1051,14 @@ function AppInner() {
       return;
     }
 
-    const staleAtStart = schedule.filter((s) => !s.done && s.startAt < run.at);
-    const usable = schedule.filter((s) => !staleAtStart.includes(s));
+    const repaired = repairChain(schedule, run.at);
+    if (repaired !== schedule) {
+      dbg('修复重叠行程');
+      setSchedule(repaired);
+    }
+
+    const staleAtStart = repaired.filter((s) => !s.done && s.startAt < run.at);
+    const usable = repaired.filter((s) => !staleAtStart.includes(s));
     if (staleAtStart.length > 0) {
       dbg('开始前清理过期行程 ' + String(staleAtStart.length) + ' 条');
       setSchedule(usable);
@@ -844,31 +1075,45 @@ function AppInner() {
 
     setSnapshot({ run: baseRun, schedule: usable });
     batchRef.current = { from: baseRun.at, prevRun: baseRun, prevSchedule: usable };
-    setGameNow(baseRun.at);
+    setGameNow(Math.max(baseRun.at, gameNowRef.current));
     setRunning(true);
     dbg('开始推进 pending=' + String(pending.length) + ' at=' + String(run.at));
   }
 
+  advanceRef.current = advance;
+
   function stopCurrent() {
     if (!running) return;
-    const ok = window.confirm(
-      '停止当前行程？\n\n只作废正在进行的那条行动（不结算），时间回到它开始前。\n其余没开始的行程会保留。',
-    );
-    if (!ok) return;
+    setConfirmAction('stop');
+  }
 
+  function doStop() {
+    setConfirmAction(null);
     dbg('手动停止（只作废当前行动）');
     setRunning(false);
     batchRef.current = null;
     setSnapshot(null);
     resumeAfterEvent.current = false;
     // 当前行动还没结算，run.at 就停在它的开始时间，无需回滚
+    setGameNow(runRef.current.at);
+    try {
+      localStorage.setItem(
+        'idollife:clock:v2',
+        JSON.stringify({ t: Math.round(runRef.current.at), w: Date.now(), speed }),
+      );
+    } catch {
+      /* 忽略 */
+    }
     setNotice('已停止：当前这条行动作废，其余行程保留。');
   }
 
   /** 仅测试用：清空本地存档，从头新建一局并覆盖云端 */
   function restartForTest() {
-    const ok = window.confirm('重新开始（测试用）\n\n会清空本地存档并新建一局，确定吗？');
-    if (!ok) return;
+    setConfirmAction('restart');
+  }
+
+  function doRestart() {
+    setConfirmAction(null);
 
     const fresh = createSave(initialRun, 'run-demo');
     clearSave();
@@ -890,7 +1135,7 @@ function AppInner() {
 
   function openPartyModal() {
     if (!run.debuted) {
-      window.alert('出道后才能组建组合。先提升属性，达到出道条件吧。');
+      setNotice('出道后才能组建组合。先提升属性，达到出道条件吧。');
       return;
     }
     setPartyName('');
@@ -903,6 +1148,95 @@ function AppInner() {
     setShowPartyModal(false);
     setNotice('组合创建好了。');
     void pushWholeState(state);
+  }
+
+  function doMeet(channelId: string) {
+    const r = meetFriend(run, channelId, seed);
+    if (r.result === 'poor') {
+      setNotice('钱不够，先攒一点。');
+      return;
+    }
+    if (r.result === 'empty') {
+      setRun(r.state);
+      setNotice('这次没遇到合适的人（钱照扣）。');
+      return;
+    }
+    if (r.result === 'dup') {
+      // 走的是「重复认识」分支：也要把新的状态写回去（扣钱 + 日志 + 默契）
+      setRun(r.state);
+      setNotice('又见到了认识的人，默契 +1%。');
+      return;
+    }
+    if (r.result !== 'ok') {
+      setNotice('这个渠道暂时去不了。');
+      return;
+    }
+    setRun(r.state);
+    // 不切换页签：留在「认识新朋友」方便连续抽取
+    setNotice(r.friend ? `认识了 ${r.friend.name}，已加入朋友圈。` : '认识了一个新朋友。');
+  }
+
+  function doReward(taskId: string) {
+    const r = claimTaskReward(run, taskId);
+    if (r.result === 'ok') {
+      setRun(r.state);
+      setNotice('任务奖励已领取。');
+      return;
+    }
+    setNotice('任务还没完成。');
+  }
+
+  function doAccept(taskId: string) {
+    const r = acceptTask(run, taskId);
+    if (r.result === 'ok') {
+      setRun(r.state);
+      setNotice('任务已领取，完成后会自动结算奖励。');
+      return;
+    }
+    setNotice(r.result === 'done' ? '这个任务已经完成了。' : '现在还不能领取。');
+  }
+
+  function doKick(memberId: string) {
+    const partyId = run.activePartyId;
+    if (!partyId) return;
+    const target = run.parties.find((p) => p.id === partyId)?.members.find((m) => m.id === memberId);
+    setRun({
+      ...run,
+      parties: run.parties.map((p) =>
+        p.id === partyId ? { ...p, members: p.members.filter((m) => m.id !== memberId) } : p,
+      ),
+      friends: target
+        ? run.friends.map((f) =>
+            f.name === target.name
+              ? { ...f, partyId: null, cooldownUntil: run.at + RECRUIT_COOLDOWN_DAYS * DAY_MS }
+              : f,
+          )
+        : run.friends,
+    });
+    setNotice('已移出组合。');
+  }
+
+  function doInvite(friendId: string) {
+    const r = inviteFriend(run, friendId);
+    if (r.result === 'no-party') {
+      setNotice('先创建或选择一个组合。');
+      return;
+    }
+    if (r.result === 'full') {
+      setNotice('组合满了（最多 10 人）。');
+      return;
+    }
+    if (r.result === 'taken') {
+      setNotice('这个人已经在别的组合里了。');
+      return;
+    }
+    if (r.result === 'cooldown') {
+      setNotice('这个人在冷却期，暂时不能入团。');
+      return;
+    }
+    if (r.result !== 'ok') return;
+    setRun(r.state);
+    setNotice('已经邀请进组合了。');
   }
 
   function doRecruit() {
@@ -971,6 +1305,16 @@ function AppInner() {
     setNotice('演出安排在周末，占满当天 3 个行动位。');
   }
 
+  // 刷新后：如果还有待执行行程，自动续跑（离线设计，读档即继续）
+  const bootResumeRef = useRef(false);
+  useEffect(() => {
+    if (bootResumeRef.current) return;
+    if (!user) return;
+    if (!schedule.some((s) => !s.done)) return;
+    bootResumeRef.current = true;
+    const t = window.setTimeout(() => advanceRef.current(), 400);
+    return () => window.clearTimeout(t);
+  }, [user, schedule]);
   function doDivine() {
     const { state, result, cost } = divine(run);
     if (result === 'poor') {
@@ -1071,270 +1415,246 @@ function AppInner() {
     <div className="app">
       <CrashBanner msg={crash} onClose={() => setCrash(null)} />
       <header className="bar">
-        <span className="brand">idollife</span>
-        <span className="clock">
-          第 {todayIndex + 1} 天 · {weekdayName(todayIndex)} · 今日剩余{' '}
-          {Math.max(0, 3 - usedToday)}/3
-        </span>
-        <span className="spacer" />
-        <span className="muted small">{user?.email ?? '已离线'}</span>
-        <button
-          className="link-btn"
-          onClick={() => {
-            setDebugText(localStorage.getItem('idollife:debug:v1') ?? '(空)');
-            setShowDebug(true);
-          }}
-        >
-          日志
-        </button>
-        <button className="link-btn" onClick={restartForTest}>
-          重新开始
-        </button>
-        <button className="link-btn" onClick={() => void signOut()}>
-          退出
-        </button>
-      </header>
-
-      <main className="cols">
-        <div className="col-main">
-      <section className="panel">
-        <div className="panel-head">
-          <h2>日志</h2>
-        </div>
-        <div className="mini-tabs">
-          {(['all', 'event', 'stat'] as LogTab[]).map((t) => (
-            <button
-              key={t}
-              className={logTab === t ? 'mini-tab active' : 'mini-tab'}
-              onClick={() => setLogTab(t)}
-            >
-              {t === 'all' ? '全部' : t === 'event' ? '事件' : '属性'}
-            </button>
-          ))}
-        </div>
-        {visibleLog.length === 0 ? (
-          <p className="muted small">还没有记录。</p>
-        ) : (
-          <div className="log-scroll" ref={logRef}>
-            <ul className="log dense">
-            {visibleLog.map((l, i) => {
-              const day = Math.floor((l.at - T0) / DAY_MS);
-              const prev = i > 0 ? visibleLog[i - 1] : undefined;
-              const prevDay = prev ? Math.floor((prev.at - T0) / DAY_MS) : -1;
-              const isNewDay = day !== prevDay;
-
-              return (
-                <Fragment key={`${l.at}-${i}`}>
-                  {isNewDay && (
-                    <li className="log-day">
-                      第 {Math.floor(day / 7) + 1} 周 {weekdayName(day)}
-                    </li>
-                  )}
-                  <li>
-                    <span className="log-text">{l.text}</span>
-                    {l.axesChanged && <em className="tag hidden-tag">隐藏属性变动</em>}
-                  </li>
-                </Fragment>
-              );
-            })}
-          </ul>
-          </div>
-        )}
-      </section>
-
-      <section className="panel">
-        <div className="stats">
-          {(['vocal', 'dance', 'acting', 'talk'] as const).map((k) => (
-            <div key={k} className="stat">
-              <span className="k">{STAT_LABEL[k]}</span>
-              <span className="v">{run.stats[k]}</span>
-            </div>
-          ))}
-          <div className="stat">
-            <span className="k">体力</span>
-            <span className="v">{run.stamina}</span>
-          </div>
-          <div className="stat">
-            <span className="k">资金</span>
-            <span className="v">{run.money}</span>
-          </div>
-          <div className="stat">
-            <span className="k">粉丝</span>
-            <span className="v">{totalFans(run)}</span>
-          </div>
-        </div>
-        <div className="row">
-          <button onClick={() => setShowDivination(true)}>占卜</button>
-          {canDebut(run) && (
-            <button className="primary" onClick={doDebut}>
-              出道
-            </button>
-          )}
-          {syncStatus !== 'local' && (
-            <span className={`chip chip-${syncStatus}`}>{SYNC_TEXT[syncStatus]}</span>
-          )}
-        </div>
-        <p className="muted saved">
-          {savedAt ? `已保存 ${new Date(savedAt).toLocaleTimeString()}` : '尚未保存'}
-        </p>
-      </section>
-
-
-
-
-      <section className="panel">
-        <div className="panel-head">
-          <h2>组合{party ? ` · ${party.name}` : ''}</h2>
-          <button onClick={openPartyModal}>{party ? '创建新组合' : '创建组合'}</button>
-        </div>
-
-        {run.parties.length > 1 && (
-          <div className="row wrap">
-            {run.parties.map((p) => (
+        <div className="bar-left">
+          <span className="brand">idollife</span>
+          <span className="clock">
+            第 {todayIndex + 1} 天 · {weekdayName(todayIndex)} · 今日剩余{' '}
+            {Math.max(0, 3 - usedToday)}/3
+          </span>
+          <div className="title-account">
+            <span className="acct-email" title={user?.email ?? ''}>
+              {user?.email ?? '已离线'}
+            </span>
+            {syncStatus !== 'local' && (
+              <span className={`chip chip-${syncStatus}`}>{SYNC_TEXT[syncStatus]}</span>
+            )}
+            <span className="acct-icons">
               <button
-                key={p.id}
-                className={p.id === run.activePartyId ? 'tab active' : 'tab'}
-                onClick={() => doSwitchParty(p.id)}
+                className="icon-btn"
+                title="调试日志"
+                onClick={() => {
+                  setDebugText(localStorage.getItem('idollife:debug:v1') ?? '(空)');
+                  setShowDebug(true);
+                }}
               >
-                {p.name}
+                日志
+              </button>
+              <button className="icon-btn" title="重新开始" onClick={restartForTest}>
+                重开
+              </button>
+              <button className="icon-btn" title="退出" onClick={() => void signOut()}>
+                退出
+              </button>
+            </span>
+          </div>
+        </div>
+
+        <div className="bar-center">
+          <section className="mod mod-timeline">
+
+            <div className="tlx">
+              {!running && lastStop && STOP_TEXT[lastStop] && (
+                <span className={`tlx-status ${lastStop}`}>{STOP_TEXT[lastStop]}</span>
+              )}
+              <div className="tlx-side tlx-past">
+                {pastItems.length === 0 && <span className="tlx-empty">还没有历史</span>}
+                {pastItems.map((it) => {
+                  const a = ACTIONS[it.actionId];
+                  return (
+                    <div
+                      key={it.id}
+                      className={[
+                        'tlx-point',
+                        'done',
+                        dayBreakLabels.has(it.id) ? 'newday' : '',
+                        it.stopAfter ? 'stopped' : '',
+                      ]
+                        .filter(Boolean)
+                        .join(' ')}
+                      data-date={dayBreakLabels.get(it.id) ?? ''}
+                      style={{ width: '84px' }}
+                    >
+                      <span className="tlx-above">
+                        {a?.name ?? it.actionId}
+                        <em>已完成</em>
+                      </span>
+                      <span className="tlx-dot" />
+                      <span className="tlx-below">
+                        行动{actionNo(it)}
+                        {it.stopAfter && <em className="stop-mark">完成后停止</em>}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="tlx-card">
+                <div className="tlx-card-name">
+                  {nextItem ? (ACTIONS[nextItem.actionId]?.name ?? nextItem.actionId) : '空闲'}
+                </div>
+                <div className="tlx-card-bar">
+                  <i style={{ width: `${Math.round(currentPct * 100)}%` }} />
+                </div>
+                <div className="tlx-card-meta">
+                  {running && nextItem
+                    ? `还剩 ${Math.ceil(remainMs / 1000)} 秒`
+                    : nextItem
+                      ? `行动${actionNo(nextItem)} · 待执行`
+                      : '时间已停止'}
+                </div>
+              </div>
+
+
+
+              <div className="tlx-side tlx-future">
+                {futureItems.map((it) => {
+                  const a = ACTIONS[it.actionId];
+                  return (
+                    <div
+                      key={it.id}
+                      className={[
+                        'tlx-point',
+                        dayBreakLabels.has(it.id) ? 'newday' : '',
+                        it.stopAfter ? 'stopped' : '',
+                      ]
+                        .filter(Boolean)
+                        .join(' ')}
+                      data-date={dayBreakLabels.get(it.id) ?? ''}
+                      style={{ width: '84px' }}
+                    >
+                      <span className="tlx-above">{a?.name ?? it.actionId}</span>
+                      <span className="tlx-dot" />
+                      <span className="tlx-below">
+                        行动{actionNo(it)}
+                        {it.stopAfter && <em className="stop-mark">完成后停止</em>}
+                      </span>
+                    </div>
+                  );
+                })}
+                {futureItems.length === 0 && <span className="tlx-empty">没有后续行程</span>}
+              </div>
+            </div>
+            <div className="tlx-tools">
+              <div className="tools-left">
+                <button onClick={() => setShowStops(true)}>设置暂停时间点</button>
+                <div className="speed-row">
+                  {[1, 10, 60].map((v) => (
+                    <button
+                      key={v}
+                      className={speed === v ? 'mini-tab active' : 'mini-tab'}
+                      onClick={() => setSpeed(v)}
+                    >
+                      {v}×
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="tools-center">
+                <button
+                  className="primary"
+                  onClick={advance}
+                  disabled={pending.length === 0 || running}
+                >
+                  {running ? '推进中…' : '开始推进'}
+                </button>
+                <button onClick={stopCurrent} disabled={!running}>
+                  停止
+                </button>
+                <span className="tools-date">
+                  第 {todayIndex + 1} 天 · 第 {Math.floor(todayIndex / 7) + 1} 周 {weekdayName(todayIndex)}
+                </span>
+                <button
+                  className={pending.length === 0 ? 'primary arrange-hint' : ''}
+                  onClick={openPlan}
+                >
+                  安排行程
+                </button>
+              </div>
+
+              <div className="tools-right">
+                <button onClick={() => setMainTab('plan')}>历史行程</button>
+                <span className="muted small">
+                  {running ? '推进中' : '已停止'} · 待办 {pending.length}
+                  {lastStop && lastStop !== 'time' ? ` · ${lastStop}` : ''}
+                </span>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div className="bar-right">
+          <div className="brief-head">任务简报</div>
+          <ul className="brief-list">
+            {activeTasks(run)
+              .slice(0, 6)
+              .map(({ task }) => (
+                <li key={task.id}>
+                  <span className="dot" />
+                  <span className="brief-text">{task.brief}</span>
+                </li>
+              ))}
+            {activeTasks(run).length === 0 && (
+              <li>
+                <span className="brief-text">暂无进行中的任务</span>
+              </li>
+            )}
+          </ul>
+        </div>      </header>
+
+
+      <main className="shell">
+        {/* 左：主信息 + 功能切换 */}
+        <aside className="mod col-left">
+          <nav className="mod mod-menu">
+            {(
+              [
+                ['task', '任务'],
+                ['plan', '行程'],
+                ['party', '组合'],
+                ['friends', '朋友圈'],
+                ['shop', '商店'],
+                ['divine', '占卜'],
+              ] as Array<[MainTab, string]>
+            ).map(([key, label]) => (
+              <button
+                key={key}
+                className={mainTab === key ? 'menu-item active' : 'menu-item'}
+                onClick={() => setMainTab(key)}
+              >
+                {label}
+                {key === 'task' && taskBadgeCount(run) > 0 && (
+                  <em className="menu-badge">{taskBadgeCount(run)}</em>
+                )}
               </button>
             ))}
-          </div>
-        )}
 
-        {!party ? (
-          <p className="muted">
-            {run.debuted ? '还没有组合。先创建一个。' : '出道后才能组建组合。'}
-          </p>
-        ) : party.members.length === 0 ? (
-          <p className="muted">组合里还没有成员。</p>
-        ) : (
-          <ul className="party">
-            {party.members.map((m) => {
-              const s = memberStats(m, run.stats);
-              return (
-                <li key={m.id}>
-                  <span className="name">{m.name}</span>
-                  <span className="muted">
-                    {biasLabel(m.bias)} · 默契 +{m.dupCount}%
-                  </span>
-                  <span className="dur">
-                    {s.vocal}/{s.dance}/{s.acting}/{s.talk}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-
-        <div className="row">
-          <button
-            className="primary"
-            onClick={doRecruit}
-            disabled={!party || run.money < RECRUIT_COST}
-          >
-            招募
-            <small>-{RECRUIT_COST}</small>
-          </button>
-        </div>
-      </section>
-
-      <section className="panel">
-        <div className="panel-head">
-          <h2>系统</h2>
-          <span className="muted small">装备 {run.inventory.length} 件</span>
-        </div>
-
-        <div className="tabs">
-          {(['shop', 'bag'] as SysTab[]).map((t) => (
             <button
-              key={t}
-              className={sysTab === t ? 'tab active' : 'tab'}
-              onClick={() => setSysTab(t)}
+              className={
+                mainTab === 'stats' ? 'menu-item bag-entry active' : 'menu-item bag-entry'
+              }
+              onClick={() => setMainTab('stats')}
             >
-              {t === 'shop' ? '商店' : '物品'}
+              属性
             </button>
-          ))}
-        </div>
+            <button
+              className={
+                mainTab === 'bag' ? 'menu-item bag-entry active' : 'menu-item bag-entry'
+              }
+              onClick={() => setMainTab('bag')}
+            >
+              背包
+            </button>
+          </nav>
 
-        {sysTab === 'shop' && (
-          <ul className="shop">
-            {getShop(run, seed).map((item) => (
-              <li key={item.id}>
-                <span className="name">{item.name}</span>
-                <span className="muted">
-                  {STAT_LABEL[item.affix.stat]} +{item.affix.value}
-                  {item.rarity === 'rare' ? ' · 稀有' : ''}
-                </span>
-                <button onClick={() => doBuy(item)} disabled={run.money < item.price}>
-                  ¥{item.price}
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
+        </aside>
 
-        {sysTab === 'bag' && (
-          <>
-            <div className="tabs sub">
-              {(['equip', 'consume', 'other'] as BagTab[]).map((t) => (
-                <button
-                  key={t}
-                  className={bagTab === t ? 'tab active' : 'tab'}
-                  onClick={() => setBagTab(t)}
-                >
-                  {t === 'equip' ? '装备' : t === 'consume' ? '消耗' : '其他'}
-                </button>
-              ))}
-            </div>
-
-            {bagTab === 'equip' &&
-              (run.inventory.length === 0 ? (
-                <p className="muted">还没有装备。</p>
-              ) : (
-                <ul className="shop">
-                  {run.inventory.map((item) => {
-                    const on = run.equipped.outfit === item.id;
-                    return (
-                      <li key={item.id}>
-                        <span className="name">
-                          {item.name}
-                          {on ? '（已装备）' : ''}
-                        </span>
-                        <span className="muted">
-                          {STAT_LABEL[item.affix.stat]} +{item.affix.value}
-                        </span>
-                        <button onClick={() => doEquip(item)} disabled={on}>
-                          装备
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              ))}
-
-            {(bagTab === 'consume' || bagTab === 'other') && (
-              <p className="muted">暂无物品。</p>
-            )}
-          </>
-        )}
-
-        <p className="muted small">
-          实际属性：
-          {Object.entries(effectiveStats(run))
-            .map(([k, v]) => `${STAT_LABEL[k]} ${v}`)
-            .join(' · ')}
-        </p>
-      </section>
-
-
-        </div>
-
-        <aside className="col-side">
+        {/* 中：时间轴 / 待办 / 主系统 / 日志 */}
+        <section className="col-center">
           {(run.pendingEvent || run.eventQueue.length > 0) && (
-            <div className={run.pendingEvent ? 'event-box major' : 'event-box'}>
-              <div className="event-head">
-                {run.pendingEvent ? '重点事件 · 时间已暂停' : '待处理事件'}
+            <section className={run.pendingEvent ? 'mod mod-todo major' : 'mod mod-todo'}>
+              <div className="mod-head">
+                <h2>{run.pendingEvent ? '重点事件 · 时间已暂停' : '待处理事项'}</h2>
               </div>
               {run.pendingEvent && (
                 <button
@@ -1351,145 +1671,744 @@ function AppInner() {
                   <em>处理 →</em>
                 </button>
               ))}
-            </div>
+            </section>
           )}
 
-          <div className="side-head">
-            <button className="primary wide" onClick={openPlan}>
-              安排行程
-            </button>
-          </div>
+          <section className="mod mod-main">
+            {mainTab === 'task' && (
+              <>
+                <div className="mod-head">
+                  <h2>任务</h2>
 
-          <div className="speed-row">
-            <span className="muted small">速度</span>
-            {[1, 10, 60].map((v) => (
-              <button
-                key={v}
-                className={speed === v ? 'tab active' : 'tab'}
-                onClick={() => setSpeed(v)}
-              >
-                {v}×
-              </button>
-            ))}
-          </div>
+                  <div className="seg-inline">
+                    {(
+                      [
+                        ['all', '全部'],
+                        ['accept', '领取任务'],
+                        ['active', '进行中'],
+                        ['done', '已完成'],
+                      ] as Array<['all' | 'accept' | 'active' | 'done', string]>
+                    ).map(([key, label]) => (
+                      <button
+                        key={key}
+                        className={taskTab === key ? 'seg-item active' : 'seg-item'}
+                        onClick={() => setTaskTab(key)}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
-          <div className="side-status">
-            <div className="side-date">
-              第 {todayIndex + 1} 天 · {weekdayName(todayIndex)} · 今日剩余{' '}
-              {Math.max(0, 3 - usedToday)}/3
-            </div>
-
-            <div className="side-now">
-              {running
-                ? nextItem
-                  ? `进行中 · 还剩 ${Math.ceil(remainMs / 1000)} 秒完成「${
-                      ACTIONS[nextItem.actionId]?.name ??
-                      (nextItem.actionId === SHOW_ACTION_ID ? '演出' : nextItem.actionId)
-                    }」`
-                  : '进行中…'
-                : '时间已停止'}
-            </div>
-          </div>
-
-          <div className="timeline">
-            <div className="timeline-scroll" ref={timelineRef}>
-              <div className="timeline-track" style={{ height: `${trackHeight}px` }}>
-                {visibleItems.length === 0 && (
-                  <p className="muted tl-empty">还没有安排。点「安排行程」加几个。</p>
-                )}
-
-                {hiddenCount > 0 && (
-                  <button
-                    className="tl-more"
-                    style={{ top: `${Math.round((visibleItems[0]!.startAt - baseTime) * pxPerMs) - 30}px` }}
-                    onClick={() => setHistoryLimit((n) => n + 9)}
-                  >
-                    更多（还有 {hiddenCount} 条更早的日程）
-                  </button>
-                )}
-
-                {visibleItems.map((it) => {
-                  const a = ACTIONS[it.actionId];
-                  const name = a?.name ?? (it.actionId === SHOW_ACTION_ID ? '演出' : it.actionId);
-                  const done = !!it.done;
-                  const isCurrent = nextItem?.id === it.id;
-                  const cls = [
-                    'tl-item',
-                    done ? 'done' : '',
-                    isCurrent ? 'current' : '',
-                    it.fixed ? 'fixed' : '',
-                    it.stopAfter ? 'stopped' : '',
-                  ]
-                    .filter(Boolean)
-                    .join(' ');
-
-                  return (
-                    <div
-                      key={it.id}
-                      className={cls}
-                      style={{
-                        top: `${Math.round((it.startAt - baseTime) * pxPerMs)}px`,
-                        height: `${Math.max(34, Math.round((it.endAt - it.startAt) * pxPerMs))}px`,
-                      }}
-                      data-node-id={it.id}
-                    >
-                      <span className="tl-node" />
-                      <div className="tl-body">
-                        <div className="tl-title">
-                          <span className="tl-idx">{dayLabel(it.startAt, run.at)}</span>
-                          <span className="tl-name">{name}</span>
-                          {it.fixed && <span className="tag fixed-tag">固定</span>}
-                          {done && <span className="tag done-tag">已完成</span>}
-                        </div>
-                        <div className="tl-meta">
-                          {Math.round((it.endAt - it.startAt) / MIN)} 分
-                          {it.stopAfter && ' · 预计到此停止'}
-                          {isCurrent && running && (
-                            <em className="tl-remain"> · 还剩 {Math.ceil(remainMs / 1000)} 秒</em>
+                {(() => {
+                  const renderTask = (task: (typeof TASKS)[number]) => {
+                    const status = taskStatus(run, task);
+                    const label =
+                      status === 'claimable'
+                        ? '可领取'
+                        : status === 'active'
+                          ? '进行中'
+                          : status === 'completable'
+                            ? '可领奖'
+                            : status === 'done'
+                              ? '已完成'
+                              : '未达成';
+                    return (
+                      <li
+                        key={task.id}
+                        className={[
+                          'task',
+                          status === 'claimable' || status === 'completable' ? 'claimable' : '',
+                          status === 'done' ? 'done' : '',
+                        ]
+                          .filter(Boolean)
+                          .join(' ')}
+                      >
+                        <div className="task-top">
+                          <span className="task-name">{task.name}</span>
+                          <span className={`task-state ${status}`}>{label}</span>
+                          <span className="spacer" />
+                          {status === 'done' ? (
+                            <span className="muted small">
+                              {Number(run.flags[`task:${task.id}:doneAt`] ?? 0) > 0
+                                ? dayLabel(Number(run.flags[`task:${task.id}:doneAt`]), run.at)
+                                : '已完成'}
+                            </span>
+                          ) : status === 'completable' ? (
+                            <button className="primary" onClick={() => doReward(task.id)}>
+                              领取奖励
+                            </button>
+                          ) : (
+                            <button
+                              className={status === 'claimable' ? 'primary' : ''}
+                              disabled={status !== 'claimable'}
+                              onClick={() => doAccept(task.id)}
+                            >
+                              {status === 'active' ? '已领取' : '领取任务'}
+                            </button>
                           )}
                         </div>
-                      </div>
-                      {!it.fixed && !done && (
-                        <div className="tl-actions">
-                          <button
-                            className={it.stopAfter ? 'stop-btn on' : 'stop-btn'}
-                            title="执行到这里就停止推进"
-                            onClick={() => toggleStop(it.id)}
+
+                        <p className="task-desc">{task.content}</p>
+
+                        <div className="task-req">
+                          <span>
+                            <em>可领要求</em>
+                            {describeCondition(task.acceptCondition)}
+                          </span>
+                          <span>
+                            <em>任务要求</em>
+                            {describeCondition(task.completeCondition)}
+                          </span>
+                          <span>
+                            <em>奖励</em>
+                            {describeRewards(task)}
+                          </span>
+                        </div>
+                      </li>
+                    );
+                  };
+
+                                    if (taskTab === 'done') {
+                    const done = completedTasks(run);
+                    if (done.length === 0) return <p className="muted small">还没有完成的任务。</p>;
+                    return <ul className="task-list">{done.map(({ task }) => renderTask(task))}</ul>;
+                  }
+
+                  if (taskTab === 'active') {
+                    const active = activeTasks(run);
+                    if (active.length === 0) return <p className="muted small">没有进行中的任务。</p>;
+                    return (
+                      <ul className="task-list">{active.map(({ task }) => renderTask(task))}</ul>
+                    );
+                  }
+
+                  if (taskTab === 'accept') {
+                    const list = TASKS.filter((task) => {
+                      const s = taskStatus(run, task);
+                      return (
+                        s === 'claimable' ||
+                        s === 'completable' ||
+                        s === 'locked' ||
+                        s === 'active'
+                      );
+                    });
+                    if (list.length === 0) return <p className="muted small">暂时没有可领取的任务。</p>;
+                    return <ul className="task-list">{list.map(renderTask)}</ul>;
+                  }
+
+                  // 全部：可领取 → 进行中 → 可见 → 已完成，用分割线隔开
+                  const sections: Array<{ key: string; title: string; list: (typeof TASKS)[number][] }> = [
+                    {
+                      key: 'completable',
+                      title: '可领奖',
+                      list: TASKS.filter((task) => taskStatus(run, task) === 'completable'),
+                    },
+                    {
+                      key: 'claimable',
+                      title: '可领取',
+                      list: TASKS.filter((task) => taskStatus(run, task) === 'claimable'),
+                    },
+                    {
+                      key: 'active',
+                      title: '进行中',
+                      list: TASKS.filter((task) => taskStatus(run, task) === 'active'),
+                    },
+                    {
+                      key: 'locked',
+                      title: '可见',
+                      list: TASKS.filter((task) => taskStatus(run, task) === 'locked'),
+                    },
+                    {
+                      key: 'done',
+                      title: '已完成',
+                      list: completedTasks(run).map((x) => x.task),
+                    },
+                  ];
+
+                  const visibleSections = sections.filter((s) => s.list.length > 0);
+                  if (visibleSections.length === 0) {
+                    return <p className="muted small">暂时没有任务。</p>;
+                  }
+
+                  return (
+                    <>
+                      {visibleSections.map((sec) => (
+                        <Fragment key={sec.key}>
+                          <div className="task-sep">{sec.title}</div>
+                          <ul className="task-list">{sec.list.map(renderTask)}</ul>
+                        </Fragment>
+                      ))}
+                    </>
+                  );
+                })()}
+              </>
+            )}
+
+            {mainTab === 'friends' && (
+              <>
+                <div className="mod-head">
+                  <h2>朋友圈</h2>
+                  <span className="seg-inline">
+                    <button
+                      className={friendsTab === 'list' ? 'seg-item active' : 'seg-item'}
+                      onClick={() => setFriendsTab('list')}
+                    >
+                      我的朋友圈
+                    </button>
+                    <button
+                      className={friendsTab === 'meet' ? 'seg-item active' : 'seg-item'}
+                      onClick={() => setFriendsTab('meet')}
+                    >
+                      认识新朋友
+                    </button>
+                  </span>
+                  <span className="spacer" />
+                  <span className="muted small">
+                    共 {run.friends.length} 人 · 可邀请 {run.friends.filter((f) => !f.partyId).length}
+                  </span>
+                </div>
+
+                <div
+                  className="friend-block"
+                  style={{ display: friendsTab === 'meet' ? undefined : 'none' }}
+                >
+                  <h4>认识新朋友</h4>
+                  <div className="row wrap">
+                    {CHANNELS.map((c) => (
+                      <button
+                        key={c.id}
+                        className={run.money < c.cost ? 'meet-poor' : ''}
+                        onClick={() => doMeet(c.id)}
+                        title={c.text}
+                      >
+                        {c.name}
+                        <small>¥{c.cost}</small>
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="meet-log-wrap">
+                    <div className="meet-log-head">抽取记录</div>
+                    <ul className="meet-log">
+                      {run.log
+                        .filter((l) => l.actionId.startsWith('meet:'))
+                        .slice(-30)
+                        .reverse()
+                        .map((l, i) => (
+                          <li key={`${l.at}-${i}`}>{l.text}</li>
+                        ))}
+                      {run.log.filter((l) => l.actionId.startsWith('meet:')).length === 0 && (
+                        <li className="muted">还没有抽取记录</li>
+                      )}
+                    </ul>
+                  </div>
+                </div>
+
+                <div
+                  className="friend-block"
+                  style={{ display: friendsTab === 'list' ? undefined : 'none' }}
+                >
+                  <h4>我的朋友圈</h4>
+                  {run.friends.length === 0 ? (
+                    <p className="muted small">还没有认识的人，去上面挑个渠道试试。</p>
+                  ) : (
+                    <div className="mcards">
+                      {run.friends.map((f) => {
+                        const on = flippedIds.includes(`f:${f.id}`);
+                        const inParty = !!f.partyId;
+                        const teamName = f.partyId
+                          ? run.parties.find((x) => x.id === f.partyId)?.name
+                          : null;
+                        return (
+                          <div
+                            key={f.id}
+                            className={[
+                              'mcard',
+                              'friend',
+                              on ? 'flipped' : '',
+                              inParty ? 'in-team' : '',
+                              !inParty && cooldownLeftDays(run, f) > 0 ? 'cooling' : '',
+                            ]
+                              .filter(Boolean)
+                              .join(' ')}
+                            onClick={() => toggleFlip(`f:${f.id}`)}
+                            title={inParty ? `已在「${teamName}」` : '点击翻转查看预估属性'}
                           >
-                            ⏹
-                          </button>
-                          <button className="del" onClick={() => removeItem(it.id)}>
+                            <div className="mcard-inner">
+                              <div className="mcard-face front">
+                                <span className="mcard-name">{f.name}</span>
+                                <span className="mcard-set">
+                                  {biasLabel(f.bias)} · 资质 {Math.round(f.quality * 100)}%
+                                </span>
+                                <span className="mcard-dup">默契 +{f.dupCount ?? 0}%</span>
+                                {inParty && <span className="mcard-team">已入团 · {teamName}</span>}
+                                {!inParty && cooldownLeftDays(run, f) > 0 && (
+                                  <span className="mcard-cool">
+                                    冷却中 · 剩余 {cooldownLeftDays(run, f)} 天
+                                  </span>
+                                )}
+
+                              </div>
+                              <div className="mcard-face back">
+                                <span className="mcard-name">{f.name}</span>
+                                <div className="mcard-stats">
+                                  {(['vocal', 'dance', 'acting', 'talk'] as const).map((k) => (
+                                    <span key={k}>
+                                      <em>{STAT_LABEL[k]}</em>
+                                      {Math.round(run.stats[k] * f.quality)}
+                                    </span>
+                                  ))}
+                                </div>
+                                <span className="mcard-dup">预估属性</span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+
+            {mainTab === 'stats' && (
+              <>
+                <div className="mod-head">
+                  <h2>属性</h2>
+                </div>
+                <div className="stats big">
+                  {(['vocal', 'dance', 'acting', 'talk'] as const).map((k) => (
+                    <div key={k} className="stat">
+                      <span className="k">{STAT_LABEL[k]}</span>
+                      <span className="v">{run.stats[k]}</span>
+                    </div>
+                  ))}
+                  <div className="stat">
+                    <span className="k">体力</span>
+                    <span className="v">{run.stamina}</span>
+                  </div>
+                  <div className="stat">
+                    <span className="k">资金</span>
+                    <span className="v">{run.money}</span>
+                  </div>
+                  <div className="stat">
+                    <span className="k">粉丝</span>
+                    <span className="v">{totalFans(run)}</span>
+                  </div>
+                </div>
+                <p className="muted small">
+                  实际属性：
+                  {Object.entries(effectiveStats(run))
+                    .map(([k, v]) => `${STAT_LABEL[k]} ${v}`)
+                    .join(' · ')}
+                </p>
+                <div className="row">
+                  <button
+                    className={canDebut(run) ? 'primary' : ''}
+                    onClick={doDebut}
+                    disabled={!canDebut(run)}
+                  >
+                    {run.debuted ? '已出道' : `出道 ${statTotal}/${DEBUT_THRESHOLD}`}
+                  </button>
+                  <button onClick={() => setShowDivination(true)}>占卜</button>
+                </div>
+              </>
+            )}
+            {mainTab === 'plan' && (
+              <>
+                <div className="mod-head">
+                  <h2>行程</h2>
+                </div>
+                {pending.length === 0 ? (
+                  <p className="muted small">还没有待执行行程。</p>
+                ) : (
+                  <ul className="plan-list">
+                    {pending.map((s) => {
+                      const a = ACTIONS[s.actionId];
+                      return (
+                        <li key={s.id}>
+                          <span className="plan-day">{dayLabel(s.startAt, run.at)}</span>
+                          <span className="plan-name">
+                            {a?.name ?? (s.actionId === SHOW_ACTION_ID ? '演出' : s.actionId)}
+                          </span>
+                          <button className="del" onClick={() => removeItem(s.id)}>
                             ×
                           </button>
-                        </div>
-                      )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </>
+            )}
+
+            {mainTab === 'bag' && (
+              <>
+                <div className="mod-head">
+                  <h2>背包</h2>
+                  <span className="muted small">{run.inventory.length} 件</span>
+                </div>
+                <nav className="crumb">
+                  <span className="crumb-root">物品</span>
+                  <span className="crumb-sep">›</span>
+                  {(['equip', 'consume', 'other'] as BagTab[]).map((t) => (
+                    <Fragment key={t}>
+                      <button
+                        className={bagTab === t ? 'crumb-item active' : 'crumb-item'}
+                        onClick={() => setBagTab(t)}
+                      >
+                        {t === 'equip' ? '装备' : t === 'consume' ? '消耗' : '其他'}
+                      </button>
+                      {t !== 'other' && <span className="crumb-sep">/</span>}
+                    </Fragment>
+                  ))}
+                </nav>
+                {bagTab === 'equip' && (
+                  run.inventory.length === 0 ? (
+                    <p className="muted small">还没有装备。</p>
+                  ) : (
+                    <ul className="shop">
+                      {run.inventory.map((item) => {
+                        const on = run.equipped.outfit === item.id;
+                        return (
+                          <li key={item.id}>
+                            <span className="name">
+                              {item.name}
+                              {on ? '（已装备）' : ''}
+                            </span>
+                            <span className="muted">
+                              {STAT_LABEL[item.affix.stat]} +{item.affix.value}
+                            </span>
+                            <button onClick={() => doEquip(item)} disabled={on}>
+                              装备
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )
+                )}
+                {(bagTab === 'consume' || bagTab === 'other') && (
+                  <p className="muted small">暂无物品。</p>
+                )}
+              </>
+            )}
+            {mainTab === 'party' && (
+              <>
+                <div className="mod-head">
+                  <h2>组合{party ? ` · ${party.name}` : ''}</h2>
+                  {run.parties.length > 1 && (
+                    <div className="row wrap party-switch">
+                      {run.parties.map((p) => (
+                        <button
+                          key={p.id}
+                          className={p.id === run.activePartyId ? 'mini-tab active' : 'mini-tab'}
+                          onClick={() => doSwitchParty(p.id)}
+                        >
+                          {p.name}
+                        </button>
+                      ))}
                     </div>
-                  );
-                })}
+                  )}
+                  <span className="spacer" />
+                  <button onClick={() => setNotice('组合配置还没做，先留个位置。')}>配置</button>
+                  <button onClick={() => setManaging((v) => !v)}>
+                    {managing ? '完成' : '管理'}
+                  </button>
+                  <button onClick={openPartyModal}>{party ? '创建新组合' : '创建组合'}</button>
+                </div>
 
+                {!party ? (
+                  <p className="muted">
+                    {run.debuted ? '还没有组合。先创建一个。' : '出道后才能组建组合。'}
+                  </p>
+                ) : (
+                  <div className="mcards">
+                    <div
+                      className={flippedIds.includes('__me') ? 'mcard flipped me' : 'mcard me'}
+                      onClick={() => toggleFlip('__me')}
+                      title="你自己"
+                    >
+                      <div className="mcard-inner">
+                        <div className="mcard-face front">
+                          <span className="mcard-name">我</span>
+                          <span className="mcard-set">主角</span>
+                          <span className="mcard-dup">队长</span>
+                        </div>
+                        <div className="mcard-face back">
+                          <span className="mcard-name">我</span>
+                          <div className="mcard-stats">
+                            {(['vocal', 'dance', 'acting', 'talk'] as const).map((k) => (
+                              <span key={k}>
+                                <em>{STAT_LABEL[k]}</em>
+                                {run.stats[k]}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {party.members.map((m) => {
+                      const s = memberStats(m, run.stats);
 
+                      return (
+                        <div
+                          key={m.id}
+                          className={flippedIds.includes(m.id) ? 'mcard flipped' : 'mcard'}
+                          onClick={() => {
+                            if (!managing) toggleFlip(m.id);
+                          }}
+                          title="点击翻转查看属性"
+                        >
+                          {managing && (
+                            <button
+                              className="mcard-kick"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setKickTarget(m.id);
+                              }}
+                            >
+                              退团
+                            </button>
+                          )}
+                          <div className="mcard-inner">
+                            <div className="mcard-face front">
+                              <span className="mcard-name">{m.name}</span>
+                              <span className="mcard-set">{biasLabel(m.bias)}</span>
+                              <span className="mcard-dup">默契 +{m.dupCount}%</span>
+                            </div>
+                            <div className="mcard-face back">
+                              <span className="mcard-name">{m.name}</span>
+                              <div className="mcard-stats">
+                                {(['vocal', 'dance', 'acting', 'talk'] as const).map((k) => (
+                                  <span key={k}>
+                                    <em>{STAT_LABEL[k]}</em>
+                                    {s[k]}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                    <div
+                      className="mcard invite-card"
+                      onClick={() => setShowInvite(true)}
+                      title="从朋友圈邀请"
+                    >
+                      <div className="invite-inner">
+                        <span className="plus">＋</span>
+                        <span className="hint">点击邀请朋友</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+
+            {mainTab === 'shop' && (
+              <>
+                <div className="mod-head">
+                  <h2>商店</h2>
+                  <span className="muted small">装备 {run.inventory.length} 件</span>
+                </div>
+                <ul className="shop">
+                  {getShop(run, seed).map((item) => (
+                    <li key={item.id}>
+                      <span className="name">{item.name}</span>
+                      <span className="muted">
+                        {STAT_LABEL[item.affix.stat]} +{item.affix.value}
+                        {item.rarity === 'rare' ? ' · 稀有' : ''}
+                      </span>
+                      <button onClick={() => doBuy(item)} disabled={run.money < item.price}>
+                        ¥{item.price}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {mainTab === 'divine' && (
+              <>
+                <div className="mod-head">
+                  <h2>占卜</h2>
+                </div>
+                <p className="muted small">
+                  隐藏属性不会直接显示，只能通过占卜窥见一档。同一天内重复占卜，价格翻倍。
+                </p>
+                <div className="row">
+                  <button className="primary" onClick={() => setShowDivination(true)}>
+                    开始占卜
+                  </button>
+                </div>
+              </>
+            )}
+          </section>
+
+          <section className="mod mod-log">
+            <div className="mod-head">
+              <h2>日志</h2>
+              <div className="mini-tabs">
+                {(['all', 'event', 'stat'] as LogTab[]).map((t) => (
+                  <button
+                    key={t}
+                    className={logTab === t ? 'mini-tab active' : 'mini-tab'}
+                    onClick={() => setLogTab(t)}
+                  >
+                    {t === 'all' ? '全部' : t === 'event' ? '事件' : '属性'}
+                  </button>
+                ))}
               </div>
             </div>
 
-          </div>
-          <div className="side-foot">
-            <button
-              className="primary"
-              onClick={advance}
-              disabled={pending.length === 0 || running}
-            >
-              {running ? '推进中…' : '开始推进'}
-            </button>
-            <button onClick={stopCurrent} disabled={!running}>
-              停止当前行程
-            </button>
-            <button onClick={addShow} disabled={phase !== 'playing'}>
-              参加演出
-            </button>
-          </div>
-          {notice && <p className="notice">{notice}</p>}
+            <div className="log-scroll" ref={logRef}>
+              {visibleLog.length === 0 ? (
+                <p className="muted small">还没有记录。</p>
+              ) : (
+                <ul className="log dense">
+                  {visibleLog.map((l, i) => {
+                    const day = Math.floor((l.at - T0) / DAY_MS);
+                    const prev = i > 0 ? visibleLog[i - 1] : undefined;
+                    const prevDay = prev ? Math.floor((prev.at - T0) / DAY_MS) : -1;
+                    const isNewDay = day !== prevDay;
+
+                    return (
+                      <Fragment key={`${l.at}-${i}`}>
+                        {isNewDay && (
+                          <li className="log-day">
+                            第 {Math.floor(day / 7) + 1} 周 {weekdayName(day)}
+                          </li>
+                        )}
+                        <li>
+                          <span className="log-text">{l.text}</span>
+                          {l.axesChanged && <em className="tag hidden-tag">隐藏属性变动</em>}
+                        </li>
+                      </Fragment>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+
+            {notice && <p className="notice">{notice}</p>}
+          </section>
+        </section>
+
+        {/* 右：账户信息 + 辅助（背包） */}
+        <aside className="col-right">
+          <section className="mod mod-aux">
+            <nav className="seg">
+              <button
+                className={rightTab === 'stats' ? 'seg-item active' : 'seg-item'}
+                onClick={() => setRightTab('stats')}
+              >
+                属性
+              </button>
+              <button
+                className={rightTab === 'bag' ? 'seg-item active' : 'seg-item'}
+                onClick={() => setRightTab('bag')}
+              >
+                背包
+              </button>
+            </nav>
+
+            {rightTab === 'stats' ? (
+              <div className="aux-body">
+                <div className="stats">
+                  {(['vocal', 'dance', 'acting', 'talk'] as const).map((k) => (
+                    <div key={k} className="stat">
+                      <span className="k">{STAT_LABEL[k]}</span>
+                      <span className="v">{run.stats[k]}</span>
+                    </div>
+                  ))}
+                  <div className="stat">
+                    <span className="k">体力</span>
+                    <span className="v">{run.stamina}</span>
+                  </div>
+                  <div className="stat">
+                    <span className="k">资金</span>
+                    <span className="v">{run.money}</span>
+                  </div>
+                  <div className="stat">
+                    <span className="k">粉丝</span>
+                    <span className="v">{totalFans(run)}</span>
+                  </div>
+                </div>
+
+                <p className="muted small eff">
+                  实际属性：
+                  {Object.entries(effectiveStats(run))
+                    .map(([k, v]) => `${STAT_LABEL[k]} ${v}`)
+                    .join(' · ')}
+                </p>
+
+                <div className="row">
+                  <button
+                    className={canDebut(run) ? 'primary' : ''}
+                    onClick={doDebut}
+                    disabled={!canDebut(run)}
+                  >
+                    {run.debuted ? '已出道' : `出道 ${statTotal}/${DEBUT_THRESHOLD}`}
+                  </button>
+                  <button onClick={() => setShowDivination(true)}>占卜</button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <nav className="crumb">
+                  <span className="crumb-root">物品</span>
+                  <span className="crumb-sep">›</span>
+                  {(['equip', 'consume', 'other'] as BagTab[]).map((t) => (
+                    <Fragment key={t}>
+                      <button
+                        className={bagTab === t ? 'crumb-item active' : 'crumb-item'}
+                        onClick={() => setBagTab(t)}
+                      >
+                        {t === 'equip' ? '装备' : t === 'consume' ? '消耗' : '其他'}
+                      </button>
+                      {t !== 'other' && <span className="crumb-sep">/</span>}
+                    </Fragment>
+                  ))}
+                </nav>
+
+                {bagTab === 'equip' &&
+                  (run.inventory.length === 0 ? (
+                    <p className="muted small">还没有装备。</p>
+                  ) : (
+                    <ul className="shop">
+                      {run.inventory.map((item) => {
+                        const on = run.equipped.outfit === item.id;
+                        return (
+                          <li key={item.id}>
+                            <span className="name">
+                              {item.name}
+                              {on ? '（已装备）' : ''}
+                            </span>
+                            <span className="muted">
+                              {STAT_LABEL[item.affix.stat]} +{item.affix.value}
+                            </span>
+                            <button onClick={() => doEquip(item)} disabled={on}>
+                              装备
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  ))}
+
+                {(bagTab === 'consume' || bagTab === 'other') && (
+                  <p className="muted small">暂无物品。</p>
+                )}
+              </>
+            )}
+          </section>
         </aside>
+
       </main>
+
 
       {activeEventId &&
         (() => {
@@ -1513,6 +2432,112 @@ function AppInner() {
           );
         })()}
 
+      {confirmAction && (
+        <Modal
+          title={confirmAction === 'stop' ? '停止当前行程' : '重新开始'}
+          onClose={() => setConfirmAction(null)}
+        >
+          {confirmAction === 'stop' ? (
+            <p>
+              只作废正在进行的那条行动（不结算），时间回到它开始前。
+              <br />
+              其余没开始的行程会保留。
+            </p>
+          ) : (
+            <p>会清空本地存档并新建一局，确定吗？</p>
+          )}
+          <div className="row">
+            <button onClick={() => setConfirmAction(null)}>取消</button>
+            <button
+              className="primary"
+              onClick={confirmAction === 'stop' ? doStop : doRestart}
+            >
+              确定
+            </button>
+          </div>
+        </Modal>
+      )}
+      {kickTarget && (
+        <Modal title="请离成员" onClose={() => setKickTarget(null)}>
+          <p>如果请离了该成员，可能对于团会产生不好的影响，且一个月内无法重新入团。</p>
+          <div className="row">
+            <button onClick={() => setKickTarget(null)}>取消</button>
+            <button
+              className="primary"
+              onClick={() => {
+                doKick(kickTarget);
+                setKickTarget(null);
+              }}
+            >
+              确认请离
+            </button>
+          </div>
+        </Modal>
+      )}
+      {showInvite && (
+        <Modal title="邀请朋友" onClose={() => setShowInvite(false)}>
+          <p className="muted small">无团的朋友可以邀请；已有组合的人需要先移出原组合。</p>
+          {run.friends.length === 0 ? (
+            <p className="muted">朋友圈还是空的，先去「朋友圈」认识几个人。</p>
+          ) : (
+            <ul className="invite-list">
+              {[...run.friends]
+                .sort(
+                  (a, b) =>
+                    Number(!!a.partyId || cooldownLeftDays(run, a) > 0) -
+                    Number(!!b.partyId || cooldownLeftDays(run, b) > 0),
+                )
+                .map((f) => {
+                  const team = f.partyId
+                    ? run.parties.find((x) => x.id === f.partyId)?.name
+                    : null;
+                  const cool = cooldownLeftDays(run, f);
+                  const blocked = !!f.partyId || cool > 0;
+                  return (
+                    <li key={f.id} className={blocked ? 'owned' : ''}>
+                      <span className="name">{f.name}</span>
+                      <span className="meta">
+                        {biasLabel(f.bias)} · 资质 {Math.round(f.quality * 100)}%
+                      </span>
+                      {team && <span className="team">已归属 · {team}</span>}
+                      {!team && cool > 0 && (
+                        <span className="team">冷却中 · 剩余 {cool} 天</span>
+                      )}
+                      <span className="spacer" />
+                      <button disabled={blocked || !party} onClick={() => doInvite(f.id)}>
+                        {f.partyId ? '不可邀请' : cool > 0 ? `冷却 ${cool} 天` : '邀请'}
+                      </button>
+                    </li>
+                  );
+                })}
+            </ul>
+          )}
+        </Modal>
+      )}
+      {showStops && (
+        <Modal title="设置暂停时间点" onClose={() => setShowStops(false)}>
+          <p className="muted small">点一条行程：推进到它完成后就停下，方便你中途回来看看。</p>
+          {pending.length === 0 ? (
+            <p className="muted">还没有待执行行程。</p>
+          ) : (
+            <ul className="stop-list">
+              {pending.map((s, i) => {
+                const a = ACTIONS[s.actionId];
+                return (
+                  <li key={s.id} className={s.stopAfter ? 'on' : ''}>
+                    <button onClick={() => toggleStop(s.id)}>
+                      <span className="idx">{i + 1}</span>
+                      <span className="nm">{a?.name ?? s.actionId}</span>
+                      <span className="when">{dayLabel(s.startAt, run.at)}</span>
+                      {s.stopAfter && <em>完成后停止</em>}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </Modal>
+      )}
       {showActions && (
         <Modal title="安排行程" wide onClose={cancelPlan}>
           <div className="plan">

@@ -38,6 +38,25 @@ export interface Member {
   dupCount: number;
 }
 
+/** 朋友圈里的人（还没加入组合） */
+export interface Friend {
+  id: string;
+  name: string;
+  bias: Bias;
+  /** 认识的渠道 id */
+  from: string;
+  /** 认识的时间（游戏时间） */
+  metAt: number;
+  /** 强度系数：0.8 ~ 1.15 */
+  quality: number;
+  /** 已加入的组合 id；null=还在朋友圈 */
+  partyId: string | null;
+  /** 退团冷却截止时间（游戏时间）；0 表示无冷却 */
+  cooldownUntil?: number;
+  /** 重复遇到累积的默契（%），上限 10 */
+  dupCount?: number;
+}
+
 /** 组合（一个玩家可以有多个） */
 export interface Party {
   id: string;
@@ -74,6 +93,8 @@ export interface RunState {
   parties: Party[];
   /** 当前操作的组合 id；没有组合时为 null */
   activePartyId: string | null;
+  /** 朋友圈：认识但还没加入组合的人 */
+  friends: Friend[];
   /** 背包里的装备 */
   inventory: EquipItem[];
   /** 已装备的槽位 → 物品 id */

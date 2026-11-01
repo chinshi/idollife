@@ -15751,7 +15751,7 @@ var cors = (options) => {
 
 // ../core/data/action_results.json
 var action_results_default = {
-  _\u8BF4\u660E: "\u884C\u4E3A\u7ED3\u679C\u8868\uFF1A\u540C\u4E00\u4E2A\u884C\u4E3A\u5728\u4E0D\u540C\u6761\u4EF6\u4E0B\u53EF\u4EE5\u6709\u4E0D\u540C\u7684\u6570\u503C\u548C\u6587\u6848\u3002condition \u4E3A\u7A7A=\u9ED8\u8BA4\u7ED3\u679C\uFF1Bpriority \u5C0F\u7684\u4F18\u5148\u5339\u914D\u3002stats \u91CC\u7684\u6570\u503C\u53EF\u4EE5\u662F\u6570\u5B57\u6216 [\u6700\u5C0F\u503C,\u6700\u5927\u503C] \u533A\u95F4\uFF1Bfans \u662F\u7C89\u4E1D\u589E\u52A0\u91CF",
+  _\u8BF4\u660E: "\u884C\u4E3A\u7ED3\u679C\u8868\uFF1A\u540C\u4E00\u4E2A\u884C\u4E3A\u5728\u4E0D\u540C\u6761\u4EF6\u4E0B\u53EF\u4EE5\u6709\u4E0D\u540C\u7684\u6570\u503C\u548C\u6587\u6848\u3002condition \u4E3A\u7A7A=\u9ED8\u8BA4\u7ED3\u679C\uFF1Bpriority \u5C0F\u7684\u4F18\u5148\u5339\u914D\u3002stats \u91CC\u7684\u6570\u503C\u53EF\u4EE5\u662F\u6570\u5B57\u6216 [\u6700\u5C0F\u503C,\u6700\u5927\u503C] \u533A\u95F4",
   results: [
     {
       id: "res-vocal-default",
@@ -15759,16 +15759,36 @@ var action_results_default = {
       actionName: "\u5531 K",
       condition: {},
       priority: 99,
-      effects: { stamina: -10, money: -50, stats: { vocal: [1, 3] } },
+      effects: {
+        stamina: -10,
+        money: -50,
+        stats: {
+          vocal: [
+            1,
+            3
+          ]
+        }
+      },
       text: "\u4F60\u5728\u5305\u53A2\u91CC\u5531\u4E86\u4E24\u5C0F\u65F6\uFF0C\u55D3\u5B50\u6709\u70B9\u70ED\u3002\uFF08\u6F14\u5531 +{vocal}\uFF09"
     },
     {
       id: "res-vocal-tired",
       actionId: "vocal-karaoke",
       actionName: "\u5531 K",
-      condition: { staminaBelow: 30 },
+      condition: {
+        staminaBelow: 30
+      },
       priority: 10,
-      effects: { stamina: -10, money: -50, stats: { vocal: [1, 1] } },
+      effects: {
+        stamina: -10,
+        money: -50,
+        stats: {
+          vocal: [
+            1,
+            1
+          ]
+        }
+      },
       text: "\u55D3\u5B50\u6709\u70B9\u54D1\uFF0C\u4F60\u53EA\u5531\u4E86\u4E00\u5C0F\u65F6\u5C31\u5750\u4E0B\u4E86\u3002\uFF08\u6F14\u5531 +{vocal}\uFF09"
     },
     {
@@ -15777,16 +15797,34 @@ var action_results_default = {
       actionName: "\u8DF3\u5B85\u821E",
       condition: {},
       priority: 99,
-      effects: { stamina: -12, stats: { dance: [1, 3] } },
+      effects: {
+        stamina: -12,
+        stats: {
+          dance: [
+            1,
+            3
+          ]
+        }
+      },
       text: "\u5BF9\u7740\u955C\u5B50\u628A\u540C\u4E00\u6BB5\u526F\u6B4C\u8DF3\u4E86\u4E8C\u5341\u904D\u3002\uFF08\u821E\u8E48 +{dance}\uFF09"
     },
     {
       id: "res-dance-tired",
       actionId: "dance-otaku",
       actionName: "\u8DF3\u5B85\u821E",
-      condition: { staminaBelow: 25 },
+      condition: {
+        staminaBelow: 25
+      },
       priority: 10,
-      effects: { stamina: -12, stats: { dance: [1, 1] } },
+      effects: {
+        stamina: -12,
+        stats: {
+          dance: [
+            1,
+            1
+          ]
+        }
+      },
       text: "\u817F\u6709\u70B9\u62AC\u4E0D\u8D77\u6765\uFF0C\u7EC3\u5230\u4E00\u534A\u5C31\u5750\u5728\u5730\u677F\u4E0A\u4E86\u3002\uFF08\u821E\u8E48 +{dance}\uFF09"
     },
     {
@@ -15795,7 +15833,15 @@ var action_results_default = {
       actionName: "\u81EA\u62CD\u5C0F\u77ED\u5267",
       condition: {},
       priority: 99,
-      effects: { stamina: -10, stats: { acting: [1, 2] } },
+      effects: {
+        stamina: -10,
+        stats: {
+          acting: [
+            1,
+            2
+          ]
+        }
+      },
       text: "\u81EA\u5BFC\u81EA\u6F14\u62CD\u4E86\u4E09\u6761\uFF0C\u7B2C\u4E8C\u6761\u6700\u597D\u3002\uFF08\u6F14\u6280 +{acting}\uFF09"
     },
     {
@@ -15804,7 +15850,15 @@ var action_results_default = {
       actionName: "\u81EA\u8BF4\u81EA\u8BDD",
       condition: {},
       priority: 99,
-      effects: { stamina: -8, stats: { talk: [1, 2] } },
+      effects: {
+        stamina: -8,
+        stats: {
+          talk: [
+            1,
+            2
+          ]
+        }
+      },
       text: "\u5BF9\u7740\u955C\u5934\u7EC3\u4E86\u4E00\u4E0B\u5348\u4E32\u573A\u8BCD\u3002\uFF08\u53E3\u624D +{talk}\uFF09"
     },
     {
@@ -15813,16 +15867,24 @@ var action_results_default = {
       actionName: "\u6253\u5DE5",
       condition: {},
       priority: 99,
-      effects: { stamina: -20, money: 320 },
+      effects: {
+        stamina: -20,
+        money: 320
+      },
       text: "\u5728\u4FBF\u5229\u5E97\u7AD9\u4E86\u56DB\u4E2A\u5C0F\u65F6\uFF0C\u811A\u6709\u70B9\u9EBB\u3002\uFF08\u6536\u5165 +320\uFF09"
     },
     {
       id: "res-work-tired",
       actionId: "work-part-time",
       actionName: "\u6253\u5DE5",
-      condition: { staminaBelow: 25 },
+      condition: {
+        staminaBelow: 25
+      },
       priority: 10,
-      effects: { stamina: -20, money: 240 },
+      effects: {
+        stamina: -20,
+        money: 240
+      },
       text: "\u56F0\u5F97\u5DEE\u70B9\u7B97\u9519\u94B1\uFF0C\u5E97\u957F\u8BA9\u4F60\u63D0\u524D\u4E0B\u73ED\u3002\uFF08\u6536\u5165 +240\uFF09"
     },
     {
@@ -15831,34 +15893,54 @@ var action_results_default = {
       actionName: "\u7206\u7761",
       condition: {},
       priority: 99,
-      effects: { stamina: 25 },
+      effects: {
+        stamina: 25
+      },
       text: "\u7761\u4E86\u4E00\u89C9\uFF0C\u611F\u89C9\u6D3B\u8FC7\u6765\u4E86\u3002"
     },
     {
       id: "res-show-s",
       actionId: "show",
       actionName: "\u6F14\u51FA",
-      condition: { statsSumAtLeast: 240 },
+      condition: {
+        statsSumAtLeast: 240
+      },
       priority: 10,
-      effects: { stamina: -30, money: 1500, fans: 300 },
+      effects: {
+        stamina: -30,
+        money: 1500,
+        fans: 300
+      },
       text: "\u706F\u4EAE\u8D77\u6765\u7684\u90A3\u4E00\u523B\uFF0C\u5168\u573A\u5B89\u9759\u4E86\u3002\uFF08\u7C89\u4E1D +300 \xB7 \u6536\u5165 +1500\uFF09"
     },
     {
       id: "res-show-a",
       actionId: "show",
       actionName: "\u6F14\u51FA",
-      condition: { statsSumAtLeast: 180 },
+      condition: {
+        statsSumAtLeast: 180
+      },
       priority: 20,
-      effects: { stamina: -30, money: 900, fans: 180 },
+      effects: {
+        stamina: -30,
+        money: 900,
+        fans: 180
+      },
       text: "\u53D1\u6325\u5F88\u7A33\uFF0C\u53F0\u4E0B\u6709\u4EBA\u8DDF\u7740\u558A\u3002\uFF08\u7C89\u4E1D +180 \xB7 \u6536\u5165 +900\uFF09"
     },
     {
       id: "res-show-b",
       actionId: "show",
       actionName: "\u6F14\u51FA",
-      condition: { statsSumAtLeast: 120 },
+      condition: {
+        statsSumAtLeast: 120
+      },
       priority: 30,
-      effects: { stamina: -30, money: 500, fans: 100 },
+      effects: {
+        stamina: -30,
+        money: 500,
+        fans: 100
+      },
       text: "\u4E2D\u89C4\u4E2D\u77E9\uFF0C\u4F46\u6CA1\u51FA\u9519\u3002\uFF08\u7C89\u4E1D +100 \xB7 \u6536\u5165 +500\uFF09"
     },
     {
@@ -15867,7 +15949,11 @@ var action_results_default = {
       actionName: "\u6F14\u51FA",
       condition: {},
       priority: 99,
-      effects: { stamina: -30, money: 200, fans: 40 },
+      effects: {
+        stamina: -30,
+        money: 200,
+        fans: 40
+      },
       text: "\u4E2D\u95F4\u5FD8\u4E86\u4E00\u4E2A\u52A8\u4F5C\uFF0C\u4F60\u7B11\u7740\u5706\u8FC7\u53BB\u4E86\u3002\uFF08\u7C89\u4E1D +40 \xB7 \u6536\u5165 +200\uFF09"
     }
   ]
@@ -15885,7 +15971,9 @@ var actions_default = {
       displayCondition: {},
       times: 0,
       timesScope: "run",
-      affectedStats: ["vocal"],
+      affectedStats: [
+        "vocal"
+      ],
       durationMinutes: 1
     },
     {
@@ -15896,7 +15984,9 @@ var actions_default = {
       displayCondition: {},
       times: 0,
       timesScope: "run",
-      affectedStats: ["dance"],
+      affectedStats: [
+        "dance"
+      ],
       durationMinutes: 1
     },
     {
@@ -15907,7 +15997,9 @@ var actions_default = {
       displayCondition: {},
       times: 0,
       timesScope: "run",
-      affectedStats: ["acting"],
+      affectedStats: [
+        "acting"
+      ],
       durationMinutes: 1
     },
     {
@@ -15918,7 +16010,9 @@ var actions_default = {
       displayCondition: {},
       times: 0,
       timesScope: "run",
-      affectedStats: ["talk"],
+      affectedStats: [
+        "talk"
+      ],
       durationMinutes: 1
     },
     {
@@ -15948,10 +16042,17 @@ var actions_default = {
       name: "\u6F14\u51FA",
       category: "performance",
       categoryName: "\u6F14\u51FA",
-      displayCondition: { statsSumAtLeast: 60 },
+      displayCondition: {
+        statsSumAtLeast: 60
+      },
       times: 0,
       timesScope: "week",
-      affectedStats: ["vocal", "dance", "acting", "talk"],
+      affectedStats: [
+        "vocal",
+        "dance",
+        "acting",
+        "talk"
+      ],
       durationMinutes: 3
     }
   ]
@@ -16091,7 +16192,8 @@ var balance_default = {
     dupCap: 10,
     npcBaseRatio: 0.9,
     runDays: 730,
-    divinationBase: 100
+    divinationBase: 100,
+    partyMax: 10
   }
 };
 
@@ -16408,6 +16510,59 @@ var events_default = {
   ]
 };
 
+// ../core/data/pools.json
+var pools_default = {
+  _\u8BF4\u660E: "NPC \u5361\u6C60\u8868\uFF1A\u6BCF\u4E2A\u6E20\u9053\u4ECE\u5BF9\u5E94\u5361\u6C60\u91CC\u62BD\u4EBA\u3002\u540C\u4E00\u4E2A\u5361\u6C60\u91CC\uFF0C\u672A\u6EE1\u9ED8\u5951\u7684\u89D2\u8272\u7B49\u6982\u7387\uFF0C\u6EE1\u9ED8\u5951\u7684\u6743\u91CD\u51CF\u534A",
+  pools: [
+    {
+      id: "pool-comic",
+      name: "\u6F2B\u5C55\u540C\u597D",
+      members: [
+        "\u6797\u5C0F\u6EE1",
+        "\u5468\u4E88",
+        "\u90D1\u590F",
+        "\u5510\u6F84",
+        "\u767D\u9732",
+        "\u82CF\u665A",
+        "\u4F55\u662D",
+        "\u8BB8\u77E5"
+      ]
+    },
+    {
+      id: "pool-stage",
+      name: "\u5267\u573A\u5E38\u5BA2",
+      members: [
+        "\u9648\u4E00\u8BFA",
+        "\u6C88\u9752",
+        "\u53F6\u7EEB",
+        "\u6E29\u8A00",
+        "\u5B8B\u8FDF",
+        "\u5434\u5FF5",
+        "\u987E\u5357",
+        "\u97E9\u661F"
+      ]
+    },
+    {
+      id: "pool-intro",
+      name: "\u670B\u53CB\u7684\u670B\u53CB",
+      members: [
+        "\u94B1\u591A\u591A",
+        "\u51AF\u5C9A",
+        "\u848B\u91CE",
+        "\u66F9\u4E91",
+        "\u9093\u67EF",
+        "\u949F\u79BB",
+        "\u65B9\u7CD6",
+        "\u962E\u9752\u79BE",
+        "\u8C22\u9065",
+        "\u65BD\u7136",
+        "\u5D14\u7FBD",
+        "\u8303\u5C7F"
+      ]
+    }
+  ]
+};
+
 // ../core/src/data.ts
 var BALANCE = balance_default.balance;
 var RAW_ACTIONS = actions_default.actions;
@@ -16415,6 +16570,7 @@ var RAW_RESULTS = action_results_default.results;
 var RAW_ROUTINE = events_default.routine;
 var RAW_STORY = events_default.story;
 var RAW_ATTRIBUTES = attributes_default.attributes;
+var RAW_POOLS = pools_default.pools;
 
 // ../core/src/events.ts
 var ROUTINE_TEMPLATES = RAW_ROUTINE.map((r) => ({
@@ -16456,6 +16612,15 @@ function makeRequires(req) {
     if (req?.fansAtLeast) {
       for (const [k, v] of Object.entries(req.fansAtLeast)) {
         if ((s.fans.byType[k] ?? 0) < v) return false;
+      }
+    }
+    if (typeof req?.moneyAtLeast === "number" && s.money < req.moneyAtLeast) return false;
+    if (typeof req?.friendsAtLeast === "number" && (s.friends ?? []).length < req.friendsAtLeast) {
+      return false;
+    }
+    if (req?.flagsContain) {
+      for (const f of req.flagsContain) {
+        if (!s.flags[f]) return false;
       }
     }
     if (req?.flagsNot) {
@@ -17267,7 +17432,27 @@ var members_default = {
       "\u767D\u9732",
       "\u987E\u5357",
       "\u6C88\u9752",
-      "\u53F6\u7EEB"
+      "\u53F6\u7EEB",
+      "\u6E29\u8A00",
+      "\u5B8B\u8FDF",
+      "\u5434\u5FF5",
+      "\u94B1\u591A\u591A",
+      "\u51AF\u5C9A",
+      "\u848B\u91CE",
+      "\u97E9\u661F",
+      "\u66F9\u4E91",
+      "\u9093\u67EF",
+      "\u949F\u79BB",
+      "\u65B9\u7CD6",
+      "\u962E\u9752\u79BE",
+      "\u8C22\u9065",
+      "\u65BD\u7136",
+      "\u5D14\u7FBD",
+      "\u8303\u5C7F",
+      "\u5F6D\u91CE",
+      "\u8463\u590F",
+      "\u8881\u6E05",
+      "\u9646\u542C"
     ],
     biases: [
       "vocal",
@@ -17314,6 +17499,182 @@ var AXIS_KEYS = byCategory("hidden").map((a) => a.key);
 var FAN_KEYS = byCategory("fans").map((a) => a.key);
 var STAT_LABEL = Object.fromEntries(
   ATTRIBUTES.map((a) => [a.key, a.name])
+);
+
+// ../core/data/channels.json
+var channels_default = {
+  _\u8BF4\u660E: "\u8BA4\u8BC6\u65B0\u670B\u53CB\u7684\u6E20\u9053\u8868\uFF1A\u6BCF\u4E2A\u6E20\u9053\u82B1\u94B1\u8BA4\u8BC6\u4E00\u4E2A\u4EBA\uFF0CbiasPool \u51B3\u5B9A\u5927\u6982\u7387\u662F\u4EC0\u4E48\u7C7B\u578B\uFF0Cquality \u662F\u5F3A\u5EA6\u7CFB\u6570\u533A\u95F4\uFF0CpoolId \u6307\u5411\u5361\u6C60",
+  channels: [
+    {
+      id: "comic-con",
+      name: "\u901B\u6F2B\u5C55",
+      cost: 200,
+      biasPool: [
+        "dance",
+        "acting"
+      ],
+      quality: [
+        0.8,
+        1.05
+      ],
+      poolId: "pool-comic",
+      text: "\u5728\u4EBA\u5806\u91CC\u6324\u4E86\u4E00\u5929\uFF0C\u52A0\u5230\u4E86\u51E0\u4E2A\u540C\u597D\u3002"
+    },
+    {
+      id: "live-show",
+      name: "\u770B\u6F14\u51FA",
+      cost: 300,
+      biasPool: [
+        "vocal",
+        "dance"
+      ],
+      quality: [
+        0.85,
+        1.1
+      ],
+      poolId: "pool-stage",
+      text: "\u6563\u573A\u540E\u5728\u540E\u95E8\u7B49\u5230\u5F88\u665A\uFF0C\u8BA4\u8BC6\u4E86\u4E24\u4E2A\u540C\u6837\u5728\u7EC3\u7684\u4EBA\u3002"
+    },
+    {
+      id: "friend-intro",
+      name: "\u670B\u53CB\u4ECB\u7ECD",
+      cost: 500,
+      biasPool: [
+        "vocal",
+        "dance",
+        "acting",
+        "talk"
+      ],
+      quality: [
+        0.95,
+        1.15
+      ],
+      poolId: "pool-intro",
+      text: "\u670B\u53CB\u628A\u5979\u62C9\u8FDB\u7FA4\uFF0C\u8BF4\u4E86\u53E5\u300C\u4F60\u4EEC\u5E94\u8BE5\u804A\u5F97\u6765\u300D\u3002"
+    }
+  ]
+};
+
+// ../core/src/friends.ts
+var CHANNELS = channels_default.channels;
+var DUP_CAP2 = BALANCE.dupCap ?? 10;
+var PARTY_MAX = BALANCE.partyMax ?? 10;
+
+// ../core/data/tasks.json
+var tasks_default = {
+  _\u8BF4\u660E: "\u4EFB\u52A1\u8868\uFF1AdisplayCondition=\u53EF\u89C1\u6761\u4EF6\uFF1BacceptCondition=\u53EF\u9886\u53D6\u6761\u4EF6\uFF1BcompleteCondition=\u5B8C\u6210\u6761\u4EF6\u3002\u9886\u53D6\u540E\u8FDB\u5165\u8FDB\u884C\u4E2D\uFF0C\u6761\u4EF6\u8FBE\u6210\u81EA\u52A8\u5B8C\u6210\u5E76\u53D1\u5956",
+  tasks: [
+    {
+      id: "task-first-debut",
+      type: "once",
+      name: "\u7B2C\u4E00\u6B21\u51FA\u9053",
+      displayCondition: {},
+      acceptCondition: {
+        statsSumAtLeast: 120
+      },
+      completeCondition: {
+        flagsContain: [
+          "ev:debut"
+        ]
+      },
+      rewards: {
+        money: 3e3,
+        fans: 100
+      },
+      times: 1,
+      content: "\u56DB\u9879\u5C5E\u6027\u603B\u548C\u8FBE\u5230\u51FA\u9053\u95E8\u69DB\u540E\uFF0C\u9886\u53D6\u4EFB\u52A1\uFF0C\u7136\u540E\u70B9\u300C\u51FA\u9053\u300D\u3002",
+      brief: "\u5B8C\u6210\u51FA\u9053",
+      priority: 10
+    },
+    {
+      id: "task-dance-30",
+      type: "once",
+      name: "\u821E\u8E48\u4E09\u5341",
+      displayCondition: {},
+      acceptCondition: {
+        statsAtLeast: {
+          dance: 20
+        }
+      },
+      completeCondition: {
+        statsAtLeast: {
+          dance: 30
+        }
+      },
+      rewards: {
+        money: 500,
+        stamina: 10
+      },
+      times: 1,
+      content: "\u628A\u821E\u8E48\u7EC3\u5230 30\uFF0C\u8BF4\u660E\u4F60\u5DF2\u7ECF\u4E0D\u662F\u65B0\u4EBA\u4E86\u3002",
+      brief: "\u821E\u8E48\u7EC3\u5230 30",
+      priority: 20
+    },
+    {
+      id: "task-first-show",
+      type: "repeat",
+      name: "\u7AD9\u4E0A\u821E\u53F0",
+      displayCondition: {
+        statsSumAtLeast: 60
+      },
+      acceptCondition: {
+        statsSumAtLeast: 60
+      },
+      completeCondition: {
+        fansAtLeast: {
+          stage: 100
+        }
+      },
+      rewards: {
+        money: 800
+      },
+      times: 5,
+      content: "\u6F14\u51FA\u4F1A\u628A\u8DEF\u4EBA\u53D8\u6210\u7C89\u4E1D\u3002\u6512\u5230 100 \u821E\u53F0\u7C89\u3002",
+      brief: "\u821E\u53F0\u7C89\u7D2F\u8BA1\u5230 100",
+      priority: 30
+    },
+    {
+      id: "task-money-10000",
+      type: "once",
+      name: "\u6512\u5230\u4E00\u4E07",
+      displayCondition: {},
+      acceptCondition: {
+        moneyAtLeast: 5e3
+      },
+      completeCondition: {
+        moneyAtLeast: 1e4
+      },
+      rewards: {
+        stamina: 20
+      },
+      times: 1,
+      content: "\u623F\u79DF\u5F88\u8D35\uFF0C\u624B\u91CC\u6709\u4E00\u4E07\u5757\u4F1A\u8E0F\u5B9E\u4E00\u70B9\u3002",
+      brief: "\u8D44\u91D1\u8FBE\u5230 10000",
+      priority: 40
+    },
+    {
+      id: "task-friend",
+      type: "once",
+      name: "\u8BA4\u8BC6\u4E00\u4E2A\u4EBA",
+      displayCondition: {},
+      acceptCondition: {},
+      completeCondition: {
+        friendsAtLeast: 1
+      },
+      rewards: {
+        money: 200
+      },
+      times: 1,
+      content: "\u53BB\u6F2B\u5C55\u6216\u8005\u770B\u6F14\u51FA\uFF0C\u8BA4\u8BC6\u7B2C\u4E00\u4E2A\u670B\u53CB\u3002",
+      brief: "\u670B\u53CB\u5708\u81F3\u5C11\u6709 1 \u4E2A\u4EBA",
+      priority: 50
+    }
+  ]
+};
+
+// ../core/src/tasks.ts
+var TASKS = tasks_default.tasks.slice().sort(
+  (a, b) => a.priority - b.priority
 );
 
 // ../../node_modules/.pnpm/@supabase+supabase-js@2.118.0/node_modules/@supabase/supabase-js/dist/index.mjs
