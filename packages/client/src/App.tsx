@@ -665,12 +665,24 @@ function AppInner() {
     }
     return marks;
   }, [visibleItems, run.at]);
-  // 有新日志就滚到底（按时间正序，最新的在下面）
+  // 有新日志 / 刷新页面时，滚到最底部显示最新一条
   useEffect(() => {
     const el = logRef.current;
     if (!el) return;
-    el.scrollTop = el.scrollHeight;
-  }, [run.log.length, logTab]);
+
+    const toBottom = () => {
+      el.scrollTop = el.scrollHeight;
+    };
+
+    toBottom();
+    const raf = requestAnimationFrame(toBottom);
+    const timer = window.setTimeout(toBottom, 120);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(timer);
+    };
+  }, [run.log.length, logTab, mainTab]);
 
   const visibleLog = useMemo(() => {
     const filtered = run.log.filter((l) => {
