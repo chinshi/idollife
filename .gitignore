@@ -10,3 +10,8 @@ dist/
 .env
 !*.env.example
 
+
+# Excel 临时锁文件
+content/~$*.xlsx
+# 旧的合并工作簿（已拆分为单表文件）
+content/content.xlsx
