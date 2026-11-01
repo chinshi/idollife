@@ -1152,6 +1152,11 @@ function AppInner() {
       setNotice('钱不够，先攒一点。');
       return;
     }
+    if (r.result === 'empty') {
+      setRun(r.state);
+      setNotice('这次没遇到合适的人（钱照扣）。');
+      return;
+    }
     if (r.result === 'dup') {
       // 走的是「重复认识」分支：也要把新的状态写回去（扣钱 + 日志 + 默契）
       setRun(r.state);

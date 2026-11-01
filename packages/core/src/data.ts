@@ -7,6 +7,7 @@ import actionsJson from '../data/actions.json';
 import attributesJson from '../data/attributes.json';
 import balanceJson from '../data/balance.json';
 import eventsJson from '../data/events.json';
+import poolsJson from '../data/pools.json';
 
 export const BALANCE = balanceJson.balance;
 
@@ -119,3 +120,10 @@ export interface RawAttribute {
 }
 
 export const RAW_ATTRIBUTES = attributesJson.attributes as RawAttribute[];
+export interface RawPool {
+  id: string;
+  name: string;
+  members: string[];
+}
+
+export const RAW_POOLS = poolsJson.pools as RawPool[];

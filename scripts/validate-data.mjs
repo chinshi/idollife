@@ -98,6 +98,14 @@ if (actions && actionResults) {
     need(hasDefault, `action_results: 行为 ${id} 缺少默认结果（condition 为空的那条）`);
   }
 }
+const pools = await load('pools.json');
+if (pools) {
+  need(Array.isArray(pools.pools) && pools.pools.length > 0, 'pools.json: pools 必须是非空数组');
+  uniqueIds(pools.pools ?? [], 'pools');
+  for (const p of pools.pools ?? []) {
+    need(Array.isArray(p.members) && p.members.length > 0, `pools.${p.id}: members 不能为空`);
+  }
+}
 const channels = await load('channels.json');
 if (channels) {
   need(Array.isArray(channels.channels) && channels.channels.length > 0, 'channels.json: channels 必须是非空数组');

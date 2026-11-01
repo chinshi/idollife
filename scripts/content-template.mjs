@@ -25,6 +25,7 @@ const characters = await load('characters.json');
 const logs = await load('logs.json');
 const tasks = await load('tasks.json');
 const channels = await load('channels.json');
+const pools = await load('pools.json');
 
 await mkdir(outDir, { recursive: true });
 
@@ -236,7 +237,7 @@ await build('tasks.xlsx', [
 await build('channels.xlsx', [
   {
     name: 'channels',
-    headers: ['id', '名称', '花费', '偏向', '资质最小', '资质最大', '文案'],
+    headers: ['id', '名称', '花费', '偏向', '资质最小', '资质最大', '卡池id', '文案'],
     rows: channels.channels.map((c) => [
       c.id,
       c.name,
@@ -244,8 +245,18 @@ await build('channels.xlsx', [
       (c.biasPool ?? []).join(','),
       c.quality?.[0] ?? '',
       c.quality?.[1] ?? '',
+      c.poolId ?? '',
       c.text,
     ]),
   },
 ]);
-console.log('✓ 已生成模板文件到 content/（含 tasks / channels）');
+
+// 12) NPC 卡池表
+await build('pools.xlsx', [
+  {
+    name: 'pools',
+    headers: ['id', '卡池名称', '成员（逗号分隔）'],
+    rows: pools.pools.map((p) => [p.id, p.name, (p.members ?? []).join(',')]),
+  },
+]);
+console.log('✓ 已生成模板文件到 content/（含 tasks / channels / pools）');
