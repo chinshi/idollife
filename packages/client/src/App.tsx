@@ -1412,19 +1412,6 @@ function AppInner() {
 
         <div className="bar-center">
           <section className="mod mod-timeline">
-            <div className="mod-head">
-              <div className="speed-row">
-                {[1, 10, 60].map((v) => (
-                  <button
-                    key={v}
-                    className={speed === v ? 'mini-tab active' : 'mini-tab'}
-                    onClick={() => setSpeed(v)}
-                  >
-                    {v}×
-                  </button>
-                ))}
-              </div>
-            </div>
 
             <div className="tlx">
               {!running && lastStop && STOP_TEXT[lastStop] && (
@@ -1498,6 +1485,17 @@ function AppInner() {
             <div className="tlx-tools">
               <div className="tools-left">
                 <button onClick={() => setShowStops(true)}>设置暂停时间点</button>
+                <div className="speed-row">
+                  {[1, 10, 60].map((v) => (
+                    <button
+                      key={v}
+                      className={speed === v ? 'mini-tab active' : 'mini-tab'}
+                      onClick={() => setSpeed(v)}
+                    >
+                      {v}×
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <div className="tools-center">

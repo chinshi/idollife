@@ -1981,3 +1981,37 @@ body { overflow: hidden; }
 .stop-list .nm { flex: 1 1 auto; }
 .stop-list .when { color: var(--muted); }
 .stop-list em { font-style: normal; color: #c0392b; font-size: 11px; }
+/* 工具条左区：按钮 + 速度并排 */
+.tools-left { gap: 8px; align-items: center; }
+.tools-left .speed-row { display: flex; align-items: center; gap: 6px; }
+
+/* 日期线更长、日期字更明显 */
+.tlx-point.newday::before {
+  height: 44px;
+  background: #b9c3d6;
+}
+.tlx-point.newday::after {
+  top: calc(50% + 48px);
+  font-size: 12px;
+  font-weight: 600;
+  color: #2f3a4d;
+}
+
+/* 暂停点：用暂停图标代替红点 */
+.tlx-point.stopped .tlx-dot {
+  width: auto;
+  height: auto;
+  margin: 0;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+.tlx-point.stopped .tlx-dot::before {
+  content: '⏸';
+  font-size: 13px;
+  line-height: 1;
+  color: #c0392b;
+}
