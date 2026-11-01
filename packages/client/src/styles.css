@@ -1586,3 +1586,30 @@ body { overflow: hidden; }
   margin-top: -1px;
   background: linear-gradient(90deg, #f6a45c, #fbd9b6);
 }
+/* 轴线改为贯穿整条时间轴的单一背景线，卡片盖在上面，彻底不会断 */
+.tlx { position: relative; }
+.tlx::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  margin-top: -1px;
+  background: #e6eaf3;
+  z-index: 0;
+}
+.tlx::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  margin-top: -1px;
+  background: linear-gradient(90deg, #f6a45c, #fbd9b6);
+  z-index: 0;
+}
+.tlx-side::before { display: none; }
+.tlx-card::before, .tlx-card::after { display: none; }
+.tlx-card { background: #fff6ec; }
