@@ -1666,6 +1666,19 @@ function AppInner() {
               <>
                 <div className="mod-head">
                   <h2>任务</h2>
+                  <span className="muted small">
+                    共{TASKS.length} · 可{
+                      TASKS.filter((x) => taskStatus(run, x) === 'claimable').length
+                    } · 进{
+                      TASKS.filter((x) => taskStatus(run, x) === 'active').length
+                    } · 见{
+                      TASKS.filter((x) => taskStatus(run, x) === 'locked').length
+                    } · 完{
+                      TASKS.filter((x) => taskStatus(run, x) === 'done').length
+                    } · 隐{
+                      TASKS.filter((x) => taskStatus(run, x) === 'hidden').length
+                    }
+                  </span>
                   <div className="seg-inline">
                     {(
                       [
