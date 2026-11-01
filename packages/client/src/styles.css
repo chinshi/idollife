@@ -1180,3 +1180,24 @@ body { overflow: hidden; }
 .shell { padding: 8px 14px 14px; gap: 12px; }
 .col-left, .col-center, .col-right { min-width: 0; }
 .tlh-inner { width: max-content; min-width: 100%; }
+/* 左栏：菜单本体也做成模块卡片，和右侧对齐 */
+.col-left { grid-template-rows: minmax(0, 1fr); }
+.mod-menu {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+  align-self: stretch;
+}
+.mod-menu .menu-item { width: 100%; }
+
+/* 头部中间：时间轴卡片 */
+.bar .mod-timeline {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 4px 8px 6px;
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.04);
+}
+.bar .mod-timeline .mod-head { padding: 2px 0 4px; }

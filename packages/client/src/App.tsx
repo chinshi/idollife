@@ -1198,7 +1198,7 @@ function AppInner() {
       <main className="shell">
         {/* 左：主信息 + 功能切换 */}
         <aside className="mod col-left">
-          <nav className="mod-menu">
+          <nav className="mod mod-menu">
             {(
               [
                 ['stats', '属性'],
