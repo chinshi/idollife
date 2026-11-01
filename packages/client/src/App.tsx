@@ -54,6 +54,7 @@ import { syncRun, fetchLatestRun, pushChoice } from './api/sync';
 import {
   getAccessToken,
   getSessionUser,
+  refreshAccessToken,
   onAuthChange,
   signIn,
   signOut,
@@ -448,6 +449,14 @@ function AppInner() {
     return () => clearTimeout(t);
   }, [runId, revision, run, schedule, seed]);
 
+  // 每 10 分钟续一次会话，避免长时间挂着后 token 过期
+  useEffect(() => {
+    if (!user) return;
+    const id = window.setInterval(() => {
+      void refreshAccessToken();
+    }, 10 * 60 * 1000);
+    return () => window.clearInterval(id);
+  }, [user]);
   // 记住「当前时钟位置」，刷新后从那里继续，而不是回到行动开始
   useEffect(() => {
     const id = window.setInterval(() => {
@@ -800,6 +809,18 @@ function AppInner() {
     );
 
     if (outcome.kind === 'unauthorized') {
+      // token 过期：先刷新再重试一次，避免频繁被踢回登录
+      const fresh = await refreshAccessToken();
+      if (fresh) {
+        const retry = await syncRun(
+          { runId, run: prevRun, schedule: prevSchedule, from, to, seed },
+          fresh,
+        );
+        if (retry.kind !== 'unauthorized') {
+          setSyncStatus(retry.kind === 'error' ? 'offline' : 'synced');
+          return;
+        }
+      }
       setSyncStatus('expired');
       setForceLogin(true);
       return;
