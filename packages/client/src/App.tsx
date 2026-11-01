@@ -574,6 +574,16 @@ function AppInner() {
     [visibleItems, nextItem?.id],
   );
 
+  const dayBreakLabels = useMemo(() => {
+    const m = new Map<string, string>();
+    visibleItems.forEach((it, i) => {
+      const day = Math.floor((it.startAt - T0) / DAY_MS);
+      const prev = visibleItems[i - 1];
+      const prevDay = prev ? Math.floor((prev.startAt - T0) / DAY_MS) : -1;
+      if (day !== prevDay) m.set(it.id, dayLabel(it.startAt, run.at));
+    });
+    return m;
+  }, [visibleItems, run.at]);
   const pastDateAt = pastItems[0]?.startAt ?? run.at;
   const futureDateAt = futureItems[0]?.startAt ?? nextItem?.startAt ?? run.at;
 
@@ -1129,7 +1139,12 @@ function AppInner() {
                 {pastItems.map((it) => {
                   const a = ACTIONS[it.actionId];
                   return (
-                    <div key={it.id} className="tlx-point done" style={{ width: '84px' }}>
+                    <div
+                      key={it.id}
+                      className={dayBreakLabels.has(it.id) ? 'tlx-point done newday' : 'tlx-point done'}
+                      data-date={dayBreakLabels.get(it.id) ?? ''}
+                      style={{ width: '84px' }}
+                    >
                       <span className="tlx-above">行动{actionNo(it)}</span>
                       <span className="tlx-dot" />
                       <span className="tlx-below">
@@ -1157,14 +1172,18 @@ function AppInner() {
                 </div>
               </div>
 
-              <span className="tlx-now-tick" />
-              <span className="tlx-now-date">{dayLabel(nextItem?.startAt ?? run.at, run.at)}</span>
+
 
               <div className="tlx-side tlx-future">
                 {futureItems.map((it) => {
                   const a = ACTIONS[it.actionId];
                   return (
-                    <div key={it.id} className="tlx-point" style={{ width: '84px' }}>
+                    <div
+                      key={it.id}
+                      className={dayBreakLabels.has(it.id) ? 'tlx-point newday' : 'tlx-point'}
+                      data-date={dayBreakLabels.get(it.id) ?? ''}
+                      style={{ width: '84px' }}
+                    >
                       <span className="tlx-above">行动{actionNo(it)}</span>
                       <span className="tlx-dot" />
                       <span className="tlx-below">{a?.name ?? it.actionId}</span>
