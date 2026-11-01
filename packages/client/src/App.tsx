@@ -291,6 +291,15 @@ function AppInner() {
   const [logTab, setLogTab] = useState<LogTab>('all');
   const [mainTab, setMainTab] = useState<MainTab>('plan');
   const [lastStop, setLastStop] = useState('');
+  const STOP_TEXT: Record<string, string> = {
+    stamina: '体力不足，行程停下来了',
+    money: '钱不够，行程停下来了',
+    exhausted: '这一批行程走完了',
+    stopped: '到指定的停止点停下了',
+    event: '有事件需要处理',
+    ending: '两年到了',
+    time: '',
+  };
   const [historyLimit, setHistoryLimit] = useState(9);
   const [forceLogin, setForceLogin] = useState(false);
   const [running, setRunning] = useState(false);
@@ -1189,6 +1198,9 @@ function AppInner() {
             </div>
 
             <div className="tlx">
+              {!running && lastStop && STOP_TEXT[lastStop] && (
+                <span className={`tlx-status ${lastStop}`}>{STOP_TEXT[lastStop]}</span>
+              )}
               <div className="tlx-side tlx-past">
                 {pastItems.length === 0 && <span className="tlx-empty">还没有历史</span>}
                 {pastItems.map((it) => {

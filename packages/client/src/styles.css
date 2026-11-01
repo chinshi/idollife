@@ -1613,3 +1613,26 @@ body { overflow: hidden; }
 .tlx-side::before { display: none; }
 .tlx-card::before, .tlx-card::after { display: none; }
 .tlx-card { background: #fff6ec; }
+/* 卡片上方的停止原因提示 */
+.tlx-status {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  z-index: 4;
+  font-size: 11px;
+  padding: 1px 8px;
+  border-radius: 10px;
+  background: #f2f4f9;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.tlx-status.stamina,
+.tlx-status.money {
+  background: #fdecec;
+  color: #c0392b;
+}
+.tlx-status.event {
+  background: #fff2e4;
+  color: #b35a00;
+}
