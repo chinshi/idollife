@@ -2219,3 +2219,19 @@ body { overflow: hidden; }
   padding: 3px 0;
   border-bottom: 1px dotted #eef1f6;
 }
+/* 弹窗右上角关闭按钮：固定小尺寸，不被通用 icon-btn 拉伸 */
+.modal-head .icon-btn {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  line-height: 1;
+  border-radius: 6px;
+  color: var(--muted);
+  cursor: pointer;
+}
+.modal-head .icon-btn:hover { background: #f2f4f9; color: var(--text); }
