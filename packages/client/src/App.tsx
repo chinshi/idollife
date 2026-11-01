@@ -317,7 +317,7 @@ function AppInner() {
   const [showInvite, setShowInvite] = useState(false);
   const [kickTarget, setKickTarget] = useState<string | null>(null);
   const [friendsTab, setFriendsTab] = useState<'list' | 'meet'>('list');
-  const [taskTab, setTaskTab] = useState<'accept' | 'done'>('accept');
+  const [taskTab, setTaskTab] = useState<'all' | 'accept' | 'active' | 'done'>('all');
   const statTotal = run.stats.vocal + run.stats.dance + run.stats.acting + run.stats.talk;
   const STOP_TEXT: Record<string, string> = {
     stamina: '体力不足，行程停下来了',
@@ -1667,43 +1667,56 @@ function AppInner() {
                 <div className="mod-head">
                   <h2>任务</h2>
                   <div className="seg-inline">
-                    <button
-                      className={taskTab === 'accept' ? 'seg-item active' : 'seg-item'}
-                      onClick={() => setTaskTab('accept')}
-                    >
-                      领取任务
-                    </button>
-                    <button
-                      className={taskTab === 'done' ? 'seg-item active' : 'seg-item'}
-                      onClick={() => setTaskTab('done')}
-                    >
-                      已完成
-                    </button>
+                    {(
+                      [
+                        ['all', '全部'],
+                        ['accept', '领取任务'],
+                        ['active', '进行中'],
+                        ['done', '已完成'],
+                      ] as Array<['all' | 'accept' | 'active' | 'done', string]>
+                    ).map(([key, label]) => (
+                      <button
+                        key={key}
+                        className={taskTab === key ? 'seg-item active' : 'seg-item'}
+                        onClick={() => setTaskTab(key)}
+                      >
+                        {label}
+                      </button>
+                    ))}
                   </div>
                 </div>
 
-                {taskTab === 'accept' ? (
-                  <ul className="task-list">
-                    {TASKS.filter((task) => {
-                      const s = taskStatus(run, task);
-                      return s !== 'hidden' && s !== 'done';
-                    }).map((task) => {
-                      const status = taskStatus(run, task);
-                      return (
-                        <li
-                          key={task.id}
-                          className={status === 'claimable' ? 'task claimable' : 'task'}
-                        >
-                          <div className="task-top">
-                            <span className="task-name">{task.name}</span>
-                            <span className={`task-state ${status}`}>
-                              {status === 'claimable'
-                                ? '可领取'
-                                : status === 'active'
-                                  ? '进行中'
+                {(() => {
+                  const renderTask = (task: (typeof TASKS)[number]) => {
+                    const status = taskStatus(run, task);
+                    return (
+                      <li
+                        key={task.id}
+                        className={[
+                          'task',
+                          status === 'claimable' ? 'claimable' : '',
+                          status === 'done' ? 'done' : '',
+                        ]
+                          .filter(Boolean)
+                          .join(' ')}
+                      >
+                        <div className="task-top">
+                          <span className="task-name">{task.name}</span>
+                          <span className={`task-state ${status}`}>
+                            {status === 'claimable'
+                              ? '可领取'
+                              : status === 'active'
+                                ? '进行中'
+                                : status === 'done'
+                                  ? '已完成'
                                   : '未达成'}
+                          </span>
+                          <span className="spacer" />
+                          {status === 'done' ? (
+                            <span className="muted small">
+                              {dayLabel(Number(run.flags[`task:${task.id}:doneAt`] ?? run.at), run.at)}
                             </span>
-                            <span className="spacer" />
+                          ) : (
                             <button
                               className={status === 'claimable' ? 'primary' : ''}
                               disabled={status !== 'claimable'}
@@ -1711,9 +1724,13 @@ function AppInner() {
                             >
                               {status === 'active' ? '已领取' : '领取任务'}
                             </button>
-                          </div>
-                          <p className="task-brief-line">{task.brief}</p>
+                          )}
+                        </div>
+                        <p className="task-brief-line">{task.brief}</p>
+                        {status !== 'done' && (
                           <p className="muted small">{task.content}</p>
+                        )}
+                        {status !== 'done' && (
                           <p className="muted small">
                             奖励：
                             {[
@@ -1724,27 +1741,74 @@ function AppInner() {
                               .filter(Boolean)
                               .join(' · ') || '无'}
                           </p>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                ) : completedTasks(run).length === 0 ? (
-                  <p className="muted small">还没有完成的任务。</p>
-                ) : (
-                  <ul className="task-list">
-                    {completedTasks(run).map(({ task, at }) => (
-                      <li key={task.id} className="task done">
-                        <div className="task-top">
-                          <span className="task-name">{task.name}</span>
-                          <span className="task-state done">已完成</span>
-                          <span className="spacer" />
-                          <span className="muted small">{dayLabel(at, run.at)}</span>
-                        </div>
-                        <p className="task-brief-line">{task.brief}</p>
+                        )}
                       </li>
-                    ))}
-                  </ul>
-                )}
+                    );
+                  };
+
+                  if (taskTab === 'done') {
+                    const done = completedTasks(run);
+                    if (done.length === 0) return <p className="muted small">还没有完成的任务。</p>;
+                    return <ul className="task-list">{done.map(({ task }) => renderTask(task))}</ul>;
+                  }
+
+                  if (taskTab === 'active') {
+                    const active = activeTasks(run);
+                    if (active.length === 0) return <p className="muted small">没有进行中的任务。</p>;
+                    return (
+                      <ul className="task-list">{active.map(({ task }) => renderTask(task))}</ul>
+                    );
+                  }
+
+                  if (taskTab === 'accept') {
+                    const list = TASKS.filter((task) => {
+                      const s = taskStatus(run, task);
+                      return s === 'claimable' || s === 'locked' || s === 'active';
+                    });
+                    if (list.length === 0) return <p className="muted small">暂时没有可领取的任务。</p>;
+                    return <ul className="task-list">{list.map(renderTask)}</ul>;
+                  }
+
+                  // 全部：可领取 → 进行中 → 可见 → 已完成，用分割线隔开
+                  const sections: Array<{ key: string; title: string; list: (typeof TASKS)[number][] }> = [
+                    {
+                      key: 'claimable',
+                      title: '可领取',
+                      list: TASKS.filter((task) => taskStatus(run, task) === 'claimable'),
+                    },
+                    {
+                      key: 'active',
+                      title: '进行中',
+                      list: TASKS.filter((task) => taskStatus(run, task) === 'active'),
+                    },
+                    {
+                      key: 'locked',
+                      title: '可见',
+                      list: TASKS.filter((task) => taskStatus(run, task) === 'locked'),
+                    },
+                    {
+                      key: 'done',
+                      title: '已完成',
+                      list: completedTasks(run).map((x) => x.task),
+                    },
+                  ];
+
+                  const visibleSections = sections.filter((s) => s.list.length > 0);
+                  if (visibleSections.length === 0) {
+                    return <p className="muted small">暂时没有任务。</p>;
+                  }
+
+                  return (
+                    <>
+                      {visibleSections.map((sec) => (
+                        <Fragment key={sec.key}>
+                          <div className="task-sep">{sec.title}</div>
+                          <ul className="task-list">{sec.list.map(renderTask)}</ul>
+                        </Fragment>
+                      ))}
+                    </>
+                  );
+                })()}
               </>
             )}
 

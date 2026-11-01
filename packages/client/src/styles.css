@@ -2168,3 +2168,13 @@ body { overflow: hidden; }
   transform: translateY(-50%);
   margin: 0;
 }
+/* 任务分区标题（全部页签） */
+.task-sep {
+  margin: 14px 0 6px;
+  padding-bottom: 4px;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+  border-bottom: 1px dashed var(--line);
+}
+.task-sep:first-child { margin-top: 4px; }
