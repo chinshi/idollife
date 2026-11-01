@@ -38,7 +38,7 @@ export interface ActionMeta {
   name: string;
   category: string;
   categoryName: string;
-  displayCondition?: RawRequires;
+  displayCondition?: RawRequires | string;
   /** 0 = 无限制 */
   times: number;
   /** run / week / day */

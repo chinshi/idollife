@@ -1,4 +1,5 @@
 import { RAW_ROUTINE, RAW_STORY, type RawRequires } from './data';
+import { matchesCondition } from './expr';
 import type { Axes, RunState, Stats } from './types';
 
 export interface ChoiceEffects {
@@ -45,73 +46,14 @@ export const ROUTINE_TEMPLATES: RoutineTemplate[] = RAW_ROUTINE.map((r) => ({
   gain: r.gain,
 }));
 
-/** 判断是否满足某个条件（供行为结果表复用） */
-export function matchesCondition(s: RunState, req?: RawRequires): boolean {
-  return makeRequires(req)(s);
-}
-
-/** 把 JSON 里的触发条件翻译成函数 */
-function makeRequires(req?: RawRequires): (s: RunState) => boolean {
-  return (s: RunState) => {
-    if (req?.statsAtLeast) {
-      for (const [k, v] of Object.entries(req.statsAtLeast)) {
-        if (s.stats[k as keyof Stats] < v) return false;
-      }
-    }
-    if (req?.statsBelow) {
-      for (const [k, v] of Object.entries(req.statsBelow)) {
-        if (s.stats[k as keyof Stats] >= v) return false;
-      }
-    }
-    if (req?.axesAtLeast) {
-      for (const [k, v] of Object.entries(req.axesAtLeast)) {
-        if (s.axes[k as keyof Axes] < v) return false;
-      }
-    }
-    if (req?.axesBelow) {
-      for (const [k, v] of Object.entries(req.axesBelow)) {
-        if (s.axes[k as keyof Axes] >= v) return false;
-      }
-    }
-    if (typeof req?.staminaBelow === 'number' && s.stamina >= req.staminaBelow) return false;
-    if (typeof req?.statsSumAtLeast === 'number') {
-      const sum = s.stats.vocal + s.stats.dance + s.stats.acting + s.stats.talk;
-      if (sum < req.statsSumAtLeast) return false;
-    }
-    if (typeof req?.statsSumBelow === 'number') {
-      const sum = s.stats.vocal + s.stats.dance + s.stats.acting + s.stats.talk;
-      if (sum >= req.statsSumBelow) return false;
-    }
-    if (req?.fansAtLeast) {
-      for (const [k, v] of Object.entries(req.fansAtLeast)) {
-        if (((s.fans.byType as Record<string, number>)[k] ?? 0) < v) return false;
-      }
-    }
-    if (typeof req?.moneyAtLeast === 'number' && s.money < req.moneyAtLeast) return false;
-    if (typeof req?.friendsAtLeast === 'number' && (s.friends ?? []).length < req.friendsAtLeast) {
-      return false;
-    }
-    if (req?.flagsContain) {
-      for (const f of req.flagsContain) {
-        if (!s.flags[f]) return false;
-      }
-    }
-    if (req?.flagsNot) {
-      for (const f of req.flagsNot) {
-        if (s.flags[f]) return false;
-      }
-    }
-    return true;
-  };
-}
-
+export { matchesCondition } from './expr';
 /** 剧情事件表（来自 data/events.json 的 story） */
 export const STORY_EVENTS: StoryEvent[] = RAW_STORY.map((e) => ({
   id: e.id,
   title: e.title,
   text: e.text,
   major: e.major,
-  requires: makeRequires(e.requires),
+  requires: (s: RunState) => matchesCondition(s, e.requires),
   choices: e.choices.map((c) => ({
     id: c.id,
     label: c.label,

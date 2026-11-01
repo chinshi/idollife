@@ -27,6 +27,11 @@ const tasks = await load('tasks.json');
 const channels = await load('channels.json');
 const pools = await load('pools.json');
 
+function condText(c) {
+  if (!c) return '';
+  if (typeof c === 'string') return c;
+  return Object.keys(c).length ? JSON.stringify(c) : '';
+}
 await mkdir(outDir, { recursive: true });
 
 function build(file, sheets) {
@@ -77,7 +82,7 @@ await build('actions.xlsx', [
       a.name,
       a.categoryName ?? '',
       a.category,
-      a.displayCondition && Object.keys(a.displayCondition).length ? JSON.stringify(a.displayCondition) : '',
+      condText(a.displayCondition),
       a.times ?? 0,
       a.timesScope ?? 'run',
       (a.affectedStats ?? []).join(','),
@@ -133,7 +138,7 @@ await build('events.xlsx', [
     headers: ['id', 'title', 'major', 'text', 'requires'],
     rows: events.story.map((e) => [
       e.id, e.title, e.major ? 'TRUE' : '', e.text,
-      e.requires ? JSON.stringify(e.requires) : '',
+      condText(e.requires),
     ]),
   },
   {
@@ -219,11 +224,9 @@ await build('tasks.xlsx', [
       x.id,
       x.type,
       x.name,
-      x.displayCondition && Object.keys(x.displayCondition).length ? JSON.stringify(x.displayCondition) : '',
-      x.acceptCondition && Object.keys(x.acceptCondition).length ? JSON.stringify(x.acceptCondition) : '',
-      x.completeCondition && Object.keys(x.completeCondition).length
-        ? JSON.stringify(x.completeCondition)
-        : '',
+      condText(x.displayCondition),
+      condText(x.acceptCondition),
+      condText(x.completeCondition),
       x.rewards?.money ?? '',
       x.rewards?.stamina ?? '',
       x.rewards?.fans ?? '',

@@ -10,7 +10,7 @@
  *   task:<id>:count       已完成次数
  */
 import tasksJson from '../data/tasks.json';
-import { matchesCondition } from './events';
+import { matchesCondition, type RawRequires } from './expr';
 import { applyFanAction } from './fans';
 import type { RunState, Stats } from './types';
 
@@ -29,9 +29,9 @@ export interface TaskDef {
   id: string;
   type: TaskType;
   name: string;
-  displayCondition?: Record<string, unknown>;
-  acceptCondition?: Record<string, unknown>;
-  completeCondition?: Record<string, unknown>;
+  displayCondition?: RawRequires | string;
+  acceptCondition?: RawRequires | string;
+  completeCondition?: RawRequires | string;
   rewards: TaskRewards;
   /** 0 = 无限制 */
   times: number;
@@ -220,7 +220,8 @@ const LABELS: Record<string, string> = {
 };
 
 /** 把条件翻译成中文，给界面展示 */
-export function describeCondition(cond?: Record<string, unknown>): string {
+export function describeCondition(cond?: RawRequires | string): string {
+  if (typeof cond === 'string') return cond.trim() || '无';
   if (!cond || Object.keys(cond).length === 0) return '无';
   const c = cond as Record<string, Record<string, number> | number | string[] | undefined>;
   const parts: string[] = [];

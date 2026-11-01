@@ -12,5 +12,8 @@
   "devDependencies": {
     "typescript": "^5.9.0",
     "vitest": "^3.0.0"
+  },
+  "dependencies": {
+    "filtrex": "^3.1.0"
   }
 }

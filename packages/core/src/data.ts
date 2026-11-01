@@ -19,7 +19,7 @@ export interface RawAction {
   /** 分类中文名：提升属性 / 赚钱 / 恢复状态 */
   categoryName?: string;
   /** 显示条件（空=一直可见） */
-  displayCondition?: RawRequires;
+  displayCondition?: RawRequires | string;
   /** 可执行次数，0=无限制 */
   times?: number;
   /** 次数范围：run 整局 / week 每周 / day 每天 */
@@ -58,26 +58,10 @@ export interface RawRoutine {
   gain?: number;
 }
 
-export interface RawRequires {
-  statsAtLeast?: Record<string, number>;
-  axesAtLeast?: Record<string, number>;
-  axesBelow?: Record<string, number>;
-  staminaBelow?: number;
-  /** 四项属性总和 ≥ */
-  statsSumAtLeast?: number;
-  /** 单项属性低于 */
-  statsBelow?: Record<string, number>;
-  /** 四项属性总和 < */
-  statsSumBelow?: number;
-  fansAtLeast?: Record<string, number>;
-  flagsNot?: string[];
-  /** 这些标记都存在才满足 */
-  flagsContain?: string[];
-  /** 资金不少于 */
-  moneyAtLeast?: number;
-  /** 朋友圈人数不少于 */
-  friendsAtLeast?: number;
-}
+import type { RawRequires } from './expr';
+
+export type { RawRequires };
+
 
 export interface RawChoice {
   id: string;
@@ -96,7 +80,7 @@ export interface RawStory {
   title: string;
   text: string;
   major?: boolean;
-  requires?: RawRequires;
+  requires?: RawRequires | string;
   choices: RawChoice[];
 }
 

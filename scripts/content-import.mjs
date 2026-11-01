@@ -68,6 +68,20 @@ function rowsOf(wb, name) {
   return out;
 }
 
+/** 条件单元格：{ 开头当 JSON，否则当表达式字符串 */
+const parseCond = (raw, label) => {
+  const s = str(raw);
+  if (!s) return {};
+  if (s.trimStart().startsWith('{') || s.trimStart().startsWith('[')) {
+    try {
+      return JSON.parse(s);
+    } catch {
+      console.error(`✗ ${label} 的 JSON 写错了：${s}`);
+      process.exit(1);
+    }
+  }
+  return s;
+};
 const writeJson = async (file, obj) => {
   await writeFile(join(dataDir, file), JSON.stringify(obj, null, 2) + '\n', 'utf8');
   console.log(`  ✓ ${file}`);
@@ -110,8 +124,7 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
         category: str(cell(r, 4)),
         categoryName: str(cell(r, 3)),
       };
-      const dc = str(cell(r, 5));
-      a.displayCondition = dc ? JSON.parse(dc) : {};
+      a.displayCondition = parseCond(cell(r, 5), 'actions.' + a.id + '.displayCondition');
       a.times = num(cell(r, 6)) ?? 0;
       a.timesScope = str(cell(r, 7)) || 'run';
       a.affectedStats = str(cell(r, 8))
