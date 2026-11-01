@@ -65,6 +65,8 @@ export interface RawRequires {
   staminaBelow?: number;
   /** 四项属性总和 ≥ */
   statsSumAtLeast?: number;
+  /** 单项属性低于 */
+  statsBelow?: Record<string, number>;
   /** 四项属性总和 < */
   statsSumBelow?: number;
   fansAtLeast?: Record<string, number>;

@@ -230,6 +230,9 @@ export function describeCondition(cond?: Record<string, unknown>): string {
   for (const [k, v] of Object.entries((c.statsAtLeast as Record<string, number>) ?? {})) {
     parts.push(`${LABELS[k] ?? k} ≥ ${v}`);
   }
+  for (const [k, v] of Object.entries((c.statsBelow as Record<string, number>) ?? {})) {
+    parts.push(`${LABELS[k] ?? k} < ${v}`);
+  }
   for (const [k, v] of Object.entries((c.axesAtLeast as Record<string, number>) ?? {})) {
     parts.push(`${LABELS[k] ?? k} ≥ ${v}`);
   }

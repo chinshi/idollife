@@ -58,6 +58,11 @@ function makeRequires(req?: RawRequires): (s: RunState) => boolean {
         if (s.stats[k as keyof Stats] < v) return false;
       }
     }
+    if (req?.statsBelow) {
+      for (const [k, v] of Object.entries(req.statsBelow)) {
+        if (s.stats[k as keyof Stats] >= v) return false;
+      }
+    }
     if (req?.axesAtLeast) {
       for (const [k, v] of Object.entries(req.axesAtLeast)) {
         if (s.axes[k as keyof Axes] < v) return false;
