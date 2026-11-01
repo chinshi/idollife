@@ -41,6 +41,10 @@ export interface RawResult {
   effects: {
     stamina?: number;
     money?: number;
+    /** 心情变化 */
+    mood?: number;
+    /** 饱腹变化 */
+    satiety?: number;
     /** 粉丝增加量（按当前最强属性决定粉丝类型） */
     fans?: number;
     stats?: Record<string, number | [number, number]>;
@@ -69,8 +73,12 @@ export interface RawChoice {
   text: string;
   effects: {
     stamina?: number;
+    mood?: number;
+    satiety?: number;
     stats?: Record<string, number>;
     axes?: Record<string, number>;
+    traits?: Record<string, number>;
+    negatives?: Record<string, number>;
   };
   setFlag?: string;
 }

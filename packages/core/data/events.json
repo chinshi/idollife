@@ -101,6 +101,12 @@
               "self": 8,
               "others": 4,
               "fit": 3
+            },
+            "traits": {
+              "passion": 5
+            },
+            "negatives": {
+              "stress": 8
             }
           },
           "setFlag": "first-audition"
@@ -117,6 +123,12 @@
             },
             "stats": {
               "dance": 2
+            },
+            "traits": {
+              "ambitious": 3
+            },
+            "negatives": {
+              "restless": 3
             }
           },
           "setFlag": "first-audition"
@@ -129,6 +141,9 @@
             "axes": {
               "self": -6,
               "others": -2
+            },
+            "negatives": {
+              "restless": 5
             }
           },
           "setFlag": "first-audition"
@@ -149,6 +164,9 @@
             "axes": {
               "self": 3,
               "others": 6
+            },
+            "traits": {
+              "kind": 5
             }
           },
           "setFlag": "fan-letter"
@@ -181,6 +199,10 @@
             "stamina": 40,
             "axes": {
               "self": 4
+            },
+            "negatives": {
+              "stress": -10,
+              "fatigue": -8
             }
           },
           "setFlag": "burnout"
@@ -197,6 +219,12 @@
             },
             "stats": {
               "dance": 1
+            },
+            "traits": {
+              "ambitious": 4
+            },
+            "negatives": {
+              "fatigue": 10
             }
           },
           "setFlag": "burnout"
@@ -218,6 +246,9 @@
             "axes": {
               "self": 2,
               "others": 6
+            },
+            "traits": {
+              "passion": 3
             }
           },
           "setFlag": "crowded-fans"
@@ -254,6 +285,9 @@
             "axes": {
               "self": 7,
               "others": 3
+            },
+            "negatives": {
+              "stress": -5
             }
           },
           "setFlag": "manager-doubt"
@@ -268,6 +302,12 @@
               "self": -3,
               "others": 5,
               "fit": 4
+            },
+            "traits": {
+              "ambitious": 4
+            },
+            "negatives": {
+              "stress": 6
             }
           },
           "setFlag": "manager-doubt"

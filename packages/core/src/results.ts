@@ -54,6 +54,10 @@ export interface ResolvedAction {
   resultId: string;
   stamina: number;
   money: number;
+  /** 心情变化 */
+  mood: number;
+  /** 饱腹变化 */
+  satiety: number;
   /** 粉丝增加量 */
   fans: number;
   stats: Partial<Record<keyof Stats, number>>;
@@ -91,6 +95,8 @@ export function resolveAction(
   const stamina = result.effects.stamina ?? 0;
   const money = result.effects.money ?? 0;
   const fans = result.effects.fans ?? 0;
+  const mood = result.effects.mood ?? 0;
+  const satiety = result.effects.satiety ?? 0;
 
   let text = result.text;
   for (const [k, v] of Object.entries(stats)) {
@@ -101,7 +107,7 @@ export function resolveAction(
   text = text.split('{stamina}').join(String(stamina));
   text = text.split('{money}').join(String(money));
 
-  return { resultId: result.id, stamina, money, fans, stats, text };
+  return { resultId: result.id, stamina, money, mood, satiety, fans, stats, text };
 }
 
 /** 预览：不消耗随机数，用区间中间值给界面展示 */

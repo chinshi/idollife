@@ -10,6 +10,8 @@
       "effects": {
         "stamina": -10,
         "money": -50,
+        "mood": -1,
+        "satiety": -6,
         "stats": {
           "vocal": [
             1,
@@ -28,6 +30,8 @@
       "effects": {
         "stamina": -10,
         "money": -50,
+        "mood": -3,
+        "satiety": -6,
         "stats": {
           "vocal": [
             1,
@@ -45,6 +49,8 @@
       "priority": 99,
       "effects": {
         "stamina": -12,
+        "mood": -1,
+        "satiety": -7,
         "stats": {
           "dance": [
             1,
@@ -62,6 +68,8 @@
       "priority": 10,
       "effects": {
         "stamina": -12,
+        "mood": -3,
+        "satiety": -7,
         "stats": {
           "dance": [
             1,
@@ -79,6 +87,8 @@
       "priority": 99,
       "effects": {
         "stamina": -10,
+        "mood": -1,
+        "satiety": -5,
         "stats": {
           "acting": [
             1,
@@ -96,6 +106,8 @@
       "priority": 99,
       "effects": {
         "stamina": -8,
+        "mood": -1,
+        "satiety": -4,
         "stats": {
           "talk": [
             1,
@@ -113,7 +125,9 @@
       "priority": 99,
       "effects": {
         "stamina": -20,
-        "money": 320
+        "money": 320,
+        "mood": -4,
+        "satiety": -8
       },
       "text": "在便利店站了四个小时，脚有点麻。（收入 +320）"
     },
@@ -125,7 +139,9 @@
       "priority": 10,
       "effects": {
         "stamina": -20,
-        "money": 240
+        "money": 240,
+        "mood": -6,
+        "satiety": -8
       },
       "text": "困得差点算错钱，店长让你提前下班。（收入 +240）"
     },
@@ -136,7 +152,9 @@
       "condition": {},
       "priority": 99,
       "effects": {
-        "stamina": 25
+        "stamina": 25,
+        "mood": 8,
+        "satiety": -4
       },
       "text": "睡了一觉，感觉活过来了。"
     },
@@ -149,6 +167,8 @@
       "effects": {
         "stamina": -30,
         "money": 1500,
+        "mood": 6,
+        "satiety": -10,
         "fans": 300
       },
       "text": "灯亮起来的那一刻，全场安静了。（粉丝 +300 · 收入 +1500）"
@@ -162,6 +182,8 @@
       "effects": {
         "stamina": -30,
         "money": 900,
+        "mood": 4,
+        "satiety": -10,
         "fans": 180
       },
       "text": "发挥很稳，台下有人跟着喊。（粉丝 +180 · 收入 +900）"
@@ -175,6 +197,8 @@
       "effects": {
         "stamina": -30,
         "money": 500,
+        "mood": 2,
+        "satiety": -10,
         "fans": 100
       },
       "text": "中规中矩，但没出错。（粉丝 +100 · 收入 +500）"
@@ -188,6 +212,8 @@
       "effects": {
         "stamina": -30,
         "money": 200,
+        "mood": -4,
+        "satiety": -10,
         "fans": 40
       },
       "text": "中间忘了一个动作，你笑着圆过去了。（粉丝 +40 · 收入 +200）"

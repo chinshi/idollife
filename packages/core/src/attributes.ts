@@ -69,8 +69,8 @@ export function attrValue(state: RunState, key: string): number {
   if (key in axes) return axes[key] ?? 50;
 
   if (key === 'stamina') return state.stamina;
-  if (key === 'mood') return state.mood ?? 100;
-  if (key === 'satiety') return state.satiety ?? 100;
+  if (key === 'mood') return state.mood ?? 70;
+  if (key === 'satiety') return state.satiety ?? 70;
 
   const fan = (state.fans.byType as unknown as Record<string, number>)[key];
   if (fan !== undefined) return fan;

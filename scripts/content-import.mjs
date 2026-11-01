@@ -165,10 +165,14 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
       if (stamina !== undefined) effects.stamina = stamina;
       const money = num(cell(r, 7));
       if (money !== undefined) effects.money = money;
-      const fans = num(cell(r, 8));
+      const mood = num(cell(r, 8));
+      if (mood !== undefined) effects.mood = mood;
+      const satiety = num(cell(r, 9));
+      if (satiety !== undefined) effects.satiety = satiety;
+      const fans = num(cell(r, 10));
       if (fans !== undefined) effects.fans = fans;
       const stats = {};
-      for (const [i2, key] of [[9, 'vocal'], [10, 'dance'], [11, 'acting'], [12, 'talk']]) {
+      for (const [i2, key] of [[11, 'vocal'], [12, 'dance'], [13, 'acting'], [14, 'talk']]) {
         const v = parseStat(cell(r, i2));
         if (v !== undefined) stats[key] = v;
       }
@@ -179,11 +183,10 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
         actionId: str(cell(r, 2)),
         actionName: str(cell(r, 3)),
       };
-      const cond = str(cell(r, 4));
-      o.condition = cond ? JSON.parse(cond) : {};
+      o.condition = parseCond(cell(r, 4), 'results.' + str(cell(r, 1)) + '.condition');
       o.priority = num(cell(r, 5)) ?? 99;
       o.effects = effects;
-      o.text = str(cell(r, 13));
+      o.text = str(cell(r, 15));
       return o;
     });
 
@@ -230,6 +233,15 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
         if (v !== undefined) stats[key] = v;
       }
       if (Object.keys(stats).length) effects.stats = stats;
+
+      const mood = num(cell(r, 14));
+      if (mood !== undefined) effects.mood = mood;
+      const satiety = num(cell(r, 15));
+      if (satiety !== undefined) effects.satiety = satiety;
+      const traitsRaw = str(cell(r, 16));
+      if (traitsRaw) effects.traits = JSON.parse(traitsRaw);
+      const negRaw = str(cell(r, 17));
+      if (negRaw) effects.negatives = JSON.parse(negRaw);
 
       const c = { id: str(cell(r, 2)), label: str(cell(r, 3)), text: str(cell(r, 4)), effects };
       const flag = str(cell(r, 13));

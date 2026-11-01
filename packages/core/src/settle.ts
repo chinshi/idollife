@@ -103,8 +103,24 @@ export function settle(
     const resolved = resolveAction(state, item.actionId, rng);
     if (!resolved) continue;
 
-    state.stamina = clamp(state.stamina + resolved.stamina, 0, 100);
+    // 心情 / 饱腹：先结算变化，再算它对本条行动的影响
+    const nextMood = Math.max(0, Math.min(100, (state.mood ?? 100) + resolved.mood));
+    const nextSatiety = Math.max(0, Math.min(100, (state.satiety ?? 100) + resolved.satiety));
+
+    let efficiency = 1;
+    if (nextMood < 30) efficiency *= 0.7;
+    else if (nextMood > 70) efficiency *= 1.05;
+    if (nextSatiety < 20) efficiency *= 0.8;
+
+    const staminaApplied =
+      resolved.stamina > 0 && nextSatiety < 20
+        ? Math.round(resolved.stamina * 0.5)
+        : resolved.stamina;
+
+    state.stamina = clamp(state.stamina + staminaApplied, 0, 100);
     state.money += resolved.money;
+    state.mood = nextMood;
+    state.satiety = nextSatiety;
 
     if (resolved.fans > 0) {
       state.fans = applyFanAction(state.fans, showFanType(state), resolved.fans, 0.3);
@@ -114,7 +130,9 @@ export function settle(
     for (const [k, v] of Object.entries(resolved.stats)) {
       const key = k as keyof Stats;
       const before = state.stats[key];
-      state.stats[key] = clamp(before + (v ?? 0), 0, 100);
+      const raw = v ?? 0;
+      const gained = raw > 0 ? Math.floor(raw * efficiency) : raw;
+      state.stats[key] = clamp(before + gained, 0, 100);
       statDelta[key] = state.stats[key] - before;
     }
 
@@ -122,7 +140,7 @@ export function settle(
       at: item.endAt,
       actionId: action.id,
       text: resolved.text,
-      staminaDelta: resolved.stamina,
+      staminaDelta: staminaApplied,
       statDelta,
       kind: 'action',
     });

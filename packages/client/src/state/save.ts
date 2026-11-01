@@ -37,8 +37,8 @@ export function normalizeRun(run: RunState): RunState {
     money: isNum(run.money) ? run.money : START_MONEY,
     stats: run.stats ?? { vocal: 0, dance: 0, acting: 0, talk: 0 },
     axes: run.axes ?? { self: 50, others: 50, fit: 50 },
-    mood: isNum(run.mood) ? run.mood : 100,
-    satiety: isNum(run.satiety) ? run.satiety : 100,
+    mood: isNum(run.mood) ? run.mood : 70,
+    satiety: isNum(run.satiety) ? run.satiety : 70,
     innate: run.innate ?? { height: 60, weight: 60, appearance: 60, proportion: 60 },
     traits: run.traits ?? {
       kind: 0,

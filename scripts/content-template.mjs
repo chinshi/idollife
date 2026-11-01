@@ -95,16 +95,16 @@ await build('actions.xlsx', [
 await build('action_results.xlsx', [
   {
     name: 'results',
-    headers: ['结果id', '行为id', '行为名称', '行为条件', '优先级', '体力', '金钱', '粉丝', '演唱', '舞蹈', '演技', '口才', '行为文案'],
+    headers: ['结果id', '行为id', '行为名称', '行为条件', '优先级', '体力', '金钱', '心情', '饱腹', '粉丝', '演唱', '舞蹈', '演技', '口才', '行为文案'],
     rows: actionResults.results.map((r) => {
       const fx = r.effects ?? {};
       const st = fx.stats ?? {};
       const cell = (v) => (Array.isArray(v) ? `${v[0]}~${v[1]}` : (v ?? ''));
       return [
         r.id, r.actionId, r.actionName,
-        r.condition && Object.keys(r.condition).length ? JSON.stringify(r.condition) : '',
+        condText(r.condition),
         r.priority ?? 99,
-        fx.stamina ?? '', fx.money ?? '', fx.fans ?? '',
+        fx.stamina ?? '', fx.money ?? '', fx.mood ?? '', fx.satiety ?? '', fx.fans ?? '',
         cell(st.vocal), cell(st.dance), cell(st.acting), cell(st.talk),
         r.text,
       ];
@@ -122,6 +122,9 @@ for (const e of events.story) {
       e.id, c.id, c.label, c.text,
       fx.stamina ?? '', ax.self ?? '', ax.others ?? '', ax.fit ?? '',
       st.vocal ?? '', st.dance ?? '', st.acting ?? '', st.talk ?? '', c.setFlag ?? '',
+      fx.mood ?? '', fx.satiety ?? '',
+      fx.traits ? JSON.stringify(fx.traits) : '',
+      fx.negatives ? JSON.stringify(fx.negatives) : '',
     ]);
   }
 }
@@ -143,7 +146,7 @@ await build('events.xlsx', [
   },
   {
     name: 'choices',
-    headers: ['eventId', 'id', 'label', 'text', 'stamina', 'self', 'others', 'fit', 'vocal', 'dance', 'acting', 'talk', 'setFlag'],
+    headers: ['eventId', 'id', 'label', 'text', 'stamina', 'self', 'others', 'fit', 'vocal', 'dance', 'acting', 'talk', 'setFlag', 'mood', 'satiety', 'traits', 'negatives'],
     rows: choiceRows,
   },
 ]);

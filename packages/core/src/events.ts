@@ -5,7 +5,13 @@ import type { Axes, RunState, Stats } from './types';
 export interface ChoiceEffects {
   stats?: Partial<Stats>;
   stamina?: number;
+  mood?: number;
+  satiety?: number;
   axes?: Partial<Axes>;
+  /** 性格变化 */
+  traits?: Record<string, number>;
+  /** 负向属性变化 */
+  negatives?: Record<string, number>;
 }
 
 export interface Choice {
@@ -62,6 +68,8 @@ export const STORY_EVENTS: StoryEvent[] = RAW_STORY.map((e) => ({
       stamina: c.effects.stamina,
       stats: c.effects.stats as Partial<Stats> | undefined,
       axes: c.effects.axes as Partial<Axes> | undefined,
+      traits: c.effects.traits,
+      negatives: c.effects.negatives,
     },
     setFlag: c.setFlag,
   })),
@@ -108,6 +116,23 @@ export function applyChoice(state: RunState, eventId: string, choiceId: string):
     const key = k as keyof Axes;
     next.axes[key] = clamp(next.axes[key] + (v ?? 0));
   }
+
+  if (choice.effects.mood) next.mood = clamp((state.mood ?? 100) + choice.effects.mood);
+  if (choice.effects.satiety) {
+    next.satiety = clamp((state.satiety ?? 100) + choice.effects.satiety);
+  }
+
+  const traits = { ...(state.traits ?? {}) };
+  for (const [k, v] of Object.entries(choice.effects.traits ?? {})) {
+    traits[k] = clamp((traits[k] ?? 0) + (v ?? 0));
+  }
+  if (Object.keys(traits).length > 0) next.traits = traits;
+
+  const negatives = { ...(state.negatives ?? {}) };
+  for (const [k, v] of Object.entries(choice.effects.negatives ?? {})) {
+    negatives[k] = clamp((negatives[k] ?? 0) + (v ?? 0));
+  }
+  if (Object.keys(negatives).length > 0) next.negatives = negatives;
 
   if (choice.setFlag) {
     next.flags[`ev:${choice.setFlag}`] = true;
