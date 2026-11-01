@@ -105,7 +105,7 @@ type SyncStatus = 'local' | 'syncing' | 'synced' | 'offline' | 'expired';
 type SysTab = 'shop' | 'bag';
 type BagTab = 'equip' | 'consume' | 'other';
 type LogTab = 'all' | 'event' | 'stat';
-type MainTab = 'task' | 'stats' | 'plan' | 'party' | 'shop' | 'divine' | 'bag';
+type MainTab = 'task' | 'stats' | 'plan' | 'party' | 'friends' | 'shop' | 'divine' | 'bag';
 
 function totalFans(run: RunState): number {
   return Object.values(run.fans.byType).reduce((a, b) => a + b, 0);
@@ -1576,6 +1576,7 @@ function AppInner() {
                 ['task', '任务'],
                 ['plan', '行程'],
                 ['party', '组合'],
+                ['friends', '朋友圈'],
                 ['shop', '商店'],
                 ['divine', '占卜'],
               ] as Array<[MainTab, string]>
@@ -1684,6 +1685,80 @@ function AppInner() {
                 </ul>
               </>
             )}
+            {mainTab === 'friends' && (
+              <>
+                <div className="mod-head">
+                  <h2>朋友圈</h2>
+                  <span className="muted small">
+                    {run.friends.filter((f) => !f.partyId).length} 人待邀请
+                  </span>
+                </div>
+
+                <div className="friend-block">
+                  <h4>认识新朋友</h4>
+                  <div className="row wrap">
+                    {CHANNELS.map((c) => (
+                      <button
+                        key={c.id}
+                        onClick={() => doMeet(c.id)}
+                        disabled={run.money < c.cost}
+                        title={c.text}
+                      >
+                        {c.name}
+                        <small>¥{c.cost}</small>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="friend-block">
+                  <h4>朋友圈</h4>
+                  {run.friends.filter((f) => !f.partyId).length === 0 ? (
+                    <p className="muted small">还没有可以邀请的人，去上面挑个渠道认识几个。</p>
+                  ) : (
+                    <ul className="friends">
+                      {run.friends
+                        .filter((f) => !f.partyId)
+                        .map((f) => (
+                          <li key={f.id}>
+                            <span className="name">{f.name}</span>
+                            <span className="muted">
+                              {biasLabel(f.bias)} · 资质 {Math.round(f.quality * 100)}%
+                            </span>
+                            <button onClick={() => doInvite(f.id)} disabled={!party}>
+                              邀请
+                            </button>
+                          </li>
+                        ))}
+                    </ul>
+                  )}
+                </div>
+
+                <div className="friend-block">
+                  <h4>已在组合</h4>
+                  {run.friends.filter((f) => f.partyId).length === 0 ? (
+                    <p className="muted small">还没有人加入组合。</p>
+                  ) : (
+                    <ul className="friends">
+                      {run.friends
+                        .filter((f) => f.partyId)
+                        .map((f) => {
+                          const p = run.parties.find((x) => x.id === f.partyId);
+                          return (
+                            <li key={f.id}>
+                              <span className="name">{f.name}</span>
+                              <span className="muted">
+                                {biasLabel(f.bias)} · 在「{p?.name ?? '组合'}」
+                              </span>
+                            </li>
+                          );
+                        })}
+                    </ul>
+                  )}
+                </div>
+              </>
+            )}
+
             {mainTab === 'stats' && (
               <>
                 <div className="mod-head">
@@ -1907,44 +1982,6 @@ function AppInner() {
                     })}
                   </div>
                 )}
-
-                <div className="friend-block">
-                  <h4>认识新朋友</h4>
-                  <div className="row wrap">
-                    {CHANNELS.map((c) => (
-                      <button
-                        key={c.id}
-                        onClick={() => doMeet(c.id)}
-                        disabled={run.money < c.cost}
-                        title={c.text}
-                      >
-                        {c.name}
-                        <small>¥{c.cost}</small>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="friend-block">
-                  <h4>朋友圈 {run.friends.length > 0 ? `（${run.friends.length}）` : ''}</h4>
-                  {run.friends.filter((f) => !f.partyId).length === 0 ? (
-                    <p className="muted small">还没有认识的人，去上面挑个渠道试试。</p>
-                  ) : (
-                    <ul className="friends">
-                      {run.friends.filter((f) => !f.partyId).map((f) => (
-                        <li key={f.id}>
-                          <span className="name">{f.name}</span>
-                          <span className="muted">
-                            {biasLabel(f.bias)} · 资质 {Math.round(f.quality * 100)}%
-                          </span>
-                          <button onClick={() => doInvite(f.id)} disabled={!party}>
-                            邀请
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
               </>
             )}
 
