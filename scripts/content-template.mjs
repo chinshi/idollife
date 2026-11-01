@@ -214,13 +214,16 @@ await build('logs.xlsx', [
 await build('tasks.xlsx', [
   {
     name: 'tasks',
-    headers: ['id', '类型', '任务名', '显示条件', '领取条件', '资金', '体力', '粉丝', '属性奖励', '次数', '任务内容', '任务简报', '优先级'],
+    headers: ['id', '类型', '任务名', '显示条件', '领取条件', '完成条件', '资金', '体力', '粉丝', '属性奖励', '次数', '任务内容', '任务简报', '优先级'],
     rows: tasks.tasks.map((x) => [
       x.id,
       x.type,
       x.name,
       x.displayCondition && Object.keys(x.displayCondition).length ? JSON.stringify(x.displayCondition) : '',
-      x.claimCondition && Object.keys(x.claimCondition).length ? JSON.stringify(x.claimCondition) : '',
+      x.acceptCondition && Object.keys(x.acceptCondition).length ? JSON.stringify(x.acceptCondition) : '',
+      x.completeCondition && Object.keys(x.completeCondition).length
+        ? JSON.stringify(x.completeCondition)
+        : '',
       x.rewards?.money ?? '',
       x.rewards?.stamina ?? '',
       x.rewards?.fans ?? '',

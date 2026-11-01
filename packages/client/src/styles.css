@@ -2127,3 +2127,27 @@ body { overflow: hidden; }
 .mcard .mcard-face.front { padding-top: 14px; }
 /* 钱不够的认识按钮：视觉提示但仍可点 */
 .meet-poor { opacity: 0.6; }
+/* 任务状态标签 */
+.task-state {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #f2f4f9;
+  color: var(--muted);
+}
+.task-state.claimable { background: #ffeada; color: #b35a00; font-weight: 600; }
+.task-state.active { background: #e8f1ff; color: #2f6fd0; }
+.task-state.done { background: #eef1f6; color: #7b8496; }
+
+/* 菜单角标 */
+.menu-badge {
+  margin-left: 6px;
+  font-style: normal;
+  font-size: 10px;
+  line-height: 1.4;
+  padding: 0 6px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+}
+.task.done { opacity: 0.75; }

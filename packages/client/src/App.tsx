@@ -21,12 +21,12 @@ import {
   RECRUIT_COOLDOWN_DAYS,
   cooldownLeftDays,
   TASKS,
-  TASK_TYPE_LABEL,
-  claimTask,
-  taskVisible,
-  taskClaimable,
-  taskRemaining,
-  claimedTimes,
+  taskStatus,
+  acceptTask,
+  activeTasks,
+  completedTasks,
+  claimableTasks,
+  taskBadgeCount,
   CHANNELS,
   meetFriend,
   inviteFriend,
@@ -317,6 +317,7 @@ function AppInner() {
   const [showInvite, setShowInvite] = useState(false);
   const [kickTarget, setKickTarget] = useState<string | null>(null);
   const [friendsTab, setFriendsTab] = useState<'list' | 'meet'>('list');
+  const [taskTab, setTaskTab] = useState<'accept' | 'done'>('accept');
   const statTotal = run.stats.vocal + run.stats.dance + run.stats.acting + run.stats.talk;
   const STOP_TEXT: Record<string, string> = {
     stamina: '体力不足，行程停下来了',
@@ -1172,20 +1173,14 @@ function AppInner() {
     setNotice(r.friend ? `认识了 ${r.friend.name}，已加入朋友圈。` : '认识了一个新朋友。');
   }
 
-  function doClaim(taskId: string) {
-    const r = claimTask(run, taskId);
+  function doAccept(taskId: string) {
+    const r = acceptTask(run, taskId);
     if (r.result === 'ok') {
       setRun(r.state);
-      setNotice('任务奖励已领取。');
+      setNotice('任务已领取，完成后会自动结算奖励。');
       return;
     }
-    setNotice(
-      r.result === 'not-ready'
-        ? '条件还没达成。'
-        : r.result === 'used-up'
-          ? '这个任务已经领完了。'
-          : '现在不能领取。',
-    );
+    setNotice(r.result === 'done' ? '这个任务已经完成了。' : '现在还不能领取。');
   }
 
   function doKick(memberId: string) {
@@ -1578,14 +1573,19 @@ function AppInner() {
         <div className="bar-right">
           <div className="brief-head">任务简报</div>
           <ul className="brief-list">
-            {TASKS.filter((task) => taskVisible(run, task))
+            {activeTasks(run)
               .slice(0, 6)
-              .map((task) => (
-                <li key={task.id} className={taskClaimable(run, task) ? 'claimable' : ''}>
-                  <span className={taskClaimable(run, task) ? 'dot on' : 'dot'} />
+              .map(({ task }) => (
+                <li key={task.id}>
+                  <span className="dot" />
                   <span className="brief-text">{task.brief}</span>
                 </li>
               ))}
+            {activeTasks(run).length === 0 && (
+              <li>
+                <span className="brief-text">暂无进行中的任务</span>
+              </li>
+            )}
           </ul>
         </div>      </header>
 
@@ -1610,6 +1610,9 @@ function AppInner() {
                 onClick={() => setMainTab(key)}
               >
                 {label}
+                {key === 'task' && taskBadgeCount(run) > 0 && (
+                  <em className="menu-badge">{taskBadgeCount(run)}</em>
+                )}
               </button>
             ))}
 
@@ -1663,51 +1666,88 @@ function AppInner() {
               <>
                 <div className="mod-head">
                   <h2>任务</h2>
-                  <span className="muted small">
-                    可领取 {TASKS.filter((task) => taskVisible(run, task) && taskClaimable(run, task)).length}
-                  </span>
+                  <div className="seg-inline">
+                    <button
+                      className={taskTab === 'accept' ? 'seg-item active' : 'seg-item'}
+                      onClick={() => setTaskTab('accept')}
+                    >
+                      领取任务
+                    </button>
+                    <button
+                      className={taskTab === 'done' ? 'seg-item active' : 'seg-item'}
+                      onClick={() => setTaskTab('done')}
+                    >
+                      已完成
+                    </button>
+                  </div>
                 </div>
-                <ul className="task-list">
-                  {TASKS.filter((task) => taskVisible(run, task)).map((task) => {
-                    const claimable = taskClaimable(run, task);
-                    const left = taskRemaining(run, task);
-                    const done = claimedTimes(run, task.id);
-                    return (
-                      <li key={task.id} className={claimable ? 'task claimable' : 'task'}>
+
+                {taskTab === 'accept' ? (
+                  <ul className="task-list">
+                    {TASKS.filter((task) => {
+                      const s = taskStatus(run, task);
+                      return s !== 'hidden' && s !== 'done';
+                    }).map((task) => {
+                      const status = taskStatus(run, task);
+                      return (
+                        <li
+                          key={task.id}
+                          className={status === 'claimable' ? 'task claimable' : 'task'}
+                        >
+                          <div className="task-top">
+                            <span className="task-name">{task.name}</span>
+                            <span className={`task-state ${status}`}>
+                              {status === 'claimable'
+                                ? '可领取'
+                                : status === 'active'
+                                  ? '进行中'
+                                  : '未达成'}
+                            </span>
+                            <span className="spacer" />
+                            <button
+                              className={status === 'claimable' ? 'primary' : ''}
+                              disabled={status !== 'claimable'}
+                              onClick={() => doAccept(task.id)}
+                            >
+                              {status === 'active' ? '已领取' : '领取任务'}
+                            </button>
+                          </div>
+                          <p className="task-brief-line">{task.brief}</p>
+                          <p className="muted small">{task.content}</p>
+                          <p className="muted small">
+                            奖励：
+                            {[
+                              task.rewards.money ? `¥${task.rewards.money}` : '',
+                              task.rewards.stamina ? `体力 +${task.rewards.stamina}` : '',
+                              task.rewards.fans ? `粉丝 +${task.rewards.fans}` : '',
+                            ]
+                              .filter(Boolean)
+                              .join(' · ') || '无'}
+                          </p>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                ) : completedTasks(run).length === 0 ? (
+                  <p className="muted small">还没有完成的任务。</p>
+                ) : (
+                  <ul className="task-list">
+                    {completedTasks(run).map(({ task, at }) => (
+                      <li key={task.id} className="task done">
                         <div className="task-top">
                           <span className="task-name">{task.name}</span>
-                          <span className="tag">{TASK_TYPE_LABEL[task.type] ?? task.type}</span>
-                          {Number.isFinite(left) && (
-                            <span className="muted small">剩 {left} 次</span>
-                          )}
-                          {done > 0 && <span className="muted small">已领 {done}</span>}
+                          <span className="task-state done">已完成</span>
                           <span className="spacer" />
-                          <button
-                            className={claimable ? 'primary' : ''}
-                            disabled={!claimable}
-                            onClick={() => doClaim(task.id)}
-                          >
-                            {claimable ? '领取' : '未达成'}
-                          </button>
+                          <span className="muted small">{dayLabel(at, run.at)}</span>
                         </div>
                         <p className="task-brief-line">{task.brief}</p>
-                        <p className="muted small">{task.content}</p>
-                        <p className="muted small">
-                          奖励：
-                          {[
-                            task.rewards.money ? `¥${task.rewards.money}` : '',
-                            task.rewards.stamina ? `体力 +${task.rewards.stamina}` : '',
-                            task.rewards.fans ? `粉丝 +${task.rewards.fans}` : '',
-                          ]
-                            .filter(Boolean)
-                            .join(' · ') || '无'}
-                        </p>
                       </li>
-                    );
-                  })}
-                </ul>
+                    ))}
+                  </ul>
+                )}
               </>
             )}
+
             {mainTab === 'friends' && (
               <>
                 <div className="mod-head">
