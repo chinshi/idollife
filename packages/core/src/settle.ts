@@ -1,4 +1,4 @@
-import { ACTIONS, RENT_PER_WEEK, remainingTimes, WEEK_MS } from './content';
+import { ACTIONS, RENT_PER_WEEK, clampStamina, remainingTimes, WEEK_MS } from './content';
 import { previewAction, resolveAction, showFanType } from './results';
 import { BALANCE } from './data';
 import { createFans } from './fans';
@@ -125,7 +125,7 @@ export function settle(
     const staminaApplied =
       staminaCost > 0 && nextSatiety < 20 ? Math.round(staminaCost * 0.5) : staminaCost;
 
-    state.stamina = clamp(state.stamina + staminaApplied, 0, 100);
+    state.stamina = clampStamina(state.stamina + staminaApplied);
     state.money += resolved.money;
     state.mood = nextMood;
     state.satiety = nextSatiety;
@@ -178,7 +178,7 @@ export function settle(
     // 常规事件：只改数值，不动三轴
     if (rng() < routineChance) {
       const t = ROUTINE_TEMPLATES[Math.floor(rng() * ROUTINE_TEMPLATES.length)]!;
-      state.stamina = clamp(state.stamina + t.stamina, 0, 100);
+      state.stamina = clampStamina(state.stamina + t.stamina);
       if (t.stat && t.gain) {
         state.stats[t.stat] = clamp(state.stats[t.stat] + t.gain, 0, 100);
       }

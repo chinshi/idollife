@@ -4,6 +4,7 @@
     "actionMinutes": 1,
     "dailySlots": 3,
     "showSlots": 3,
+    "staminaMax": 100,
     "startMoney": 8000,
     "rentPerWeek": 500,
     "debutThreshold": 120,

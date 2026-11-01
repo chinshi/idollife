@@ -1,4 +1,4 @@
-import { ATTRIBUTES, attrValue, effectiveStats } from '@idollife/core';
+import { ATTRIBUTES, STAMINA_MAX, attrValue, effectiveStats } from '@idollife/core';
 import type { AppApi } from './api';
 
 const HIDDEN_CATEGORIES = new Set(['trait', 'negative', 'hidden', 'proficient']);
@@ -32,12 +32,24 @@ export function StatsPanel({ api }: { api: AppApi }) {
                 {hidden && <em className="attr-hidden">仅占卜可见</em>}
               </h4>
               <div className="attr-list">
-                {group.items.map((a) => (
-                  <div key={a.key} className="attr-item">
-                    <span className="k">{a.name}</span>
-                    <span className="v">{hidden ? '？' : attrValue(run, a.key)}</span>
-                  </div>
-                ))}
+                {group.items.map((a) => {
+                  const value = attrValue(run, a.key);
+                  const max = a.key === 'stamina' ? STAMINA_MAX : 100;
+                  const isStatus = category === 'status';
+                  return (
+                    <div key={a.key} className="attr-item">
+                      <span className="k">{a.name}</span>
+                      {isStatus ? (
+                        <span className="v">
+                          {value}
+                          <em>/{max}</em>
+                        </span>
+                      ) : (
+                        <span className="v">{hidden ? '？' : value}</span>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </section>
           );

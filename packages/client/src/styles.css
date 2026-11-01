@@ -2261,3 +2261,14 @@ body { overflow: hidden; }
 }
 .attr-item .k { color: var(--muted); }
 .attr-item .v { font-weight: 600; }
+/* 顶部体力条 */
+.vital { display: inline-flex; align-items: center; gap: 6px; margin-left: 4px; }
+.vital-label { font-size: 11px; color: var(--muted); }
+.vital-bar {
+  width: 84px; height: 8px; border-radius: 4px; background: #eceff5; overflow: hidden;
+}
+.vital-bar i { display: block; height: 100%; background: #59a6ff; transition: width .2s; }
+.vital-bar i.low { background: #f08a5d; }
+.vital-num { font-size: 11px; font-weight: 600; }
+.vital-num em { font-style: normal; color: var(--muted); font-weight: 400; }
+.attr-item .v em { font-style: normal; color: var(--muted); font-weight: 400; font-size: 10px; }

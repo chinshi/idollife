@@ -1,5 +1,6 @@
 import { RAW_ROUTINE, RAW_STORY, type RawRequires } from './data';
 import { matchesCondition } from './expr';
+import { clampStamina } from './content';
 import type { Axes, RunState, Stats } from './types';
 
 export interface ChoiceEffects {

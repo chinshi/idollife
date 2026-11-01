@@ -139,3 +139,11 @@ export function remainingTimes(state: RunState, actionId: string): number {
 
   return Math.max(0, meta.times - used);
 }
+
+/** 体力上限（配置表 balance.staminaMax） */
+export const STAMINA_MAX: number = BALANCE.staminaMax ?? 100;
+
+/** 把体力夹到 0~上限 */
+export function clampStamina(v: number): number {
+  return Math.max(0, Math.min(STAMINA_MAX, Math.round(v)));
+}
