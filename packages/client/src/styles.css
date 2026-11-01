@@ -1684,3 +1684,27 @@ body { overflow: hidden; }
   min-height: 0;
 }
 .aux-body .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+/* tab 不撑满，按文字宽度；左右留足内边距 */
+.seg {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border-bottom: 1px solid var(--line);
+}
+.seg-item {
+  flex: 0 0 auto;
+  padding: 6px 20px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f7f9fc;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+.seg-item.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
