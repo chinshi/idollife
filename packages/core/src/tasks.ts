@@ -175,10 +175,10 @@ export function checkTaskCompletions(state: RunState): RunState {
   return next;
 }
 
-/** 已完成任务（按完成时间倒序） */
+/** 已完成任务（按完成时间倒序；没有完成时间的排最后） */
 export function completedTasks(state: RunState): Array<{ task: TaskDef; at: number }> {
-  return TASKS.map((task) => ({ task, at: doneAt(state, task.id) }))
-    .filter((x) => x.at > 0)
+  return TASKS.filter((task) => taskStatus(state, task) === 'done')
+    .map((task) => ({ task, at: doneAt(state, task.id) || acceptedAt(state, task.id) || 0 }))
     .sort((a, b) => b.at - a.at);
 }
 

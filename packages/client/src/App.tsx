@@ -24,6 +24,7 @@ import {
   taskStatus,
   acceptTask,
   activeTasks,
+  checkTaskCompletions,
   completedTasks,
   claimableTasks,
   taskBadgeCount,
@@ -473,6 +474,11 @@ function AppInner() {
     }, 10 * 60 * 1000);
     return () => window.clearInterval(id);
   }, [user]);
+  // 任务自动结算：满足完成条件的进行中任务，立刻完成并发奖
+  useEffect(() => {
+    const next = checkTaskCompletions(run);
+    if (next !== run) setRun(next);
+  }, [run]);
   // 记住「当前时钟位置」，刷新后从那里继续，而不是回到行动开始
   useEffect(() => {
     const id = window.setInterval(() => {
