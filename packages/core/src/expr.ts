@@ -92,8 +92,9 @@ function toData(state: RunState): Record<string, unknown> {
     total: STAT_KEYS.reduce((sum, k) => sum + state.stats[k], 0),
     flags: state.flags,
   };
+  for (const key of declaredFlagKeys) data[key] = false;
   for (const [flag, on] of Object.entries(state.flags ?? {})) {
-    data[sanitizeFlag(flag)] = on ? 1 : 0;
+    data[sanitizeFlag(flag)] = Boolean(on);
   }
   for (const [type, value] of Object.entries(state.fans.byType)) {
     data[`fans.${type}`] = value;
@@ -103,8 +104,18 @@ function toData(state: RunState): Record<string, unknown> {
 
 const sumFn = (...args: number[]) => args.reduce((a, b) => a + (Number(b) || 0), 0);
 
+/** 配置里出现过的所有标记（保证未设置的标记也能取到 0） */
+const declaredFlagKeys = new Set<string>();
+
+function registerFlags(src: string): void {
+  for (const m of src.matchAll(/hasFlag\s*\(\s*"([^"]+)"\s*\)/g)) {
+    if (m[1]) declaredFlagKeys.add(sanitizeFlag(m[1]));
+  }
+}
+
 /** 编译表达式，返回 (state) => boolean；语法错误会 throw */
 export function compileExpression(src: string): (s: RunState) => boolean {
+  registerFlags(src);
   const expression = normalize(src);
 
   // 变量白名单校验（编译期就报错，不等运行时）；先去掉字符串字面量

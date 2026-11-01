@@ -245,12 +245,7 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
       if (bool(cell(r, 3))) o.major = true;
       const requiresRaw = str(cell(r, 5));
       if (requiresRaw) {
-        try {
-          o.requires = JSON.parse(requiresRaw);
-        } catch {
-          console.error(`✗ story.${id} 的 requires 不是合法 JSON：${requiresRaw}`);
-          process.exit(1);
-        }
+        o.requires = parseCond(requiresRaw, 'story.' + id + '.requires');
       }
       o.choices = choicesByEvent.get(id) ?? [];
       return o;
@@ -419,9 +414,9 @@ const skip = (f) => console.log(`  - 跳过 ${f}（文件不存在）`);
         type: str(cell(r, 2)),
         name: str(cell(r, 3)),
       };
-      x.displayCondition = parseJson(cell(r, 4), `tasks.${x.id}.displayCondition`);
-      x.acceptCondition = parseJson(cell(r, 5), `tasks.${x.id}.acceptCondition`);
-      x.completeCondition = parseJson(cell(r, 6), `tasks.${x.id}.completeCondition`);
+      x.displayCondition = parseCond(cell(r, 4), 'tasks.' + x.id + '.displayCondition');
+      x.acceptCondition = parseCond(cell(r, 5), 'tasks.' + x.id + '.acceptCondition');
+      x.completeCondition = parseCond(cell(r, 6), 'tasks.' + x.id + '.completeCondition');
 
       const rewards = {};
       const money = num(cell(r, 7));

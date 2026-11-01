@@ -6,14 +6,8 @@
       "type": "once",
       "name": "第一次出道",
       "displayCondition": {},
-      "acceptCondition": {
-        "statsSumAtLeast": 120
-      },
-      "completeCondition": {
-        "flagsContain": [
-          "ev:debut"
-        ]
-      },
+      "acceptCondition": "total >= 120",
+      "completeCondition": "hasFlag(\"ev:debut\")",
       "rewards": {
         "money": 3000,
         "fans": 100
@@ -28,16 +22,8 @@
       "type": "once",
       "name": "舞蹈三十",
       "displayCondition": {},
-      "acceptCondition": {
-        "statsAtLeast": {
-          "dance": 20
-        }
-      },
-      "completeCondition": {
-        "statsAtLeast": {
-          "dance": 30
-        }
-      },
+      "acceptCondition": "dance >= 20",
+      "completeCondition": "dance >= 30",
       "rewards": {
         "money": 500,
         "stamina": 10
@@ -51,17 +37,9 @@
       "id": "task-first-show",
       "type": "repeat",
       "name": "站上舞台",
-      "displayCondition": {
-        "statsSumAtLeast": 60
-      },
-      "acceptCondition": {
-        "statsSumAtLeast": 60
-      },
-      "completeCondition": {
-        "fansAtLeast": {
-          "stage": 100
-        }
-      },
+      "displayCondition": "total >= 60",
+      "acceptCondition": "total >= 60",
+      "completeCondition": "fans.stage >= 100",
       "rewards": {
         "money": 800
       },
@@ -75,12 +53,8 @@
       "type": "once",
       "name": "攒到一万",
       "displayCondition": {},
-      "acceptCondition": {
-        "moneyAtLeast": 5000
-      },
-      "completeCondition": {
-        "moneyAtLeast": 10000
-      },
+      "acceptCondition": "money >= 5000",
+      "completeCondition": "money >= 10000",
       "rewards": {
         "stamina": 20
       },
@@ -95,9 +69,7 @@
       "name": "认识一个人",
       "displayCondition": {},
       "acceptCondition": {},
-      "completeCondition": {
-        "friendsAtLeast": 1
-      },
+      "completeCondition": "friends >= 1",
       "rewards": {
         "money": 200
       },

@@ -23,9 +23,7 @@
       "id": "res-vocal-tired",
       "actionId": "vocal-karaoke",
       "actionName": "唱 K",
-      "condition": {
-        "staminaBelow": 30
-      },
+      "condition": "stamina < 30",
       "priority": 10,
       "effects": {
         "stamina": -10,
@@ -60,9 +58,7 @@
       "id": "res-dance-tired",
       "actionId": "dance-otaku",
       "actionName": "跳宅舞",
-      "condition": {
-        "staminaBelow": 25
-      },
+      "condition": "stamina < 25",
       "priority": 10,
       "effects": {
         "stamina": -12,
@@ -125,9 +121,7 @@
       "id": "res-work-tired",
       "actionId": "work-part-time",
       "actionName": "打工",
-      "condition": {
-        "staminaBelow": 25
-      },
+      "condition": "stamina < 25",
       "priority": 10,
       "effects": {
         "stamina": -20,
@@ -150,9 +144,7 @@
       "id": "res-show-s",
       "actionId": "show",
       "actionName": "演出",
-      "condition": {
-        "statsSumAtLeast": 240
-      },
+      "condition": "total >= 240",
       "priority": 10,
       "effects": {
         "stamina": -30,
@@ -165,9 +157,7 @@
       "id": "res-show-a",
       "actionId": "show",
       "actionName": "演出",
-      "condition": {
-        "statsSumAtLeast": 180
-      },
+      "condition": "total >= 180",
       "priority": 20,
       "effects": {
         "stamina": -30,
@@ -180,9 +170,7 @@
       "id": "res-show-b",
       "actionId": "show",
       "actionName": "演出",
-      "condition": {
-        "statsSumAtLeast": 120
-      },
+      "condition": "total >= 120",
       "priority": 30,
       "effects": {
         "stamina": -30,

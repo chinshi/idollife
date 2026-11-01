@@ -89,14 +89,7 @@
       "title": "一个试镜机会",
       "text": "经纪人推门进来：「有个小场子的试镜，后天。你敢不敢去？」",
       "major": true,
-      "requires": {
-        "statsAtLeast": {
-          "dance": 15
-        },
-        "flagsNot": [
-          "ev:first-audition"
-        ]
-      },
+      "requires": "dance >= 15 and not hasFlag(\"ev:first-audition\")",
       "choices": [
         {
           "id": "go",
@@ -146,14 +139,7 @@
       "id": "fan-letter",
       "title": "第一封信",
       "text": "后台收到一封手写信，字迹很认真：「谢谢你上周那场演出。」",
-      "requires": {
-        "axesAtLeast": {
-          "others": 45
-        },
-        "flagsNot": [
-          "ev:fan-letter"
-        ]
-      },
+      "requires": "others >= 45 and not hasFlag(\"ev:fan-letter\")",
       "choices": [
         {
           "id": "reply",
@@ -185,12 +171,7 @@
       "title": "撑不住了",
       "text": "连着几天没睡够，你在排练室的地板上坐了很久。",
       "major": true,
-      "requires": {
-        "staminaBelow": 20,
-        "flagsNot": [
-          "ev:burnout"
-        ]
-      },
+      "requires": "stamina < 20 and not hasFlag(\"ev:burnout\")",
       "choices": [
         {
           "id": "rest",
@@ -226,14 +207,7 @@
       "id": "crowded-fans",
       "title": "有人举你的名字",
       "text": "前排有人举起了写着你的灯牌，你差点忘了下一句歌词。",
-      "requires": {
-        "fansAtLeast": {
-          "stage": 50
-        },
-        "flagsNot": [
-          "ev:crowded-fans"
-        ]
-      },
+      "requires": "fans.stage >= 50 and not hasFlag(\"ev:crowded-fans\")",
       "choices": [
         {
           "id": "look",
@@ -269,14 +243,7 @@
       "id": "manager-doubt",
       "title": "经纪人的犹豫",
       "text": "「你最近……还撑得住吗？」他把话说到一半又咽了回去。",
-      "requires": {
-        "axesBelow": {
-          "fit": 34
-        },
-        "flagsNot": [
-          "ev:manager-doubt"
-        ]
-      },
+      "requires": "fit < 34 and not hasFlag(\"ev:manager-doubt\")",
       "choices": [
         {
           "id": "honest",

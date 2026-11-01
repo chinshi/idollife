@@ -80,9 +80,7 @@
       "name": "演出",
       "category": "performance",
       "categoryName": "演出",
-      "displayCondition": {
-        "statsSumAtLeast": 60
-      },
+      "displayCondition": "total >= 60",
       "times": 0,
       "timesScope": "week",
       "affectedStats": [
