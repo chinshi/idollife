@@ -1132,3 +1132,36 @@ body { overflow: hidden; }
   .shell { grid-template-columns: minmax(0, 1fr); grid-auto-rows: minmax(0, auto); overflow-y: auto; }
   .col-left, .col-center, .col-right { min-height: auto; }
 }
+/* 头部：三段式（游戏名+进度 | 时间轴 | 账户操作） */
+.bar {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  flex: 0 0 auto;
+}
+.bar-left { display: flex; align-items: center; gap: 10px; }
+.bar-center { min-width: 0; }
+.bar-right { display: flex; align-items: center; gap: 8px; }
+
+.bar .mod { border: none; background: transparent; }
+.bar .mod-head { border-bottom: none; padding: 0 0 4px; }
+.bar .tlh { padding: 0 2px 4px; }
+
+.tlh-inner { position: relative; }
+
+.shell { grid-template-columns: 168px minmax(0, 1fr) 240px; }
+
+/* 窄屏：砍掉辅助模块，入口并进功能切换 */
+@media (max-width: 800px) {
+  .shell { grid-template-columns: 148px minmax(0, 1fr); }
+  .col-right { display: none; }
+  .menu-item.bag-entry { display: block; }
+  .bar { grid-template-columns: minmax(0, 1fr) auto; }
+  .bar-center { grid-column: 1 / -1; }
+}
+.menu-item.bag-entry { display: none; }
+
+.stats.big { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.stats.big .stat { padding: 10px; border: 1px solid var(--line); border-radius: 8px; }

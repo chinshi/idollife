@@ -93,7 +93,7 @@ type SyncStatus = 'local' | 'syncing' | 'synced' | 'offline' | 'expired';
 type SysTab = 'shop' | 'bag';
 type BagTab = 'equip' | 'consume' | 'other';
 type LogTab = 'all' | 'event' | 'stat';
-type MainTab = 'plan' | 'party' | 'shop' | 'divine';
+type MainTab = 'stats' | 'plan' | 'party' | 'shop' | 'divine' | 'bag';
 
 function totalFans(run: RunState): number {
   return Object.values(run.fans.byType).reduce((a, b) => a + b, 0);
@@ -1062,97 +1062,20 @@ function AppInner() {
     <div className="app">
       <CrashBanner msg={crash} onClose={() => setCrash(null)} />
       <header className="bar">
-        <span className="brand">idollife</span>
-        <span className="clock">
-          第 {todayIndex + 1} 天 · {weekdayName(todayIndex)} · 今日剩余{' '}
-          {Math.max(0, 3 - usedToday)}/3
-        </span>
-        <span className="spacer" />
-        <span className="muted small">{user?.email ?? '已离线'}</span>
-        <button
-          className="link-btn"
-          onClick={() => {
-            setDebugText(localStorage.getItem('idollife:debug:v1') ?? '(空)');
-            setShowDebug(true);
-          }}
-        >
-          日志
-        </button>
-        <button className="link-btn" onClick={restartForTest}>
-          重新开始
-        </button>
-        <button className="link-btn" onClick={() => void signOut()}>
-          退出
-        </button>
-      </header>
+        <div className="bar-left">
+          <span className="brand">idollife</span>
+          <span className="clock">
+            第 {todayIndex + 1} 天 · {weekdayName(todayIndex)} · 今日剩余{' '}
+            {Math.max(0, 3 - usedToday)}/3
+          </span>
+          {syncStatus !== 'local' && (
+            <span className={`chip chip-${syncStatus}`}>{SYNC_TEXT[syncStatus]}</span>
+          )}
+        </div>
 
-      <main className="shell">
-        {/* 左：主信息 + 功能切换 */}
-        <aside className="mod col-left">
-          <section className="mod-info">
-            <div className="who">
-              <div className="who-name">{run.debuted ? '已出道' : '练习生'}</div>
-              <div className="who-meta">
-                第 {todayIndex + 1} 天 · {weekdayName(todayIndex)}
-              </div>
-            </div>
-
-            <div className="stats">
-              {(['vocal', 'dance', 'acting', 'talk'] as const).map((k) => (
-                <div key={k} className="stat">
-                  <span className="k">{STAT_LABEL[k]}</span>
-                  <span className="v">{run.stats[k]}</span>
-                </div>
-              ))}
-              <div className="stat">
-                <span className="k">体力</span>
-                <span className="v">{run.stamina}</span>
-              </div>
-              <div className="stat">
-                <span className="k">资金</span>
-                <span className="v">{run.money}</span>
-              </div>
-              <div className="stat">
-                <span className="k">粉丝</span>
-                <span className="v">{totalFans(run)}</span>
-              </div>
-            </div>
-
-            <div className="row wrap">
-              <button onClick={() => setShowDivination(true)}>占卜</button>
-              {canDebut(run) && (
-                <button className="primary" onClick={doDebut}>
-                  出道
-                </button>
-              )}
-            </div>
-          </section>
-
-          <nav className="mod-menu">
-            {(
-              [
-                ['plan', '行程'],
-                ['party', '组合'],
-                ['shop', '商店'],
-                ['divine', '占卜'],
-              ] as Array<[MainTab, string]>
-            ).map(([key, label]) => (
-              <button
-                key={key}
-                className={mainTab === key ? 'menu-item active' : 'menu-item'}
-                onClick={() => setMainTab(key)}
-              >
-                {label}
-              </button>
-            ))}
-          </nav>
-        </aside>
-
-        {/* 中：时间轴 / 待办 / 主系统 / 日志 */}
-        <section className="col-center">
+        <div className="bar-center">
           <section className="mod mod-timeline">
             <div className="mod-head">
-              <h2>时间轴</h2>
               <div className="speed-row">
                 {[1, 10, 60].map((v) => (
                   <button
@@ -1249,7 +1172,64 @@ function AppInner() {
               </div>
             </div>
           </section>
+        </div>
 
+        <div className="bar-right">
+          <span className="muted small">{user?.email ?? '已离线'}</span>
+          <button
+            className="link-btn"
+            onClick={() => {
+              setDebugText(localStorage.getItem('idollife:debug:v1') ?? '(空)');
+              setShowDebug(true);
+            }}
+          >
+            日志
+          </button>
+          <button className="link-btn" onClick={restartForTest}>
+            重新开始
+          </button>
+          <button className="link-btn" onClick={() => void signOut()}>
+            退出
+          </button>
+        </div>
+      </header>
+
+
+      <main className="shell">
+        {/* 左：主信息 + 功能切换 */}
+        <aside className="mod col-left">
+          <nav className="mod-menu">
+            {(
+              [
+                ['stats', '属性'],
+                ['plan', '行程'],
+                ['party', '组合'],
+                ['shop', '商店'],
+                ['divine', '占卜'],
+              ] as Array<[MainTab, string]>
+            ).map(([key, label]) => (
+              <button
+                key={key}
+                className={mainTab === key ? 'menu-item active' : 'menu-item'}
+                onClick={() => setMainTab(key)}
+              >
+                {label}
+              </button>
+            ))}
+
+            <button
+              className={
+                mainTab === 'bag' ? 'menu-item bag-entry active' : 'menu-item bag-entry'
+              }
+              onClick={() => setMainTab('bag')}
+            >
+              背包
+            </button>
+          </nav>
+        </aside>
+
+        {/* 中：时间轴 / 待办 / 主系统 / 日志 */}
+        <section className="col-center">
           {(run.pendingEvent || run.eventQueue.length > 0) && (
             <section className={run.pendingEvent ? 'mod mod-todo major' : 'mod mod-todo'}>
               <div className="mod-head">
@@ -1274,6 +1254,47 @@ function AppInner() {
           )}
 
           <section className="mod mod-main">
+            {mainTab === 'stats' && (
+              <>
+                <div className="mod-head">
+                  <h2>属性</h2>
+                </div>
+                <div className="stats big">
+                  {(['vocal', 'dance', 'acting', 'talk'] as const).map((k) => (
+                    <div key={k} className="stat">
+                      <span className="k">{STAT_LABEL[k]}</span>
+                      <span className="v">{run.stats[k]}</span>
+                    </div>
+                  ))}
+                  <div className="stat">
+                    <span className="k">体力</span>
+                    <span className="v">{run.stamina}</span>
+                  </div>
+                  <div className="stat">
+                    <span className="k">资金</span>
+                    <span className="v">{run.money}</span>
+                  </div>
+                  <div className="stat">
+                    <span className="k">粉丝</span>
+                    <span className="v">{totalFans(run)}</span>
+                  </div>
+                </div>
+                <p className="muted small">
+                  实际属性：
+                  {Object.entries(effectiveStats(run))
+                    .map(([k, v]) => `${STAT_LABEL[k]} ${v}`)
+                    .join(' · ')}
+                </p>
+                <div className="row">
+                  {canDebut(run) && (
+                    <button className="primary" onClick={doDebut}>
+                      出道
+                    </button>
+                  )}
+                  <button onClick={() => setShowDivination(true)}>占卜</button>
+                </div>
+              </>
+            )}
             {mainTab === 'plan' && (
               <>
                 <div className="mod-head">
@@ -1309,6 +1330,57 @@ function AppInner() {
               </>
             )}
 
+            {mainTab === 'bag' && (
+              <>
+                <div className="mod-head">
+                  <h2>背包</h2>
+                  <span className="muted small">{run.inventory.length} 件</span>
+                </div>
+                <nav className="crumb">
+                  <span className="crumb-root">物品</span>
+                  <span className="crumb-sep">›</span>
+                  {(['equip', 'consume', 'other'] as BagTab[]).map((t) => (
+                    <Fragment key={t}>
+                      <button
+                        className={bagTab === t ? 'crumb-item active' : 'crumb-item'}
+                        onClick={() => setBagTab(t)}
+                      >
+                        {t === 'equip' ? '装备' : t === 'consume' ? '消耗' : '其他'}
+                      </button>
+                      {t !== 'other' && <span className="crumb-sep">/</span>}
+                    </Fragment>
+                  ))}
+                </nav>
+                {bagTab === 'equip' && (
+                  run.inventory.length === 0 ? (
+                    <p className="muted small">还没有装备。</p>
+                  ) : (
+                    <ul className="shop">
+                      {run.inventory.map((item) => {
+                        const on = run.equipped.outfit === item.id;
+                        return (
+                          <li key={item.id}>
+                            <span className="name">
+                              {item.name}
+                              {on ? '（已装备）' : ''}
+                            </span>
+                            <span className="muted">
+                              {STAT_LABEL[item.affix.stat]} +{item.affix.value}
+                            </span>
+                            <button onClick={() => doEquip(item)} disabled={on}>
+                              装备
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )
+                )}
+                {(bagTab === 'consume' || bagTab === 'other') && (
+                  <p className="muted small">暂无物品。</p>
+                )}
+              </>
+            )}
             {mainTab === 'party' && (
               <>
                 <div className="mod-head">
@@ -1460,36 +1532,6 @@ function AppInner() {
 
         {/* 右：账户信息 + 辅助（背包） */}
         <aside className="col-right">
-          <section className="mod mod-account">
-            <div className="mod-head">
-              <h2>账户</h2>
-              {syncStatus !== 'local' && (
-                <span className={`chip chip-${syncStatus}`}>{SYNC_TEXT[syncStatus]}</span>
-              )}
-            </div>
-            <p className="muted small">{user?.email ?? '已离线'}</p>
-            <p className="muted small">
-              {savedAt ? `已保存 ${new Date(savedAt).toLocaleTimeString()}` : '尚未保存'}
-            </p>
-            <div className="row wrap">
-              <button
-                className="link-btn"
-                onClick={() => {
-                  setDebugText(localStorage.getItem('idollife:debug:v1') ?? '(空)');
-                  setShowDebug(true);
-                }}
-              >
-                调试日志
-              </button>
-              <button className="link-btn" onClick={restartForTest}>
-                重新开始
-              </button>
-              <button className="link-btn" onClick={() => void signOut()}>
-                退出
-              </button>
-            </div>
-          </section>
-
           <section className="mod mod-aux">
             <div className="mod-head">
               <h2>背包</h2>
