@@ -564,6 +564,33 @@ function AppInner() {
     return padY * 2 + Math.max(0, Math.round((last.endAt - baseTime) * pxPerMs)) + 160;
   }, [visibleItems, baseTime, pxPerMs, padY]);
 
+  // 横向时间轴派生：当前行动在正中，左右分别是历史与未来
+  const pastItems = useMemo(
+    () => visibleItems.filter((s) => s.done).slice(-4),
+    [visibleItems],
+  );
+  const futureItems = useMemo(
+    () => visibleItems.filter((s) => !s.done && s.id !== nextItem?.id).slice(0, 5),
+    [visibleItems, nextItem?.id],
+  );
+
+  const pastDateAt = pastItems[0]?.startAt ?? run.at;
+  const futureDateAt = futureItems[0]?.startAt ?? nextItem?.startAt ?? run.at;
+
+  const currentPct = nextItem
+    ? Math.min(
+        1,
+        Math.max(0, (gameNow - nextItem.startAt) / Math.max(1, nextItem.endAt - nextItem.startAt)),
+      )
+    : 0;
+
+  function actionNo(it: { startAt: number }): number {
+    const day = Math.floor((it.startAt - T0) / DAY_MS);
+    const sameDay = visibleItems.filter(
+      (x) => Math.floor((x.startAt - T0) / DAY_MS) === day,
+    );
+    return Math.max(1, sameDay.findIndex((x) => x.startAt === it.startAt) + 1);
+  }
   // 只在两种时机自动滚动：①开始推进 ②一条行动完成、进入下一条
   const prevRunningRef = useRef(false);
   const prevNextIdRef = useRef<string | null>(null);
@@ -1096,79 +1123,56 @@ function AppInner() {
               </button>
             </div>
 
-            <div className="tlh" ref={timelineRef}>
-              <div className="tlh-inner">
-                {visibleItems.length === 0 && (
-                  <p className="muted small">还没有安排，去「行程」里加几个。</p>
-                )}
-
-                {visibleItems.map((it, idx) => {
+            <div className="tlx">
+              <div className="tlx-side tlx-past">
+                {pastItems.length === 0 && <span className="tlx-empty">还没有历史</span>}
+                {pastItems.map((it) => {
                   const a = ACTIONS[it.actionId];
-                  const name = a?.name ?? (it.actionId === SHOW_ACTION_ID ? '演出' : it.actionId);
-                  const done = !!it.done;
-                  const isCurrent = nextItem?.id === it.id;
-                  const day = Math.floor((it.startAt - T0) / DAY_MS);
-                  const prev = idx > 0 ? visibleItems[idx - 1] : undefined;
-                  const prevDay = prev ? Math.floor((prev.startAt - T0) / DAY_MS) : -1;
-                  const isNewDay = day !== prevDay;
-                  const span = Math.max(1, Math.round((it.endAt - it.startAt) / MIN));
-                  const w = Math.max(80, span * 84);
-                  const pct = isCurrent && running
-                    ? Math.min(1, Math.max(0, (gameNow - it.startAt) / Math.max(1, it.endAt - it.startAt)))
-                    : done
-                      ? 1
-                      : 0;
-
                   return (
-                    <div
-                      key={it.id}
-                      className={[
-                        'tlh-cell',
-                        done ? 'done' : '',
-                        isCurrent ? 'current' : '',
-                        it.fixed ? 'fixed' : '',
-                      ]
-                        .filter(Boolean)
-                        .join(' ')}
-                      style={{ width: `${w}px` }}
-                      data-h-id={it.id}
-                    >
-                      <div className="tlh-date">
-                        {isNewDay ? `第 ${Math.floor(day / 7) + 1} 周 ${weekdayName(day)}` : ''}
-                      </div>
-                      <div className="tlh-axis">
-                        <span className="tlh-dot" />
-                      </div>
-                      <div className="tlh-label">
-                        <span className="tlh-name">{name}</span>
-                        {done && <em className="tlh-tag">已完成</em>}
-                        {isCurrent && running && (
-                          <em className="tlh-tag now">{Math.ceil(remainMs / 1000)}s</em>
-                        )}
-                        {it.stopAfter && !done && <em className="tlh-tag">到此停</em>}
-                      </div>
-                      {isCurrent && (
-                        <div className="tlh-bar">
-                          <i style={{ width: `${Math.round(pct * 100)}%` }} />
-                        </div>
-                      )}
-                      {!it.fixed && !done && (
-                        <div className="tlh-actions">
-                          <button
-                            className={it.stopAfter ? 'stop-btn on' : 'stop-btn'}
-                            title="执行到这里就停止"
-                            onClick={() => toggleStop(it.id)}
-                          >
-                            ⏹
-                          </button>
-                          <button className="del" onClick={() => removeItem(it.id)}>
-                            ×
-                          </button>
-                        </div>
-                      )}
+                    <div key={it.id} className="tlx-point done" style={{ width: '84px' }}>
+                      <span className="tlx-above">行动{actionNo(it)}</span>
+                      <span className="tlx-dot" />
+                      <span className="tlx-below">
+                        {a?.name ?? it.actionId}
+                        <em>已完成</em>
+                      </span>
                     </div>
                   );
                 })}
+                <span className="tlx-tick" />
+                <span className="tlx-date">{dayLabel(pastDateAt, run.at)}</span>
+              </div>
+
+              <div className="tlx-card">
+                <div className="tlx-card-name">
+                  {nextItem ? (ACTIONS[nextItem.actionId]?.name ?? nextItem.actionId) : '空闲'}
+                </div>
+                <div className="tlx-card-bar">
+                  <i style={{ width: `${Math.round(currentPct * 100)}%` }} />
+                </div>
+                <div className="tlx-card-meta">
+                  {running && nextItem
+                    ? `还剩 ${Math.ceil(remainMs / 1000)} 秒`
+                    : nextItem
+                      ? `行动${actionNo(nextItem)} · 待执行`
+                      : '时间已停止'}
+                </div>
+              </div>
+
+              <div className="tlx-side tlx-future">
+                <span className="tlx-tick" />
+                <span className="tlx-date">{dayLabel(futureDateAt, run.at)}</span>
+                {futureItems.map((it) => {
+                  const a = ACTIONS[it.actionId];
+                  return (
+                    <div key={it.id} className="tlx-point" style={{ width: '84px' }}>
+                      <span className="tlx-above">行动{actionNo(it)}</span>
+                      <span className="tlx-dot" />
+                      <span className="tlx-below">{a?.name ?? it.actionId}</span>
+                    </div>
+                  );
+                })}
+                {futureItems.length === 0 && <span className="tlx-empty">没有后续行程</span>}
               </div>
             </div>
           </section>

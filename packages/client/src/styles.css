@@ -1259,3 +1259,106 @@ body { overflow: hidden; }
 .bar-left .brand { font-size: 14px; font-weight: 700; }
 .bar-left .clock { font-size: 11px; color: var(--muted); }
 .bar-right .muted { font-size: 11px; }
+/* ===== 横向时间轴 v2：中心进度卡 + 左右延伸 ===== */
+.tlx {
+  display: flex;
+  align-items: center;
+  min-height: 128px;
+  padding: 4px 0 6px;
+  position: relative;
+  overflow: hidden;
+}
+.tlx-side {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 128px;
+  overflow: hidden;
+}
+.tlx-past { justify-content: flex-end; }
+.tlx-future { justify-content: flex-start; }
+.tlx-side::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  background: #e6eaf3;
+}
+
+.tlx-point {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 128px;
+  flex: 0 0 auto;
+}
+.tlx-above { font-size: 11px; color: var(--muted); line-height: 1.2; }
+.tlx-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin: 6px 0;
+  background: #fff;
+  border: 2px solid var(--accent);
+}
+.tlx-point.done .tlx-dot { background: #c9d2e3; border-color: #c9d2e3; }
+.tlx-below {
+  font-size: 11px;
+  line-height: 1.2;
+  color: var(--text);
+  text-align: center;
+  max-width: 82px;
+}
+.tlx-below em {
+  display: block;
+  font-style: normal;
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.tlx-card {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+  width: 176px;
+  padding: 10px 12px;
+  border: 1px solid #f2bd85;
+  border-radius: 10px;
+  background: #fff6ec;
+  box-shadow: 0 2px 6px rgba(249, 124, 18, 0.12);
+}
+.tlx-card-name { font-size: 13px; font-weight: 600; color: #b35a00; }
+.tlx-card-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: #f6e3d1;
+  overflow: hidden;
+  margin: 8px 0 6px;
+}
+.tlx-card-bar i { display: block; height: 100%; background: var(--accent); }
+.tlx-card-meta { font-size: 11px; color: var(--muted); }
+
+.tlx-tick {
+  position: absolute;
+  top: calc(50% + 10px);
+  width: 1px;
+  height: 22px;
+  background: #cdd6e5;
+}
+.tlx-date {
+  position: absolute;
+  top: calc(50% + 34px);
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.tlx-past .tlx-tick, .tlx-future .tlx-tick { left: 2px; }
+.tlx-past .tlx-date, .tlx-future .tlx-date { left: 6px; }
+.tlx-empty { font-size: 11px; color: var(--muted); padding: 0 8px; }
