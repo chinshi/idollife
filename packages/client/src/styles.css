@@ -1560,3 +1560,8 @@ body { overflow: hidden; }
 .col-center > .mod-todo { flex: 0 0 auto; max-height: 180px; }
 .col-center > .mod-main { flex: 1 1 0; min-height: 0; }
 .col-center > .mod-log { flex: 1 1 0; min-height: 0; }
+/* 卡片与最近行动点拉开距离（约两倍），文字居中 */
+.tlx-card {
+  margin: 0 42px;
+  text-align: center;
+}

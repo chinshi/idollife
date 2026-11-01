@@ -590,11 +590,11 @@ function AppInner() {
 
   // 横向时间轴派生：当前行动在正中，左右分别是历史与未来
   const pastItems = useMemo(
-    () => visibleItems.filter((s) => s.done).slice(-4),
+    () => visibleItems.filter((s) => s.done).slice(-10),
     [visibleItems],
   );
   const futureItems = useMemo(
-    () => visibleItems.filter((s) => !s.done && s.id !== nextItem?.id).slice(0, 5),
+    () => visibleItems.filter((s) => !s.done && s.id !== nextItem?.id).slice(0, 10),
     [visibleItems, nextItem?.id],
   );
 
