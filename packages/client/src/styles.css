@@ -1636,3 +1636,6 @@ body { overflow: hidden; }
   background: #fff2e4;
   color: #b35a00;
 }
+/* 日志底部留白，最后一条不贴边 */
+.mod-log .log-scroll { padding-bottom: 28px; }
+.mod-log .log { padding-bottom: 8px; }
