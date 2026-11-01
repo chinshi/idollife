@@ -1161,6 +1161,7 @@ function AppInner() {
       return;
     }
     setRun(r.state);
+    setFriendsTab('list');
     setNotice(r.friend ? `认识了 ${r.friend.name}，已加入朋友圈。` : '认识了一个新朋友。');
   }
 
@@ -1733,8 +1734,8 @@ function AppInner() {
                     {CHANNELS.map((c) => (
                       <button
                         key={c.id}
+                        className={run.money < c.cost ? 'meet-poor' : ''}
                         onClick={() => doMeet(c.id)}
-                        disabled={run.money < c.cost}
                         title={c.text}
                       >
                         {c.name}
