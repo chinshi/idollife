@@ -2272,3 +2272,16 @@ body { overflow: hidden; }
 .vital-num { font-size: 11px; font-weight: 600; }
 .vital-num em { font-style: normal; color: var(--muted); font-weight: 400; }
 .attr-item .v em { font-style: normal; color: var(--muted); font-weight: 400; font-size: 10px; }
+/* 属性面板里的体力条 */
+.stat-vital { flex-wrap: wrap; }
+.stat-vital .stat-bar {
+  flex: 1 0 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: #eceff5;
+  overflow: hidden;
+  margin-top: 4px;
+}
+.stat-vital .stat-bar i { display: block; height: 100%; background: #59a6ff; }
+.stat-vital .stat-bar i.low { background: #f08a5d; }
+.stat-vital .v em { font-style: normal; color: var(--muted); font-weight: 400; font-size: 10px; }

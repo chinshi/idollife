@@ -51,7 +51,6 @@ import {
   memberStats,
   performShow,
   recruit,
-  STAMINA_MAX,
   settle,
   switchParty,
 } from '@idollife/core';
@@ -1464,20 +1463,6 @@ function AppInner() {
           <span className="clock">
             第 {todayIndex + 1} 天 · {weekdayName(todayIndex)} · 今日剩余{' '}
             {Math.max(0, 3 - usedToday)}/3
-          </span>
-
-          <span className="vital" title={`体力 ${run.stamina} / ${STAMINA_MAX}`}>
-            <span className="vital-label">体力</span>
-            <span className="vital-bar">
-              <i
-                style={{ width: `${Math.round((run.stamina / STAMINA_MAX) * 100)}%` }}
-                className={run.stamina <= 20 ? 'low' : undefined}
-              />
-            </span>
-            <span className="vital-num">
-              {run.stamina}
-              <em>/{STAMINA_MAX}</em>
-            </span>
           </span>
           <div className="title-account">
             <span className="acct-email" title={user?.email ?? ''}>

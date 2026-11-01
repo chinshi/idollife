@@ -37,7 +37,7 @@ export function StatsPanel({ api }: { api: AppApi }) {
                   const max = a.key === 'stamina' ? STAMINA_MAX : 100;
                   const isStatus = category === 'status';
                   return (
-                    <div key={a.key} className="attr-item">
+                    <div key={a.key} className={isStatus ? 'attr-item attr-vital' : 'attr-item'}>
                       <span className="k">{a.name}</span>
                       {isStatus ? (
                         <span className="v">

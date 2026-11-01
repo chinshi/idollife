@@ -1,5 +1,5 @@
 import {
-  STAT_LABEL, effectiveStats, canDebut, memberStats, getShop, DEBUT_THRESHOLD, RECRUIT_COST, taskStatus, CHANNELS, cooldownLeftDays,
+  STAT_LABEL, STAMINA_MAX, effectiveStats, canDebut, memberStats, getShop, DEBUT_THRESHOLD, RECRUIT_COST, taskStatus, CHANNELS, cooldownLeftDays,
 } from '@idollife/core';
 import { Fragment } from 'react';
 import type { AppApi, BagTab } from './api';
@@ -34,9 +34,18 @@ export function SidePanel({ api }: { api: AppApi }) {
                       <span className="v">{run.stats[k]}</span>
                     </div>
                   ))}
-                  <div className="stat">
+                  <div className="stat stat-vital">
                     <span className="k">体力</span>
-                    <span className="v">{run.stamina}</span>
+                    <span className="v">
+                      {run.stamina}
+                      <em>/{STAMINA_MAX}</em>
+                    </span>
+                    <span className="stat-bar">
+                      <i
+                        className={run.stamina <= 20 ? 'low' : undefined}
+                        style={{ width: `${Math.round((run.stamina / STAMINA_MAX) * 100)}%` }}
+                      />
+                    </span>
                   </div>
                   <div className="stat">
                     <span className="k">资金</span>
