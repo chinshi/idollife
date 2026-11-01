@@ -1708,3 +1708,11 @@ body { overflow: hidden; }
   color: #fff;
   font-weight: 600;
 }
+/* 模块头部按钮压缩，避免占掉过多高度 */
+.mod-head button {
+  padding: 4px 10px;
+  font-size: 12px;
+  line-height: 1.4;
+  border-radius: 8px;
+}
+.mod-head h2 { line-height: 1.4; }
