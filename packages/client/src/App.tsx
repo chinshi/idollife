@@ -409,7 +409,6 @@ function AppInner() {
     let raf = 0;
     let lastProcess = 0;
     let lastBeat = 0;
-    let lastAdvancePerf = performance.now();
 
     const tick = () => {
       raf = requestAnimationFrame(tick);
@@ -450,7 +449,6 @@ function AppInner() {
       const result = settle(prev, prevSched, prev.at, target, seed, { endAt: RUN_END });
 
       if (result.executed.length > 0) {
-        lastAdvancePerf = nowPerf;
         const nextSched = markExecuted(prevSched, result.executed);
         runRef.current = result.state;
         scheduleRef.current = nextSched;
@@ -489,13 +487,6 @@ function AppInner() {
         return;
       }
 
-      // 看门狗：3 秒没有任何行动被执行 → 判定卡住，主动停下
-      if (result.executed.length === 0 && nowPerf - lastAdvancePerf > 3000) {
-        dbg('看门狗：3 秒没有推进，自动停止 at=' + String(runRef.current.at));
-        setRunning(false);
-        setNotice('推进好像卡住了，已经停下。可以再点一次「开始推进」。');
-        return;
-      }
 
       if (result.stoppedReason !== 'time') {
         dbg('停止 reason=' + String(result.stoppedReason) + ' 剩=' + String(
