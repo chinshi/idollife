@@ -2038,3 +2038,40 @@ body { overflow: hidden; }
 }
 .friend-invite:not(:disabled):hover { background: #fff2e4; border-color: #f2bd85; }
 .friend-invite:disabled { opacity: 0.55; cursor: not-allowed; }
+/* 组合末尾的「邀请朋友」卡片 */
+.mcard.invite-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px dashed #cfd7e6;
+  border-radius: 12px;
+  background: #fafbfe;
+  color: var(--muted);
+  cursor: pointer;
+  perspective: none;
+}
+.mcard.invite-card:hover { border-color: var(--accent); color: #b35a00; background: #fffaf4; }
+.invite-inner { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.invite-inner .plus { font-size: 26px; line-height: 1; }
+.invite-inner .hint { font-size: 12px; }
+
+/* 邀请弹窗列表 */
+.invite-list { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; max-height: 50vh; overflow-y: auto; }
+.invite-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 12px;
+}
+.invite-list li.owned { background: #f5f6fa; color: #9aa2b3; }
+.invite-list .name { font-weight: 600; }
+.invite-list li.owned .name { color: #9aa2b3; }
+.invite-list .meta { color: var(--muted); }
+.invite-list .team { color: #b08b6a; font-size: 11px; }
+.invite-list .spacer { flex: 1 1 auto; }
+.invite-list button { padding: 4px 12px; font-size: 12px; border-radius: 8px; }
+.invite-list button:disabled { opacity: 0.5; cursor: not-allowed; }

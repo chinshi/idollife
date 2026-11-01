@@ -311,6 +311,7 @@ function AppInner() {
   };
   const [managing, setManaging] = useState(false);
   const [showStops, setShowStops] = useState(false);
+  const [showInvite, setShowInvite] = useState(false);
   const STOP_TEXT: Record<string, string> = {
     stamina: '体力不足，行程停下来了',
     money: '钱不够，行程停下来了',
@@ -1744,16 +1745,7 @@ function AppInner() {
                                 <span className="mcard-dup">
                                   {inParty ? `已入团 · ${teamName}` : `资质 ${Math.round(f.quality * 100)}%`}
                                 </span>
-                                <button
-                                  className="friend-invite"
-                                  disabled={inParty || !party}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    doInvite(f.id);
-                                  }}
-                                >
-                                  {inParty ? '已在组合' : '邀请'}
-                                </button>
+
                               </div>
                               <div className="mcard-face back">
                                 <span className="mcard-name">{f.name}</span>
@@ -1998,6 +1990,16 @@ function AppInner() {
                         </div>
                       );
                     })}
+                    <div
+                      className="mcard invite-card"
+                      onClick={() => setShowInvite(true)}
+                      title="从朋友圈邀请"
+                    >
+                      <div className="invite-inner">
+                        <span className="plus">＋</span>
+                        <span className="hint">点击邀请朋友</span>
+                      </div>
+                    </div>
                   </div>
                 )}
               </>
@@ -2248,6 +2250,40 @@ function AppInner() {
               确定
             </button>
           </div>
+        </Modal>
+      )}
+      {showInvite && (
+        <Modal title="邀请朋友" onClose={() => setShowInvite(false)}>
+          <p className="muted small">无团的朋友可以邀请；已有组合的人需要先移出原组合。</p>
+          {run.friends.length === 0 ? (
+            <p className="muted">朋友圈还是空的，先去「朋友圈」认识几个人。</p>
+          ) : (
+            <ul className="invite-list">
+              {[...run.friends]
+                .sort((a, b) => Number(!!a.partyId) - Number(!!b.partyId))
+                .map((f) => {
+                  const team = f.partyId
+                    ? run.parties.find((x) => x.id === f.partyId)?.name
+                    : null;
+                  return (
+                    <li key={f.id} className={f.partyId ? 'owned' : ''}>
+                      <span className="name">{f.name}</span>
+                      <span className="meta">
+                        {biasLabel(f.bias)} · 资质 {Math.round(f.quality * 100)}%
+                      </span>
+                      {team && <span className="team">已归属 · {team}</span>}
+                      <span className="spacer" />
+                      <button
+                        disabled={!!f.partyId || !party}
+                        onClick={() => doInvite(f.id)}
+                      >
+                        {f.partyId ? '不可邀请' : '邀请'}
+                      </button>
+                    </li>
+                  );
+                })}
+            </ul>
+          )}
         </Modal>
       )}
       {showStops && (
