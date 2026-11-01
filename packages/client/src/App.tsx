@@ -291,6 +291,7 @@ function AppInner() {
   const [logTab, setLogTab] = useState<LogTab>('all');
   const [mainTab, setMainTab] = useState<MainTab>('plan');
   const [lastStop, setLastStop] = useState('');
+  const [confirmAction, setConfirmAction] = useState<null | 'stop' | 'restart'>(null);
   const STOP_TEXT: Record<string, string> = {
     stamina: '体力不足，行程停下来了',
     money: '钱不够，行程停下来了',
@@ -963,11 +964,11 @@ function AppInner() {
 
   function stopCurrent() {
     if (!running) return;
-    const ok = window.confirm(
-      '停止当前行程？\n\n只作废正在进行的那条行动（不结算），时间回到它开始前。\n其余没开始的行程会保留。',
-    );
-    if (!ok) return;
+    setConfirmAction('stop');
+  }
 
+  function doStop() {
+    setConfirmAction(null);
     dbg('手动停止（只作废当前行动）');
     setRunning(false);
     batchRef.current = null;
@@ -979,8 +980,11 @@ function AppInner() {
 
   /** 仅测试用：清空本地存档，从头新建一局并覆盖云端 */
   function restartForTest() {
-    const ok = window.confirm('重新开始（测试用）\n\n会清空本地存档并新建一局，确定吗？');
-    if (!ok) return;
+    setConfirmAction('restart');
+  }
+
+  function doRestart() {
+    setConfirmAction(null);
 
     const fresh = createSave(initialRun, 'run-demo');
     clearSave();
@@ -1002,7 +1006,7 @@ function AppInner() {
 
   function openPartyModal() {
     if (!run.debuted) {
-      window.alert('出道后才能组建组合。先提升属性，达到出道条件吧。');
+      setNotice('出道后才能组建组合。先提升属性，达到出道条件吧。');
       return;
     }
     setPartyName('');
@@ -1734,6 +1738,31 @@ function AppInner() {
           );
         })()}
 
+      {confirmAction && (
+        <Modal
+          title={confirmAction === 'stop' ? '停止当前行程' : '重新开始'}
+          onClose={() => setConfirmAction(null)}
+        >
+          {confirmAction === 'stop' ? (
+            <p>
+              只作废正在进行的那条行动（不结算），时间回到它开始前。
+              <br />
+              其余没开始的行程会保留。
+            </p>
+          ) : (
+            <p>会清空本地存档并新建一局，确定吗？</p>
+          )}
+          <div className="row">
+            <button onClick={() => setConfirmAction(null)}>取消</button>
+            <button
+              className="primary"
+              onClick={confirmAction === 'stop' ? doStop : doRestart}
+            >
+              确定
+            </button>
+          </div>
+        </Modal>
+      )}
       {showActions && (
         <Modal title="安排行程" wide onClose={cancelPlan}>
           <div className="plan">
