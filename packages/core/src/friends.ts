@@ -3,6 +3,7 @@
  */
 import channelsJson from '../data/channels.json';
 import { BALANCE } from './data';
+import { DAY_MS } from './content';
 import { hashSeed, mulberry32 } from './rng';
 import type { Bias, Friend, RunState } from './types';
 
@@ -83,7 +84,16 @@ export function meetFriend(
 /** 组合人数上限（含主角自己） */
 export const PARTY_MAX = BALANCE.partyMax ?? 10;
 
-export type InviteResult = 'ok' | 'no-party' | 'not-found' | 'full' | 'taken';
+export type InviteResult = 'ok' | 'no-party' | 'not-found' | 'full' | 'taken' | 'cooldown';
+
+/** 退团后多少天内不能重新入团 */
+export const RECRUIT_COOLDOWN_DAYS = 30;
+
+/** 剩余冷却天数（0 = 可邀请） */
+export function cooldownLeftDays(state: RunState, friend: Friend): number {
+  const left = (friend.cooldownUntil ?? 0) - state.at;
+  return left > 0 ? Math.ceil(left / DAY_MS) : 0;
+}
 
 /** 从朋友圈邀请一个人加入当前组合 */
 export function inviteFriend(
@@ -93,6 +103,7 @@ export function inviteFriend(
   const friend = state.friends.find((f) => f.id === friendId);
   if (!friend) return { state, result: 'not-found' };
   if (friend.partyId) return { state, result: 'taken' };
+  if (cooldownLeftDays(state, friend) > 0) return { state, result: 'cooldown' };
 
   const partyId = state.activePartyId;
   const party = partyId ? state.parties.find((p) => p.id === partyId) : undefined;

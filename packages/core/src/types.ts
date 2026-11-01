@@ -51,6 +51,8 @@ export interface Friend {
   quality: number;
   /** 已加入的组合 id；null=还在朋友圈 */
   partyId: string | null;
+  /** 退团冷却截止时间（游戏时间）；0 表示无冷却 */
+  cooldownUntil?: number;
 }
 
 /** 组合（一个玩家可以有多个） */

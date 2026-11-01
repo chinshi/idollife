@@ -18,6 +18,8 @@ import {
   buyItem,
   canDebut,
   DEBUT_THRESHOLD,
+  RECRUIT_COOLDOWN_DAYS,
+  cooldownLeftDays,
   TASKS,
   TASK_TYPE_LABEL,
   claimTask,
@@ -313,6 +315,8 @@ function AppInner() {
   const [managing, setManaging] = useState(false);
   const [showStops, setShowStops] = useState(false);
   const [showInvite, setShowInvite] = useState(false);
+  const [kickTarget, setKickTarget] = useState<string | null>(null);
+  const [kickStep, setKickStep] = useState<1 | 2>(1);
   const [friendsTab, setFriendsTab] = useState<'list' | 'meet'>('list');
   const statTotal = run.stats.vocal + run.stats.dance + run.stats.acting + run.stats.talk;
   const STOP_TEXT: Record<string, string> = {
@@ -1187,7 +1191,11 @@ function AppInner() {
         p.id === partyId ? { ...p, members: p.members.filter((m) => m.id !== memberId) } : p,
       ),
       friends: target
-        ? run.friends.map((f) => (f.name === target.name ? { ...f, partyId: null } : f))
+        ? run.friends.map((f) =>
+            f.name === target.name
+              ? { ...f, partyId: null, cooldownUntil: run.at + RECRUIT_COOLDOWN_DAYS * DAY_MS }
+              : f,
+          )
         : run.friends,
     });
     setNotice('已移出组合。');
@@ -1205,6 +1213,10 @@ function AppInner() {
     }
     if (r.result === 'taken') {
       setNotice('这个人已经在别的组合里了。');
+      return;
+    }
+    if (r.result === 'cooldown') {
+      setNotice('这个人在冷却期，暂时不能入团。');
       return;
     }
     if (r.result !== 'ok') return;
@@ -1756,6 +1768,7 @@ function AppInner() {
                               'friend',
                               on ? 'flipped' : '',
                               inParty ? 'in-team' : '',
+                              !inParty && cooldownLeftDays(run, f) > 0 ? 'cooling' : '',
                             ]
                               .filter(Boolean)
                               .join(' ')}
@@ -1770,6 +1783,11 @@ function AppInner() {
                                 </span>
                                 <span className="mcard-dup">默契 +0%</span>
                                 {inParty && <span className="mcard-team">已入团 · {teamName}</span>}
+                                {!inParty && cooldownLeftDays(run, f) > 0 && (
+                                  <span className="mcard-cool">
+                                    冷却中 · 剩余 {cooldownLeftDays(run, f)} 天
+                                  </span>
+                                )}
 
                               </div>
                               <div className="mcard-face back">
@@ -1988,10 +2006,11 @@ function AppInner() {
                               className="mcard-kick"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                doKick(m.id);
+                                setKickStep(1);
+                                setKickTarget(m.id);
                               }}
                             >
-                              ✕
+                              退团
                             </button>
                           )}
                           <div className="mcard-inner">
@@ -2279,6 +2298,35 @@ function AppInner() {
           </div>
         </Modal>
       )}
+      {kickTarget && (
+        <Modal
+          title={kickStep === 1 ? '请离成员' : '再确认一次'}
+          onClose={() => setKickTarget(null)}
+        >
+          <p>
+            如果请离了该成员，可能对于团会产生不好的影响，且一个月内无法重新入团。
+          </p>
+          {kickStep === 2 && (
+            <p className="muted small">确定要请离吗？这个操作不能撤销。</p>
+          )}
+          <div className="row">
+            <button onClick={() => setKickTarget(null)}>取消</button>
+            <button
+              className="primary"
+              onClick={() => {
+                if (kickStep === 1) {
+                  setKickStep(2);
+                  return;
+                }
+                doKick(kickTarget);
+                setKickTarget(null);
+              }}
+            >
+              {kickStep === 1 ? '继续' : '确认请离'}
+            </button>
+          </div>
+        </Modal>
+      )}
       {showInvite && (
         <Modal title="邀请朋友" onClose={() => setShowInvite(false)}>
           <p className="muted small">无团的朋友可以邀请；已有组合的人需要先移出原组合。</p>
@@ -2287,24 +2335,30 @@ function AppInner() {
           ) : (
             <ul className="invite-list">
               {[...run.friends]
-                .sort((a, b) => Number(!!a.partyId) - Number(!!b.partyId))
+                .sort(
+                  (a, b) =>
+                    Number(!!a.partyId || cooldownLeftDays(run, a) > 0) -
+                    Number(!!b.partyId || cooldownLeftDays(run, b) > 0),
+                )
                 .map((f) => {
                   const team = f.partyId
                     ? run.parties.find((x) => x.id === f.partyId)?.name
                     : null;
+                  const cool = cooldownLeftDays(run, f);
+                  const blocked = !!f.partyId || cool > 0;
                   return (
-                    <li key={f.id} className={f.partyId ? 'owned' : ''}>
+                    <li key={f.id} className={blocked ? 'owned' : ''}>
                       <span className="name">{f.name}</span>
                       <span className="meta">
                         {biasLabel(f.bias)} · 资质 {Math.round(f.quality * 100)}%
                       </span>
                       {team && <span className="team">已归属 · {team}</span>}
+                      {!team && cool > 0 && (
+                        <span className="team">冷却中 · 剩余 {cool} 天</span>
+                      )}
                       <span className="spacer" />
-                      <button
-                        disabled={!!f.partyId || !party}
-                        onClick={() => doInvite(f.id)}
-                      >
-                        {f.partyId ? '不可邀请' : '邀请'}
+                      <button disabled={blocked || !party} onClick={() => doInvite(f.id)}>
+                        {f.partyId ? '不可邀请' : cool > 0 ? `冷却 ${cool} 天` : '邀请'}
                       </button>
                     </li>
                   );

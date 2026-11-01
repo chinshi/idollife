@@ -2080,3 +2080,27 @@ body { overflow: hidden; }
 .seg-inline .seg-item { padding: 3px 12px; font-size: 11px; }
 /* 卡片归属团标签 */
 .mcard-team { font-size: 11px; color: #9aa2b3; }
+/* 卡片右上角「退团」小按钮 */
+.mcard-kick {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 3;
+  padding: 1px 8px;
+  font-size: 10px;
+  line-height: 1.4;
+  border-radius: 6px;
+  border: 1px solid #f0b9b9;
+  background: #fff;
+  color: #c0392b;
+  cursor: pointer;
+}
+.mcard-kick:hover { background: #fdecec; }
+
+/* 卡片冷却态 */
+.mcard-cool { font-size: 11px; color: #c0392b; }
+.mcard.cooling .mcard-face.front {
+  background: #f6f7fa;
+  border-color: #e2e6ef;
+}
+.mcard.cooling .mcard-name { color: #9aa2b3; }
