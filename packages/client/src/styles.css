@@ -1650,3 +1650,37 @@ body { overflow: hidden; }
   .shell { grid-template-columns: 148px minmax(0, 1fr) 260px; }
   .bar { grid-template-columns: 148px minmax(0, 1fr) 260px; }
 }
+/* 右栏分段 tab（参考图片的块状切换，颜色用我们自己的橙） */
+.seg {
+  flex: 0 0 auto;
+  display: grid;
+  grid-auto-flow: column;
+  gap: 6px;
+  padding: 8px;
+  border-bottom: 1px solid var(--line);
+}
+.seg-item {
+  padding: 7px 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f7f9fc;
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+  text-align: center;
+}
+.seg-item.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+.aux-body {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  min-height: 0;
+}
+.aux-body .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
