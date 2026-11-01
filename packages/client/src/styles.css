@@ -1201,3 +1201,28 @@ body { overflow: hidden; }
   box-shadow: 0 1px 2px rgba(17, 24, 39, 0.04);
 }
 .bar .mod-timeline .mod-head { padding: 2px 0 4px; }
+/* 头部三段与下方三栏宽度严格对齐 */
+.bar {
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr) 240px;
+  gap: 12px;
+  padding: 10px 14px 4px;
+  align-items: stretch;
+}
+.bar-left, .bar-right {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-content: center;
+}
+.bar-right { justify-content: flex-end; }
+.bar-center { min-width: 0; display: flex; }
+
+@media (max-width: 800px) {
+  .bar { grid-template-columns: 148px minmax(0, 1fr) auto; }
+  .shell { grid-template-columns: 148px minmax(0, 1fr); }
+  .col-right { display: none; }
+  .menu-item.bag-entry { display: block; }
+}
