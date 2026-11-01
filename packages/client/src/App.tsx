@@ -878,7 +878,7 @@ function AppInner() {
     } else {
       setNotice(
         result.stoppedReason === 'stamina'
-          ? '体力不足，行程停下了。'
+          ? `体力不足（剩 ${result.state.stamina}），没法继续下一条行动了。去练个「爆睡」吧。`
           : result.stoppedReason === 'money'
             ? '钱不够，行程停下了。'
             : result.stoppedReason === 'stopped'
@@ -889,7 +889,7 @@ function AppInner() {
       );
     }
     setLastStop(String(result.stoppedReason ?? 'exhausted'));
-    dbg('批次结束 reason=' + String(result.stoppedReason) + ' at=' + String(result.state.at));
+    dbg('批次结束 reason=' + String(result.stoppedReason) + ' at=' + String(result.state.at) + ' 体力=' + String(result.state.stamina) + ' 钱=' + String(result.state.money));
     if (result.stoppedReason === 'event') resumeAfterEvent.current = true;
     void pushSync(batch.prevRun, batch.prevSchedule, batch.from, result.state.at, result);
     setSnapshot(null);
