@@ -63,6 +63,11 @@ import type {
   SettleResult,
 } from '@idollife/core';
 import { clearSave, createSave, loadSave, normalizeRun, writeSave } from './state/save';
+import { AuthForm } from './components/AuthForm';
+import { CrashBanner, Modal } from './components/Modal';
+import { TimeAxis } from './components/TimeAxis';
+import { LogPanel } from './components/LogPanel';
+import { TaskPanel, type TaskTab } from './components/TaskPanel';
 import { syncRun, fetchLatestRun, pushChoice } from './api/sync';
 import {
   getAccessToken,
@@ -155,125 +160,6 @@ const SYNC_TEXT: Record<SyncStatus, string> = {
   expired: '登录已过期',
 };
 
-function CrashBanner({ msg, onClose }: { msg: string | null; onClose: () => void }) {
-  if (!msg) return null;
-  return (
-    <div className="crash-banner">
-      <div className="crash-text">
-        <strong>页面出错了：</strong>
-        <span>{msg.split('\n')[0]}</span>
-      </div>
-      <button className="icon-btn" onClick={onClose}>
-        ×
-      </button>
-    </div>
-  );
-}
-
-function Modal({
-  title,
-  onClose,
-  children,
-  wide,
-}: {
-  title: string;
-  onClose?: () => void;
-  children: React.ReactNode;
-  wide?: boolean;
-}) {
-  return (
-    <div className="overlay" onClick={onClose}>
-      <div className={wide ? 'modal wide' : 'modal'} onClick={(e) => e.stopPropagation()}>
-        <div className="modal-head">
-          <h3>{title}</h3>
-          {onClose && (
-            <button className="icon-btn" onClick={onClose}>
-              ×
-            </button>
-          )}
-        </div>
-        <div className="modal-body">{children}</div>
-      </div>
-    </div>
-  );
-}
-
-function AuthForm({
-  submitLabel,
-  onDone,
-}: {
-  submitLabel: string;
-  onDone: (user: AuthUser) => void;
-}) {
-  const [mode, setMode] = useState<'login' | 'register'>('login');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
-
-  async function submit(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setBusy(true);
-    const fn = mode === 'login' ? signIn : signUp;
-    const res = await fn(email.trim(), password);
-    setBusy(false);
-    if (res.error) {
-      setError(res.error);
-      return;
-    }
-    const u = await getSessionUser();
-    if (u) onDone(u);
-    else setError('登录成功但拿不到会话，请重试');
-  }
-
-  return (
-    <form className="auth-form" onSubmit={submit}>
-      <div className="auth-tabs">
-        <button
-          type="button"
-          className={mode === 'login' ? 'tab active' : 'tab'}
-          onClick={() => setMode('login')}
-        >
-          登录
-        </button>
-        <button
-          type="button"
-          className={mode === 'register' ? 'tab active' : 'tab'}
-          onClick={() => setMode('register')}
-        >
-          注册
-        </button>
-      </div>
-      <label className="field">
-        <span>邮箱</span>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@example.com"
-          required
-        />
-      </label>
-      <label className="field">
-        <span>密码</span>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="至少 6 位"
-          minLength={6}
-          required
-        />
-      </label>
-      {error && <p className="auth-error">{error}</p>}
-      <button className="primary wide" disabled={busy}>
-        {busy ? '处理中…' : submitLabel}
-      </button>
-    </form>
-  );
-}
-
 function AppInner() {
   const boot = useRef(loadSave()).current;
 
@@ -301,7 +187,7 @@ function AppInner() {
   const [showPartyModal, setShowPartyModal] = useState(false);
   const [planBackup, setPlanBackup] = useState<ScheduleItem[] | null>(null);
   const previewRef = useRef<HTMLDivElement | null>(null);
-  const logRef = useRef<HTMLDivElement | null>(null);
+  const logRef = useRef<HTMLDivElement>(null);
   const [planTick, setPlanTick] = useState(0);
   const [partyName, setPartyName] = useState('');
   const [bagTab, setBagTab] = useState<BagTab>('equip');
@@ -320,7 +206,7 @@ function AppInner() {
   const [showInvite, setShowInvite] = useState(false);
   const [kickTarget, setKickTarget] = useState<string | null>(null);
   const [friendsTab, setFriendsTab] = useState<'list' | 'meet'>('list');
-  const [taskTab, setTaskTab] = useState<'all' | 'accept' | 'active' | 'done'>('all');
+  const [taskTab, setTaskTab] = useState<TaskTab>('all');
   const statTotal = run.stats.vocal + run.stats.dance + run.stats.acting + run.stats.talk;
   const STOP_TEXT: Record<string, string> = {
     stamina: '体力不足，行程停下来了',
@@ -1449,140 +1335,28 @@ function AppInner() {
           </div>
         </div>
 
-        <div className="bar-center">
-          <section className="mod mod-timeline">
-
-            <div className="tlx">
-              {!running && lastStop && STOP_TEXT[lastStop] && (
-                <span className={`tlx-status ${lastStop}`}>{STOP_TEXT[lastStop]}</span>
-              )}
-              <div className="tlx-side tlx-past">
-                {pastItems.length === 0 && <span className="tlx-empty">还没有历史</span>}
-                {pastItems.map((it) => {
-                  const a = ACTIONS[it.actionId];
-                  return (
-                    <div
-                      key={it.id}
-                      className={[
-                        'tlx-point',
-                        'done',
-                        dayBreakLabels.has(it.id) ? 'newday' : '',
-                        it.stopAfter ? 'stopped' : '',
-                      ]
-                        .filter(Boolean)
-                        .join(' ')}
-                      data-date={dayBreakLabels.get(it.id) ?? ''}
-                      style={{ width: '84px' }}
-                    >
-                      <span className="tlx-above">
-                        {a?.name ?? it.actionId}
-                        <em>已完成</em>
-                      </span>
-                      <span className="tlx-dot" />
-                      <span className="tlx-below">
-                        行动{actionNo(it)}
-                        {it.stopAfter && <em className="stop-mark">完成后停止</em>}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="tlx-card">
-                <div className="tlx-card-name">
-                  {nextItem ? (ACTIONS[nextItem.actionId]?.name ?? nextItem.actionId) : '空闲'}
-                </div>
-                <div className="tlx-card-bar">
-                  <i style={{ width: `${Math.round(currentPct * 100)}%` }} />
-                </div>
-                <div className="tlx-card-meta">
-                  {running && nextItem
-                    ? `还剩 ${Math.ceil(remainMs / 1000)} 秒`
-                    : nextItem
-                      ? `行动${actionNo(nextItem)} · 待执行`
-                      : '时间已停止'}
-                </div>
-              </div>
-
-
-
-              <div className="tlx-side tlx-future">
-                {futureItems.map((it) => {
-                  const a = ACTIONS[it.actionId];
-                  return (
-                    <div
-                      key={it.id}
-                      className={[
-                        'tlx-point',
-                        dayBreakLabels.has(it.id) ? 'newday' : '',
-                        it.stopAfter ? 'stopped' : '',
-                      ]
-                        .filter(Boolean)
-                        .join(' ')}
-                      data-date={dayBreakLabels.get(it.id) ?? ''}
-                      style={{ width: '84px' }}
-                    >
-                      <span className="tlx-above">{a?.name ?? it.actionId}</span>
-                      <span className="tlx-dot" />
-                      <span className="tlx-below">
-                        行动{actionNo(it)}
-                        {it.stopAfter && <em className="stop-mark">完成后停止</em>}
-                      </span>
-                    </div>
-                  );
-                })}
-                {futureItems.length === 0 && <span className="tlx-empty">没有后续行程</span>}
-              </div>
-            </div>
-            <div className="tlx-tools">
-              <div className="tools-left">
-                <button onClick={() => setShowStops(true)}>设置暂停时间点</button>
-                <div className="speed-row">
-                  {[1, 10, 60].map((v) => (
-                    <button
-                      key={v}
-                      className={speed === v ? 'mini-tab active' : 'mini-tab'}
-                      onClick={() => setSpeed(v)}
-                    >
-                      {v}×
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="tools-center">
-                <button
-                  className="primary"
-                  onClick={advance}
-                  disabled={pending.length === 0 || running}
-                >
-                  {running ? '推进中…' : '开始推进'}
-                </button>
-                <button onClick={stopCurrent} disabled={!running}>
-                  停止
-                </button>
-                <span className="tools-date">
-                  第 {todayIndex + 1} 天 · 第 {Math.floor(todayIndex / 7) + 1} 周 {weekdayName(todayIndex)}
-                </span>
-                <button
-                  className={pending.length === 0 ? 'primary arrange-hint' : ''}
-                  onClick={openPlan}
-                >
-                  安排行程
-                </button>
-              </div>
-
-              <div className="tools-right">
-                <button onClick={() => setMainTab('plan')}>历史行程</button>
-                <span className="muted small">
-                  {running ? '推进中' : '已停止'} · 待办 {pending.length}
-                  {lastStop && lastStop !== 'time' ? ` · ${lastStop}` : ''}
-                </span>
-              </div>
-            </div>
-          </section>
-        </div>
-
+        <TimeAxis
+          pastItems={pastItems}
+          futureItems={futureItems}
+          nextItem={nextItem}
+          running={running}
+          remainMs={remainMs}
+          pct={currentPct}
+          dayBreakLabels={dayBreakLabels}
+          actionNo={actionNo}
+          speed={speed}
+          setSpeed={setSpeed}
+          pendingCount={pending.length}
+          todayIndex={todayIndex}
+          weekdayName={weekdayName}
+          lastStop={lastStop}
+          stopText={STOP_TEXT}
+          onAdvance={advance}
+          onStop={stopCurrent}
+          onArrange={openPlan}
+          onHistory={() => setMainTab('plan')}
+          onOpenStops={() => setShowStops(true)}
+        />
         <div className="bar-right">
           <div className="brief-head">任务简报</div>
           <ul className="brief-list">
@@ -1676,175 +1450,15 @@ function AppInner() {
 
           <section className="mod mod-main">
             {mainTab === 'task' && (
-              <>
-                <div className="mod-head">
-                  <h2>任务</h2>
-
-                  <div className="seg-inline">
-                    {(
-                      [
-                        ['all', '全部'],
-                        ['accept', '领取任务'],
-                        ['active', '进行中'],
-                        ['done', '已完成'],
-                      ] as Array<['all' | 'accept' | 'active' | 'done', string]>
-                    ).map(([key, label]) => (
-                      <button
-                        key={key}
-                        className={taskTab === key ? 'seg-item active' : 'seg-item'}
-                        onClick={() => setTaskTab(key)}
-                      >
-                        {label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {(() => {
-                  const renderTask = (task: (typeof TASKS)[number]) => {
-                    const status = taskStatus(run, task);
-                    const label =
-                      status === 'claimable'
-                        ? '可领取'
-                        : status === 'active'
-                          ? '进行中'
-                          : status === 'completable'
-                            ? '可领奖'
-                            : status === 'done'
-                              ? '已完成'
-                              : '未达成';
-                    return (
-                      <li
-                        key={task.id}
-                        className={[
-                          'task',
-                          status === 'claimable' || status === 'completable' ? 'claimable' : '',
-                          status === 'done' ? 'done' : '',
-                        ]
-                          .filter(Boolean)
-                          .join(' ')}
-                      >
-                        <div className="task-top">
-                          <span className="task-name">{task.name}</span>
-                          <span className={`task-state ${status}`}>{label}</span>
-                          <span className="spacer" />
-                          {status === 'done' ? (
-                            <span className="muted small">
-                              {Number(run.flags[`task:${task.id}:doneAt`] ?? 0) > 0
-                                ? dayLabel(Number(run.flags[`task:${task.id}:doneAt`]), run.at)
-                                : '已完成'}
-                            </span>
-                          ) : status === 'completable' ? (
-                            <button className="primary" onClick={() => doReward(task.id)}>
-                              领取奖励
-                            </button>
-                          ) : (
-                            <button
-                              className={status === 'claimable' ? 'primary' : ''}
-                              disabled={status !== 'claimable'}
-                              onClick={() => doAccept(task.id)}
-                            >
-                              {status === 'active' ? '已领取' : '领取任务'}
-                            </button>
-                          )}
-                        </div>
-
-                        <p className="task-desc">{task.content}</p>
-
-                        <div className="task-req">
-                          <span>
-                            <em>可领要求</em>
-                            {describeCondition(task.acceptCondition)}
-                          </span>
-                          <span>
-                            <em>任务要求</em>
-                            {describeCondition(task.completeCondition)}
-                          </span>
-                          <span>
-                            <em>奖励</em>
-                            {describeRewards(task)}
-                          </span>
-                        </div>
-                      </li>
-                    );
-                  };
-
-                                    if (taskTab === 'done') {
-                    const done = completedTasks(run);
-                    if (done.length === 0) return <p className="muted small">还没有完成的任务。</p>;
-                    return <ul className="task-list">{done.map(({ task }) => renderTask(task))}</ul>;
-                  }
-
-                  if (taskTab === 'active') {
-                    const active = activeTasks(run);
-                    if (active.length === 0) return <p className="muted small">没有进行中的任务。</p>;
-                    return (
-                      <ul className="task-list">{active.map(({ task }) => renderTask(task))}</ul>
-                    );
-                  }
-
-                  if (taskTab === 'accept') {
-                    const list = TASKS.filter((task) => {
-                      const s = taskStatus(run, task);
-                      return (
-                        s === 'claimable' ||
-                        s === 'completable' ||
-                        s === 'locked' ||
-                        s === 'active'
-                      );
-                    });
-                    if (list.length === 0) return <p className="muted small">暂时没有可领取的任务。</p>;
-                    return <ul className="task-list">{list.map(renderTask)}</ul>;
-                  }
-
-                  // 全部：可领取 → 进行中 → 可见 → 已完成，用分割线隔开
-                  const sections: Array<{ key: string; title: string; list: (typeof TASKS)[number][] }> = [
-                    {
-                      key: 'completable',
-                      title: '可领奖',
-                      list: TASKS.filter((task) => taskStatus(run, task) === 'completable'),
-                    },
-                    {
-                      key: 'claimable',
-                      title: '可领取',
-                      list: TASKS.filter((task) => taskStatus(run, task) === 'claimable'),
-                    },
-                    {
-                      key: 'active',
-                      title: '进行中',
-                      list: TASKS.filter((task) => taskStatus(run, task) === 'active'),
-                    },
-                    {
-                      key: 'locked',
-                      title: '可见',
-                      list: TASKS.filter((task) => taskStatus(run, task) === 'locked'),
-                    },
-                    {
-                      key: 'done',
-                      title: '已完成',
-                      list: completedTasks(run).map((x) => x.task),
-                    },
-                  ];
-
-                  const visibleSections = sections.filter((s) => s.list.length > 0);
-                  if (visibleSections.length === 0) {
-                    return <p className="muted small">暂时没有任务。</p>;
-                  }
-
-                  return (
-                    <>
-                      {visibleSections.map((sec) => (
-                        <Fragment key={sec.key}>
-                          <div className="task-sep">{sec.title}</div>
-                          <ul className="task-list">{sec.list.map(renderTask)}</ul>
-                        </Fragment>
-                      ))}
-                    </>
-                  );
-                })()}
-              </>
+              <TaskPanel
+                run={run}
+                tab={taskTab}
+                onTab={setTaskTab}
+                onAccept={doAccept}
+                onReward={doReward}
+                dayLabel={dayLabel}
+              />
             )}
-
             {mainTab === 'friends' && (
               <>
                 <div className="mod-head">
@@ -2248,53 +1862,15 @@ function AppInner() {
             )}
           </section>
 
-          <section className="mod mod-log">
-            <div className="mod-head">
-              <h2>日志</h2>
-              <div className="mini-tabs">
-                {(['all', 'event', 'stat'] as LogTab[]).map((t) => (
-                  <button
-                    key={t}
-                    className={logTab === t ? 'mini-tab active' : 'mini-tab'}
-                    onClick={() => setLogTab(t)}
-                  >
-                    {t === 'all' ? '全部' : t === 'event' ? '事件' : '属性'}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="log-scroll" ref={logRef}>
-              {visibleLog.length === 0 ? (
-                <p className="muted small">还没有记录。</p>
-              ) : (
-                <ul className="log dense">
-                  {visibleLog.map((l, i) => {
-                    const day = Math.floor((l.at - T0) / DAY_MS);
-                    const prev = i > 0 ? visibleLog[i - 1] : undefined;
-                    const prevDay = prev ? Math.floor((prev.at - T0) / DAY_MS) : -1;
-                    const isNewDay = day !== prevDay;
-
-                    return (
-                      <Fragment key={`${l.at}-${i}`}>
-                        {isNewDay && (
-                          <li className="log-day">
-                            第 {Math.floor(day / 7) + 1} 周 {weekdayName(day)}
-                          </li>
-                        )}
-                        <li>
-                          <span className="log-text">{l.text}</span>
-                          {l.axesChanged && <em className="tag hidden-tag">隐藏属性变动</em>}
-                        </li>
-                      </Fragment>
-                    );
-                  })}
-                </ul>
-              )}
-            </div>
-
-            {notice && <p className="notice">{notice}</p>}
-          </section>
+          <LogPanel
+            tab={logTab}
+            onTab={setLogTab}
+            logs={visibleLog}
+            logRef={logRef}
+            notice={notice}
+            t0={T0}
+            weekdayName={weekdayName}
+          />
         </section>
 
         {/* 右：账户信息 + 辅助（背包） */}
