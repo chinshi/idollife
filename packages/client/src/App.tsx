@@ -1139,8 +1139,6 @@ function AppInner() {
                     </div>
                   );
                 })}
-                <span className="tlx-tick" />
-                <span className="tlx-date">{dayLabel(pastDateAt, run.at)}</span>
               </div>
 
               <div className="tlx-card">
@@ -1159,9 +1157,10 @@ function AppInner() {
                 </div>
               </div>
 
+              <span className="tlx-now-tick" />
+              <span className="tlx-now-date">{dayLabel(nextItem?.startAt ?? run.at, run.at)}</span>
+
               <div className="tlx-side tlx-future">
-                <span className="tlx-tick" />
-                <span className="tlx-date">{dayLabel(futureDateAt, run.at)}</span>
                 {futureItems.map((it) => {
                   const a = ACTIONS[it.actionId];
                   return (

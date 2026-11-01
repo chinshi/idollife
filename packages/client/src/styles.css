@@ -1468,3 +1468,24 @@ body { overflow: hidden; }
 .tlx-past .tlx-date, .tlx-future .tlx-date { left: 6px; }
 /* 左右两侧等分，保证卡片中心 = 模块中心 */
 .tlx-side { flex: 1 1 0; }
+/* 日期刻度：从卡片中心（行动3 与 行动1 的中点）向下拉出 */
+.tlx-now-tick {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 44px);
+  width: 1px;
+  height: 16px;
+  margin-left: -0.5px;
+  background: #cdd6e5;
+  z-index: 3;
+}
+.tlx-now-date {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 62px);
+  transform: translateX(-50%);
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+  z-index: 3;
+}
