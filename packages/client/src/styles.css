@@ -2151,3 +2151,11 @@ body { overflow: hidden; }
   color: #fff;
 }
 .task.done { opacity: 0.75; }
+/* 菜单项：文字与角标同一行 */
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.menu-badge { margin-left: auto; }
