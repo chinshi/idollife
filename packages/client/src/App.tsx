@@ -305,14 +305,26 @@ function AppInner() {
   const [forceLogin, setForceLogin] = useState(false);
   const [running, setRunning] = useState(false);
   const [speed, setSpeed] = useState(1);
-  const [gameNow, setGameNow] = useState<number>(boot?.run?.at ?? T0);
+  const clockKey = 'idollife:clock:v1';
+  const bootClock = (() => {
+    try {
+      const raw = Number(localStorage.getItem(clockKey));
+      return Number.isFinite(raw) && raw > 0 ? raw : 0;
+    } catch {
+      return 0;
+    }
+  })();
+
+  const [gameNow, setGameNow] = useState<number>(
+    Math.max(boot?.run?.at ?? T0, bootClock),
+  );
 
   const runRef = useRef<RunState>(boot?.run ?? initialRun);
   const scheduleRef = useRef<ScheduleItem[]>(boot?.schedule ?? []);
   const batchRef = useRef<{ from: number; prevRun: RunState; prevSchedule: ScheduleItem[] } | null>(null);
   const timelineRef = useRef<HTMLDivElement | null>(null);
   const [boxH, setBoxH] = useState(0);
-  const gameNowRef = useRef<number>(boot?.run?.at ?? T0);
+  const gameNowRef = useRef<number>(Math.max(boot?.run?.at ?? T0, bootClock));
   const resumeAfterEvent = useRef(false);
   const dbgLines = useRef<string[]>([]);
   const [showDebug, setShowDebug] = useState(false);
@@ -398,6 +410,18 @@ function AppInner() {
     }, 250);
     return () => clearTimeout(t);
   }, [runId, revision, run, schedule, seed]);
+
+  // 记住「当前时钟位置」，刷新后从那里继续，而不是回到行动开始
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      try {
+        localStorage.setItem(clockKey, String(Math.round(gameNowRef.current)));
+      } catch {
+        /* 忽略 */
+      }
+    }, 1000);
+    return () => window.clearInterval(id);
+  }, [clockKey]);
 
   useEffect(() => {
     runRef.current = run;
@@ -955,7 +979,7 @@ function AppInner() {
 
     setSnapshot({ run: baseRun, schedule: usable });
     batchRef.current = { from: baseRun.at, prevRun: baseRun, prevSchedule: usable };
-    setGameNow(baseRun.at);
+    setGameNow(Math.max(baseRun.at, gameNowRef.current));
     setRunning(true);
     dbg('开始推进 pending=' + String(pending.length) + ' at=' + String(run.at));
   }
@@ -975,6 +999,12 @@ function AppInner() {
     setSnapshot(null);
     resumeAfterEvent.current = false;
     // 当前行动还没结算，run.at 就停在它的开始时间，无需回滚
+    setGameNow(runRef.current.at);
+    try {
+      localStorage.setItem('idollife:clock:v1', String(Math.round(runRef.current.at)));
+    } catch {
+      /* 忽略 */
+    }
     setNotice('已停止：当前这条行动作废，其余行程保留。');
   }
 
