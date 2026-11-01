@@ -409,6 +409,7 @@ function AppInner() {
     let raf = 0;
     let lastProcess = 0;
     let lastBeat = 0;
+    let lastAdvancePerf = performance.now();
 
     const tick = () => {
       raf = requestAnimationFrame(tick);
@@ -449,6 +450,7 @@ function AppInner() {
       const result = settle(prev, prevSched, prev.at, target, seed, { endAt: RUN_END });
 
       if (result.executed.length > 0) {
+        lastAdvancePerf = nowPerf;
         const nextSched = markExecuted(prevSched, result.executed);
         runRef.current = result.state;
         scheduleRef.current = nextSched;
@@ -484,6 +486,14 @@ function AppInner() {
           setSchedule(cleaned);
           dbg('丢弃无法执行的行程序 ' + next.id + ' startAt=' + String(next.startAt));
         }
+        return;
+      }
+
+      // 看门狗：3 秒没有任何行动被执行 → 判定卡住，主动停下
+      if (result.executed.length === 0 && nowPerf - lastAdvancePerf > 3000) {
+        dbg('看门狗：3 秒没有推进，自动停止 at=' + String(runRef.current.at));
+        setRunning(false);
+        setNotice('推进好像卡住了，已经停下。可以再点一次「开始推进」。');
         return;
       }
 
@@ -1231,6 +1241,9 @@ function AppInner() {
               </button>
               <button onClick={() => setMainTab('plan')}>查看历史日程</button>
               <button onClick={openPlan}>安排行程</button>
+              <span className="muted small">
+                {running ? '推进中' : '已停止'} · at={Math.round(run.at)} · 待办 {pending.length}
+              </span>
             </div>
           </section>
         </div>
