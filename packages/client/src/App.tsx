@@ -1124,13 +1124,6 @@ function AppInner() {
                   </button>
                 ))}
               </div>
-              <span className="spacer" />
-              <button className="primary" onClick={advance} disabled={pending.length === 0 || running}>
-                {running ? '推进中…' : '开始推进'}
-              </button>
-              <button onClick={stopCurrent} disabled={!running}>
-                停止
-              </button>
             </div>
 
             <div className="tlx">
@@ -1192,6 +1185,16 @@ function AppInner() {
                 })}
                 {futureItems.length === 0 && <span className="tlx-empty">没有后续行程</span>}
               </div>
+            </div>
+            <div className="tlx-toolbar">
+              <button className="primary" onClick={advance} disabled={pending.length === 0 || running}>
+                {running ? '推进中…' : '开始推进'}
+              </button>
+              <button onClick={stopCurrent} disabled={!running}>
+                停止
+              </button>
+              <button onClick={() => setMainTab('plan')}>查看历史日程</button>
+              <button onClick={openPlan}>安排行程</button>
             </div>
           </section>
         </div>
@@ -1321,13 +1324,6 @@ function AppInner() {
               <>
                 <div className="mod-head">
                   <h2>行程</h2>
-                  <span className="spacer" />
-                  <button className="primary" onClick={openPlan}>
-                    安排行程
-                  </button>
-                  <button onClick={addShow} disabled={phase !== 'playing'}>
-                    参加演出
-                  </button>
                 </div>
                 {pending.length === 0 ? (
                   <p className="muted small">还没有待执行行程。</p>

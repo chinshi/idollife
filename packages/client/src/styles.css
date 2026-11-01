@@ -1518,3 +1518,25 @@ body { overflow: hidden; }
   color: var(--muted);
 }
 .tlx-below { color: var(--muted); }
+/* 右侧（未来）轴线用橙色 */
+.tlx-future::before {
+  background: linear-gradient(90deg, #f6a45c, #fbd9b6);
+}
+
+/* 时间轴下方工具条 */
+.tlx-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 2px 2px;
+  border-top: 1px dashed var(--line);
+}
+.tlx-toolbar button {
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+.tlx-toolbar button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
