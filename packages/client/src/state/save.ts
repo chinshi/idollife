@@ -1,10 +1,12 @@
 import { START_MONEY } from '@idollife/core';
 import type { RunState, ScheduleItem } from '@idollife/core';
 
-const KEY = 'idollife:save:v1';
+/** 当前存档版本；v1 只读兼容，读入时迁移为 v2 */
+const KEY = 'idollife:save:v2';
+const LEGACY_KEY = 'idollife:save:v1';
+const BAK_KEY = 'idollife:save:v2.bak';
 
-export interface SaveV1 {
-  version: 1;
+interface SavePayload {
   runId: string;
   /** 与服务端对齐的版本号；本地新建为 0 */
   revision: number;
@@ -12,6 +14,16 @@ export interface SaveV1 {
   seed: string;
   run: RunState;
   schedule: ScheduleItem[];
+}
+
+/** 旧版存档（只读迁移路径） */
+export interface SaveV1 extends SavePayload {
+  version: 1;
+}
+
+/** 当前存档结构 */
+export interface SaveV2 extends SavePayload {
+  version: 2;
 }
 
 const isNum = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
@@ -74,33 +86,63 @@ export function normalizeRun(run: RunState): RunState {
   };
 }
 
-export function loadSave(): SaveV1 | null {
+/**
+ * D-012：把 v1 / v2 存档统一迁移成 v2。
+ * 纯函数，不碰存储；数据不合法时返回 null。
+ */
+export function migrateSave(data: unknown): SaveV2 | null {
+  if (!data || typeof data !== 'object') return null;
+  const raw = data as Partial<SaveV1 | SaveV2>;
+  if (raw.version !== 1 && raw.version !== 2) return null;
+  if (!raw.run || !isNum(raw.run.at) || !isNum(raw.run.stamina)) return null;
+  if (!raw.run.stats || !Array.isArray(raw.run.log)) return null;
+  if (!Array.isArray(raw.schedule)) return null;
+
+  return {
+    version: 2,
+    runId: typeof raw.runId === 'string' && raw.runId ? raw.runId : newRunId(),
+    revision: isNum(raw.revision) ? raw.revision : 0,
+    updatedAt: isNum(raw.updatedAt) ? raw.updatedAt : 0,
+    seed: typeof raw.seed === 'string' ? raw.seed : 'run-demo',
+    run: normalizeRun(raw.run as RunState),
+    schedule: raw.schedule as ScheduleItem[],
+  };
+}
+
+function readRaw(key: string): string | null {
   try {
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return null;
-    const data = JSON.parse(raw) as Partial<SaveV1>;
-
-    if (data.version !== 1) return null;
-    if (!data.run || !isNum(data.run.at) || !isNum(data.run.stamina)) return null;
-    if (!data.run.stats || !Array.isArray(data.run.log)) return null;
-    if (!Array.isArray(data.schedule)) return null;
-
-    return {
-      version: 1,
-      runId: typeof data.runId === 'string' && data.runId ? data.runId : newRunId(),
-      revision: isNum(data.revision) ? data.revision : 0,
-      updatedAt: isNum(data.updatedAt) ? data.updatedAt : 0,
-      seed: typeof data.seed === 'string' ? data.seed : 'run-demo',
-      run: normalizeRun(data.run as RunState),
-      schedule: data.schedule as ScheduleItem[],
-    };
+    return localStorage.getItem(key);
   } catch {
     return null;
   }
 }
 
-export function writeSave(save: SaveV1): boolean {
+export function loadSave(): SaveV2 | null {
+  // 优先读 v2；v2 损坏时回退到 v1 迁移
+  const current = readRaw(KEY);
+  if (current) {
+    try {
+      const migrated = migrateSave(JSON.parse(current));
+      if (migrated) return migrated;
+    } catch {
+      /* 继续尝试旧档 */
+    }
+  }
+
+  const legacy = readRaw(LEGACY_KEY);
+  if (!legacy) return null;
   try {
+    return migrateSave(JSON.parse(legacy));
+  } catch {
+    return null;
+  }
+}
+
+export function writeSave(save: SaveV2): boolean {
+  try {
+    // 写档前把上一版原样留一份 .bak；始终只保留最近一份
+    const previous = readRaw(KEY) ?? readRaw(LEGACY_KEY);
+    if (previous) localStorage.setItem(BAK_KEY, previous);
     localStorage.setItem(KEY, JSON.stringify(save));
     return true;
   } catch {
@@ -111,14 +153,16 @@ export function writeSave(save: SaveV1): boolean {
 export function clearSave(): void {
   try {
     localStorage.removeItem(KEY);
+    localStorage.removeItem(LEGACY_KEY);
+    localStorage.removeItem(BAK_KEY);
   } catch {
     /* 忽略 */
   }
 }
 
-export function createSave(run: RunState, seed: string): SaveV1 {
+export function createSave(run: RunState, seed: string): SaveV2 {
   return {
-    version: 1,
+    version: 2,
     runId: newRunId(),
     revision: 0,
     updatedAt: 0,
@@ -129,3 +173,5 @@ export function createSave(run: RunState, seed: string): SaveV1 {
 }
 
 export const SAVE_KEY = KEY;
+export const LEGACY_SAVE_KEY = LEGACY_KEY;
+export const SAVE_BAK_KEY = BAK_KEY;

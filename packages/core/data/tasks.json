@@ -13,9 +13,73 @@
         "fans": 100
       },
       "times": 1,
-      "content": "四项属性总和达到出道门槛后，领取任务，然后点「出道」。",
-      "brief": "完成出道",
+      "content": "四项属性总和到 120，就有资格报名出道演出。过了，你才算真的进了这行。",
+      "brief": "四项属性总和到 120 后报名出道",
       "priority": 10
+    },
+    {
+      "id": "task-vocal-20",
+      "type": "once",
+      "name": "声音先立住",
+      "displayCondition": {},
+      "acceptCondition": "vocal >= 10",
+      "completeCondition": "vocal >= 20",
+      "rewards": {
+        "money": 300
+      },
+      "times": 1,
+      "content": "先把演唱练到 20。唱 K 便宜，就是费嗓子，别连着排三个时段。",
+      "brief": "演唱练到 20",
+      "priority": 20,
+      "deadlineDays": 3
+    },
+    {
+      "id": "task-dance-20",
+      "type": "once",
+      "name": "先把动作抠干净",
+      "displayCondition": {},
+      "acceptCondition": "dance >= 10",
+      "completeCondition": "dance >= 20",
+      "rewards": {
+        "money": 300
+      },
+      "times": 1,
+      "content": "舞蹈到 20。录一遍回看，比闷头跳二十遍有用。",
+      "brief": "舞蹈练到 20",
+      "priority": 21,
+      "deadlineDays": 3
+    },
+    {
+      "id": "task-acting-20",
+      "type": "once",
+      "name": "镜头前别僵",
+      "displayCondition": {},
+      "acceptCondition": "acting >= 10",
+      "completeCondition": "acting >= 20",
+      "rewards": {
+        "money": 300
+      },
+      "times": 1,
+      "content": "演技到 20。自拍小短剧不花钱，还能顺手涨一点粉。",
+      "brief": "演技练到 20",
+      "priority": 22,
+      "deadlineDays": 3
+    },
+    {
+      "id": "task-talk-20",
+      "type": "once",
+      "name": "会说人话",
+      "displayCondition": {},
+      "acceptCondition": "talk >= 10",
+      "completeCondition": "talk >= 20",
+      "rewards": {
+        "money": 300
+      },
+      "times": 1,
+      "content": "口才到 20。串场词说顺了，别人才会在散场时记住你。",
+      "brief": "口才练到 20",
+      "priority": 23,
+      "deadlineDays": 3
     },
     {
       "id": "task-dance-30",
@@ -29,9 +93,10 @@
         "stamina": 10
       },
       "times": 1,
-      "content": "把舞蹈练到 30，说明你已经不是新人了。",
+      "content": "把舞蹈练到 30，说明你已经不是新人了。剩下的靠上台。",
       "brief": "舞蹈练到 30",
-      "priority": 20
+      "priority": 30,
+      "deadlineDays": 5
     },
     {
       "id": "task-first-show",
@@ -44,9 +109,28 @@
         "money": 800
       },
       "times": 5,
-      "content": "演出会把路人变成粉丝。攒到 100 舞台粉。",
+      "content": "演出会把路人变成粉丝。舞台粉攒到 100，群里就会开始有人认你。",
       "brief": "舞台粉累计到 100",
-      "priority": 30
+      "priority": 31,
+      "deadlineDays": 1,
+      "reset": "daily"
+    },
+    {
+      "id": "task-show-10",
+      "type": "repeat",
+      "name": "第十场",
+      "displayCondition": "fans.stage >= 60",
+      "acceptCondition": "fans.stage >= 60",
+      "completeCondition": "fans.stage >= 400",
+      "rewards": {
+        "money": 1500
+      },
+      "times": 3,
+      "content": "跑到第十场的时候，你会发现有些脸是重复的。那些人才是你的。",
+      "brief": "舞台粉累计到 400",
+      "priority": 32,
+      "deadlineDays": 3,
+      "reset": "daily"
     },
     {
       "id": "task-money-10000",
@@ -59,9 +143,25 @@
         "stamina": 20
       },
       "times": 1,
-      "content": "房租很贵，手里有一万块会踏实一点。",
+      "content": "房租每周都要交。手里有一万块，才敢排一次旅游。",
       "brief": "资金达到 10000",
-      "priority": 40
+      "priority": 40,
+      "deadlineDays": 7
+    },
+    {
+      "id": "task-money-50000",
+      "type": "once",
+      "name": "攒到五万",
+      "displayCondition": {},
+      "acceptCondition": "money >= 20000",
+      "completeCondition": "money >= 50000",
+      "rewards": {
+        "money": 3000
+      },
+      "times": 1,
+      "content": "五万是个分水岭：够付一场 OM 的定金，也够撑过两个月的空窗。",
+      "brief": "资金达到 50000",
+      "priority": 41
     },
     {
       "id": "task-friend",
@@ -74,9 +174,215 @@
         "money": 200
       },
       "times": 1,
-      "content": "去漫展或者看演出，认识第一个朋友。",
+      "content": "去漫展、看演出、让朋友介绍——地下圈的团基本都是这么凑起来的。",
       "brief": "朋友圈至少有 1 个人",
-      "priority": 50
+      "priority": 50,
+      "deadlineDays": 3
+    },
+    {
+      "id": "task-party-5",
+      "type": "once",
+      "name": "凑够五个人",
+      "displayCondition": "hasFlag(\"ev:debut\")",
+      "acceptCondition": "hasFlag(\"ev:debut\")",
+      "completeCondition": "friends >= 5",
+      "rewards": {
+        "money": 800
+      },
+      "times": 1,
+      "content": "一个人也能上台，但五个人的舞台才像一场演出。先把人认全。",
+      "brief": "朋友圈有 5 个人",
+      "priority": 51,
+      "deadlineDays": 5
+    },
+    {
+      "id": "task-debut-party",
+      "type": "once",
+      "name": "组个团",
+      "displayCondition": "hasFlag(\"ev:debut\")",
+      "acceptCondition": "hasFlag(\"ev:debut\")",
+      "completeCondition": "hasFlag(\"ev:party-first\")",
+      "rewards": {
+        "money": 500
+      },
+      "times": 1,
+      "content": "出道之后就能建组合。名字随便起，反正以后会改。",
+      "brief": "创建第一个组合",
+      "priority": 52
+    },
+    {
+      "id": "task-first-cheki",
+      "type": "once",
+      "name": "第一次特典",
+      "displayCondition": "hasFlag(\"ev:debut\")",
+      "acceptCondition": "fans.gachi >= 20",
+      "completeCondition": "hasFlag(\"ev:first-cheki\")",
+      "rewards": {
+        "money": 400
+      },
+      "times": 1,
+      "content": "特典会是地下偶像真正的收入来源。拍切、写名字、听她们说完。",
+      "brief": "开一次特典会",
+      "priority": 53
+    },
+    {
+      "id": "task-manager-push",
+      "type": "once",
+      "name": "被推去拼盘",
+      "displayCondition": "total >= 100",
+      "acceptCondition": "total >= 100",
+      "completeCondition": "hasFlag(\"ev:manager-push\")",
+      "rewards": {
+        "money": 600
+      },
+      "times": 1,
+      "content": "拼盘的台下全是别家的粉。抢不抢得到，看你在台上那十分钟。",
+      "brief": "参加一场拼盘",
+      "priority": 54
+    },
+    {
+      "id": "task-first-om",
+      "type": "once",
+      "name": "第一场 OM",
+      "displayCondition": "total >= 220",
+      "acceptCondition": "total >= 220",
+      "completeCondition": "hasFlag(\"ev:first-om\")",
+      "rewards": {
+        "money": 2000
+      },
+      "times": 1,
+      "content": "OM 是「只有你们」的意思。没有别的团在前面，票得自己卖完。",
+      "brief": "办一场 OM 舞台",
+      "priority": 55
+    },
+    {
+      "id": "task-total-200",
+      "type": "once",
+      "name": "四项都不难看",
+      "displayCondition": {},
+      "acceptCondition": "total >= 160",
+      "completeCondition": "total >= 200",
+      "rewards": {
+        "money": 2000,
+        "fans": 50
+      },
+      "times": 1,
+      "content": "不要求样样拔尖，但没有短板才接得住各种通告。",
+      "brief": "四项属性总和到 200",
+      "priority": 60,
+      "deadlineDays": 5
+    },
+    {
+      "id": "task-total-300",
+      "type": "once",
+      "name": "够得着大场",
+      "displayCondition": {},
+      "acceptCondition": "total >= 240",
+      "completeCondition": "total >= 300",
+      "rewards": {
+        "money": 5000,
+        "fans": 200
+      },
+      "times": 1,
+      "content": "总和 300 是商演和 OM 的门槛。到了这个数，你才有资格挑活。",
+      "brief": "四项属性总和到 300",
+      "priority": 61,
+      "deadlineDays": 7
+    },
+    {
+      "id": "task-fans-300",
+      "type": "once",
+      "name": "三百人",
+      "displayCondition": {},
+      "acceptCondition": "fans.stage >= 100",
+      "completeCondition": "fans.stage >= 300",
+      "rewards": {
+        "money": 1200
+      },
+      "times": 1,
+      "content": "三百个人的场子，站满的时候后排是看不清脸的。但你听得见。",
+      "brief": "舞台粉到 300",
+      "priority": 62,
+      "deadlineDays": 5
+    },
+    {
+      "id": "task-fans-1000",
+      "type": "once",
+      "name": "一千人",
+      "displayCondition": {},
+      "acceptCondition": "fans.stage >= 500",
+      "completeCondition": "fans.stage >= 1000",
+      "rewards": {
+        "money": 3000
+      },
+      "times": 1,
+      "content": "到一千人的时候，会开始有人自称「老粉」。别让她们失望。",
+      "brief": "舞台粉到 1000",
+      "priority": 63,
+      "deadlineDays": 7
+    },
+    {
+      "id": "task-burnout",
+      "type": "once",
+      "name": "学会休息",
+      "displayCondition": "total >= 80",
+      "acceptCondition": "total >= 80",
+      "completeCondition": "hasFlag(\"ev:burnout\")",
+      "rewards": {
+        "money": 300
+      },
+      "times": 1,
+      "content": "撑不住不是失败。愿意停下来的人，才跑得完两年。",
+      "brief": "经历一次撑不住",
+      "priority": 70
+    },
+    {
+      "id": "task-fan-letter",
+      "type": "once",
+      "name": "第一封信",
+      "displayCondition": {},
+      "acceptCondition": "others >= 30",
+      "completeCondition": "hasFlag(\"ev:fan-letter\")",
+      "rewards": {
+        "money": 300
+      },
+      "times": 1,
+      "content": "有人愿意花时间写下来，说明你在她那儿不是一个可有可无的名字。",
+      "brief": "收到第一封粉丝信",
+      "priority": 71
+    },
+    {
+      "id": "task-first-audition",
+      "type": "once",
+      "name": "别只是路过",
+      "displayCondition": {},
+      "acceptCondition": {},
+      "completeCondition": "hasFlag(\"ev:first-audition\")",
+      "rewards": {
+        "money": 200
+      },
+      "times": 1,
+      "content": "第一次试镜不管成不成，去过的和没去过的，是两种人。",
+      "brief": "去一次试镜",
+      "priority": 72
+    },
+    {
+      "id": "task-daily-repeat",
+      "type": "repeat",
+      "name": "每日一练",
+      "displayCondition": "total >= 60",
+      "acceptCondition": "total >= 60",
+      "completeCondition": "total >= 240",
+      "rewards": {
+        "money": 800,
+        "stamina": 10
+      },
+      "times": 10,
+      "content": "每天练一点。练到总和 240，你就到了能吃这碗饭的边上。",
+      "brief": "四项属性总和到 240",
+      "priority": 80,
+      "deadlineDays": 1,
+      "reset": "daily"
     }
   ]
 }

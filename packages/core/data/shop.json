@@ -1,5 +1,5 @@
 {
-  "_说明": "装备表。common=普通（每周货架 3 件），rare=稀有（每周 1 件）；stat/statName 是属性字段名与中文名",
+  "_说明": "装备表。common=普通（每周货架 3 件），rare=稀有（每周 1 件）；价格取自 balance 表的 commonPrice / rarePrice",
   "shop": {
     "commonPrice": 800,
     "rarePrice": 2000,
@@ -17,7 +17,31 @@
         "value": 2
       },
       {
+        "name": "黑色打底衣",
+        "stat": "dance",
+        "statName": "舞蹈",
+        "value": 2
+      },
+      {
+        "name": "帆布鞋",
+        "stat": "dance",
+        "statName": "舞蹈",
+        "value": 2
+      },
+      {
         "name": "白衬衫",
+        "stat": "acting",
+        "statName": "演技",
+        "value": 2
+      },
+      {
+        "name": "棉麻长裙",
+        "stat": "acting",
+        "statName": "演技",
+        "value": 2
+      },
+      {
+        "name": "成熟西装裙",
         "stat": "acting",
         "statName": "演技",
         "value": 2
@@ -29,13 +53,37 @@
         "value": 2
       },
       {
-        "name": "运动外套",
-        "stat": "dance",
-        "statName": "舞蹈",
+        "name": "连帽衫",
+        "stat": "vocal",
+        "statName": "演唱",
+        "value": 2
+      },
+      {
+        "name": "亮片背心",
+        "stat": "vocal",
+        "statName": "演唱",
         "value": 2
       },
       {
         "name": "宽松T恤",
+        "stat": "talk",
+        "statName": "口才",
+        "value": 2
+      },
+      {
+        "name": "JK 制服",
+        "stat": "talk",
+        "statName": "口才",
+        "value": 2
+      },
+      {
+        "name": "妹系吊带裙",
+        "stat": "talk",
+        "statName": "口才",
+        "value": 2
+      },
+      {
+        "name": "衬衫加背心",
         "stat": "talk",
         "statName": "口才",
         "value": 2
@@ -49,15 +97,9 @@
         "value": 5
       },
       {
-        "name": "古风长裙",
-        "stat": "acting",
-        "statName": "演技",
-        "value": 5
-      },
-      {
-        "name": "Lolita 套装",
-        "stat": "talk",
-        "statName": "口才",
+        "name": "舞台用马丁靴",
+        "stat": "dance",
+        "statName": "舞蹈",
         "value": 5
       },
       {
@@ -65,6 +107,36 @@
         "stat": "vocal",
         "statName": "演唱",
         "value": 5
+      },
+      {
+        "name": "白裙·毕业场",
+        "stat": "vocal",
+        "statName": "演唱",
+        "value": 4
+      },
+      {
+        "name": "古风长裙",
+        "stat": "acting",
+        "statName": "演技",
+        "value": 5
+      },
+      {
+        "name": "地雷系连衣裙",
+        "stat": "acting",
+        "statName": "演技",
+        "value": 5
+      },
+      {
+        "name": "病娇系黑裙",
+        "stat": "acting",
+        "statName": "演技",
+        "value": 4
+      },
+      {
+        "name": "Lolita 套装",
+        "stat": "talk",
+        "statName": "口才",
+        "value": 4
       }
     ]
   }

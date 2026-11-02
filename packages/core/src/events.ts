@@ -123,9 +123,9 @@ export function applyChoice(state: RunState, eventId: string, choiceId: string):
     next.axes[key] = clamp(next.axes[key] + (v ?? 0));
   }
 
-  if (choice.effects.mood) next.mood = clamp((state.mood ?? 100) + choice.effects.mood);
+  if (choice.effects.mood) next.mood = clamp((state.mood ?? 70) + choice.effects.mood);
   if (choice.effects.satiety) {
-    next.satiety = clamp((state.satiety ?? 100) + choice.effects.satiety);
+    next.satiety = clamp((state.satiety ?? 70) + choice.effects.satiety);
   }
 
   const traits = { ...(state.traits ?? {}) };

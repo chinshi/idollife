@@ -1,9 +1,15 @@
 import {
+  DAILY_SLOTS,
+  DAY_MS,
   TASKS,
   activeTasks,
   completedTasks,
   describeCondition,
   describeRewards,
+  expiredDay,
+  expiredTimes,
+  taskDeadline,
+  taskProgress,
   taskStatus,
   type RunState,
   type TaskDef,
@@ -34,11 +40,43 @@ export function TaskPanel({
         ? '可领取'
         : status === 'active'
           ? '进行中'
-          : status === 'completable'
-            ? '可领奖'
-            : status === 'done'
-              ? '已完成'
-              : '未达成';
+          : status === 'expired'
+            ? '已错过'
+            : status === 'completable'
+              ? '可领奖'
+              : status === 'done'
+                ? '已完成'
+                : '未达成';
+
+    // 进度：已完成任务不显示进度条（「已完成」页签里进度没有意义，保持列表清爽）；
+    // 无进度（复合条件）时自动降级为纯文字条件。
+    const progress = status === 'done' ? null : taskProgress(run, task);
+    const percent = progress
+      ? progress.target > 0
+        ? Math.min(100, Math.max(0, (progress.current / progress.target) * 100))
+        : 100
+      : 0;
+
+    // 倒计时（T-010，R2）：文案按 status 分叉、不按 due 分叉——避免「状态写进行中、倒计时写已超时」。
+    // 只在 active / expired 行显示；无限期 / 未领取 / 已完成时 taskDeadline 返回 null → 不渲染占位。
+    const deadline =
+      status === 'active' || status === 'expired' ? taskDeadline(run, task) : null;
+    const deadlineText = !deadline
+      ? ''
+      : status === 'expired'
+        ? '明日起重新可领'
+        : deadline.due
+          ? '期限已到'
+          : deadline.remainingSlots > DAILY_SLOTS
+            ? `剩 ${deadline.remainingSlots} 次行动 · 约 ${deadline.remainingDays} 天`
+            : `剩 ${deadline.remainingSlots} 次行动`;
+    const deadlineTone = !deadline
+      ? ''
+      : status === 'expired'
+        ? 'missed'
+        : deadline.due || deadline.remainingSlots <= DAILY_SLOTS
+          ? 'urgent'
+          : '';
 
     return (
       <li
@@ -54,6 +92,14 @@ export function TaskPanel({
         <div className="task-top">
           <span className="task-name">{task.name}</span>
           <span className={`task-state ${status}`}>{label}</span>
+          {deadline ? (
+            <span
+              className={['task-deadline', deadlineTone].filter(Boolean).join(' ')}
+              title={`截止：${dayLabel(deadline.deadlineAt, run.at)}`}
+            >
+              {deadlineText}
+            </span>
+          ) : null}
           <span className="spacer" />
           {status === 'done' ? (
             <span className="muted small">
@@ -71,7 +117,7 @@ export function TaskPanel({
               disabled={status !== 'claimable'}
               onClick={() => onAccept(task.id)}
             >
-              {status === 'active' ? '已领取' : '领取任务'}
+              {status === 'active' ? '已领取' : status === 'expired' ? '已错过' : '领取任务'}
             </button>
           )}
         </div>
@@ -85,13 +131,32 @@ export function TaskPanel({
           </span>
           <span>
             <em>任务要求</em>
-            {describeCondition(task.completeCondition)}
+            {progress
+              ? `${progress.label} ${progress.current}/${progress.target}`
+              : describeCondition(task.completeCondition)}
           </span>
+          {task.deadlineDays && task.deadlineDays > 0 ? (
+            <span>
+              <em>时限</em>
+              {task.deadlineDays} 天
+            </span>
+          ) : null}
+          {expiredTimes(run, task.id) > 0 ? (
+            <span>
+              <em>错过</em>
+              {expiredTimes(run, task.id)} 次
+            </span>
+          ) : null}
           <span>
             <em>奖励</em>
             {describeRewards(task)}
           </span>
         </div>
+        {progress ? (
+          <div className="task-progress" title={`${progress.current}/${progress.target}`}>
+            <span style={{ width: `${percent}%` }} />
+          </div>
+        ) : null}
       </li>
     );
   };
@@ -117,7 +182,13 @@ export function TaskPanel({
   } else if (tab === 'accept') {
     const list = TASKS.filter((task) => {
       const s = taskStatus(run, task);
-      return s === 'claimable' || s === 'completable' || s === 'locked' || s === 'active';
+      return (
+        s === 'claimable' ||
+        s === 'completable' ||
+        s === 'locked' ||
+        s === 'active' ||
+        s === 'expired'
+      );
     });
     body =
       list.length === 0 ? (
@@ -126,6 +197,9 @@ export function TaskPanel({
         <ul className="task-list">{list.map(renderTask)}</ul>
       );
   } else {
+    // T-011：「已错过」分区标题带当天错过数（expiredDay === 今天 的条数；N=0 只写「已错过」）
+    const today = Math.floor(run.at / DAY_MS);
+    const missedToday = TASKS.filter((task) => expiredDay(run, task.id) === today).length;
     const sections: Array<{ key: string; title: string; list: TaskDef[] }> = [
       {
         key: 'completable',
@@ -146,6 +220,11 @@ export function TaskPanel({
         key: 'locked',
         title: '可见',
         list: TASKS.filter((task) => taskStatus(run, task) === 'locked'),
+      },
+      {
+        key: 'expired',
+        title: missedToday > 0 ? `已错过 · 今日 ${missedToday} 单` : '已错过',
+        list: TASKS.filter((task) => taskStatus(run, task) === 'expired'),
       },
       {
         key: 'done',

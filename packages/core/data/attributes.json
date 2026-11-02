@@ -1,5 +1,5 @@
 {
-  "_说明": "属性表：category=分类英文名（visible/hidden/status/fans），categoryName=分类中文名；key=属性字段名，name=显示名；hidden=true 不在主界面显示；linked 关联属性（0=完全隐藏，1=完全可见，2=隐藏仅占卜可见）",
+  "_说明": "属性表：category=分类英文名（innate/visible/status/trait/negative/proficient/hidden/fans），categoryName=分类中文名；key=属性字段名，name=显示名；hidden=true 主界面不直接显示；linked 关联属性（0=完全隐藏，1=完全可见，2=隐藏仅占卜可见）",
   "attributes": [
     {
       "category": "innate",

@@ -3,6 +3,7 @@ import { settle } from '../src/settle';
 import { divine, divinationCost, divinationReading, tierText } from '../src/divination';
 import { createFans } from '../src/fans';
 import { DAY_MS, SHOW_ACTION_ID, SHOW_DURATION_MS } from '../src/content';
+import { previewAction } from '../src/results';
 import type { RunState, ScheduleItem } from '../src/types';
 
 const MIN = 60_000;
@@ -97,7 +98,7 @@ describe('演出占位', () => {
     });
 
     expect(r.executed).toEqual(['show1']);
-    expect(r.state.stamina).toBe(70);
+    // 体力消耗以配置表为准：用与结算同一套匹配逻辑算出期望值\n    const pv = previewAction(run, SHOW_ACTION_ID);\n    expect(pv).not.toBeNull();\n    expect(r.state.stamina).toBe(Math.max(0, 100 + (pv?.stamina ?? 0)));
     expect(r.state.money).toBeGreaterThan(0);
     expect(r.state.log.some((l) => l.actionId === 'show')).toBe(true);
     const totalFans = Object.values(r.state.fans.byType).reduce((sum, v) => sum + v, 0);

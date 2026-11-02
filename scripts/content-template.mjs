@@ -1,3 +1,6 @@
+// 内容源已切换为 content/all.xlsx（T-003），分表模板不再生成
+console.log('content:template 已停用：内容源改为 content/all.xlsx，分表模板不再生成。');
+process.exit(0);
 /**
  * 生成拆分的 Excel 内容模板：node scripts/content-template.mjs
  * 每张表一个 xlsx，放在 content/ 下（枚举字段都带「字段名 + 中文名」两列）

@@ -15,3 +15,4 @@ export * from './attributes';
 export * from './results';
 export * from './friends';
 export * from './tasks';
+export * from './task-progress';

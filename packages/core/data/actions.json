@@ -36,7 +36,8 @@
       "times": 0,
       "timesScope": "run",
       "affectedStats": [
-        "acting"
+        "acting",
+        "talk"
       ],
       "durationMinutes": 1
     },
@@ -54,14 +55,111 @@
       "durationMinutes": 1
     },
     {
-      "id": "work-part-time",
-      "name": "打工",
-      "category": "work",
-      "categoryName": "赚钱",
-      "displayCondition": {},
+      "id": "vocal-street",
+      "name": "街头卖唱",
+      "category": "growth",
+      "categoryName": "提升属性",
+      "displayCondition": "vocal >= 15",
       "times": 0,
       "timesScope": "run",
-      "affectedStats": [],
+      "affectedStats": [
+        "vocal",
+        "talk"
+      ],
+      "durationMinutes": 1
+    },
+    {
+      "id": "dance-class",
+      "name": "舞蹈课",
+      "category": "growth",
+      "categoryName": "提升属性",
+      "displayCondition": "dance >= 15",
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [
+        "dance",
+        "acting"
+      ],
+      "durationMinutes": 1
+    },
+    {
+      "id": "acting-workshop",
+      "name": "表演工作坊",
+      "category": "growth",
+      "categoryName": "提升属性",
+      "displayCondition": "acting >= 15",
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [
+        "acting",
+        "talk"
+      ],
+      "durationMinutes": 1
+    },
+    {
+      "id": "talk-host",
+      "name": "漫展主持",
+      "category": "growth",
+      "categoryName": "提升属性",
+      "displayCondition": "talk >= 15",
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [
+        "talk",
+        "acting"
+      ],
+      "durationMinutes": 1
+    },
+    {
+      "id": "vocal-coach",
+      "name": "专业歌唱指导",
+      "category": "growth",
+      "categoryName": "提升属性",
+      "displayCondition": "vocal >= 40",
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [
+        "vocal"
+      ],
+      "durationMinutes": 1
+    },
+    {
+      "id": "dance-intensive",
+      "name": "舞室提高班",
+      "category": "growth",
+      "categoryName": "提升属性",
+      "displayCondition": "dance >= 40",
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [
+        "dance"
+      ],
+      "durationMinutes": 1
+    },
+    {
+      "id": "acting-coach",
+      "name": "演技指导课",
+      "category": "growth",
+      "categoryName": "提升属性",
+      "displayCondition": "acting >= 40",
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [
+        "acting"
+      ],
+      "durationMinutes": 1
+    },
+    {
+      "id": "talk-speech",
+      "name": "路演演讲",
+      "category": "growth",
+      "categoryName": "提升属性",
+      "displayCondition": "talk >= 40",
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [
+        "talk"
+      ],
       "durationMinutes": 1
     },
     {
@@ -76,12 +174,188 @@
       "durationMinutes": 1
     },
     {
+      "id": "food-saizeriya",
+      "name": "萨莉亚",
+      "category": "recover",
+      "categoryName": "恢复状态",
+      "displayCondition": {},
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [],
+      "durationMinutes": 1
+    },
+    {
+      "id": "food-sushiro",
+      "name": "寿司郎",
+      "category": "recover",
+      "categoryName": "恢复状态",
+      "displayCondition": {},
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [],
+      "durationMinutes": 1
+    },
+    {
+      "id": "food-nice",
+      "name": "漂亮饭",
+      "category": "recover",
+      "categoryName": "恢复状态",
+      "displayCondition": {},
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [],
+      "durationMinutes": 1
+    },
+    {
+      "id": "recover-bath",
+      "name": "钱汤",
+      "category": "recover",
+      "categoryName": "恢复状态",
+      "displayCondition": {},
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [],
+      "durationMinutes": 1
+    },
+    {
+      "id": "fun-park",
+      "name": "游乐园",
+      "category": "recover",
+      "categoryName": "恢复状态",
+      "displayCondition": "money >= 400",
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [],
+      "durationMinutes": 1
+    },
+    {
+      "id": "fun-trip",
+      "name": "旅游",
+      "category": "recover",
+      "categoryName": "恢复状态",
+      "displayCondition": "money >= 1800",
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [],
+      "durationMinutes": 3
+    },
+    {
+      "id": "hospital",
+      "name": "去医院",
+      "category": "recover",
+      "categoryName": "恢复状态",
+      "displayCondition": "money >= 300",
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [],
+      "durationMinutes": 1
+    },
+    {
+      "id": "sick-bed",
+      "name": "卧病在床",
+      "category": "recover",
+      "categoryName": "恢复状态",
+      "displayCondition": "stamina < 25",
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [],
+      "durationMinutes": 1
+    },
+    {
+      "id": "work-part-time",
+      "name": "便利店打工",
+      "category": "work",
+      "categoryName": "赚钱",
+      "displayCondition": {},
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [],
+      "durationMinutes": 1
+    },
+    {
+      "id": "work-tea",
+      "name": "奶茶店打工",
+      "category": "work",
+      "categoryName": "赚钱",
+      "displayCondition": {},
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [],
+      "durationMinutes": 1
+    },
+    {
+      "id": "work-maid",
+      "name": "女仆咖啡",
+      "category": "work",
+      "categoryName": "赚钱",
+      "displayCondition": {},
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [],
+      "durationMinutes": 1
+    },
+    {
+      "id": "work-flyer",
+      "name": "发传单",
+      "category": "work",
+      "categoryName": "赚钱",
+      "displayCondition": {},
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [],
+      "durationMinutes": 1
+    },
+    {
+      "id": "work-tutor",
+      "name": "家教",
+      "category": "work",
+      "categoryName": "赚钱",
+      "displayCondition": "talk >= 25",
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [],
+      "durationMinutes": 1
+    },
+    {
+      "id": "work-photo",
+      "name": "写真模特",
+      "category": "work",
+      "categoryName": "赚钱",
+      "displayCondition": {},
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [],
+      "durationMinutes": 1
+    },
+    {
+      "id": "work-stage-hand",
+      "name": "场地杂务",
+      "category": "work",
+      "categoryName": "赚钱",
+      "displayCondition": {},
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [],
+      "durationMinutes": 1
+    },
+    {
+      "id": "work-stream",
+      "name": "直播",
+      "category": "work",
+      "categoryName": "赚钱",
+      "displayCondition": "talk >= 20",
+      "times": 0,
+      "timesScope": "run",
+      "affectedStats": [],
+      "durationMinutes": 1
+    },
+    {
       "id": "show",
       "name": "演出",
       "category": "performance",
       "categoryName": "演出",
       "displayCondition": "total >= 60",
-      "times": 0,
+      "times": 1,
       "timesScope": "week",
       "affectedStats": [
         "vocal",
@@ -90,6 +364,72 @@
         "talk"
       ],
       "durationMinutes": 3
+    },
+    {
+      "id": "street-live",
+      "name": "街演",
+      "category": "performance",
+      "categoryName": "演出",
+      "displayCondition": {},
+      "times": 2,
+      "timesScope": "week",
+      "affectedStats": [
+        "vocal"
+      ],
+      "durationMinutes": 1
+    },
+    {
+      "id": "comic-stage",
+      "name": "漫展舞台",
+      "category": "performance",
+      "categoryName": "演出",
+      "displayCondition": "total >= 80",
+      "times": 1,
+      "timesScope": "week",
+      "affectedStats": [
+        "dance"
+      ],
+      "durationMinutes": 3
+    },
+    {
+      "id": "commercial",
+      "name": "商演",
+      "category": "performance",
+      "categoryName": "演出",
+      "displayCondition": "total >= 200 and hasFlag(\"ev:debut\")",
+      "times": 1,
+      "timesScope": "week",
+      "affectedStats": [
+        "vocal"
+      ],
+      "durationMinutes": 3
+    },
+    {
+      "id": "one-man",
+      "name": "OM 舞台",
+      "category": "performance",
+      "categoryName": "演出",
+      "displayCondition": "total >= 260 and hasFlag(\"ev:debut\")",
+      "times": 1,
+      "timesScope": "week",
+      "affectedStats": [
+        "vocal",
+        "dance"
+      ],
+      "durationMinutes": 3
+    },
+    {
+      "id": "cheki",
+      "name": "特典会",
+      "category": "performance",
+      "categoryName": "演出",
+      "displayCondition": "hasFlag(\"ev:debut\")",
+      "times": 1,
+      "timesScope": "week",
+      "affectedStats": [
+        "talk"
+      ],
+      "durationMinutes": 1
     }
   ]
 }

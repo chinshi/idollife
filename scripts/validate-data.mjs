@@ -5,6 +5,15 @@
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import {
+  ALIAS,
+  BARE_GROUP,
+  FUNCTIONS,
+  NAME_CANDIDATES,
+  findUnknownNames,
+  normalizeExpr,
+} from '../packages/core/src/expr-rules.js';
+import { findPrerequisiteCycle } from '../packages/core/src/task-prerequisite.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dataDir = join(root, 'packages', 'core', 'data');
@@ -130,7 +139,220 @@ if (tasks) {
     need(typeof task.times === 'number' && task.times >= 0, `tasks.${task.id}: times 必须是非负数字（0=无限制）`);
     need(task.rewards && typeof task.rewards === 'object', `tasks.${task.id}: 缺少 rewards`);
   }
+
+  // T-007 C：任务链 prerequisite —— ① 前置 id 必须存在 ② 不得自引用 ③ 不得成环（报环路径）
+  const taskIds = new Set((tasks.tasks ?? []).map((t) => t.id));
+  for (const task of tasks.tasks ?? []) {
+    const pre = task.prerequisite;
+    if (pre === undefined || pre === null) continue;
+    if (!Array.isArray(pre)) {
+      errors.push(`tasks.${task.id}.prerequisite: 必须是任务 id 数组`);
+      continue;
+    }
+    for (const dep of pre) {
+      if (typeof dep !== 'string' || !dep) {
+        errors.push(`tasks.${task.id}.prerequisite: 含空 id`);
+      } else if (dep === task.id) {
+        errors.push(`tasks.${task.id}.prerequisite: 不能引用自己（${dep}）`);
+      } else if (!taskIds.has(dep)) {
+        errors.push(`tasks.${task.id}.prerequisite: 前置任务 ${dep} 不存在`);
+      }
+    }
+  }
+  const prereqCycle = findPrerequisiteCycle(tasks.tasks ?? []);
+  if (prereqCycle) {
+    errors.push(`tasks.prerequisite 成环：${prereqCycle.join(' → ')}`);
+  }
 }
+
+// ── requires 表达式静态校验（T-005）─────────────────────────────────────
+// 规则唯一来源：packages/core/src/expr-rules.js（expr.ts 编译期用的是同一份），
+// 这里只做「手写拆分」的体检，完整语法正确性由 packages/core 的编译期兜底测试兜住。
+const COMPARE_OPS = ['>=', '<=', '==', '!=', '=', '>', '<'];
+/** attributes.json 的 category → 表达式分组前缀（拼写建议用） */
+const ATTR_PREFIX = { innate: 'innate', trait: 'trait', negative: 'neg', proficient: 'prof', fans: 'fans' };
+
+const SUGGEST_POOL = (() => {
+  const pool = new Set(NAME_CANDIDATES);
+  for (const a of attributes?.attributes ?? []) {
+    if (!a.key) continue;
+    pool.add(a.key);
+    const prefix = ATTR_PREFIX[a.category];
+    if (prefix) pool.add(`${prefix}.${a.key}`);
+  }
+  for (const [bare, group] of Object.entries(BARE_GROUP)) pool.add(`${group}.${bare}`);
+  return [...pool];
+})();
+
+function editDistance(a, b) {
+  const m = a.length;
+  const n = b.length;
+  let prev = Array.from({ length: n + 1 }, (_, i) => i);
+  for (let i = 1; i <= m; i += 1) {
+    const cur = [i];
+    for (let j = 1; j <= n; j += 1) {
+      cur[j] = Math.min(
+        prev[j] + 1,
+        cur[j - 1] + 1,
+        prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1),
+      );
+    }
+    prev = cur;
+  }
+  return prev[n];
+}
+
+/** 最近的候选变量名（没有足够像的就返回空串，不乱猜） */
+function nearestName(name) {
+  const target = String(name).toLowerCase();
+  let best = '';
+  let bestDist = Infinity;
+  for (const cand of SUGGEST_POOL) {
+    const d = editDistance(target, cand.toLowerCase());
+    if (d < bestDist || (d === bestDist && best && cand.length < best.length)) {
+      best = cand;
+      bestDist = d;
+    }
+  }
+  if (!best || bestDist === 0) return '';
+  const limit = target.length <= 3 ? 1 : Math.floor(target.length / 3) + 1;
+  return bestDist <= limit ? best : '';
+}
+
+const tokenText = (tk) => {
+  if (!tk) return '空';
+  if (tk.t === 'num' || tk.t === 'id' || tk.t === 'op' || tk.t === 'str') return String(tk.v);
+  return tk.t;
+};
+
+/** 一条 requires 表达式的问题列表（空数组 = 通过） */
+function expressionProblems(raw) {
+  const src = String(raw).trim();
+  if (!src) return ['表达式是空的（无条件请把单元格留空）'];
+
+  const problems = [];
+  const normalized = normalizeExpr(src);
+  const code = normalized.replace(/"[^"]*"/g, '""');
+
+  // 1) 变量存在性（含中文别名、裸字段别名、分组前缀、flag_xxx；与 expr.ts 同一套）
+  for (const name of findUnknownNames(normalized)) {
+    if (name === 'NaN' || name === 'Infinity') {
+      problems.push(`数字 "${name}" 不是有限数`);
+      continue;
+    }
+    const hint = nearestName(name);
+    problems.push(`变量 "${name}" 不存在${hint ? `（是否想写 "${hint}"？）` : ''}`);
+  }
+
+  // 2) 中文残留：别名表里没有的中文名，表达式编译器也不认
+  const cn = code.match(/[\u4e00-\u9fa5]+/);
+  if (cn) problems.push(`无法识别「${cn[0]}」：中文名只能用别名（${Object.keys(ALIAS).join(' ')}）`);
+
+  // 3) 引号必须成对
+  if ((src.match(/"/g) ?? []).length % 2 !== 0) problems.push('双引号没有配对');
+
+  // 4) 逐 token 检查：非法字符、数字格式、运算符白名单、比较号左右操作数、括号配对
+  const tokens = [];
+  let cursor = 0;
+  const tokenRe =
+    /(\s+)|("[^"]*")|(\d+(?:\.\d+)?)|([A-Za-z_][A-Za-z0-9_.]*)|(>=|<=|==|!=|=|>|<|[+\-*/])|(\()|(\))|(,)/g;
+  for (const m of code.matchAll(tokenRe)) {
+    if (m.index > cursor) problems.push(`无法识别的字符「${code.slice(cursor, m.index)}」`);
+    cursor = m.index + m[0].length;
+    if (m[1]) continue;
+    if (m[2]) tokens.push({ t: 'str', v: m[2] });
+    else if (m[3]) {
+      if (/^[A-Za-z%\u4e00-\u9fa5.%]/.test(code.slice(cursor))) {
+        problems.push(`数字「${m[3]}」后面不能带单位或多余字符`);
+      }
+      tokens.push({ t: 'num', v: m[3] });
+    } else if (m[4]) tokens.push({ t: 'id', v: m[4] });
+    else if (m[5]) tokens.push({ t: 'op', v: m[5] });
+    else if (m[6]) tokens.push({ t: '(' });
+    else if (m[7]) tokens.push({ t: ')' });
+    else tokens.push({ t: ',' });
+  }
+  if (cursor < code.length) problems.push(`无法识别的字符「${code.slice(cursor)}」`);
+
+  let expectOperand = true;
+  let depth = 0;
+  for (let i = 0; i < tokens.length; i += 1) {
+    const tk = tokens[i];
+    if (tk.t === 'str') {
+      if (!expectOperand) problems.push('字符串前面缺少运算符');
+      expectOperand = false;
+    } else if (tk.t === 'num') {
+      if (!expectOperand) problems.push(`数字 ${tk.v} 前面缺少运算符`);
+      expectOperand = false;
+    } else if (tk.t === 'id') {
+      if (tk.v === 'and' || tk.v === 'or') {
+        if (expectOperand) problems.push(`「${tk.v}」前面缺少表达式`);
+        expectOperand = true;
+      } else if (tk.v === 'not') {
+        if (!expectOperand) problems.push('「not」前面缺少运算符');
+        expectOperand = true;
+      } else if (!expectOperand) {
+        problems.push(`「${tk.v}」前面缺少运算符`);
+      } else if (tokens[i + 1]?.t === '(') {
+        if (!FUNCTIONS.includes(tk.v)) {
+          problems.push(`「${tk.v}」后面不能直接跟括号（函数只有 ${FUNCTIONS.join('/')}）`);
+        }
+        expectOperand = true;
+      } else {
+        expectOperand = false;
+      }
+    } else if (tk.t === 'op') {
+      const isCompare = COMPARE_OPS.includes(tk.v);
+      if (isCompare || tk.v === '*' || tk.v === '/') {
+        if (expectOperand) problems.push(`「${tk.v}」左边缺少变量`);
+        expectOperand = true;
+      } else if (!expectOperand) {
+        expectOperand = true;
+      }
+      if (isCompare) {
+        const rhs = tokens[i + 1];
+        const value = rhs?.t === 'op' && (rhs.v === '-' || rhs.v === '+') ? tokens[i + 2] : rhs;
+        if (value?.t !== 'num') {
+          problems.push(`「${tk.v}」右边必须是数字（实际是「${tokenText(value)}」）`);
+        }
+      }
+    } else if (tk.t === '(') {
+      depth += 1;
+      expectOperand = true;
+    } else if (tk.t === ')') {
+      depth -= 1;
+      if (depth < 0) {
+        problems.push('右括号多了');
+        depth = 0;
+      } else if (expectOperand) {
+        problems.push('括号里是空的');
+      }
+      expectOperand = false;
+    } else {
+      // 逗号：函数参数分隔
+      expectOperand = true;
+    }
+  }
+  if (tokens.length > 0 && expectOperand) problems.push('表达式不完整（末尾缺少操作数）');
+  if (depth !== 0) problems.push('括号没有配对');
+  return problems;
+}
+
+/** 校验一条 requires，报错里带 sheet、行号、eventId/choiceId、原表达式 */
+function checkRequiresField(expr, sheet, id, row) {
+  if (expr === undefined || expr === null) return;
+  if (typeof expr === 'object' && !Array.isArray(expr)) return; // 旧 JSON 对象条件继续兼容
+  const rowText = typeof row === 'number' ? `第 ${row} 行` : '行号未知（重新导入可补上）';
+  const where = `${sheet}.json 校验失败：content/all.xlsx#${sheet} ${rowText} ${id}`;
+  if (typeof expr !== 'string') {
+    errors.push(`${where}: requires 必须是表达式字符串（当前是 ${Array.isArray(expr) ? 'array' : typeof expr}）`);
+    return;
+  }
+  for (const problem of expressionProblems(expr)) {
+    errors.push(`${where}: requires "${expr}" → ${problem}`);
+  }
+}
+
 const events = await load('events.json');
 if (events) {
   need(Array.isArray(events.routine), 'events.json: routine 必须是数组');
@@ -145,10 +367,15 @@ if (events) {
       (e.choices ?? []).map((c) => ({ id: c.id })),
       `events.story.${e.id}.choices`,
     );
+    checkRequiresField(e.requires, 'story', e.id, e.sourceRow);
     for (const c of e.choices ?? []) {
       need(typeof c.label === 'string' && c.label, `events.${e.id}/${c.id}: 缺少 label`);
       need(c.effects && typeof c.effects === 'object', `events.${e.id}/${c.id}: 缺少 effects`);
+      checkRequiresField(c.requires, 'choices', `${e.id}/${c.id}`, c.sourceRow);
     }
+  }
+  for (const r of events.routine ?? []) {
+    checkRequiresField(r.requires, 'routine', r.id, r.sourceRow);
   }
 }
 

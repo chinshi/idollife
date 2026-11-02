@@ -9,29 +9,69 @@
       "priority": 99,
       "effects": {
         "stamina": -10,
-        "money": -50,
+        "money": -60,
         "mood": -1,
-        "satiety": -6,
+        "satiety": -5,
         "stats": {
           "vocal": [
-            1,
+            3,
+            4
+          ]
+        }
+      },
+      "text": "包厢里只有你一个人。副歌唱到第九遍，第四遍的时候最好。（演唱 +{vocal}）"
+    },
+    {
+      "id": "res-vocal-karaoke-mid",
+      "actionId": "vocal-karaoke",
+      "actionName": "唱 K",
+      "condition": "vocal >= 35",
+      "priority": 30,
+      "effects": {
+        "stamina": -10,
+        "money": -60,
+        "mood": -1,
+        "satiety": -5,
+        "stats": {
+          "vocal": [
+            2,
             3
           ]
         }
       },
-      "text": "你在包厢里唱了两小时，嗓子有点热。（演唱 +{vocal}）"
+      "text": "隔壁在过生日。你戴着一只耳返，把三首歌的拍子对完了。（演唱 +{vocal}）"
+    },
+    {
+      "id": "res-vocal-karaoke-high",
+      "actionId": "vocal-karaoke",
+      "actionName": "唱 K",
+      "condition": "vocal >= 65",
+      "priority": 20,
+      "effects": {
+        "stamina": -10,
+        "money": -60,
+        "mood": -1,
+        "satiety": -5,
+        "stats": {
+          "vocal": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "唱到一半就听出自己哪里虚。知道问题在哪，反而更烦。（演唱 +{vocal}）"
     },
     {
       "id": "res-vocal-tired",
       "actionId": "vocal-karaoke",
       "actionName": "唱 K",
-      "condition": "stamina < 30",
+      "condition": "stamina < 25",
       "priority": 10,
       "effects": {
         "stamina": -10,
-        "money": -50,
-        "mood": -3,
-        "satiety": -6,
+        "money": -60,
+        "mood": -4,
+        "satiety": -5,
         "stats": {
           "vocal": [
             1,
@@ -39,7 +79,27 @@
           ]
         }
       },
-      "text": "嗓子有点哑，你只唱了一小时就坐下了。（演唱 +{vocal}）"
+      "text": "唱了两首就坐下来。嗓子里像有一层沙子。（演唱 +{vocal}）"
+    },
+    {
+      "id": "res-vocal-karaoke-peak",
+      "actionId": "vocal-karaoke",
+      "actionName": "唱 K",
+      "condition": "vocal >= 80",
+      "priority": 15,
+      "effects": {
+        "stamina": -10,
+        "money": -60,
+        "mood": -1,
+        "satiety": -5,
+        "stats": {
+          "vocal": [
+            1,
+            1
+          ]
+        }
+      },
+      "text": "唱到这儿，能改的只剩咬字。你把同一句唱了三十遍，直到它听起来不像话。（演唱 +{vocal}）"
     },
     {
       "id": "res-dance-default",
@@ -48,17 +108,55 @@
       "condition": {},
       "priority": 99,
       "effects": {
-        "stamina": -12,
+        "stamina": -10,
         "mood": -1,
-        "satiety": -7,
+        "satiety": -5,
         "stats": {
           "dance": [
-            1,
+            3,
+            4
+          ]
+        }
+      },
+      "text": "对着衣柜门上的镜子，同一段副歌跳了二十遍。地板一直在响。（舞蹈 +{dance}）"
+    },
+    {
+      "id": "res-dance-otaku-mid",
+      "actionId": "dance-otaku",
+      "actionName": "跳宅舞",
+      "condition": "dance >= 35",
+      "priority": 30,
+      "effects": {
+        "stamina": -10,
+        "mood": -1,
+        "satiety": -5,
+        "stats": {
+          "dance": [
+            2,
             3
           ]
         }
       },
-      "text": "对着镜子把同一段副歌跳了二十遍。（舞蹈 +{dance}）"
+      "text": "手机架在纸箱上录了一遍。回看的时候发现手一直没打开。（舞蹈 +{dance}）"
+    },
+    {
+      "id": "res-dance-otaku-high",
+      "actionId": "dance-otaku",
+      "actionName": "跳宅舞",
+      "condition": "dance >= 65",
+      "priority": 20,
+      "effects": {
+        "stamina": -10,
+        "mood": -1,
+        "satiety": -5,
+        "stats": {
+          "dance": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "动作早记住了。缺的不是遍数，是下面得有人看。（舞蹈 +{dance}）"
     },
     {
       "id": "res-dance-tired",
@@ -67,9 +165,9 @@
       "condition": "stamina < 25",
       "priority": 10,
       "effects": {
-        "stamina": -12,
-        "mood": -3,
-        "satiety": -7,
+        "stamina": -10,
+        "mood": -4,
+        "satiety": -5,
         "stats": {
           "dance": [
             1,
@@ -77,7 +175,26 @@
           ]
         }
       },
-      "text": "腿有点抬不起来，练到一半就坐在地板上了。（舞蹈 +{dance}）"
+      "text": "腿抬到一半就掉下来。你坐在地板上，把音乐关了。（舞蹈 +{dance}）"
+    },
+    {
+      "id": "res-dance-otaku-peak",
+      "actionId": "dance-otaku",
+      "actionName": "跳宅舞",
+      "condition": "dance >= 80",
+      "priority": 15,
+      "effects": {
+        "stamina": -10,
+        "mood": -1,
+        "satiety": -5,
+        "stats": {
+          "dance": [
+            1,
+            1
+          ]
+        }
+      },
+      "text": "动作已经不用想了。你开始注意手指——以前从来没人教过手指。（舞蹈 +{dance}）"
     },
     {
       "id": "res-acting-default",
@@ -91,12 +208,108 @@
         "satiety": -5,
         "stats": {
           "acting": [
+            3,
+            4
+          ],
+          "talk": [
             1,
-            2
+            1
           ]
         }
       },
-      "text": "自导自演拍了三条，第二条最好。（演技 +{acting}）"
+      "text": "手机架在书堆上，一条一条拍到夜里。第三条最能看。（演技 +{acting} · 口才 +{talk}）"
+    },
+    {
+      "id": "res-acting-short-mid",
+      "actionId": "acting-short",
+      "actionName": "自拍小短剧",
+      "condition": "acting >= 35",
+      "priority": 30,
+      "effects": {
+        "stamina": -10,
+        "mood": -1,
+        "satiety": -5,
+        "stats": {
+          "acting": [
+            2,
+            3
+          ],
+          "talk": [
+            1,
+            1
+          ]
+        }
+      },
+      "text": "演到一半忘了词，你干脆顺着接下去——那段反而是对的。（演技 +{acting} · 口才 +{talk}）"
+    },
+    {
+      "id": "res-acting-short-high",
+      "actionId": "acting-short",
+      "actionName": "自拍小短剧",
+      "condition": "acting >= 65",
+      "priority": 20,
+      "effects": {
+        "stamina": -10,
+        "mood": -1,
+        "satiety": -5,
+        "stats": {
+          "acting": [
+            1,
+            2
+          ],
+          "talk": [
+            1,
+            1
+          ]
+        }
+      },
+      "text": "你开始知道镜头在哪。演的痕迹还在，但比上次淡。（演技 +{acting} · 口才 +{talk}）"
+    },
+    {
+      "id": "res-acting-short-tired",
+      "actionId": "acting-short",
+      "actionName": "自拍小短剧",
+      "condition": "stamina < 25",
+      "priority": 10,
+      "effects": {
+        "stamina": -10,
+        "mood": -4,
+        "satiety": -5,
+        "stats": {
+          "acting": [
+            1,
+            1
+          ],
+          "talk": [
+            1,
+            1
+          ]
+        }
+      },
+      "text": "拍了七条，每条都在打哈欠。发出去的是第一条。（演技 +{acting} · 口才 +{talk}）"
+    },
+    {
+      "id": "res-acting-short-peak",
+      "actionId": "acting-short",
+      "actionName": "自拍小短剧",
+      "condition": "acting >= 80",
+      "priority": 15,
+      "effects": {
+        "stamina": -10,
+        "mood": -1,
+        "satiety": -5,
+        "stats": {
+          "acting": [
+            1,
+            1
+          ],
+          "talk": [
+            1,
+            1
+          ]
+        }
+      },
+      "text": "你演什么都像自己了。这既是好事，也是瓶颈。（演技 +{acting} · 口才 +{talk}）"
     },
     {
       "id": "res-talk-default",
@@ -110,53 +323,1338 @@
         "satiety": -4,
         "stats": {
           "talk": [
+            3,
+            4
+          ]
+        }
+      },
+      "text": "对着关掉的摄像头，把从开场到安可的词报了一遍。（口才 +{talk}）"
+    },
+    {
+      "id": "res-talk-selftalk-mid",
+      "actionId": "talk-selftalk",
+      "actionName": "自说自话",
+      "condition": "talk >= 35",
+      "priority": 30,
+      "effects": {
+        "stamina": -8,
+        "mood": -1,
+        "satiety": -4,
+        "stats": {
+          "talk": [
+            2,
+            3
+          ]
+        }
+      },
+      "text": "同一句自我介绍换了六种说法。最后一种最像自己。（口才 +{talk}）"
+    },
+    {
+      "id": "res-talk-selftalk-high",
+      "actionId": "talk-selftalk",
+      "actionName": "自说自话",
+      "condition": "talk >= 65",
+      "priority": 20,
+      "effects": {
+        "stamina": -8,
+        "mood": -1,
+        "satiety": -4,
+        "stats": {
+          "talk": [
             1,
             2
           ]
         }
       },
-      "text": "对着镜头练了一下午串场词。（口才 +{talk}）"
+      "text": "话说得太顺了，反而假。你开始练停顿。（口才 +{talk}）"
     },
     {
-      "id": "res-work-default",
-      "actionId": "work-part-time",
-      "actionName": "打工",
-      "condition": {},
-      "priority": 99,
-      "effects": {
-        "stamina": -20,
-        "money": 320,
-        "mood": -4,
-        "satiety": -8
-      },
-      "text": "在便利店站了四个小时，脚有点麻。（收入 +320）"
-    },
-    {
-      "id": "res-work-tired",
-      "actionId": "work-part-time",
-      "actionName": "打工",
+      "id": "res-talk-selftalk-tired",
+      "actionId": "talk-selftalk",
+      "actionName": "自说自话",
       "condition": "stamina < 25",
       "priority": 10,
       "effects": {
-        "stamina": -20,
-        "money": 240,
-        "mood": -6,
-        "satiety": -8
+        "stamina": -8,
+        "mood": -4,
+        "satiety": -4,
+        "stats": {
+          "talk": [
+            1,
+            1
+          ]
+        }
       },
-      "text": "困得差点算错钱，店长让你提前下班。（收入 +240）"
+      "text": "说到第三句就卡住。你盯着黑屏，忘了下一句该夸谁。（口才 +{talk}）"
     },
     {
-      "id": "res-rest-default",
+      "id": "res-talk-selftalk-peak",
+      "actionId": "talk-selftalk",
+      "actionName": "自说自话",
+      "condition": "talk >= 80",
+      "priority": 15,
+      "effects": {
+        "stamina": -8,
+        "mood": -1,
+        "satiety": -4,
+        "stats": {
+          "talk": [
+            1,
+            1
+          ]
+        }
+      },
+      "text": "话说得越来越顺，也越来越像模板。你开始故意留一点磕巴。（口才 +{talk}）"
+    },
+    {
+      "id": "res-vocal-street-default",
+      "actionId": "vocal-street",
+      "actionName": "街头卖唱",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": -22,
+        "money": 80,
+        "mood": -1,
+        "satiety": -7,
+        "fans": 3,
+        "stats": {
+          "vocal": [
+            4,
+            5
+          ],
+          "talk": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "地铁口的保安看了你三次，没赶你。琴盒里多了三十七块。（演唱 +{vocal} · 口才 +{talk} · 收入 +80）"
+    },
+    {
+      "id": "res-vocal-street-mid",
+      "actionId": "vocal-street",
+      "actionName": "街头卖唱",
+      "condition": "vocal >= 35",
+      "priority": 30,
+      "effects": {
+        "stamina": -22,
+        "money": 80,
+        "mood": -1,
+        "satiety": -7,
+        "fans": 3,
+        "stats": {
+          "vocal": [
+            3,
+            4
+          ],
+          "talk": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "有人蹲下来听完一首才走。你把第二首换成了慢的。（演唱 +{vocal} · 口才 +{talk} · 收入 +80）"
+    },
+    {
+      "id": "res-vocal-street-high",
+      "actionId": "vocal-street",
+      "actionName": "街头卖唱",
+      "condition": "vocal >= 65",
+      "priority": 20,
+      "effects": {
+        "stamina": -22,
+        "money": 80,
+        "mood": -1,
+        "satiety": -7,
+        "fans": 3,
+        "stats": {
+          "vocal": [
+            1,
+            2
+          ],
+          "talk": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "风把返听吹散了。你靠数拍子唱完，稳得自己都意外。（演唱 +{vocal} · 口才 +{talk} · 收入 +80）"
+    },
+    {
+      "id": "res-vocal-street-tired",
+      "actionId": "vocal-street",
+      "actionName": "街头卖唱",
+      "condition": "stamina < 25",
+      "priority": 10,
+      "effects": {
+        "stamina": -22,
+        "money": 80,
+        "mood": -4,
+        "satiety": -7,
+        "fans": 3,
+        "stats": {
+          "vocal": [
+            1,
+            2
+          ],
+          "talk": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "嗓子没开，第一首就破了。你换了一首低的，还是破。（演唱 +{vocal} · 口才 +{talk} · 收入 +80）"
+    },
+    {
+      "id": "res-vocal-street-peak",
+      "actionId": "vocal-street",
+      "actionName": "街头卖唱",
+      "condition": "vocal >= 80",
+      "priority": 15,
+      "effects": {
+        "stamina": -22,
+        "money": 80,
+        "mood": -1,
+        "satiety": -7,
+        "fans": 3,
+        "stats": {
+          "vocal": [
+            1,
+            1
+          ],
+          "talk": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "路人开始回头了。但回头的人多了，你反而不敢唱难的。（演唱 +{vocal} · 口才 +{talk} · 收入 +80）"
+    },
+    {
+      "id": "res-dance-class-default",
+      "actionId": "dance-class",
+      "actionName": "舞蹈课",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": -22,
+        "money": -320,
+        "mood": -1,
+        "satiety": -7,
+        "stats": {
+          "dance": [
+            4,
+            5
+          ],
+          "acting": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "老师从镜子后面走过来，把你的手往上抬了两公分。就这两公分。（舞蹈 +{dance} · 演技 +{acting}）"
+    },
+    {
+      "id": "res-dance-class-mid",
+      "actionId": "dance-class",
+      "actionName": "舞蹈课",
+      "condition": "dance >= 35",
+      "priority": 30,
+      "effects": {
+        "stamina": -22,
+        "money": -320,
+        "mood": -1,
+        "satiety": -7,
+        "stats": {
+          "dance": [
+            3,
+            4
+          ],
+          "acting": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "学到一段新的八拍。你比旁边的女孩慢半拍，但你没停。（舞蹈 +{dance} · 演技 +{acting}）"
+    },
+    {
+      "id": "res-dance-class-high",
+      "actionId": "dance-class",
+      "actionName": "舞蹈课",
+      "condition": "dance >= 65",
+      "priority": 20,
+      "effects": {
+        "stamina": -22,
+        "money": -320,
+        "mood": -1,
+        "satiety": -7,
+        "stats": {
+          "dance": [
+            1,
+            2
+          ],
+          "acting": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "整支舞你都会。老师让你跳给后面的人看，你才知道差在哪。（舞蹈 +{dance} · 演技 +{acting}）"
+    },
+    {
+      "id": "res-dance-class-tired",
+      "actionId": "dance-class",
+      "actionName": "舞蹈课",
+      "condition": "stamina < 25",
+      "priority": 10,
+      "effects": {
+        "stamina": -22,
+        "money": -320,
+        "mood": -4,
+        "satiety": -7,
+        "stats": {
+          "dance": [
+            1,
+            2
+          ],
+          "acting": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "热身没做完就上场。跳到一半小腿抽了，你在角落按了很久。（舞蹈 +{dance} · 演技 +{acting}）"
+    },
+    {
+      "id": "res-dance-class-peak",
+      "actionId": "dance-class",
+      "actionName": "舞蹈课",
+      "condition": "dance >= 80",
+      "priority": 15,
+      "effects": {
+        "stamina": -22,
+        "money": -320,
+        "mood": -1,
+        "satiety": -7,
+        "stats": {
+          "dance": [
+            1,
+            1
+          ],
+          "acting": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "老师不再纠你的动作，改让你教后面的新人。教的时候你才发现自己有多熟。（舞蹈 +{dance} · 演技 +{acting}）"
+    },
+    {
+      "id": "res-acting-workshop-default",
+      "actionId": "acting-workshop",
+      "actionName": "表演工作坊",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": -22,
+        "money": -300,
+        "mood": -1,
+        "satiety": -7,
+        "stats": {
+          "acting": [
+            4,
+            5
+          ],
+          "talk": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "两个人搭了一段没台词的戏。她哭了，你没反应过来，但你没出戏。（演技 +{acting} · 口才 +{talk}）"
+    },
+    {
+      "id": "res-acting-workshop-mid",
+      "actionId": "acting-workshop",
+      "actionName": "表演工作坊",
+      "condition": "acting >= 35",
+      "priority": 30,
+      "effects": {
+        "stamina": -22,
+        "money": -300,
+        "mood": -1,
+        "satiety": -7,
+        "stats": {
+          "acting": [
+            3,
+            4
+          ],
+          "talk": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "老师让你把同一句话用五种情绪说。说到第四种，房间安静了。（演技 +{acting} · 口才 +{talk}）"
+    },
+    {
+      "id": "res-acting-workshop-high",
+      "actionId": "acting-workshop",
+      "actionName": "表演工作坊",
+      "condition": "acting >= 65",
+      "priority": 20,
+      "effects": {
+        "stamina": -22,
+        "money": -300,
+        "mood": -1,
+        "satiety": -7,
+        "stats": {
+          "acting": [
+            1,
+            2
+          ],
+          "talk": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "你开始能感觉到对手下一句会怎么接。这比技巧难教。（演技 +{acting} · 口才 +{talk}）"
+    },
+    {
+      "id": "res-acting-workshop-tired",
+      "actionId": "acting-workshop",
+      "actionName": "表演工作坊",
+      "condition": "stamina < 25",
+      "priority": 10,
+      "effects": {
+        "stamina": -22,
+        "money": -300,
+        "mood": -4,
+        "satiety": -7,
+        "stats": {
+          "acting": [
+            1,
+            2
+          ],
+          "talk": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "一直在等对方给反应。等到最后，你连自己该往哪站都忘了。（演技 +{acting} · 口才 +{talk}）"
+    },
+    {
+      "id": "res-acting-workshop-peak",
+      "actionId": "acting-workshop",
+      "actionName": "表演工作坊",
+      "condition": "acting >= 80",
+      "priority": 15,
+      "effects": {
+        "stamina": -22,
+        "money": -300,
+        "mood": -1,
+        "satiety": -7,
+        "stats": {
+          "acting": [
+            1,
+            1
+          ],
+          "talk": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "你成了工作坊里最能带节奏的人。搭戏的人跟着你走，这比演得好更难。（演技 +{acting} · 口才 +{talk}）"
+    },
+    {
+      "id": "res-talk-host-default",
+      "actionId": "talk-host",
+      "actionName": "漫展主持",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": -24,
+        "money": -280,
+        "mood": -1,
+        "satiety": -7,
+        "fans": 6,
+        "stats": {
+          "acting": [
+            1,
+            2
+          ],
+          "talk": [
+            4,
+            5
+          ]
+        }
+      },
+      "text": "站在主舞台边上的小台子，把抽奖名单念完。台下有人跟着举手。（口才 +{talk} · 演技 +{acting} · 粉丝 +6）"
+    },
+    {
+      "id": "res-talk-host-mid",
+      "actionId": "talk-host",
+      "actionName": "漫展主持",
+      "condition": "talk >= 35",
+      "priority": 30,
+      "effects": {
+        "stamina": -24,
+        "money": -280,
+        "mood": -1,
+        "satiety": -7,
+        "fans": 6,
+        "stats": {
+          "acting": [
+            1,
+            2
+          ],
+          "talk": [
+            3,
+            4
+          ]
+        }
+      },
+      "text": "音响啸叫了两次，你用一句玩笑盖过去。没人记得事故，只记得你。（口才 +{talk} · 演技 +{acting} · 粉丝 +6）"
+    },
+    {
+      "id": "res-talk-host-high",
+      "actionId": "talk-host",
+      "actionName": "漫展主持",
+      "condition": "talk >= 65",
+      "priority": 20,
+      "effects": {
+        "stamina": -24,
+        "money": -280,
+        "mood": -1,
+        "satiety": -7,
+        "fans": 6,
+        "stats": {
+          "acting": [
+            1,
+            2
+          ],
+          "talk": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "台下有人喊你的名字。你愣住半秒，然后把串场词说完了。（口才 +{talk} · 演技 +{acting} · 粉丝 +6）"
+    },
+    {
+      "id": "res-talk-host-tired",
+      "actionId": "talk-host",
+      "actionName": "漫展主持",
+      "condition": "stamina < 25",
+      "priority": 10,
+      "effects": {
+        "stamina": -24,
+        "money": -280,
+        "mood": -4,
+        "satiety": -7,
+        "fans": 6,
+        "stats": {
+          "acting": [
+            1,
+            2
+          ],
+          "talk": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "念错了三个名字。第三个的时候，台下开始笑，不是善意的。（口才 +{talk} · 演技 +{acting} · 粉丝 +6）"
+    },
+    {
+      "id": "res-talk-host-peak",
+      "actionId": "talk-host",
+      "actionName": "漫展主持",
+      "condition": "talk >= 80",
+      "priority": 15,
+      "effects": {
+        "stamina": -24,
+        "money": -280,
+        "mood": -1,
+        "satiety": -7,
+        "fans": 6,
+        "stats": {
+          "acting": [
+            1,
+            2
+          ],
+          "talk": [
+            1,
+            1
+          ]
+        }
+      },
+      "text": "整场流程闭着眼睛都能走完。台下有人专门为了看你主持而来。（口才 +{talk} · 演技 +{acting} · 粉丝 +6）"
+    },
+    {
+      "id": "res-vocal-coach-default",
+      "actionId": "vocal-coach",
+      "actionName": "专业歌唱指导",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": -34,
+        "money": -1100,
+        "mood": -1,
+        "satiety": -8,
+        "stats": {
+          "vocal": [
+            5,
+            6
+          ]
+        }
+      },
+      "text": "老师让你唱一个单音，唱完他说：你一直在躲它。（演唱 +{vocal}）"
+    },
+    {
+      "id": "res-vocal-coach-mid",
+      "actionId": "vocal-coach",
+      "actionName": "专业歌唱指导",
+      "condition": "vocal >= 35",
+      "priority": 30,
+      "effects": {
+        "stamina": -34,
+        "money": -1100,
+        "mood": -1,
+        "satiety": -8,
+        "stats": {
+          "vocal": [
+            3,
+            4
+          ]
+        }
+      },
+      "text": "半小时只练了两个音。他说，你现在才叫在唱。（演唱 +{vocal}）"
+    },
+    {
+      "id": "res-vocal-coach-high",
+      "actionId": "vocal-coach",
+      "actionName": "专业歌唱指导",
+      "condition": "vocal >= 65",
+      "priority": 20,
+      "effects": {
+        "stamina": -34,
+        "money": -1100,
+        "mood": -1,
+        "satiety": -8,
+        "stats": {
+          "vocal": [
+            2,
+            3
+          ]
+        }
+      },
+      "text": "他让你别用力。你松开之后，声音反而传得更远。（演唱 +{vocal}）"
+    },
+    {
+      "id": "res-vocal-coach-tired",
+      "actionId": "vocal-coach",
+      "actionName": "专业歌唱指导",
+      "condition": "stamina < 25",
+      "priority": 10,
+      "effects": {
+        "stamina": -34,
+        "money": -1100,
+        "mood": -4,
+        "satiety": -8,
+        "stats": {
+          "vocal": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "嗓子是哑的，课也退不了。你听完了一小时的示范。（演唱 +{vocal}）"
+    },
+    {
+      "id": "res-vocal-coach-peak",
+      "actionId": "vocal-coach",
+      "actionName": "专业歌唱指导",
+      "condition": "vocal >= 80",
+      "priority": 15,
+      "effects": {
+        "stamina": -34,
+        "money": -1100,
+        "mood": -1,
+        "satiety": -8,
+        "stats": {
+          "vocal": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "老师说，技术层面他已经没什么能教的了。剩下的是你自己要不要信。（演唱 +{vocal}）"
+    },
+    {
+      "id": "res-dance-intensive-default",
+      "actionId": "dance-intensive",
+      "actionName": "舞室提高班",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": -34,
+        "money": -1000,
+        "mood": -1,
+        "satiety": -8,
+        "stats": {
+          "dance": [
+            5,
+            6
+          ]
+        }
+      },
+      "text": "落地的时候膝盖响了一声。你没停，把最后八拍走完。（舞蹈 +{dance}）"
+    },
+    {
+      "id": "res-dance-intensive-mid",
+      "actionId": "dance-intensive",
+      "actionName": "舞室提高班",
+      "condition": "dance >= 35",
+      "priority": 30,
+      "effects": {
+        "stamina": -34,
+        "money": -1000,
+        "mood": -1,
+        "satiety": -8,
+        "stats": {
+          "dance": [
+            3,
+            4
+          ]
+        }
+      },
+      "text": "镜子里六个人，只有你在数拍子。老师说，先别数，先听。（舞蹈 +{dance}）"
+    },
+    {
+      "id": "res-dance-intensive-high",
+      "actionId": "dance-intensive",
+      "actionName": "舞室提高班",
+      "condition": "dance >= 65",
+      "priority": 20,
+      "effects": {
+        "stamina": -34,
+        "money": -1000,
+        "mood": -1,
+        "satiety": -8,
+        "stats": {
+          "dance": [
+            2,
+            3
+          ]
+        }
+      },
+      "text": "同样的动作，你比别人多留了半拍。那半拍就是全部。（舞蹈 +{dance}）"
+    },
+    {
+      "id": "res-dance-intensive-tired",
+      "actionId": "dance-intensive",
+      "actionName": "舞室提高班",
+      "condition": "stamina < 25",
+      "priority": 10,
+      "effects": {
+        "stamina": -34,
+        "money": -1000,
+        "mood": -4,
+        "satiety": -8,
+        "stats": {
+          "dance": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "扶着把杆跳完。下课没人说什么，你自己知道难看。（舞蹈 +{dance}）"
+    },
+    {
+      "id": "res-dance-intensive-peak",
+      "actionId": "dance-intensive",
+      "actionName": "舞室提高班",
+      "condition": "dance >= 80",
+      "priority": 15,
+      "effects": {
+        "stamina": -34,
+        "money": -1000,
+        "mood": -1,
+        "satiety": -8,
+        "stats": {
+          "dance": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "整间舞室只有你跟得上这段。跳完你在镜子前站了很久，没觉得高兴。（舞蹈 +{dance}）"
+    },
+    {
+      "id": "res-acting-coach-default",
+      "actionId": "acting-coach",
+      "actionName": "演技指导课",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": -34,
+        "money": -1000,
+        "mood": -1,
+        "satiety": -8,
+        "stats": {
+          "acting": [
+            5,
+            6
+          ]
+        }
+      },
+      "text": "他让你演一段什么都没发生的戏。你演了四十分钟，他一次没打断。（演技 +{acting}）"
+    },
+    {
+      "id": "res-acting-coach-mid",
+      "actionId": "acting-coach",
+      "actionName": "演技指导课",
+      "condition": "acting >= 35",
+      "priority": 30,
+      "effects": {
+        "stamina": -34,
+        "money": -1000,
+        "mood": -1,
+        "satiety": -8,
+        "stats": {
+          "acting": [
+            3,
+            4
+          ]
+        }
+      },
+      "text": "他说你演的是情绪，不是人。你重来了一遍，这回手在抖。（演技 +{acting}）"
+    },
+    {
+      "id": "res-acting-coach-high",
+      "actionId": "acting-coach",
+      "actionName": "演技指导课",
+      "condition": "acting >= 65",
+      "priority": 20,
+      "effects": {
+        "stamina": -34,
+        "money": -1000,
+        "mood": -1,
+        "satiety": -8,
+        "stats": {
+          "acting": [
+            2,
+            3
+          ]
+        }
+      },
+      "text": "你终于能在该停的地方停下。停下来比说出来难。（演技 +{acting}）"
+    },
+    {
+      "id": "res-acting-coach-tired",
+      "actionId": "acting-coach",
+      "actionName": "演技指导课",
+      "condition": "stamina < 25",
+      "priority": 10,
+      "effects": {
+        "stamina": -34,
+        "money": -1000,
+        "mood": -4,
+        "satiety": -8,
+        "stats": {
+          "acting": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "台词背不进去。你坐在那儿，把本子翻了三遍。（演技 +{acting}）"
+    },
+    {
+      "id": "res-acting-coach-peak",
+      "actionId": "acting-coach",
+      "actionName": "演技指导课",
+      "condition": "acting >= 80",
+      "priority": 15,
+      "effects": {
+        "stamina": -34,
+        "money": -1000,
+        "mood": -1,
+        "satiety": -8,
+        "stats": {
+          "acting": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "他让你别再演了，就站在那儿。你站了十分钟，他说「就是这个」。（演技 +{acting}）"
+    },
+    {
+      "id": "res-talk-speech-default",
+      "actionId": "talk-speech",
+      "actionName": "路演演讲",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": -32,
+        "money": -900,
+        "mood": -1,
+        "satiety": -8,
+        "fans": 4,
+        "stats": {
+          "talk": [
+            5,
+            6
+          ]
+        }
+      },
+      "text": "广场上没人听。你把话筒举高，把最后一句说给风听。（口才 +{talk}）"
+    },
+    {
+      "id": "res-talk-speech-mid",
+      "actionId": "talk-speech",
+      "actionName": "路演演讲",
+      "condition": "talk >= 35",
+      "priority": 30,
+      "effects": {
+        "stamina": -32,
+        "money": -900,
+        "mood": -1,
+        "satiety": -8,
+        "fans": 4,
+        "stats": {
+          "talk": [
+            3,
+            4
+          ]
+        }
+      },
+      "text": "一个送外卖的停下来听完了。他说，你声音挺亮的。（口才 +{talk}）"
+    },
+    {
+      "id": "res-talk-speech-high",
+      "actionId": "talk-speech",
+      "actionName": "路演演讲",
+      "condition": "talk >= 65",
+      "priority": 20,
+      "effects": {
+        "stamina": -32,
+        "money": -900,
+        "mood": -1,
+        "satiety": -8,
+        "fans": 4,
+        "stats": {
+          "talk": [
+            2,
+            3
+          ]
+        }
+      },
+      "text": "你不再背稿。想到哪说到哪，反而没人走。（口才 +{talk}）"
+    },
+    {
+      "id": "res-talk-speech-tired",
+      "actionId": "talk-speech",
+      "actionName": "路演演讲",
+      "condition": "stamina < 25",
+      "priority": 10,
+      "effects": {
+        "stamina": -32,
+        "money": -900,
+        "mood": -4,
+        "satiety": -8,
+        "fans": 4,
+        "stats": {
+          "talk": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "话筒没电。你站在那儿喊完，喉咙疼了一晚上。（口才 +{talk}）"
+    },
+    {
+      "id": "res-talk-speech-peak",
+      "actionId": "talk-speech",
+      "actionName": "路演演讲",
+      "condition": "talk >= 80",
+      "priority": 15,
+      "effects": {
+        "stamina": -32,
+        "money": -900,
+        "mood": -1,
+        "satiety": -8,
+        "fans": 4,
+        "stats": {
+          "talk": [
+            1,
+            2
+          ]
+        }
+      },
+      "text": "广场上开始有人专门等你。你讲的东西已经被听过了，但他们还是来。（口才 +{talk}）"
+    },
+    {
+      "id": "res-rest-sleep",
       "actionId": "rest-sleep",
       "actionName": "爆睡",
       "condition": {},
       "priority": 99,
       "effects": {
-        "stamina": 25,
+        "stamina": 40,
         "mood": 8,
+        "satiety": -8
+      },
+      "text": "闹钟响了三遍，你只听见最后一遍。醒来天已经黑透。（体力 +40）"
+    },
+    {
+      "id": "res-food-saizeriya",
+      "actionId": "food-saizeriya",
+      "actionName": "萨莉亚",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": 8,
+        "money": -80,
+        "mood": 6,
+        "satiety": 18
+      },
+      "text": "一份意面，一杯免费的水，坐了四十分钟。没人赶你。（饱腹 +18 · 心情 +6）"
+    },
+    {
+      "id": "res-food-sushiro",
+      "actionId": "food-sushiro",
+      "actionName": "寿司郎",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": 20,
+        "money": -220,
+        "mood": 15,
+        "satiety": 30
+      },
+      "text": "拿了两盘，看迴转带转了三圈。结账时心疼了一下，但值。（饱腹 +30 · 心情 +15）"
+    },
+    {
+      "id": "res-food-nice",
+      "actionId": "food-nice",
+      "actionName": "漂亮饭",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": 28,
+        "money": -520,
+        "mood": 25,
+        "satiety": 38
+      },
+      "text": "拍了很多照片。真正吃完的只有一半。（饱腹 +38 · 心情 +25）"
+    },
+    {
+      "id": "res-recover-bath",
+      "actionId": "recover-bath",
+      "actionName": "钱汤",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": 15,
+        "money": -60,
+        "mood": 12,
+        "satiety": -2
+      },
+      "text": "在澡堂泡到手指发皱。隔壁阿姨问你是哪个团的。（体力 +15 · 心情 +12）"
+    },
+    {
+      "id": "res-fun-park",
+      "actionId": "fun-park",
+      "actionName": "游乐园",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": -12,
+        "money": -400,
+        "mood": 28,
+        "satiety": -10
+      },
+      "text": "一个人坐了两遍过山车。第二遍的时候，你终于喊出来了。（心情 +28）"
+    },
+    {
+      "id": "res-fun-trip",
+      "actionId": "fun-trip",
+      "actionName": "旅游",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": 15,
+        "money": -1800,
+        "mood": 45,
+        "satiety": -20
+      },
+      "text": "三天没进排练室。回来的时候，你居然想跳了。（心情 +45 · 体力 +15）"
+    },
+    {
+      "id": "res-hospital",
+      "actionId": "hospital",
+      "actionName": "去医院",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": 15,
+        "money": -300,
+        "mood": -4,
         "satiety": -4
       },
-      "text": "睡了一觉，感觉活过来了。"
+      "text": "医生说不是大问题，但你得停两周。你说下个月有场。（体力 +15）"
+    },
+    {
+      "id": "res-sick-bed",
+      "actionId": "sick-bed",
+      "actionName": "卧病在床",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": 55,
+        "mood": -18,
+        "satiety": -10
+      },
+      "text": "烧到三十八度七。手机在枕边，群里的消息你一条都没回。（体力 +55 · 心情 -18）"
+    },
+    {
+      "id": "res-work-part-time",
+      "actionId": "work-part-time",
+      "actionName": "便利店打工",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": -18,
+        "money": 380,
+        "mood": -4,
+        "satiety": -8
+      },
+      "text": "站了四个小时，收了三张过期的券。店长说你笑起来太有礼貌。（收入 +380）"
+    },
+    {
+      "id": "res-work-tired",
+      "actionId": "work-part-time",
+      "actionName": "便利店打工",
+      "condition": "stamina < 25",
+      "priority": 10,
+      "effects": {
+        "stamina": -20,
+        "money": 280,
+        "mood": -6,
+        "satiety": -8
+      },
+      "text": "困得找错了三次钱。店长让你提前下班，扣了半天工钱。（收入 +280）"
+    },
+    {
+      "id": "res-work-tea",
+      "actionId": "work-tea",
+      "actionName": "奶茶店打工",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": -18,
+        "money": 350,
+        "mood": -3,
+        "satiety": -8
+      },
+      "text": "手上全是糖浆。摇杯的声音在脑子里响了一整晚。（收入 +350）"
+    },
+    {
+      "id": "res-work-tea-tired",
+      "actionId": "work-tea",
+      "actionName": "奶茶店打工",
+      "condition": "stamina < 25",
+      "priority": 10,
+      "effects": {
+        "stamina": -20,
+        "money": 250,
+        "mood": -5,
+        "satiety": -8
+      },
+      "text": "封口机压到手。你笑着说没事，其实想哭。（收入 +250）"
+    },
+    {
+      "id": "res-work-maid",
+      "actionId": "work-maid",
+      "actionName": "女仆咖啡",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": -24,
+        "money": 480,
+        "mood": -2,
+        "satiety": -8,
+        "fans": 6
+      },
+      "text": "穿着围裙说「おかえり」。有人点了你的名字，多给了五十。（收入 +480 · 粉丝 +6）"
+    },
+    {
+      "id": "res-work-maid-tired",
+      "actionId": "work-maid",
+      "actionName": "女仆咖啡",
+      "condition": "stamina < 25",
+      "priority": 10,
+      "effects": {
+        "stamina": -26,
+        "money": 380,
+        "mood": -6,
+        "satiety": -8,
+        "fans": 4
+      },
+      "text": "笑不出来。你躲在备餐间站了十分钟才出去。（收入 +380 · 粉丝 +4）"
+    },
+    {
+      "id": "res-work-flyer",
+      "actionId": "work-flyer",
+      "actionName": "发传单",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": -14,
+        "money": 200,
+        "mood": -5,
+        "satiety": -6,
+        "fans": 4
+      },
+      "text": "在天桥下发了两个小时。大部分被扔了，有两个人认真看了海报上的时间。（收入 +200 · 粉丝 +4）"
+    },
+    {
+      "id": "res-work-flyer-tired",
+      "actionId": "work-flyer",
+      "actionName": "发传单",
+      "condition": "stamina < 25",
+      "priority": 10,
+      "effects": {
+        "stamina": -16,
+        "money": 150,
+        "mood": -7,
+        "satiety": -6,
+        "fans": 3
+      },
+      "text": "手冻得握不住纸。你把剩下的一叠塞进包里，明天再发。（收入 +150 · 粉丝 +3）"
+    },
+    {
+      "id": "res-work-tutor",
+      "actionId": "work-tutor",
+      "actionName": "家教",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": -16,
+        "money": 620,
+        "mood": -2,
+        "satiety": -6
+      },
+      "text": "给一个高二学生讲了两小时函数。他妈妈硬塞了水果给你。（收入 +620）"
+    },
+    {
+      "id": "res-work-tutor-tired",
+      "actionId": "work-tutor",
+      "actionName": "家教",
+      "condition": "stamina < 25",
+      "priority": 10,
+      "effects": {
+        "stamina": -18,
+        "money": 500,
+        "mood": -5,
+        "satiety": -6
+      },
+      "text": "讲到一半断片了。学生反而给你讲了一遍。（收入 +500）"
+    },
+    {
+      "id": "res-work-photo",
+      "actionId": "work-photo",
+      "actionName": "写真模特",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": -22,
+        "money": 900,
+        "mood": -5,
+        "satiety": -7,
+        "fans": 3
+      },
+      "text": "棚里开着暖风机。摄影师说，再收一点下巴。（收入 +900 · 粉丝 +3）"
+    },
+    {
+      "id": "res-work-photo-tired",
+      "actionId": "work-photo",
+      "actionName": "写真模特",
+      "condition": "stamina < 25",
+      "priority": 10,
+      "effects": {
+        "stamina": -24,
+        "money": 700,
+        "mood": -8,
+        "satiety": -7
+      },
+      "text": "眼睛睁不开，笑也僵。客户换人拍完了剩下的半卷。（收入 +700）"
+    },
+    {
+      "id": "res-work-stage-hand",
+      "actionId": "work-stage-hand",
+      "actionName": "场地杂务",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": -26,
+        "money": 520,
+        "mood": -4,
+        "satiety": -9
+      },
+      "text": "散场后搬了四十把折叠椅，手上留下胶带的印子。（收入 +520）"
+    },
+    {
+      "id": "res-work-stage-hand-tired",
+      "actionId": "work-stage-hand",
+      "actionName": "场地杂务",
+      "condition": "stamina < 25",
+      "priority": 10,
+      "effects": {
+        "stamina": -28,
+        "money": 420,
+        "mood": -7,
+        "satiety": -9
+      },
+      "text": "音箱比想的沉。你和另一个人抬，走三步歇一次。（收入 +420）"
+    },
+    {
+      "id": "res-work-stream",
+      "actionId": "work-stream",
+      "actionName": "直播",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": -20,
+        "money": 260,
+        "mood": 2,
+        "satiety": -7,
+        "fans": 12
+      },
+      "text": "开了两小时，最高在线十九人。你在第十人进来的时候唱了歌。（收入 +260 · 粉丝 +12）"
+    },
+    {
+      "id": "res-work-stream-tired",
+      "actionId": "work-stream",
+      "actionName": "直播",
+      "condition": "stamina < 25",
+      "priority": 10,
+      "effects": {
+        "stamina": -22,
+        "money": 180,
+        "mood": -2,
+        "satiety": -7,
+        "fans": 7
+      },
+      "text": "对着镜头打了个哈欠。有人刷了礼物，说早点睡。（收入 +180 · 粉丝 +7）"
     },
     {
       "id": "res-show-s",
@@ -165,13 +1663,13 @@
       "condition": "total >= 240",
       "priority": 10,
       "effects": {
-        "stamina": -30,
-        "money": 1500,
-        "mood": 6,
+        "stamina": -32,
+        "money": 1800,
+        "mood": 8,
         "satiety": -10,
-        "fans": 300
+        "fans": 150
       },
-      "text": "灯亮起来的那一刻，全场安静了。（粉丝 +300 · 收入 +1500）"
+      "text": "灯亮起来的一瞬间，全场安静了半秒，然后开始喊。你在那半秒里忘了呼吸。（粉丝 +150 · 收入 +1800）"
     },
     {
       "id": "res-show-a",
@@ -180,13 +1678,13 @@
       "condition": "total >= 180",
       "priority": 20,
       "effects": {
-        "stamina": -30,
-        "money": 900,
-        "mood": 4,
+        "stamina": -32,
+        "money": 1100,
+        "mood": 5,
         "satiety": -10,
-        "fans": 180
+        "fans": 90
       },
-      "text": "发挥很稳，台下有人跟着喊。（粉丝 +180 · 收入 +900）"
+      "text": "最后一首的副歌，台下有人接上了。你差点在台上笑出声。（粉丝 +90 · 收入 +1100）"
     },
     {
       "id": "res-show-b",
@@ -195,13 +1693,13 @@
       "condition": "total >= 120",
       "priority": 30,
       "effects": {
-        "stamina": -30,
-        "money": 500,
+        "stamina": -32,
+        "money": 600,
         "mood": 2,
         "satiety": -10,
-        "fans": 100
+        "fans": 45
       },
-      "text": "中规中矩，但没出错。（粉丝 +100 · 收入 +500）"
+      "text": "没出错，也没记住什么。散场时有两个人说下次还来。（粉丝 +45 · 收入 +600）"
     },
     {
       "id": "res-show-c",
@@ -210,13 +1708,163 @@
       "condition": {},
       "priority": 99,
       "effects": {
-        "stamina": -30,
+        "stamina": -32,
+        "money": 220,
+        "mood": -6,
+        "satiety": -10,
+        "fans": 15
+      },
+      "text": "中间忘了一个转身，你笑着圆过去了。台下没人发现，只有你自己知道。（粉丝 +15 · 收入 +220）"
+    },
+    {
+      "id": "res-street-live-good",
+      "actionId": "street-live",
+      "actionName": "街演",
+      "condition": "fans.stage >= 30",
+      "priority": 20,
+      "effects": {
+        "stamina": -14,
+        "money": 180,
+        "mood": 3,
+        "satiety": -6,
+        "fans": 12
+      },
+      "text": "琴盒还没放下，就有人认出你。她说她坐了两站地铁过来。（粉丝 +12 · 收入 +180）"
+    },
+    {
+      "id": "res-street-live",
+      "actionId": "street-live",
+      "actionName": "街演",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": -14,
+        "money": 60,
+        "mood": -5,
+        "satiety": -6,
+        "fans": 3
+      },
+      "text": "唱了六首，路过的人没有停。有个小孩站了一会儿，被妈妈拉走了。（粉丝 +3 · 收入 +60）"
+    },
+    {
+      "id": "res-comic-stage-good",
+      "actionId": "comic-stage",
+      "actionName": "漫展舞台",
+      "condition": "total >= 140",
+      "priority": 20,
+      "effects": {
+        "stamina": -26,
+        "money": 380,
+        "mood": 6,
+        "satiety": -9,
+        "fans": 30
+      },
+      "text": "音响很烂，但你把人从摊位那边拉了过来。前排站了五排。（粉丝 +30 · 收入 +380）"
+    },
+    {
+      "id": "res-comic-stage",
+      "actionId": "comic-stage",
+      "actionName": "漫展舞台",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": -26,
         "money": 200,
+        "mood": 1,
+        "satiety": -9,
+        "fans": 14
+      },
+      "text": "台下都是等抽奖的。你把三十五分钟唱完，掌声零零散散。（粉丝 +14 · 收入 +200）"
+    },
+    {
+      "id": "res-commercial-good",
+      "actionId": "commercial",
+      "actionName": "商演",
+      "condition": "total >= 260",
+      "priority": 20,
+      "effects": {
+        "stamina": -32,
+        "money": 2200,
+        "mood": -2,
+        "satiety": -10,
+        "fans": 70
+      },
+      "text": "甲方在台下点头。唱完有人递名片，说以后有活动找你。（粉丝 +70 · 收入 +2200）"
+    },
+    {
+      "id": "res-commercial",
+      "actionId": "commercial",
+      "actionName": "商演",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": -32,
+        "money": 1600,
         "mood": -4,
         "satiety": -10,
         "fans": 40
       },
-      "text": "中间忘了一个动作，你笑着圆过去了。（粉丝 +40 · 收入 +200）"
+      "text": "开场前改了三次流程。你唱完两首就被请下台，因为超时。（粉丝 +40 · 收入 +1600）"
+    },
+    {
+      "id": "res-one-man-good",
+      "actionId": "one-man",
+      "actionName": "OM 舞台",
+      "condition": "fans.stage >= 200",
+      "priority": 20,
+      "effects": {
+        "stamina": -36,
+        "money": 2600,
+        "mood": 10,
+        "satiety": -11,
+        "fans": 180
+      },
+      "text": "这次没有别人的团在前面。安可唱了两首，台下还一直在喊。（粉丝 +180 · 收入 +2600）"
+    },
+    {
+      "id": "res-one-man",
+      "actionId": "one-man",
+      "actionName": "OM 舞台",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": -36,
+        "money": 1800,
+        "mood": 4,
+        "satiety": -11,
+        "fans": 90
+      },
+      "text": "场地只坐了一半。散场后你在后台数了一下应援棒。（粉丝 +90 · 收入 +1800）"
+    },
+    {
+      "id": "res-cheki-good",
+      "actionId": "cheki",
+      "actionName": "特典会",
+      "condition": "fans.gachi >= 80",
+      "priority": 20,
+      "effects": {
+        "stamina": -20,
+        "money": 700,
+        "mood": 6,
+        "satiety": -6,
+        "fans": 20
+      },
+      "text": "チェキ拍到六十张。有个女孩排了三次，每次都只说一句「加油」。（粉丝 +20 · 收入 +700）"
+    },
+    {
+      "id": "res-cheki",
+      "actionId": "cheki",
+      "actionName": "特典会",
+      "condition": {},
+      "priority": 99,
+      "effects": {
+        "stamina": -20,
+        "money": 280,
+        "mood": 2,
+        "satiety": -6,
+        "fans": 8
+      },
+      "text": "桌子摆了四十分钟，来了六个人。你给每个人都写了名字。（粉丝 +8 · 收入 +280）"
     }
   ]
 }

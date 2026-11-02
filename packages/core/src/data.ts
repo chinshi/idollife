@@ -71,6 +71,8 @@ export interface RawChoice {
   id: string;
   /** 出现条件（表达式） */
   requires?: RawRequires | string;
+  /** 该选项在 content/all.xlsx 的 choices 表里的物理行号（导入时写入，供 check:data 报错定位） */
+  sourceRow?: number;
   label: string;
   text: string;
   effects: {
@@ -91,6 +93,8 @@ export interface RawStory {
   text: string;
   major?: boolean;
   requires?: RawRequires | string;
+  /** 该事件在 content/all.xlsx 的 story 表里的物理行号（导入时写入，供 check:data 报错定位） */
+  sourceRow?: number;
   choices: RawChoice[];
 }
 

@@ -18211,27 +18211,69 @@ var action_results_default = {
       priority: 99,
       effects: {
         stamina: -10,
-        money: -50,
+        money: -60,
+        mood: -1,
+        satiety: -5,
         stats: {
           vocal: [
-            1,
+            3,
+            4
+          ]
+        }
+      },
+      text: "\u5305\u53A2\u91CC\u53EA\u6709\u4F60\u4E00\u4E2A\u4EBA\u3002\u526F\u6B4C\u5531\u5230\u7B2C\u4E5D\u904D\uFF0C\u7B2C\u56DB\u904D\u7684\u65F6\u5019\u6700\u597D\u3002\uFF08\u6F14\u5531 +{vocal}\uFF09"
+    },
+    {
+      id: "res-vocal-karaoke-mid",
+      actionId: "vocal-karaoke",
+      actionName: "\u5531 K",
+      condition: "vocal >= 35",
+      priority: 30,
+      effects: {
+        stamina: -10,
+        money: -60,
+        mood: -1,
+        satiety: -5,
+        stats: {
+          vocal: [
+            2,
             3
           ]
         }
       },
-      text: "\u4F60\u5728\u5305\u53A2\u91CC\u5531\u4E86\u4E24\u5C0F\u65F6\uFF0C\u55D3\u5B50\u6709\u70B9\u70ED\u3002\uFF08\u6F14\u5531 +{vocal}\uFF09"
+      text: "\u9694\u58C1\u5728\u8FC7\u751F\u65E5\u3002\u4F60\u6234\u7740\u4E00\u53EA\u8033\u8FD4\uFF0C\u628A\u4E09\u9996\u6B4C\u7684\u62CD\u5B50\u5BF9\u5B8C\u4E86\u3002\uFF08\u6F14\u5531 +{vocal}\uFF09"
+    },
+    {
+      id: "res-vocal-karaoke-high",
+      actionId: "vocal-karaoke",
+      actionName: "\u5531 K",
+      condition: "vocal >= 65",
+      priority: 20,
+      effects: {
+        stamina: -10,
+        money: -60,
+        mood: -1,
+        satiety: -5,
+        stats: {
+          vocal: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u5531\u5230\u4E00\u534A\u5C31\u542C\u51FA\u81EA\u5DF1\u54EA\u91CC\u865A\u3002\u77E5\u9053\u95EE\u9898\u5728\u54EA\uFF0C\u53CD\u800C\u66F4\u70E6\u3002\uFF08\u6F14\u5531 +{vocal}\uFF09"
     },
     {
       id: "res-vocal-tired",
       actionId: "vocal-karaoke",
       actionName: "\u5531 K",
-      condition: {
-        staminaBelow: 30
-      },
+      condition: "stamina < 25",
       priority: 10,
       effects: {
         stamina: -10,
-        money: -50,
+        money: -60,
+        mood: -4,
+        satiety: -5,
         stats: {
           vocal: [
             1,
@@ -18239,7 +18281,27 @@ var action_results_default = {
           ]
         }
       },
-      text: "\u55D3\u5B50\u6709\u70B9\u54D1\uFF0C\u4F60\u53EA\u5531\u4E86\u4E00\u5C0F\u65F6\u5C31\u5750\u4E0B\u4E86\u3002\uFF08\u6F14\u5531 +{vocal}\uFF09"
+      text: "\u5531\u4E86\u4E24\u9996\u5C31\u5750\u4E0B\u6765\u3002\u55D3\u5B50\u91CC\u50CF\u6709\u4E00\u5C42\u6C99\u5B50\u3002\uFF08\u6F14\u5531 +{vocal}\uFF09"
+    },
+    {
+      id: "res-vocal-karaoke-peak",
+      actionId: "vocal-karaoke",
+      actionName: "\u5531 K",
+      condition: "vocal >= 80",
+      priority: 15,
+      effects: {
+        stamina: -10,
+        money: -60,
+        mood: -1,
+        satiety: -5,
+        stats: {
+          vocal: [
+            1,
+            1
+          ]
+        }
+      },
+      text: "\u5531\u5230\u8FD9\u513F\uFF0C\u80FD\u6539\u7684\u53EA\u5269\u54AC\u5B57\u3002\u4F60\u628A\u540C\u4E00\u53E5\u5531\u4E86\u4E09\u5341\u904D\uFF0C\u76F4\u5230\u5B83\u542C\u8D77\u6765\u4E0D\u50CF\u8BDD\u3002\uFF08\u6F14\u5531 +{vocal}\uFF09"
     },
     {
       id: "res-dance-default",
@@ -18248,26 +18310,66 @@ var action_results_default = {
       condition: {},
       priority: 99,
       effects: {
-        stamina: -12,
+        stamina: -10,
+        mood: -1,
+        satiety: -5,
         stats: {
           dance: [
-            1,
+            3,
+            4
+          ]
+        }
+      },
+      text: "\u5BF9\u7740\u8863\u67DC\u95E8\u4E0A\u7684\u955C\u5B50\uFF0C\u540C\u4E00\u6BB5\u526F\u6B4C\u8DF3\u4E86\u4E8C\u5341\u904D\u3002\u5730\u677F\u4E00\u76F4\u5728\u54CD\u3002\uFF08\u821E\u8E48 +{dance}\uFF09"
+    },
+    {
+      id: "res-dance-otaku-mid",
+      actionId: "dance-otaku",
+      actionName: "\u8DF3\u5B85\u821E",
+      condition: "dance >= 35",
+      priority: 30,
+      effects: {
+        stamina: -10,
+        mood: -1,
+        satiety: -5,
+        stats: {
+          dance: [
+            2,
             3
           ]
         }
       },
-      text: "\u5BF9\u7740\u955C\u5B50\u628A\u540C\u4E00\u6BB5\u526F\u6B4C\u8DF3\u4E86\u4E8C\u5341\u904D\u3002\uFF08\u821E\u8E48 +{dance}\uFF09"
+      text: "\u624B\u673A\u67B6\u5728\u7EB8\u7BB1\u4E0A\u5F55\u4E86\u4E00\u904D\u3002\u56DE\u770B\u7684\u65F6\u5019\u53D1\u73B0\u624B\u4E00\u76F4\u6CA1\u6253\u5F00\u3002\uFF08\u821E\u8E48 +{dance}\uFF09"
+    },
+    {
+      id: "res-dance-otaku-high",
+      actionId: "dance-otaku",
+      actionName: "\u8DF3\u5B85\u821E",
+      condition: "dance >= 65",
+      priority: 20,
+      effects: {
+        stamina: -10,
+        mood: -1,
+        satiety: -5,
+        stats: {
+          dance: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u52A8\u4F5C\u65E9\u8BB0\u4F4F\u4E86\u3002\u7F3A\u7684\u4E0D\u662F\u904D\u6570\uFF0C\u662F\u4E0B\u9762\u5F97\u6709\u4EBA\u770B\u3002\uFF08\u821E\u8E48 +{dance}\uFF09"
     },
     {
       id: "res-dance-tired",
       actionId: "dance-otaku",
       actionName: "\u8DF3\u5B85\u821E",
-      condition: {
-        staminaBelow: 25
-      },
+      condition: "stamina < 25",
       priority: 10,
       effects: {
-        stamina: -12,
+        stamina: -10,
+        mood: -4,
+        satiety: -5,
         stats: {
           dance: [
             1,
@@ -18275,7 +18377,26 @@ var action_results_default = {
           ]
         }
       },
-      text: "\u817F\u6709\u70B9\u62AC\u4E0D\u8D77\u6765\uFF0C\u7EC3\u5230\u4E00\u534A\u5C31\u5750\u5728\u5730\u677F\u4E0A\u4E86\u3002\uFF08\u821E\u8E48 +{dance}\uFF09"
+      text: "\u817F\u62AC\u5230\u4E00\u534A\u5C31\u6389\u4E0B\u6765\u3002\u4F60\u5750\u5728\u5730\u677F\u4E0A\uFF0C\u628A\u97F3\u4E50\u5173\u4E86\u3002\uFF08\u821E\u8E48 +{dance}\uFF09"
+    },
+    {
+      id: "res-dance-otaku-peak",
+      actionId: "dance-otaku",
+      actionName: "\u8DF3\u5B85\u821E",
+      condition: "dance >= 80",
+      priority: 15,
+      effects: {
+        stamina: -10,
+        mood: -1,
+        satiety: -5,
+        stats: {
+          dance: [
+            1,
+            1
+          ]
+        }
+      },
+      text: "\u52A8\u4F5C\u5DF2\u7ECF\u4E0D\u7528\u60F3\u4E86\u3002\u4F60\u5F00\u59CB\u6CE8\u610F\u624B\u6307\u2014\u2014\u4EE5\u524D\u4ECE\u6765\u6CA1\u4EBA\u6559\u8FC7\u624B\u6307\u3002\uFF08\u821E\u8E48 +{dance}\uFF09"
     },
     {
       id: "res-acting-default",
@@ -18285,14 +18406,112 @@ var action_results_default = {
       priority: 99,
       effects: {
         stamina: -10,
+        mood: -1,
+        satiety: -5,
+        stats: {
+          acting: [
+            3,
+            4
+          ],
+          talk: [
+            1,
+            1
+          ]
+        }
+      },
+      text: "\u624B\u673A\u67B6\u5728\u4E66\u5806\u4E0A\uFF0C\u4E00\u6761\u4E00\u6761\u62CD\u5230\u591C\u91CC\u3002\u7B2C\u4E09\u6761\u6700\u80FD\u770B\u3002\uFF08\u6F14\u6280 +{acting} \xB7 \u53E3\u624D +{talk}\uFF09"
+    },
+    {
+      id: "res-acting-short-mid",
+      actionId: "acting-short",
+      actionName: "\u81EA\u62CD\u5C0F\u77ED\u5267",
+      condition: "acting >= 35",
+      priority: 30,
+      effects: {
+        stamina: -10,
+        mood: -1,
+        satiety: -5,
+        stats: {
+          acting: [
+            2,
+            3
+          ],
+          talk: [
+            1,
+            1
+          ]
+        }
+      },
+      text: "\u6F14\u5230\u4E00\u534A\u5FD8\u4E86\u8BCD\uFF0C\u4F60\u5E72\u8106\u987A\u7740\u63A5\u4E0B\u53BB\u2014\u2014\u90A3\u6BB5\u53CD\u800C\u662F\u5BF9\u7684\u3002\uFF08\u6F14\u6280 +{acting} \xB7 \u53E3\u624D +{talk}\uFF09"
+    },
+    {
+      id: "res-acting-short-high",
+      actionId: "acting-short",
+      actionName: "\u81EA\u62CD\u5C0F\u77ED\u5267",
+      condition: "acting >= 65",
+      priority: 20,
+      effects: {
+        stamina: -10,
+        mood: -1,
+        satiety: -5,
         stats: {
           acting: [
             1,
             2
+          ],
+          talk: [
+            1,
+            1
           ]
         }
       },
-      text: "\u81EA\u5BFC\u81EA\u6F14\u62CD\u4E86\u4E09\u6761\uFF0C\u7B2C\u4E8C\u6761\u6700\u597D\u3002\uFF08\u6F14\u6280 +{acting}\uFF09"
+      text: "\u4F60\u5F00\u59CB\u77E5\u9053\u955C\u5934\u5728\u54EA\u3002\u6F14\u7684\u75D5\u8FF9\u8FD8\u5728\uFF0C\u4F46\u6BD4\u4E0A\u6B21\u6DE1\u3002\uFF08\u6F14\u6280 +{acting} \xB7 \u53E3\u624D +{talk}\uFF09"
+    },
+    {
+      id: "res-acting-short-tired",
+      actionId: "acting-short",
+      actionName: "\u81EA\u62CD\u5C0F\u77ED\u5267",
+      condition: "stamina < 25",
+      priority: 10,
+      effects: {
+        stamina: -10,
+        mood: -4,
+        satiety: -5,
+        stats: {
+          acting: [
+            1,
+            1
+          ],
+          talk: [
+            1,
+            1
+          ]
+        }
+      },
+      text: "\u62CD\u4E86\u4E03\u6761\uFF0C\u6BCF\u6761\u90FD\u5728\u6253\u54C8\u6B20\u3002\u53D1\u51FA\u53BB\u7684\u662F\u7B2C\u4E00\u6761\u3002\uFF08\u6F14\u6280 +{acting} \xB7 \u53E3\u624D +{talk}\uFF09"
+    },
+    {
+      id: "res-acting-short-peak",
+      actionId: "acting-short",
+      actionName: "\u81EA\u62CD\u5C0F\u77ED\u5267",
+      condition: "acting >= 80",
+      priority: 15,
+      effects: {
+        stamina: -10,
+        mood: -1,
+        satiety: -5,
+        stats: {
+          acting: [
+            1,
+            1
+          ],
+          talk: [
+            1,
+            1
+          ]
+        }
+      },
+      text: "\u4F60\u6F14\u4EC0\u4E48\u90FD\u50CF\u81EA\u5DF1\u4E86\u3002\u8FD9\u65E2\u662F\u597D\u4E8B\uFF0C\u4E5F\u662F\u74F6\u9888\u3002\uFF08\u6F14\u6280 +{acting} \xB7 \u53E3\u624D +{talk}\uFF09"
     },
     {
       id: "res-talk-default",
@@ -18302,6 +18521,46 @@ var action_results_default = {
       priority: 99,
       effects: {
         stamina: -8,
+        mood: -1,
+        satiety: -4,
+        stats: {
+          talk: [
+            3,
+            4
+          ]
+        }
+      },
+      text: "\u5BF9\u7740\u5173\u6389\u7684\u6444\u50CF\u5934\uFF0C\u628A\u4ECE\u5F00\u573A\u5230\u5B89\u53EF\u7684\u8BCD\u62A5\u4E86\u4E00\u904D\u3002\uFF08\u53E3\u624D +{talk}\uFF09"
+    },
+    {
+      id: "res-talk-selftalk-mid",
+      actionId: "talk-selftalk",
+      actionName: "\u81EA\u8BF4\u81EA\u8BDD",
+      condition: "talk >= 35",
+      priority: 30,
+      effects: {
+        stamina: -8,
+        mood: -1,
+        satiety: -4,
+        stats: {
+          talk: [
+            2,
+            3
+          ]
+        }
+      },
+      text: "\u540C\u4E00\u53E5\u81EA\u6211\u4ECB\u7ECD\u6362\u4E86\u516D\u79CD\u8BF4\u6CD5\u3002\u6700\u540E\u4E00\u79CD\u6700\u50CF\u81EA\u5DF1\u3002\uFF08\u53E3\u624D +{talk}\uFF09"
+    },
+    {
+      id: "res-talk-selftalk-high",
+      actionId: "talk-selftalk",
+      actionName: "\u81EA\u8BF4\u81EA\u8BDD",
+      condition: "talk >= 65",
+      priority: 20,
+      effects: {
+        stamina: -8,
+        mood: -1,
+        satiety: -4,
         stats: {
           talk: [
             1,
@@ -18309,89 +18568,1340 @@ var action_results_default = {
           ]
         }
       },
-      text: "\u5BF9\u7740\u955C\u5934\u7EC3\u4E86\u4E00\u4E0B\u5348\u4E32\u573A\u8BCD\u3002\uFF08\u53E3\u624D +{talk}\uFF09"
+      text: "\u8BDD\u8BF4\u5F97\u592A\u987A\u4E86\uFF0C\u53CD\u800C\u5047\u3002\u4F60\u5F00\u59CB\u7EC3\u505C\u987F\u3002\uFF08\u53E3\u624D +{talk}\uFF09"
     },
     {
-      id: "res-work-default",
-      actionId: "work-part-time",
-      actionName: "\u6253\u5DE5",
+      id: "res-talk-selftalk-tired",
+      actionId: "talk-selftalk",
+      actionName: "\u81EA\u8BF4\u81EA\u8BDD",
+      condition: "stamina < 25",
+      priority: 10,
+      effects: {
+        stamina: -8,
+        mood: -4,
+        satiety: -4,
+        stats: {
+          talk: [
+            1,
+            1
+          ]
+        }
+      },
+      text: "\u8BF4\u5230\u7B2C\u4E09\u53E5\u5C31\u5361\u4F4F\u3002\u4F60\u76EF\u7740\u9ED1\u5C4F\uFF0C\u5FD8\u4E86\u4E0B\u4E00\u53E5\u8BE5\u5938\u8C01\u3002\uFF08\u53E3\u624D +{talk}\uFF09"
+    },
+    {
+      id: "res-talk-selftalk-peak",
+      actionId: "talk-selftalk",
+      actionName: "\u81EA\u8BF4\u81EA\u8BDD",
+      condition: "talk >= 80",
+      priority: 15,
+      effects: {
+        stamina: -8,
+        mood: -1,
+        satiety: -4,
+        stats: {
+          talk: [
+            1,
+            1
+          ]
+        }
+      },
+      text: "\u8BDD\u8BF4\u5F97\u8D8A\u6765\u8D8A\u987A\uFF0C\u4E5F\u8D8A\u6765\u8D8A\u50CF\u6A21\u677F\u3002\u4F60\u5F00\u59CB\u6545\u610F\u7559\u4E00\u70B9\u78D5\u5DF4\u3002\uFF08\u53E3\u624D +{talk}\uFF09"
+    },
+    {
+      id: "res-vocal-street-default",
+      actionId: "vocal-street",
+      actionName: "\u8857\u5934\u5356\u5531",
       condition: {},
       priority: 99,
       effects: {
-        stamina: -20,
-        money: 320
+        stamina: -22,
+        money: 80,
+        mood: -1,
+        satiety: -7,
+        fans: 3,
+        stats: {
+          vocal: [
+            4,
+            5
+          ],
+          talk: [
+            1,
+            2
+          ]
+        }
       },
-      text: "\u5728\u4FBF\u5229\u5E97\u7AD9\u4E86\u56DB\u4E2A\u5C0F\u65F6\uFF0C\u811A\u6709\u70B9\u9EBB\u3002\uFF08\u6536\u5165 +320\uFF09"
+      text: "\u5730\u94C1\u53E3\u7684\u4FDD\u5B89\u770B\u4E86\u4F60\u4E09\u6B21\uFF0C\u6CA1\u8D76\u4F60\u3002\u7434\u76D2\u91CC\u591A\u4E86\u4E09\u5341\u4E03\u5757\u3002\uFF08\u6F14\u5531 +{vocal} \xB7 \u53E3\u624D +{talk} \xB7 \u6536\u5165 +80\uFF09"
     },
     {
-      id: "res-work-tired",
-      actionId: "work-part-time",
-      actionName: "\u6253\u5DE5",
-      condition: {
-        staminaBelow: 25
+      id: "res-vocal-street-mid",
+      actionId: "vocal-street",
+      actionName: "\u8857\u5934\u5356\u5531",
+      condition: "vocal >= 35",
+      priority: 30,
+      effects: {
+        stamina: -22,
+        money: 80,
+        mood: -1,
+        satiety: -7,
+        fans: 3,
+        stats: {
+          vocal: [
+            3,
+            4
+          ],
+          talk: [
+            1,
+            2
+          ]
+        }
       },
+      text: "\u6709\u4EBA\u8E72\u4E0B\u6765\u542C\u5B8C\u4E00\u9996\u624D\u8D70\u3002\u4F60\u628A\u7B2C\u4E8C\u9996\u6362\u6210\u4E86\u6162\u7684\u3002\uFF08\u6F14\u5531 +{vocal} \xB7 \u53E3\u624D +{talk} \xB7 \u6536\u5165 +80\uFF09"
+    },
+    {
+      id: "res-vocal-street-high",
+      actionId: "vocal-street",
+      actionName: "\u8857\u5934\u5356\u5531",
+      condition: "vocal >= 65",
+      priority: 20,
+      effects: {
+        stamina: -22,
+        money: 80,
+        mood: -1,
+        satiety: -7,
+        fans: 3,
+        stats: {
+          vocal: [
+            1,
+            2
+          ],
+          talk: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u98CE\u628A\u8FD4\u542C\u5439\u6563\u4E86\u3002\u4F60\u9760\u6570\u62CD\u5B50\u5531\u5B8C\uFF0C\u7A33\u5F97\u81EA\u5DF1\u90FD\u610F\u5916\u3002\uFF08\u6F14\u5531 +{vocal} \xB7 \u53E3\u624D +{talk} \xB7 \u6536\u5165 +80\uFF09"
+    },
+    {
+      id: "res-vocal-street-tired",
+      actionId: "vocal-street",
+      actionName: "\u8857\u5934\u5356\u5531",
+      condition: "stamina < 25",
       priority: 10,
       effects: {
-        stamina: -20,
-        money: 240
+        stamina: -22,
+        money: 80,
+        mood: -4,
+        satiety: -7,
+        fans: 3,
+        stats: {
+          vocal: [
+            1,
+            2
+          ],
+          talk: [
+            1,
+            2
+          ]
+        }
       },
-      text: "\u56F0\u5F97\u5DEE\u70B9\u7B97\u9519\u94B1\uFF0C\u5E97\u957F\u8BA9\u4F60\u63D0\u524D\u4E0B\u73ED\u3002\uFF08\u6536\u5165 +240\uFF09"
+      text: "\u55D3\u5B50\u6CA1\u5F00\uFF0C\u7B2C\u4E00\u9996\u5C31\u7834\u4E86\u3002\u4F60\u6362\u4E86\u4E00\u9996\u4F4E\u7684\uFF0C\u8FD8\u662F\u7834\u3002\uFF08\u6F14\u5531 +{vocal} \xB7 \u53E3\u624D +{talk} \xB7 \u6536\u5165 +80\uFF09"
     },
     {
-      id: "res-rest-default",
+      id: "res-vocal-street-peak",
+      actionId: "vocal-street",
+      actionName: "\u8857\u5934\u5356\u5531",
+      condition: "vocal >= 80",
+      priority: 15,
+      effects: {
+        stamina: -22,
+        money: 80,
+        mood: -1,
+        satiety: -7,
+        fans: 3,
+        stats: {
+          vocal: [
+            1,
+            1
+          ],
+          talk: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u8DEF\u4EBA\u5F00\u59CB\u56DE\u5934\u4E86\u3002\u4F46\u56DE\u5934\u7684\u4EBA\u591A\u4E86\uFF0C\u4F60\u53CD\u800C\u4E0D\u6562\u5531\u96BE\u7684\u3002\uFF08\u6F14\u5531 +{vocal} \xB7 \u53E3\u624D +{talk} \xB7 \u6536\u5165 +80\uFF09"
+    },
+    {
+      id: "res-dance-class-default",
+      actionId: "dance-class",
+      actionName: "\u821E\u8E48\u8BFE",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -22,
+        money: -320,
+        mood: -1,
+        satiety: -7,
+        stats: {
+          dance: [
+            4,
+            5
+          ],
+          acting: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u8001\u5E08\u4ECE\u955C\u5B50\u540E\u9762\u8D70\u8FC7\u6765\uFF0C\u628A\u4F60\u7684\u624B\u5F80\u4E0A\u62AC\u4E86\u4E24\u516C\u5206\u3002\u5C31\u8FD9\u4E24\u516C\u5206\u3002\uFF08\u821E\u8E48 +{dance} \xB7 \u6F14\u6280 +{acting}\uFF09"
+    },
+    {
+      id: "res-dance-class-mid",
+      actionId: "dance-class",
+      actionName: "\u821E\u8E48\u8BFE",
+      condition: "dance >= 35",
+      priority: 30,
+      effects: {
+        stamina: -22,
+        money: -320,
+        mood: -1,
+        satiety: -7,
+        stats: {
+          dance: [
+            3,
+            4
+          ],
+          acting: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u5B66\u5230\u4E00\u6BB5\u65B0\u7684\u516B\u62CD\u3002\u4F60\u6BD4\u65C1\u8FB9\u7684\u5973\u5B69\u6162\u534A\u62CD\uFF0C\u4F46\u4F60\u6CA1\u505C\u3002\uFF08\u821E\u8E48 +{dance} \xB7 \u6F14\u6280 +{acting}\uFF09"
+    },
+    {
+      id: "res-dance-class-high",
+      actionId: "dance-class",
+      actionName: "\u821E\u8E48\u8BFE",
+      condition: "dance >= 65",
+      priority: 20,
+      effects: {
+        stamina: -22,
+        money: -320,
+        mood: -1,
+        satiety: -7,
+        stats: {
+          dance: [
+            1,
+            2
+          ],
+          acting: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u6574\u652F\u821E\u4F60\u90FD\u4F1A\u3002\u8001\u5E08\u8BA9\u4F60\u8DF3\u7ED9\u540E\u9762\u7684\u4EBA\u770B\uFF0C\u4F60\u624D\u77E5\u9053\u5DEE\u5728\u54EA\u3002\uFF08\u821E\u8E48 +{dance} \xB7 \u6F14\u6280 +{acting}\uFF09"
+    },
+    {
+      id: "res-dance-class-tired",
+      actionId: "dance-class",
+      actionName: "\u821E\u8E48\u8BFE",
+      condition: "stamina < 25",
+      priority: 10,
+      effects: {
+        stamina: -22,
+        money: -320,
+        mood: -4,
+        satiety: -7,
+        stats: {
+          dance: [
+            1,
+            2
+          ],
+          acting: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u70ED\u8EAB\u6CA1\u505A\u5B8C\u5C31\u4E0A\u573A\u3002\u8DF3\u5230\u4E00\u534A\u5C0F\u817F\u62BD\u4E86\uFF0C\u4F60\u5728\u89D2\u843D\u6309\u4E86\u5F88\u4E45\u3002\uFF08\u821E\u8E48 +{dance} \xB7 \u6F14\u6280 +{acting}\uFF09"
+    },
+    {
+      id: "res-dance-class-peak",
+      actionId: "dance-class",
+      actionName: "\u821E\u8E48\u8BFE",
+      condition: "dance >= 80",
+      priority: 15,
+      effects: {
+        stamina: -22,
+        money: -320,
+        mood: -1,
+        satiety: -7,
+        stats: {
+          dance: [
+            1,
+            1
+          ],
+          acting: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u8001\u5E08\u4E0D\u518D\u7EA0\u4F60\u7684\u52A8\u4F5C\uFF0C\u6539\u8BA9\u4F60\u6559\u540E\u9762\u7684\u65B0\u4EBA\u3002\u6559\u7684\u65F6\u5019\u4F60\u624D\u53D1\u73B0\u81EA\u5DF1\u6709\u591A\u719F\u3002\uFF08\u821E\u8E48 +{dance} \xB7 \u6F14\u6280 +{acting}\uFF09"
+    },
+    {
+      id: "res-acting-workshop-default",
+      actionId: "acting-workshop",
+      actionName: "\u8868\u6F14\u5DE5\u4F5C\u574A",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -22,
+        money: -300,
+        mood: -1,
+        satiety: -7,
+        stats: {
+          acting: [
+            4,
+            5
+          ],
+          talk: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u4E24\u4E2A\u4EBA\u642D\u4E86\u4E00\u6BB5\u6CA1\u53F0\u8BCD\u7684\u620F\u3002\u5979\u54ED\u4E86\uFF0C\u4F60\u6CA1\u53CD\u5E94\u8FC7\u6765\uFF0C\u4F46\u4F60\u6CA1\u51FA\u620F\u3002\uFF08\u6F14\u6280 +{acting} \xB7 \u53E3\u624D +{talk}\uFF09"
+    },
+    {
+      id: "res-acting-workshop-mid",
+      actionId: "acting-workshop",
+      actionName: "\u8868\u6F14\u5DE5\u4F5C\u574A",
+      condition: "acting >= 35",
+      priority: 30,
+      effects: {
+        stamina: -22,
+        money: -300,
+        mood: -1,
+        satiety: -7,
+        stats: {
+          acting: [
+            3,
+            4
+          ],
+          talk: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u8001\u5E08\u8BA9\u4F60\u628A\u540C\u4E00\u53E5\u8BDD\u7528\u4E94\u79CD\u60C5\u7EEA\u8BF4\u3002\u8BF4\u5230\u7B2C\u56DB\u79CD\uFF0C\u623F\u95F4\u5B89\u9759\u4E86\u3002\uFF08\u6F14\u6280 +{acting} \xB7 \u53E3\u624D +{talk}\uFF09"
+    },
+    {
+      id: "res-acting-workshop-high",
+      actionId: "acting-workshop",
+      actionName: "\u8868\u6F14\u5DE5\u4F5C\u574A",
+      condition: "acting >= 65",
+      priority: 20,
+      effects: {
+        stamina: -22,
+        money: -300,
+        mood: -1,
+        satiety: -7,
+        stats: {
+          acting: [
+            1,
+            2
+          ],
+          talk: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u4F60\u5F00\u59CB\u80FD\u611F\u89C9\u5230\u5BF9\u624B\u4E0B\u4E00\u53E5\u4F1A\u600E\u4E48\u63A5\u3002\u8FD9\u6BD4\u6280\u5DE7\u96BE\u6559\u3002\uFF08\u6F14\u6280 +{acting} \xB7 \u53E3\u624D +{talk}\uFF09"
+    },
+    {
+      id: "res-acting-workshop-tired",
+      actionId: "acting-workshop",
+      actionName: "\u8868\u6F14\u5DE5\u4F5C\u574A",
+      condition: "stamina < 25",
+      priority: 10,
+      effects: {
+        stamina: -22,
+        money: -300,
+        mood: -4,
+        satiety: -7,
+        stats: {
+          acting: [
+            1,
+            2
+          ],
+          talk: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u4E00\u76F4\u5728\u7B49\u5BF9\u65B9\u7ED9\u53CD\u5E94\u3002\u7B49\u5230\u6700\u540E\uFF0C\u4F60\u8FDE\u81EA\u5DF1\u8BE5\u5F80\u54EA\u7AD9\u90FD\u5FD8\u4E86\u3002\uFF08\u6F14\u6280 +{acting} \xB7 \u53E3\u624D +{talk}\uFF09"
+    },
+    {
+      id: "res-acting-workshop-peak",
+      actionId: "acting-workshop",
+      actionName: "\u8868\u6F14\u5DE5\u4F5C\u574A",
+      condition: "acting >= 80",
+      priority: 15,
+      effects: {
+        stamina: -22,
+        money: -300,
+        mood: -1,
+        satiety: -7,
+        stats: {
+          acting: [
+            1,
+            1
+          ],
+          talk: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u4F60\u6210\u4E86\u5DE5\u4F5C\u574A\u91CC\u6700\u80FD\u5E26\u8282\u594F\u7684\u4EBA\u3002\u642D\u620F\u7684\u4EBA\u8DDF\u7740\u4F60\u8D70\uFF0C\u8FD9\u6BD4\u6F14\u5F97\u597D\u66F4\u96BE\u3002\uFF08\u6F14\u6280 +{acting} \xB7 \u53E3\u624D +{talk}\uFF09"
+    },
+    {
+      id: "res-talk-host-default",
+      actionId: "talk-host",
+      actionName: "\u6F2B\u5C55\u4E3B\u6301",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -24,
+        money: -280,
+        mood: -1,
+        satiety: -7,
+        fans: 6,
+        stats: {
+          acting: [
+            1,
+            2
+          ],
+          talk: [
+            4,
+            5
+          ]
+        }
+      },
+      text: "\u7AD9\u5728\u4E3B\u821E\u53F0\u8FB9\u4E0A\u7684\u5C0F\u53F0\u5B50\uFF0C\u628A\u62BD\u5956\u540D\u5355\u5FF5\u5B8C\u3002\u53F0\u4E0B\u6709\u4EBA\u8DDF\u7740\u4E3E\u624B\u3002\uFF08\u53E3\u624D +{talk} \xB7 \u6F14\u6280 +{acting} \xB7 \u7C89\u4E1D +6\uFF09"
+    },
+    {
+      id: "res-talk-host-mid",
+      actionId: "talk-host",
+      actionName: "\u6F2B\u5C55\u4E3B\u6301",
+      condition: "talk >= 35",
+      priority: 30,
+      effects: {
+        stamina: -24,
+        money: -280,
+        mood: -1,
+        satiety: -7,
+        fans: 6,
+        stats: {
+          acting: [
+            1,
+            2
+          ],
+          talk: [
+            3,
+            4
+          ]
+        }
+      },
+      text: "\u97F3\u54CD\u5578\u53EB\u4E86\u4E24\u6B21\uFF0C\u4F60\u7528\u4E00\u53E5\u73A9\u7B11\u76D6\u8FC7\u53BB\u3002\u6CA1\u4EBA\u8BB0\u5F97\u4E8B\u6545\uFF0C\u53EA\u8BB0\u5F97\u4F60\u3002\uFF08\u53E3\u624D +{talk} \xB7 \u6F14\u6280 +{acting} \xB7 \u7C89\u4E1D +6\uFF09"
+    },
+    {
+      id: "res-talk-host-high",
+      actionId: "talk-host",
+      actionName: "\u6F2B\u5C55\u4E3B\u6301",
+      condition: "talk >= 65",
+      priority: 20,
+      effects: {
+        stamina: -24,
+        money: -280,
+        mood: -1,
+        satiety: -7,
+        fans: 6,
+        stats: {
+          acting: [
+            1,
+            2
+          ],
+          talk: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u53F0\u4E0B\u6709\u4EBA\u558A\u4F60\u7684\u540D\u5B57\u3002\u4F60\u6123\u4F4F\u534A\u79D2\uFF0C\u7136\u540E\u628A\u4E32\u573A\u8BCD\u8BF4\u5B8C\u4E86\u3002\uFF08\u53E3\u624D +{talk} \xB7 \u6F14\u6280 +{acting} \xB7 \u7C89\u4E1D +6\uFF09"
+    },
+    {
+      id: "res-talk-host-tired",
+      actionId: "talk-host",
+      actionName: "\u6F2B\u5C55\u4E3B\u6301",
+      condition: "stamina < 25",
+      priority: 10,
+      effects: {
+        stamina: -24,
+        money: -280,
+        mood: -4,
+        satiety: -7,
+        fans: 6,
+        stats: {
+          acting: [
+            1,
+            2
+          ],
+          talk: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u5FF5\u9519\u4E86\u4E09\u4E2A\u540D\u5B57\u3002\u7B2C\u4E09\u4E2A\u7684\u65F6\u5019\uFF0C\u53F0\u4E0B\u5F00\u59CB\u7B11\uFF0C\u4E0D\u662F\u5584\u610F\u7684\u3002\uFF08\u53E3\u624D +{talk} \xB7 \u6F14\u6280 +{acting} \xB7 \u7C89\u4E1D +6\uFF09"
+    },
+    {
+      id: "res-talk-host-peak",
+      actionId: "talk-host",
+      actionName: "\u6F2B\u5C55\u4E3B\u6301",
+      condition: "talk >= 80",
+      priority: 15,
+      effects: {
+        stamina: -24,
+        money: -280,
+        mood: -1,
+        satiety: -7,
+        fans: 6,
+        stats: {
+          acting: [
+            1,
+            2
+          ],
+          talk: [
+            1,
+            1
+          ]
+        }
+      },
+      text: "\u6574\u573A\u6D41\u7A0B\u95ED\u7740\u773C\u775B\u90FD\u80FD\u8D70\u5B8C\u3002\u53F0\u4E0B\u6709\u4EBA\u4E13\u95E8\u4E3A\u4E86\u770B\u4F60\u4E3B\u6301\u800C\u6765\u3002\uFF08\u53E3\u624D +{talk} \xB7 \u6F14\u6280 +{acting} \xB7 \u7C89\u4E1D +6\uFF09"
+    },
+    {
+      id: "res-vocal-coach-default",
+      actionId: "vocal-coach",
+      actionName: "\u4E13\u4E1A\u6B4C\u5531\u6307\u5BFC",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -34,
+        money: -1100,
+        mood: -1,
+        satiety: -8,
+        stats: {
+          vocal: [
+            5,
+            6
+          ]
+        }
+      },
+      text: "\u8001\u5E08\u8BA9\u4F60\u5531\u4E00\u4E2A\u5355\u97F3\uFF0C\u5531\u5B8C\u4ED6\u8BF4\uFF1A\u4F60\u4E00\u76F4\u5728\u8EB2\u5B83\u3002\uFF08\u6F14\u5531 +{vocal}\uFF09"
+    },
+    {
+      id: "res-vocal-coach-mid",
+      actionId: "vocal-coach",
+      actionName: "\u4E13\u4E1A\u6B4C\u5531\u6307\u5BFC",
+      condition: "vocal >= 35",
+      priority: 30,
+      effects: {
+        stamina: -34,
+        money: -1100,
+        mood: -1,
+        satiety: -8,
+        stats: {
+          vocal: [
+            3,
+            4
+          ]
+        }
+      },
+      text: "\u534A\u5C0F\u65F6\u53EA\u7EC3\u4E86\u4E24\u4E2A\u97F3\u3002\u4ED6\u8BF4\uFF0C\u4F60\u73B0\u5728\u624D\u53EB\u5728\u5531\u3002\uFF08\u6F14\u5531 +{vocal}\uFF09"
+    },
+    {
+      id: "res-vocal-coach-high",
+      actionId: "vocal-coach",
+      actionName: "\u4E13\u4E1A\u6B4C\u5531\u6307\u5BFC",
+      condition: "vocal >= 65",
+      priority: 20,
+      effects: {
+        stamina: -34,
+        money: -1100,
+        mood: -1,
+        satiety: -8,
+        stats: {
+          vocal: [
+            2,
+            3
+          ]
+        }
+      },
+      text: "\u4ED6\u8BA9\u4F60\u522B\u7528\u529B\u3002\u4F60\u677E\u5F00\u4E4B\u540E\uFF0C\u58F0\u97F3\u53CD\u800C\u4F20\u5F97\u66F4\u8FDC\u3002\uFF08\u6F14\u5531 +{vocal}\uFF09"
+    },
+    {
+      id: "res-vocal-coach-tired",
+      actionId: "vocal-coach",
+      actionName: "\u4E13\u4E1A\u6B4C\u5531\u6307\u5BFC",
+      condition: "stamina < 25",
+      priority: 10,
+      effects: {
+        stamina: -34,
+        money: -1100,
+        mood: -4,
+        satiety: -8,
+        stats: {
+          vocal: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u55D3\u5B50\u662F\u54D1\u7684\uFF0C\u8BFE\u4E5F\u9000\u4E0D\u4E86\u3002\u4F60\u542C\u5B8C\u4E86\u4E00\u5C0F\u65F6\u7684\u793A\u8303\u3002\uFF08\u6F14\u5531 +{vocal}\uFF09"
+    },
+    {
+      id: "res-vocal-coach-peak",
+      actionId: "vocal-coach",
+      actionName: "\u4E13\u4E1A\u6B4C\u5531\u6307\u5BFC",
+      condition: "vocal >= 80",
+      priority: 15,
+      effects: {
+        stamina: -34,
+        money: -1100,
+        mood: -1,
+        satiety: -8,
+        stats: {
+          vocal: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u8001\u5E08\u8BF4\uFF0C\u6280\u672F\u5C42\u9762\u4ED6\u5DF2\u7ECF\u6CA1\u4EC0\u4E48\u80FD\u6559\u7684\u4E86\u3002\u5269\u4E0B\u7684\u662F\u4F60\u81EA\u5DF1\u8981\u4E0D\u8981\u4FE1\u3002\uFF08\u6F14\u5531 +{vocal}\uFF09"
+    },
+    {
+      id: "res-dance-intensive-default",
+      actionId: "dance-intensive",
+      actionName: "\u821E\u5BA4\u63D0\u9AD8\u73ED",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -34,
+        money: -1e3,
+        mood: -1,
+        satiety: -8,
+        stats: {
+          dance: [
+            5,
+            6
+          ]
+        }
+      },
+      text: "\u843D\u5730\u7684\u65F6\u5019\u819D\u76D6\u54CD\u4E86\u4E00\u58F0\u3002\u4F60\u6CA1\u505C\uFF0C\u628A\u6700\u540E\u516B\u62CD\u8D70\u5B8C\u3002\uFF08\u821E\u8E48 +{dance}\uFF09"
+    },
+    {
+      id: "res-dance-intensive-mid",
+      actionId: "dance-intensive",
+      actionName: "\u821E\u5BA4\u63D0\u9AD8\u73ED",
+      condition: "dance >= 35",
+      priority: 30,
+      effects: {
+        stamina: -34,
+        money: -1e3,
+        mood: -1,
+        satiety: -8,
+        stats: {
+          dance: [
+            3,
+            4
+          ]
+        }
+      },
+      text: "\u955C\u5B50\u91CC\u516D\u4E2A\u4EBA\uFF0C\u53EA\u6709\u4F60\u5728\u6570\u62CD\u5B50\u3002\u8001\u5E08\u8BF4\uFF0C\u5148\u522B\u6570\uFF0C\u5148\u542C\u3002\uFF08\u821E\u8E48 +{dance}\uFF09"
+    },
+    {
+      id: "res-dance-intensive-high",
+      actionId: "dance-intensive",
+      actionName: "\u821E\u5BA4\u63D0\u9AD8\u73ED",
+      condition: "dance >= 65",
+      priority: 20,
+      effects: {
+        stamina: -34,
+        money: -1e3,
+        mood: -1,
+        satiety: -8,
+        stats: {
+          dance: [
+            2,
+            3
+          ]
+        }
+      },
+      text: "\u540C\u6837\u7684\u52A8\u4F5C\uFF0C\u4F60\u6BD4\u522B\u4EBA\u591A\u7559\u4E86\u534A\u62CD\u3002\u90A3\u534A\u62CD\u5C31\u662F\u5168\u90E8\u3002\uFF08\u821E\u8E48 +{dance}\uFF09"
+    },
+    {
+      id: "res-dance-intensive-tired",
+      actionId: "dance-intensive",
+      actionName: "\u821E\u5BA4\u63D0\u9AD8\u73ED",
+      condition: "stamina < 25",
+      priority: 10,
+      effects: {
+        stamina: -34,
+        money: -1e3,
+        mood: -4,
+        satiety: -8,
+        stats: {
+          dance: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u6276\u7740\u628A\u6746\u8DF3\u5B8C\u3002\u4E0B\u8BFE\u6CA1\u4EBA\u8BF4\u4EC0\u4E48\uFF0C\u4F60\u81EA\u5DF1\u77E5\u9053\u96BE\u770B\u3002\uFF08\u821E\u8E48 +{dance}\uFF09"
+    },
+    {
+      id: "res-dance-intensive-peak",
+      actionId: "dance-intensive",
+      actionName: "\u821E\u5BA4\u63D0\u9AD8\u73ED",
+      condition: "dance >= 80",
+      priority: 15,
+      effects: {
+        stamina: -34,
+        money: -1e3,
+        mood: -1,
+        satiety: -8,
+        stats: {
+          dance: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u6574\u95F4\u821E\u5BA4\u53EA\u6709\u4F60\u8DDF\u5F97\u4E0A\u8FD9\u6BB5\u3002\u8DF3\u5B8C\u4F60\u5728\u955C\u5B50\u524D\u7AD9\u4E86\u5F88\u4E45\uFF0C\u6CA1\u89C9\u5F97\u9AD8\u5174\u3002\uFF08\u821E\u8E48 +{dance}\uFF09"
+    },
+    {
+      id: "res-acting-coach-default",
+      actionId: "acting-coach",
+      actionName: "\u6F14\u6280\u6307\u5BFC\u8BFE",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -34,
+        money: -1e3,
+        mood: -1,
+        satiety: -8,
+        stats: {
+          acting: [
+            5,
+            6
+          ]
+        }
+      },
+      text: "\u4ED6\u8BA9\u4F60\u6F14\u4E00\u6BB5\u4EC0\u4E48\u90FD\u6CA1\u53D1\u751F\u7684\u620F\u3002\u4F60\u6F14\u4E86\u56DB\u5341\u5206\u949F\uFF0C\u4ED6\u4E00\u6B21\u6CA1\u6253\u65AD\u3002\uFF08\u6F14\u6280 +{acting}\uFF09"
+    },
+    {
+      id: "res-acting-coach-mid",
+      actionId: "acting-coach",
+      actionName: "\u6F14\u6280\u6307\u5BFC\u8BFE",
+      condition: "acting >= 35",
+      priority: 30,
+      effects: {
+        stamina: -34,
+        money: -1e3,
+        mood: -1,
+        satiety: -8,
+        stats: {
+          acting: [
+            3,
+            4
+          ]
+        }
+      },
+      text: "\u4ED6\u8BF4\u4F60\u6F14\u7684\u662F\u60C5\u7EEA\uFF0C\u4E0D\u662F\u4EBA\u3002\u4F60\u91CD\u6765\u4E86\u4E00\u904D\uFF0C\u8FD9\u56DE\u624B\u5728\u6296\u3002\uFF08\u6F14\u6280 +{acting}\uFF09"
+    },
+    {
+      id: "res-acting-coach-high",
+      actionId: "acting-coach",
+      actionName: "\u6F14\u6280\u6307\u5BFC\u8BFE",
+      condition: "acting >= 65",
+      priority: 20,
+      effects: {
+        stamina: -34,
+        money: -1e3,
+        mood: -1,
+        satiety: -8,
+        stats: {
+          acting: [
+            2,
+            3
+          ]
+        }
+      },
+      text: "\u4F60\u7EC8\u4E8E\u80FD\u5728\u8BE5\u505C\u7684\u5730\u65B9\u505C\u4E0B\u3002\u505C\u4E0B\u6765\u6BD4\u8BF4\u51FA\u6765\u96BE\u3002\uFF08\u6F14\u6280 +{acting}\uFF09"
+    },
+    {
+      id: "res-acting-coach-tired",
+      actionId: "acting-coach",
+      actionName: "\u6F14\u6280\u6307\u5BFC\u8BFE",
+      condition: "stamina < 25",
+      priority: 10,
+      effects: {
+        stamina: -34,
+        money: -1e3,
+        mood: -4,
+        satiety: -8,
+        stats: {
+          acting: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u53F0\u8BCD\u80CC\u4E0D\u8FDB\u53BB\u3002\u4F60\u5750\u5728\u90A3\u513F\uFF0C\u628A\u672C\u5B50\u7FFB\u4E86\u4E09\u904D\u3002\uFF08\u6F14\u6280 +{acting}\uFF09"
+    },
+    {
+      id: "res-acting-coach-peak",
+      actionId: "acting-coach",
+      actionName: "\u6F14\u6280\u6307\u5BFC\u8BFE",
+      condition: "acting >= 80",
+      priority: 15,
+      effects: {
+        stamina: -34,
+        money: -1e3,
+        mood: -1,
+        satiety: -8,
+        stats: {
+          acting: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u4ED6\u8BA9\u4F60\u522B\u518D\u6F14\u4E86\uFF0C\u5C31\u7AD9\u5728\u90A3\u513F\u3002\u4F60\u7AD9\u4E86\u5341\u5206\u949F\uFF0C\u4ED6\u8BF4\u300C\u5C31\u662F\u8FD9\u4E2A\u300D\u3002\uFF08\u6F14\u6280 +{acting}\uFF09"
+    },
+    {
+      id: "res-talk-speech-default",
+      actionId: "talk-speech",
+      actionName: "\u8DEF\u6F14\u6F14\u8BB2",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -32,
+        money: -900,
+        mood: -1,
+        satiety: -8,
+        fans: 4,
+        stats: {
+          talk: [
+            5,
+            6
+          ]
+        }
+      },
+      text: "\u5E7F\u573A\u4E0A\u6CA1\u4EBA\u542C\u3002\u4F60\u628A\u8BDD\u7B52\u4E3E\u9AD8\uFF0C\u628A\u6700\u540E\u4E00\u53E5\u8BF4\u7ED9\u98CE\u542C\u3002\uFF08\u53E3\u624D +{talk}\uFF09"
+    },
+    {
+      id: "res-talk-speech-mid",
+      actionId: "talk-speech",
+      actionName: "\u8DEF\u6F14\u6F14\u8BB2",
+      condition: "talk >= 35",
+      priority: 30,
+      effects: {
+        stamina: -32,
+        money: -900,
+        mood: -1,
+        satiety: -8,
+        fans: 4,
+        stats: {
+          talk: [
+            3,
+            4
+          ]
+        }
+      },
+      text: "\u4E00\u4E2A\u9001\u5916\u5356\u7684\u505C\u4E0B\u6765\u542C\u5B8C\u4E86\u3002\u4ED6\u8BF4\uFF0C\u4F60\u58F0\u97F3\u633A\u4EAE\u7684\u3002\uFF08\u53E3\u624D +{talk}\uFF09"
+    },
+    {
+      id: "res-talk-speech-high",
+      actionId: "talk-speech",
+      actionName: "\u8DEF\u6F14\u6F14\u8BB2",
+      condition: "talk >= 65",
+      priority: 20,
+      effects: {
+        stamina: -32,
+        money: -900,
+        mood: -1,
+        satiety: -8,
+        fans: 4,
+        stats: {
+          talk: [
+            2,
+            3
+          ]
+        }
+      },
+      text: "\u4F60\u4E0D\u518D\u80CC\u7A3F\u3002\u60F3\u5230\u54EA\u8BF4\u5230\u54EA\uFF0C\u53CD\u800C\u6CA1\u4EBA\u8D70\u3002\uFF08\u53E3\u624D +{talk}\uFF09"
+    },
+    {
+      id: "res-talk-speech-tired",
+      actionId: "talk-speech",
+      actionName: "\u8DEF\u6F14\u6F14\u8BB2",
+      condition: "stamina < 25",
+      priority: 10,
+      effects: {
+        stamina: -32,
+        money: -900,
+        mood: -4,
+        satiety: -8,
+        fans: 4,
+        stats: {
+          talk: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u8BDD\u7B52\u6CA1\u7535\u3002\u4F60\u7AD9\u5728\u90A3\u513F\u558A\u5B8C\uFF0C\u5589\u5499\u75BC\u4E86\u4E00\u665A\u4E0A\u3002\uFF08\u53E3\u624D +{talk}\uFF09"
+    },
+    {
+      id: "res-talk-speech-peak",
+      actionId: "talk-speech",
+      actionName: "\u8DEF\u6F14\u6F14\u8BB2",
+      condition: "talk >= 80",
+      priority: 15,
+      effects: {
+        stamina: -32,
+        money: -900,
+        mood: -1,
+        satiety: -8,
+        fans: 4,
+        stats: {
+          talk: [
+            1,
+            2
+          ]
+        }
+      },
+      text: "\u5E7F\u573A\u4E0A\u5F00\u59CB\u6709\u4EBA\u4E13\u95E8\u7B49\u4F60\u3002\u4F60\u8BB2\u7684\u4E1C\u897F\u5DF2\u7ECF\u88AB\u542C\u8FC7\u4E86\uFF0C\u4F46\u4ED6\u4EEC\u8FD8\u662F\u6765\u3002\uFF08\u53E3\u624D +{talk}\uFF09"
+    },
+    {
+      id: "res-rest-sleep",
       actionId: "rest-sleep",
       actionName: "\u7206\u7761",
       condition: {},
       priority: 99,
       effects: {
-        stamina: 25
+        stamina: 40,
+        mood: 8,
+        satiety: -8
       },
-      text: "\u7761\u4E86\u4E00\u89C9\uFF0C\u611F\u89C9\u6D3B\u8FC7\u6765\u4E86\u3002"
+      text: "\u95F9\u949F\u54CD\u4E86\u4E09\u904D\uFF0C\u4F60\u53EA\u542C\u89C1\u6700\u540E\u4E00\u904D\u3002\u9192\u6765\u5929\u5DF2\u7ECF\u9ED1\u900F\u3002\uFF08\u4F53\u529B +40\uFF09"
+    },
+    {
+      id: "res-food-saizeriya",
+      actionId: "food-saizeriya",
+      actionName: "\u8428\u8389\u4E9A",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: 8,
+        money: -80,
+        mood: 6,
+        satiety: 18
+      },
+      text: "\u4E00\u4EFD\u610F\u9762\uFF0C\u4E00\u676F\u514D\u8D39\u7684\u6C34\uFF0C\u5750\u4E86\u56DB\u5341\u5206\u949F\u3002\u6CA1\u4EBA\u8D76\u4F60\u3002\uFF08\u9971\u8179 +18 \xB7 \u5FC3\u60C5 +6\uFF09"
+    },
+    {
+      id: "res-food-sushiro",
+      actionId: "food-sushiro",
+      actionName: "\u5BFF\u53F8\u90CE",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: 20,
+        money: -220,
+        mood: 15,
+        satiety: 30
+      },
+      text: "\u62FF\u4E86\u4E24\u76D8\uFF0C\u770B\u8FF4\u8F6C\u5E26\u8F6C\u4E86\u4E09\u5708\u3002\u7ED3\u8D26\u65F6\u5FC3\u75BC\u4E86\u4E00\u4E0B\uFF0C\u4F46\u503C\u3002\uFF08\u9971\u8179 +30 \xB7 \u5FC3\u60C5 +15\uFF09"
+    },
+    {
+      id: "res-food-nice",
+      actionId: "food-nice",
+      actionName: "\u6F02\u4EAE\u996D",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: 28,
+        money: -520,
+        mood: 25,
+        satiety: 38
+      },
+      text: "\u62CD\u4E86\u5F88\u591A\u7167\u7247\u3002\u771F\u6B63\u5403\u5B8C\u7684\u53EA\u6709\u4E00\u534A\u3002\uFF08\u9971\u8179 +38 \xB7 \u5FC3\u60C5 +25\uFF09"
+    },
+    {
+      id: "res-recover-bath",
+      actionId: "recover-bath",
+      actionName: "\u94B1\u6C64",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: 15,
+        money: -60,
+        mood: 12,
+        satiety: -2
+      },
+      text: "\u5728\u6FA1\u5802\u6CE1\u5230\u624B\u6307\u53D1\u76B1\u3002\u9694\u58C1\u963F\u59E8\u95EE\u4F60\u662F\u54EA\u4E2A\u56E2\u7684\u3002\uFF08\u4F53\u529B +15 \xB7 \u5FC3\u60C5 +12\uFF09"
+    },
+    {
+      id: "res-fun-park",
+      actionId: "fun-park",
+      actionName: "\u6E38\u4E50\u56ED",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -12,
+        money: -400,
+        mood: 28,
+        satiety: -10
+      },
+      text: "\u4E00\u4E2A\u4EBA\u5750\u4E86\u4E24\u904D\u8FC7\u5C71\u8F66\u3002\u7B2C\u4E8C\u904D\u7684\u65F6\u5019\uFF0C\u4F60\u7EC8\u4E8E\u558A\u51FA\u6765\u4E86\u3002\uFF08\u5FC3\u60C5 +28\uFF09"
+    },
+    {
+      id: "res-fun-trip",
+      actionId: "fun-trip",
+      actionName: "\u65C5\u6E38",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: 15,
+        money: -1800,
+        mood: 45,
+        satiety: -20
+      },
+      text: "\u4E09\u5929\u6CA1\u8FDB\u6392\u7EC3\u5BA4\u3002\u56DE\u6765\u7684\u65F6\u5019\uFF0C\u4F60\u5C45\u7136\u60F3\u8DF3\u4E86\u3002\uFF08\u5FC3\u60C5 +45 \xB7 \u4F53\u529B +15\uFF09"
+    },
+    {
+      id: "res-hospital",
+      actionId: "hospital",
+      actionName: "\u53BB\u533B\u9662",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: 15,
+        money: -300,
+        mood: -4,
+        satiety: -4
+      },
+      text: "\u533B\u751F\u8BF4\u4E0D\u662F\u5927\u95EE\u9898\uFF0C\u4F46\u4F60\u5F97\u505C\u4E24\u5468\u3002\u4F60\u8BF4\u4E0B\u4E2A\u6708\u6709\u573A\u3002\uFF08\u4F53\u529B +15\uFF09"
+    },
+    {
+      id: "res-sick-bed",
+      actionId: "sick-bed",
+      actionName: "\u5367\u75C5\u5728\u5E8A",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: 55,
+        mood: -18,
+        satiety: -10
+      },
+      text: "\u70E7\u5230\u4E09\u5341\u516B\u5EA6\u4E03\u3002\u624B\u673A\u5728\u6795\u8FB9\uFF0C\u7FA4\u91CC\u7684\u6D88\u606F\u4F60\u4E00\u6761\u90FD\u6CA1\u56DE\u3002\uFF08\u4F53\u529B +55 \xB7 \u5FC3\u60C5 -18\uFF09"
+    },
+    {
+      id: "res-work-part-time",
+      actionId: "work-part-time",
+      actionName: "\u4FBF\u5229\u5E97\u6253\u5DE5",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -18,
+        money: 380,
+        mood: -4,
+        satiety: -8
+      },
+      text: "\u7AD9\u4E86\u56DB\u4E2A\u5C0F\u65F6\uFF0C\u6536\u4E86\u4E09\u5F20\u8FC7\u671F\u7684\u5238\u3002\u5E97\u957F\u8BF4\u4F60\u7B11\u8D77\u6765\u592A\u6709\u793C\u8C8C\u3002\uFF08\u6536\u5165 +380\uFF09"
+    },
+    {
+      id: "res-work-tired",
+      actionId: "work-part-time",
+      actionName: "\u4FBF\u5229\u5E97\u6253\u5DE5",
+      condition: "stamina < 25",
+      priority: 10,
+      effects: {
+        stamina: -20,
+        money: 280,
+        mood: -6,
+        satiety: -8
+      },
+      text: "\u56F0\u5F97\u627E\u9519\u4E86\u4E09\u6B21\u94B1\u3002\u5E97\u957F\u8BA9\u4F60\u63D0\u524D\u4E0B\u73ED\uFF0C\u6263\u4E86\u534A\u5929\u5DE5\u94B1\u3002\uFF08\u6536\u5165 +280\uFF09"
+    },
+    {
+      id: "res-work-tea",
+      actionId: "work-tea",
+      actionName: "\u5976\u8336\u5E97\u6253\u5DE5",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -18,
+        money: 350,
+        mood: -3,
+        satiety: -8
+      },
+      text: "\u624B\u4E0A\u5168\u662F\u7CD6\u6D46\u3002\u6447\u676F\u7684\u58F0\u97F3\u5728\u8111\u5B50\u91CC\u54CD\u4E86\u4E00\u6574\u665A\u3002\uFF08\u6536\u5165 +350\uFF09"
+    },
+    {
+      id: "res-work-tea-tired",
+      actionId: "work-tea",
+      actionName: "\u5976\u8336\u5E97\u6253\u5DE5",
+      condition: "stamina < 25",
+      priority: 10,
+      effects: {
+        stamina: -20,
+        money: 250,
+        mood: -5,
+        satiety: -8
+      },
+      text: "\u5C01\u53E3\u673A\u538B\u5230\u624B\u3002\u4F60\u7B11\u7740\u8BF4\u6CA1\u4E8B\uFF0C\u5176\u5B9E\u60F3\u54ED\u3002\uFF08\u6536\u5165 +250\uFF09"
+    },
+    {
+      id: "res-work-maid",
+      actionId: "work-maid",
+      actionName: "\u5973\u4EC6\u5496\u5561",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -24,
+        money: 480,
+        mood: -2,
+        satiety: -8,
+        fans: 6
+      },
+      text: "\u7A7F\u7740\u56F4\u88D9\u8BF4\u300C\u304A\u304B\u3048\u308A\u300D\u3002\u6709\u4EBA\u70B9\u4E86\u4F60\u7684\u540D\u5B57\uFF0C\u591A\u7ED9\u4E86\u4E94\u5341\u3002\uFF08\u6536\u5165 +480 \xB7 \u7C89\u4E1D +6\uFF09"
+    },
+    {
+      id: "res-work-maid-tired",
+      actionId: "work-maid",
+      actionName: "\u5973\u4EC6\u5496\u5561",
+      condition: "stamina < 25",
+      priority: 10,
+      effects: {
+        stamina: -26,
+        money: 380,
+        mood: -6,
+        satiety: -8,
+        fans: 4
+      },
+      text: "\u7B11\u4E0D\u51FA\u6765\u3002\u4F60\u8EB2\u5728\u5907\u9910\u95F4\u7AD9\u4E86\u5341\u5206\u949F\u624D\u51FA\u53BB\u3002\uFF08\u6536\u5165 +380 \xB7 \u7C89\u4E1D +4\uFF09"
+    },
+    {
+      id: "res-work-flyer",
+      actionId: "work-flyer",
+      actionName: "\u53D1\u4F20\u5355",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -14,
+        money: 200,
+        mood: -5,
+        satiety: -6,
+        fans: 4
+      },
+      text: "\u5728\u5929\u6865\u4E0B\u53D1\u4E86\u4E24\u4E2A\u5C0F\u65F6\u3002\u5927\u90E8\u5206\u88AB\u6254\u4E86\uFF0C\u6709\u4E24\u4E2A\u4EBA\u8BA4\u771F\u770B\u4E86\u6D77\u62A5\u4E0A\u7684\u65F6\u95F4\u3002\uFF08\u6536\u5165 +200 \xB7 \u7C89\u4E1D +4\uFF09"
+    },
+    {
+      id: "res-work-flyer-tired",
+      actionId: "work-flyer",
+      actionName: "\u53D1\u4F20\u5355",
+      condition: "stamina < 25",
+      priority: 10,
+      effects: {
+        stamina: -16,
+        money: 150,
+        mood: -7,
+        satiety: -6,
+        fans: 3
+      },
+      text: "\u624B\u51BB\u5F97\u63E1\u4E0D\u4F4F\u7EB8\u3002\u4F60\u628A\u5269\u4E0B\u7684\u4E00\u53E0\u585E\u8FDB\u5305\u91CC\uFF0C\u660E\u5929\u518D\u53D1\u3002\uFF08\u6536\u5165 +150 \xB7 \u7C89\u4E1D +3\uFF09"
+    },
+    {
+      id: "res-work-tutor",
+      actionId: "work-tutor",
+      actionName: "\u5BB6\u6559",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -16,
+        money: 620,
+        mood: -2,
+        satiety: -6
+      },
+      text: "\u7ED9\u4E00\u4E2A\u9AD8\u4E8C\u5B66\u751F\u8BB2\u4E86\u4E24\u5C0F\u65F6\u51FD\u6570\u3002\u4ED6\u5988\u5988\u786C\u585E\u4E86\u6C34\u679C\u7ED9\u4F60\u3002\uFF08\u6536\u5165 +620\uFF09"
+    },
+    {
+      id: "res-work-tutor-tired",
+      actionId: "work-tutor",
+      actionName: "\u5BB6\u6559",
+      condition: "stamina < 25",
+      priority: 10,
+      effects: {
+        stamina: -18,
+        money: 500,
+        mood: -5,
+        satiety: -6
+      },
+      text: "\u8BB2\u5230\u4E00\u534A\u65AD\u7247\u4E86\u3002\u5B66\u751F\u53CD\u800C\u7ED9\u4F60\u8BB2\u4E86\u4E00\u904D\u3002\uFF08\u6536\u5165 +500\uFF09"
+    },
+    {
+      id: "res-work-photo",
+      actionId: "work-photo",
+      actionName: "\u5199\u771F\u6A21\u7279",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -22,
+        money: 900,
+        mood: -5,
+        satiety: -7,
+        fans: 3
+      },
+      text: "\u68DA\u91CC\u5F00\u7740\u6696\u98CE\u673A\u3002\u6444\u5F71\u5E08\u8BF4\uFF0C\u518D\u6536\u4E00\u70B9\u4E0B\u5DF4\u3002\uFF08\u6536\u5165 +900 \xB7 \u7C89\u4E1D +3\uFF09"
+    },
+    {
+      id: "res-work-photo-tired",
+      actionId: "work-photo",
+      actionName: "\u5199\u771F\u6A21\u7279",
+      condition: "stamina < 25",
+      priority: 10,
+      effects: {
+        stamina: -24,
+        money: 700,
+        mood: -8,
+        satiety: -7
+      },
+      text: "\u773C\u775B\u7741\u4E0D\u5F00\uFF0C\u7B11\u4E5F\u50F5\u3002\u5BA2\u6237\u6362\u4EBA\u62CD\u5B8C\u4E86\u5269\u4E0B\u7684\u534A\u5377\u3002\uFF08\u6536\u5165 +700\uFF09"
+    },
+    {
+      id: "res-work-stage-hand",
+      actionId: "work-stage-hand",
+      actionName: "\u573A\u5730\u6742\u52A1",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -26,
+        money: 520,
+        mood: -4,
+        satiety: -9
+      },
+      text: "\u6563\u573A\u540E\u642C\u4E86\u56DB\u5341\u628A\u6298\u53E0\u6905\uFF0C\u624B\u4E0A\u7559\u4E0B\u80F6\u5E26\u7684\u5370\u5B50\u3002\uFF08\u6536\u5165 +520\uFF09"
+    },
+    {
+      id: "res-work-stage-hand-tired",
+      actionId: "work-stage-hand",
+      actionName: "\u573A\u5730\u6742\u52A1",
+      condition: "stamina < 25",
+      priority: 10,
+      effects: {
+        stamina: -28,
+        money: 420,
+        mood: -7,
+        satiety: -9
+      },
+      text: "\u97F3\u7BB1\u6BD4\u60F3\u7684\u6C89\u3002\u4F60\u548C\u53E6\u4E00\u4E2A\u4EBA\u62AC\uFF0C\u8D70\u4E09\u6B65\u6B47\u4E00\u6B21\u3002\uFF08\u6536\u5165 +420\uFF09"
+    },
+    {
+      id: "res-work-stream",
+      actionId: "work-stream",
+      actionName: "\u76F4\u64AD",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -20,
+        money: 260,
+        mood: 2,
+        satiety: -7,
+        fans: 12
+      },
+      text: "\u5F00\u4E86\u4E24\u5C0F\u65F6\uFF0C\u6700\u9AD8\u5728\u7EBF\u5341\u4E5D\u4EBA\u3002\u4F60\u5728\u7B2C\u5341\u4EBA\u8FDB\u6765\u7684\u65F6\u5019\u5531\u4E86\u6B4C\u3002\uFF08\u6536\u5165 +260 \xB7 \u7C89\u4E1D +12\uFF09"
+    },
+    {
+      id: "res-work-stream-tired",
+      actionId: "work-stream",
+      actionName: "\u76F4\u64AD",
+      condition: "stamina < 25",
+      priority: 10,
+      effects: {
+        stamina: -22,
+        money: 180,
+        mood: -2,
+        satiety: -7,
+        fans: 7
+      },
+      text: "\u5BF9\u7740\u955C\u5934\u6253\u4E86\u4E2A\u54C8\u6B20\u3002\u6709\u4EBA\u5237\u4E86\u793C\u7269\uFF0C\u8BF4\u65E9\u70B9\u7761\u3002\uFF08\u6536\u5165 +180 \xB7 \u7C89\u4E1D +7\uFF09"
     },
     {
       id: "res-show-s",
       actionId: "show",
       actionName: "\u6F14\u51FA",
-      condition: {
-        statsSumAtLeast: 240
-      },
+      condition: "total >= 240",
       priority: 10,
       effects: {
-        stamina: -30,
-        money: 1500,
-        fans: 300
+        stamina: -32,
+        money: 1800,
+        mood: 8,
+        satiety: -10,
+        fans: 150
       },
-      text: "\u706F\u4EAE\u8D77\u6765\u7684\u90A3\u4E00\u523B\uFF0C\u5168\u573A\u5B89\u9759\u4E86\u3002\uFF08\u7C89\u4E1D +300 \xB7 \u6536\u5165 +1500\uFF09"
+      text: "\u706F\u4EAE\u8D77\u6765\u7684\u4E00\u77AC\u95F4\uFF0C\u5168\u573A\u5B89\u9759\u4E86\u534A\u79D2\uFF0C\u7136\u540E\u5F00\u59CB\u558A\u3002\u4F60\u5728\u90A3\u534A\u79D2\u91CC\u5FD8\u4E86\u547C\u5438\u3002\uFF08\u7C89\u4E1D +150 \xB7 \u6536\u5165 +1800\uFF09"
     },
     {
       id: "res-show-a",
       actionId: "show",
       actionName: "\u6F14\u51FA",
-      condition: {
-        statsSumAtLeast: 180
-      },
+      condition: "total >= 180",
       priority: 20,
       effects: {
-        stamina: -30,
-        money: 900,
-        fans: 180
+        stamina: -32,
+        money: 1100,
+        mood: 5,
+        satiety: -10,
+        fans: 90
       },
-      text: "\u53D1\u6325\u5F88\u7A33\uFF0C\u53F0\u4E0B\u6709\u4EBA\u8DDF\u7740\u558A\u3002\uFF08\u7C89\u4E1D +180 \xB7 \u6536\u5165 +900\uFF09"
+      text: "\u6700\u540E\u4E00\u9996\u7684\u526F\u6B4C\uFF0C\u53F0\u4E0B\u6709\u4EBA\u63A5\u4E0A\u4E86\u3002\u4F60\u5DEE\u70B9\u5728\u53F0\u4E0A\u7B11\u51FA\u58F0\u3002\uFF08\u7C89\u4E1D +90 \xB7 \u6536\u5165 +1100\uFF09"
     },
     {
       id: "res-show-b",
       actionId: "show",
       actionName: "\u6F14\u51FA",
-      condition: {
-        statsSumAtLeast: 120
-      },
+      condition: "total >= 120",
       priority: 30,
       effects: {
-        stamina: -30,
-        money: 500,
-        fans: 100
+        stamina: -32,
+        money: 600,
+        mood: 2,
+        satiety: -10,
+        fans: 45
       },
-      text: "\u4E2D\u89C4\u4E2D\u77E9\uFF0C\u4F46\u6CA1\u51FA\u9519\u3002\uFF08\u7C89\u4E1D +100 \xB7 \u6536\u5165 +500\uFF09"
+      text: "\u6CA1\u51FA\u9519\uFF0C\u4E5F\u6CA1\u8BB0\u4F4F\u4EC0\u4E48\u3002\u6563\u573A\u65F6\u6709\u4E24\u4E2A\u4EBA\u8BF4\u4E0B\u6B21\u8FD8\u6765\u3002\uFF08\u7C89\u4E1D +45 \xB7 \u6536\u5165 +600\uFF09"
     },
     {
       id: "res-show-c",
@@ -18400,11 +19910,163 @@ var action_results_default = {
       condition: {},
       priority: 99,
       effects: {
-        stamina: -30,
+        stamina: -32,
+        money: 220,
+        mood: -6,
+        satiety: -10,
+        fans: 15
+      },
+      text: "\u4E2D\u95F4\u5FD8\u4E86\u4E00\u4E2A\u8F6C\u8EAB\uFF0C\u4F60\u7B11\u7740\u5706\u8FC7\u53BB\u4E86\u3002\u53F0\u4E0B\u6CA1\u4EBA\u53D1\u73B0\uFF0C\u53EA\u6709\u4F60\u81EA\u5DF1\u77E5\u9053\u3002\uFF08\u7C89\u4E1D +15 \xB7 \u6536\u5165 +220\uFF09"
+    },
+    {
+      id: "res-street-live-good",
+      actionId: "street-live",
+      actionName: "\u8857\u6F14",
+      condition: "fans.stage >= 30",
+      priority: 20,
+      effects: {
+        stamina: -14,
+        money: 180,
+        mood: 3,
+        satiety: -6,
+        fans: 12
+      },
+      text: "\u7434\u76D2\u8FD8\u6CA1\u653E\u4E0B\uFF0C\u5C31\u6709\u4EBA\u8BA4\u51FA\u4F60\u3002\u5979\u8BF4\u5979\u5750\u4E86\u4E24\u7AD9\u5730\u94C1\u8FC7\u6765\u3002\uFF08\u7C89\u4E1D +12 \xB7 \u6536\u5165 +180\uFF09"
+    },
+    {
+      id: "res-street-live",
+      actionId: "street-live",
+      actionName: "\u8857\u6F14",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -14,
+        money: 60,
+        mood: -5,
+        satiety: -6,
+        fans: 3
+      },
+      text: "\u5531\u4E86\u516D\u9996\uFF0C\u8DEF\u8FC7\u7684\u4EBA\u6CA1\u6709\u505C\u3002\u6709\u4E2A\u5C0F\u5B69\u7AD9\u4E86\u4E00\u4F1A\u513F\uFF0C\u88AB\u5988\u5988\u62C9\u8D70\u4E86\u3002\uFF08\u7C89\u4E1D +3 \xB7 \u6536\u5165 +60\uFF09"
+    },
+    {
+      id: "res-comic-stage-good",
+      actionId: "comic-stage",
+      actionName: "\u6F2B\u5C55\u821E\u53F0",
+      condition: "total >= 140",
+      priority: 20,
+      effects: {
+        stamina: -26,
+        money: 380,
+        mood: 6,
+        satiety: -9,
+        fans: 30
+      },
+      text: "\u97F3\u54CD\u5F88\u70C2\uFF0C\u4F46\u4F60\u628A\u4EBA\u4ECE\u644A\u4F4D\u90A3\u8FB9\u62C9\u4E86\u8FC7\u6765\u3002\u524D\u6392\u7AD9\u4E86\u4E94\u6392\u3002\uFF08\u7C89\u4E1D +30 \xB7 \u6536\u5165 +380\uFF09"
+    },
+    {
+      id: "res-comic-stage",
+      actionId: "comic-stage",
+      actionName: "\u6F2B\u5C55\u821E\u53F0",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -26,
         money: 200,
+        mood: 1,
+        satiety: -9,
+        fans: 14
+      },
+      text: "\u53F0\u4E0B\u90FD\u662F\u7B49\u62BD\u5956\u7684\u3002\u4F60\u628A\u4E09\u5341\u4E94\u5206\u949F\u5531\u5B8C\uFF0C\u638C\u58F0\u96F6\u96F6\u6563\u6563\u3002\uFF08\u7C89\u4E1D +14 \xB7 \u6536\u5165 +200\uFF09"
+    },
+    {
+      id: "res-commercial-good",
+      actionId: "commercial",
+      actionName: "\u5546\u6F14",
+      condition: "total >= 260",
+      priority: 20,
+      effects: {
+        stamina: -32,
+        money: 2200,
+        mood: -2,
+        satiety: -10,
+        fans: 70
+      },
+      text: "\u7532\u65B9\u5728\u53F0\u4E0B\u70B9\u5934\u3002\u5531\u5B8C\u6709\u4EBA\u9012\u540D\u7247\uFF0C\u8BF4\u4EE5\u540E\u6709\u6D3B\u52A8\u627E\u4F60\u3002\uFF08\u7C89\u4E1D +70 \xB7 \u6536\u5165 +2200\uFF09"
+    },
+    {
+      id: "res-commercial",
+      actionId: "commercial",
+      actionName: "\u5546\u6F14",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -32,
+        money: 1600,
+        mood: -4,
+        satiety: -10,
         fans: 40
       },
-      text: "\u4E2D\u95F4\u5FD8\u4E86\u4E00\u4E2A\u52A8\u4F5C\uFF0C\u4F60\u7B11\u7740\u5706\u8FC7\u53BB\u4E86\u3002\uFF08\u7C89\u4E1D +40 \xB7 \u6536\u5165 +200\uFF09"
+      text: "\u5F00\u573A\u524D\u6539\u4E86\u4E09\u6B21\u6D41\u7A0B\u3002\u4F60\u5531\u5B8C\u4E24\u9996\u5C31\u88AB\u8BF7\u4E0B\u53F0\uFF0C\u56E0\u4E3A\u8D85\u65F6\u3002\uFF08\u7C89\u4E1D +40 \xB7 \u6536\u5165 +1600\uFF09"
+    },
+    {
+      id: "res-one-man-good",
+      actionId: "one-man",
+      actionName: "OM \u821E\u53F0",
+      condition: "fans.stage >= 200",
+      priority: 20,
+      effects: {
+        stamina: -36,
+        money: 2600,
+        mood: 10,
+        satiety: -11,
+        fans: 180
+      },
+      text: "\u8FD9\u6B21\u6CA1\u6709\u522B\u4EBA\u7684\u56E2\u5728\u524D\u9762\u3002\u5B89\u53EF\u5531\u4E86\u4E24\u9996\uFF0C\u53F0\u4E0B\u8FD8\u4E00\u76F4\u5728\u558A\u3002\uFF08\u7C89\u4E1D +180 \xB7 \u6536\u5165 +2600\uFF09"
+    },
+    {
+      id: "res-one-man",
+      actionId: "one-man",
+      actionName: "OM \u821E\u53F0",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -36,
+        money: 1800,
+        mood: 4,
+        satiety: -11,
+        fans: 90
+      },
+      text: "\u573A\u5730\u53EA\u5750\u4E86\u4E00\u534A\u3002\u6563\u573A\u540E\u4F60\u5728\u540E\u53F0\u6570\u4E86\u4E00\u4E0B\u5E94\u63F4\u68D2\u3002\uFF08\u7C89\u4E1D +90 \xB7 \u6536\u5165 +1800\uFF09"
+    },
+    {
+      id: "res-cheki-good",
+      actionId: "cheki",
+      actionName: "\u7279\u5178\u4F1A",
+      condition: "fans.gachi >= 80",
+      priority: 20,
+      effects: {
+        stamina: -20,
+        money: 700,
+        mood: 6,
+        satiety: -6,
+        fans: 20
+      },
+      text: "\u30C1\u30A7\u30AD\u62CD\u5230\u516D\u5341\u5F20\u3002\u6709\u4E2A\u5973\u5B69\u6392\u4E86\u4E09\u6B21\uFF0C\u6BCF\u6B21\u90FD\u53EA\u8BF4\u4E00\u53E5\u300C\u52A0\u6CB9\u300D\u3002\uFF08\u7C89\u4E1D +20 \xB7 \u6536\u5165 +700\uFF09"
+    },
+    {
+      id: "res-cheki",
+      actionId: "cheki",
+      actionName: "\u7279\u5178\u4F1A",
+      condition: {},
+      priority: 99,
+      effects: {
+        stamina: -20,
+        money: 280,
+        mood: 2,
+        satiety: -6,
+        fans: 8
+      },
+      text: "\u684C\u5B50\u6446\u4E86\u56DB\u5341\u5206\u949F\uFF0C\u6765\u4E86\u516D\u4E2A\u4EBA\u3002\u4F60\u7ED9\u6BCF\u4E2A\u4EBA\u90FD\u5199\u4E86\u540D\u5B57\u3002\uFF08\u7C89\u4E1D +8 \xB7 \u6536\u5165 +280\uFF09"
     }
   ]
 };
@@ -18448,7 +20110,8 @@ var actions_default = {
       times: 0,
       timesScope: "run",
       affectedStats: [
-        "acting"
+        "acting",
+        "talk"
       ],
       durationMinutes: 1
     },
@@ -18466,14 +20129,111 @@ var actions_default = {
       durationMinutes: 1
     },
     {
-      id: "work-part-time",
-      name: "\u6253\u5DE5",
-      category: "work",
-      categoryName: "\u8D5A\u94B1",
-      displayCondition: {},
+      id: "vocal-street",
+      name: "\u8857\u5934\u5356\u5531",
+      category: "growth",
+      categoryName: "\u63D0\u5347\u5C5E\u6027",
+      displayCondition: "vocal >= 15",
       times: 0,
       timesScope: "run",
-      affectedStats: [],
+      affectedStats: [
+        "vocal",
+        "talk"
+      ],
+      durationMinutes: 1
+    },
+    {
+      id: "dance-class",
+      name: "\u821E\u8E48\u8BFE",
+      category: "growth",
+      categoryName: "\u63D0\u5347\u5C5E\u6027",
+      displayCondition: "dance >= 15",
+      times: 0,
+      timesScope: "run",
+      affectedStats: [
+        "dance",
+        "acting"
+      ],
+      durationMinutes: 1
+    },
+    {
+      id: "acting-workshop",
+      name: "\u8868\u6F14\u5DE5\u4F5C\u574A",
+      category: "growth",
+      categoryName: "\u63D0\u5347\u5C5E\u6027",
+      displayCondition: "acting >= 15",
+      times: 0,
+      timesScope: "run",
+      affectedStats: [
+        "acting",
+        "talk"
+      ],
+      durationMinutes: 1
+    },
+    {
+      id: "talk-host",
+      name: "\u6F2B\u5C55\u4E3B\u6301",
+      category: "growth",
+      categoryName: "\u63D0\u5347\u5C5E\u6027",
+      displayCondition: "talk >= 15",
+      times: 0,
+      timesScope: "run",
+      affectedStats: [
+        "talk",
+        "acting"
+      ],
+      durationMinutes: 1
+    },
+    {
+      id: "vocal-coach",
+      name: "\u4E13\u4E1A\u6B4C\u5531\u6307\u5BFC",
+      category: "growth",
+      categoryName: "\u63D0\u5347\u5C5E\u6027",
+      displayCondition: "vocal >= 40",
+      times: 0,
+      timesScope: "run",
+      affectedStats: [
+        "vocal"
+      ],
+      durationMinutes: 1
+    },
+    {
+      id: "dance-intensive",
+      name: "\u821E\u5BA4\u63D0\u9AD8\u73ED",
+      category: "growth",
+      categoryName: "\u63D0\u5347\u5C5E\u6027",
+      displayCondition: "dance >= 40",
+      times: 0,
+      timesScope: "run",
+      affectedStats: [
+        "dance"
+      ],
+      durationMinutes: 1
+    },
+    {
+      id: "acting-coach",
+      name: "\u6F14\u6280\u6307\u5BFC\u8BFE",
+      category: "growth",
+      categoryName: "\u63D0\u5347\u5C5E\u6027",
+      displayCondition: "acting >= 40",
+      times: 0,
+      timesScope: "run",
+      affectedStats: [
+        "acting"
+      ],
+      durationMinutes: 1
+    },
+    {
+      id: "talk-speech",
+      name: "\u8DEF\u6F14\u6F14\u8BB2",
+      category: "growth",
+      categoryName: "\u63D0\u5347\u5C5E\u6027",
+      displayCondition: "talk >= 40",
+      times: 0,
+      timesScope: "run",
+      affectedStats: [
+        "talk"
+      ],
       durationMinutes: 1
     },
     {
@@ -18488,14 +20248,188 @@ var actions_default = {
       durationMinutes: 1
     },
     {
+      id: "food-saizeriya",
+      name: "\u8428\u8389\u4E9A",
+      category: "recover",
+      categoryName: "\u6062\u590D\u72B6\u6001",
+      displayCondition: {},
+      times: 0,
+      timesScope: "run",
+      affectedStats: [],
+      durationMinutes: 1
+    },
+    {
+      id: "food-sushiro",
+      name: "\u5BFF\u53F8\u90CE",
+      category: "recover",
+      categoryName: "\u6062\u590D\u72B6\u6001",
+      displayCondition: {},
+      times: 0,
+      timesScope: "run",
+      affectedStats: [],
+      durationMinutes: 1
+    },
+    {
+      id: "food-nice",
+      name: "\u6F02\u4EAE\u996D",
+      category: "recover",
+      categoryName: "\u6062\u590D\u72B6\u6001",
+      displayCondition: {},
+      times: 0,
+      timesScope: "run",
+      affectedStats: [],
+      durationMinutes: 1
+    },
+    {
+      id: "recover-bath",
+      name: "\u94B1\u6C64",
+      category: "recover",
+      categoryName: "\u6062\u590D\u72B6\u6001",
+      displayCondition: {},
+      times: 0,
+      timesScope: "run",
+      affectedStats: [],
+      durationMinutes: 1
+    },
+    {
+      id: "fun-park",
+      name: "\u6E38\u4E50\u56ED",
+      category: "recover",
+      categoryName: "\u6062\u590D\u72B6\u6001",
+      displayCondition: "money >= 400",
+      times: 0,
+      timesScope: "run",
+      affectedStats: [],
+      durationMinutes: 1
+    },
+    {
+      id: "fun-trip",
+      name: "\u65C5\u6E38",
+      category: "recover",
+      categoryName: "\u6062\u590D\u72B6\u6001",
+      displayCondition: "money >= 1800",
+      times: 0,
+      timesScope: "run",
+      affectedStats: [],
+      durationMinutes: 3
+    },
+    {
+      id: "hospital",
+      name: "\u53BB\u533B\u9662",
+      category: "recover",
+      categoryName: "\u6062\u590D\u72B6\u6001",
+      displayCondition: "money >= 300",
+      times: 0,
+      timesScope: "run",
+      affectedStats: [],
+      durationMinutes: 1
+    },
+    {
+      id: "sick-bed",
+      name: "\u5367\u75C5\u5728\u5E8A",
+      category: "recover",
+      categoryName: "\u6062\u590D\u72B6\u6001",
+      displayCondition: "stamina < 25",
+      times: 0,
+      timesScope: "run",
+      affectedStats: [],
+      durationMinutes: 1
+    },
+    {
+      id: "work-part-time",
+      name: "\u4FBF\u5229\u5E97\u6253\u5DE5",
+      category: "work",
+      categoryName: "\u8D5A\u94B1",
+      displayCondition: {},
+      times: 0,
+      timesScope: "run",
+      affectedStats: [],
+      durationMinutes: 1
+    },
+    {
+      id: "work-tea",
+      name: "\u5976\u8336\u5E97\u6253\u5DE5",
+      category: "work",
+      categoryName: "\u8D5A\u94B1",
+      displayCondition: {},
+      times: 0,
+      timesScope: "run",
+      affectedStats: [],
+      durationMinutes: 1
+    },
+    {
+      id: "work-maid",
+      name: "\u5973\u4EC6\u5496\u5561",
+      category: "work",
+      categoryName: "\u8D5A\u94B1",
+      displayCondition: {},
+      times: 0,
+      timesScope: "run",
+      affectedStats: [],
+      durationMinutes: 1
+    },
+    {
+      id: "work-flyer",
+      name: "\u53D1\u4F20\u5355",
+      category: "work",
+      categoryName: "\u8D5A\u94B1",
+      displayCondition: {},
+      times: 0,
+      timesScope: "run",
+      affectedStats: [],
+      durationMinutes: 1
+    },
+    {
+      id: "work-tutor",
+      name: "\u5BB6\u6559",
+      category: "work",
+      categoryName: "\u8D5A\u94B1",
+      displayCondition: "talk >= 25",
+      times: 0,
+      timesScope: "run",
+      affectedStats: [],
+      durationMinutes: 1
+    },
+    {
+      id: "work-photo",
+      name: "\u5199\u771F\u6A21\u7279",
+      category: "work",
+      categoryName: "\u8D5A\u94B1",
+      displayCondition: {},
+      times: 0,
+      timesScope: "run",
+      affectedStats: [],
+      durationMinutes: 1
+    },
+    {
+      id: "work-stage-hand",
+      name: "\u573A\u5730\u6742\u52A1",
+      category: "work",
+      categoryName: "\u8D5A\u94B1",
+      displayCondition: {},
+      times: 0,
+      timesScope: "run",
+      affectedStats: [],
+      durationMinutes: 1
+    },
+    {
+      id: "work-stream",
+      name: "\u76F4\u64AD",
+      category: "work",
+      categoryName: "\u8D5A\u94B1",
+      displayCondition: "talk >= 20",
+      times: 0,
+      timesScope: "run",
+      affectedStats: [],
+      durationMinutes: 1
+    },
+    {
       id: "show",
       name: "\u6F14\u51FA",
       category: "performance",
       categoryName: "\u6F14\u51FA",
-      displayCondition: {
-        statsSumAtLeast: 60
-      },
-      times: 0,
+      displayCondition: "total >= 60",
+      times: 1,
       timesScope: "week",
       affectedStats: [
         "vocal",
@@ -18504,14 +20438,112 @@ var actions_default = {
         "talk"
       ],
       durationMinutes: 3
+    },
+    {
+      id: "street-live",
+      name: "\u8857\u6F14",
+      category: "performance",
+      categoryName: "\u6F14\u51FA",
+      displayCondition: {},
+      times: 2,
+      timesScope: "week",
+      affectedStats: [
+        "vocal"
+      ],
+      durationMinutes: 1
+    },
+    {
+      id: "comic-stage",
+      name: "\u6F2B\u5C55\u821E\u53F0",
+      category: "performance",
+      categoryName: "\u6F14\u51FA",
+      displayCondition: "total >= 80",
+      times: 1,
+      timesScope: "week",
+      affectedStats: [
+        "dance"
+      ],
+      durationMinutes: 3
+    },
+    {
+      id: "commercial",
+      name: "\u5546\u6F14",
+      category: "performance",
+      categoryName: "\u6F14\u51FA",
+      displayCondition: 'total >= 200 and hasFlag("ev:debut")',
+      times: 1,
+      timesScope: "week",
+      affectedStats: [
+        "vocal"
+      ],
+      durationMinutes: 3
+    },
+    {
+      id: "one-man",
+      name: "OM \u821E\u53F0",
+      category: "performance",
+      categoryName: "\u6F14\u51FA",
+      displayCondition: 'total >= 260 and hasFlag("ev:debut")',
+      times: 1,
+      timesScope: "week",
+      affectedStats: [
+        "vocal",
+        "dance"
+      ],
+      durationMinutes: 3
+    },
+    {
+      id: "cheki",
+      name: "\u7279\u5178\u4F1A",
+      category: "performance",
+      categoryName: "\u6F14\u51FA",
+      displayCondition: 'hasFlag("ev:debut")',
+      times: 1,
+      timesScope: "week",
+      affectedStats: [
+        "talk"
+      ],
+      durationMinutes: 1
     }
   ]
 };
 
 // ../core/data/attributes.json
 var attributes_default = {
-  _\u8BF4\u660E: "\u5C5E\u6027\u8868\uFF1Acategory=\u5206\u7C7B\u82F1\u6587\u540D\uFF08visible/hidden/status/fans\uFF09\uFF0CcategoryName=\u5206\u7C7B\u4E2D\u6587\u540D\uFF1Bkey=\u5C5E\u6027\u5B57\u6BB5\u540D\uFF0Cname=\u663E\u793A\u540D\uFF1Bhidden=true \u4E0D\u5728\u4E3B\u754C\u9762\u663E\u793A\uFF1Blinked \u5173\u8054\u5C5E\u6027\uFF080=\u5B8C\u5168\u9690\u85CF\uFF0C1=\u5B8C\u5168\u53EF\u89C1\uFF0C2=\u9690\u85CF\u4EC5\u5360\u535C\u53EF\u89C1\uFF09",
+  _\u8BF4\u660E: "\u5C5E\u6027\u8868\uFF1Acategory=\u5206\u7C7B\u82F1\u6587\u540D\uFF08innate/visible/status/trait/negative/proficient/hidden/fans\uFF09\uFF0CcategoryName=\u5206\u7C7B\u4E2D\u6587\u540D\uFF1Bkey=\u5C5E\u6027\u5B57\u6BB5\u540D\uFF0Cname=\u663E\u793A\u540D\uFF1Bhidden=true \u4E3B\u754C\u9762\u4E0D\u76F4\u63A5\u663E\u793A\uFF1Blinked \u5173\u8054\u5C5E\u6027\uFF080=\u5B8C\u5168\u9690\u85CF\uFF0C1=\u5B8C\u5168\u53EF\u89C1\uFF0C2=\u9690\u85CF\u4EC5\u5360\u535C\u53EF\u89C1\uFF09",
   attributes: [
+    {
+      category: "innate",
+      categoryName: "\u56FA\u6709\u5C5E\u6027",
+      name: "\u8EAB\u9AD8",
+      key: "height",
+      hidden: false,
+      linked: 1
+    },
+    {
+      category: "innate",
+      categoryName: "\u56FA\u6709\u5C5E\u6027",
+      name: "\u4F53\u91CD",
+      key: "weight",
+      hidden: false,
+      linked: 1
+    },
+    {
+      category: "innate",
+      categoryName: "\u56FA\u6709\u5C5E\u6027",
+      name: "\u6837\u8C8C",
+      key: "appearance",
+      hidden: false,
+      linked: 1
+    },
+    {
+      category: "innate",
+      categoryName: "\u56FA\u6709\u5C5E\u6027",
+      name: "\u8EAB\u6750\u6BD4\u4F8B",
+      key: "proportion",
+      hidden: false,
+      linked: 1
+    },
     {
       category: "visible",
       categoryName: "\u663E\u6027\u5C5E\u6027",
@@ -18545,6 +20577,142 @@ var attributes_default = {
       linked: 1
     },
     {
+      category: "status",
+      categoryName: "\u72B6\u6001",
+      name: "\u4F53\u529B",
+      key: "stamina",
+      hidden: false,
+      linked: 1
+    },
+    {
+      category: "status",
+      categoryName: "\u72B6\u6001",
+      name: "\u5FC3\u60C5",
+      key: "mood",
+      hidden: false,
+      linked: 1
+    },
+    {
+      category: "status",
+      categoryName: "\u72B6\u6001",
+      name: "\u9971\u8179",
+      key: "satiety",
+      hidden: false,
+      linked: 1
+    },
+    {
+      category: "trait",
+      categoryName: "\u6027\u683C",
+      name: "\u4F53\u8D34",
+      key: "kind",
+      hidden: true,
+      linked: 2
+    },
+    {
+      category: "trait",
+      categoryName: "\u6027\u683C",
+      name: "\u9886\u5BFC",
+      key: "lead",
+      hidden: true,
+      linked: 2
+    },
+    {
+      category: "trait",
+      categoryName: "\u6027\u683C",
+      name: "\u5408\u4F5C",
+      key: "coop",
+      hidden: true,
+      linked: 2
+    },
+    {
+      category: "trait",
+      categoryName: "\u6027\u683C",
+      name: "\u72EC\u7ACB",
+      key: "independent",
+      hidden: true,
+      linked: 2
+    },
+    {
+      category: "trait",
+      categoryName: "\u6027\u683C",
+      name: "\u597D\u5F3A",
+      key: "ambitious",
+      hidden: true,
+      linked: 2
+    },
+    {
+      category: "trait",
+      categoryName: "\u6027\u683C",
+      name: "\u70ED\u60C5",
+      key: "passion",
+      hidden: true,
+      linked: 2
+    },
+    {
+      category: "negative",
+      categoryName: "\u8D1F\u5411",
+      name: "\u7CBE\u795E\u538B\u529B",
+      key: "stress",
+      hidden: true,
+      linked: 2
+    },
+    {
+      category: "negative",
+      categoryName: "\u8D1F\u5411",
+      name: "\u7126\u8E81",
+      key: "restless",
+      hidden: true,
+      linked: 2
+    },
+    {
+      category: "negative",
+      categoryName: "\u8D1F\u5411",
+      name: "\u79EF\u52B3",
+      key: "fatigue",
+      hidden: true,
+      linked: 2
+    },
+    {
+      category: "negative",
+      categoryName: "\u8D1F\u5411",
+      name: "\u60C5\u6B32",
+      key: "desire",
+      hidden: true,
+      linked: 2
+    },
+    {
+      category: "negative",
+      categoryName: "\u8D1F\u5411",
+      name: "\u9ED1\u5386\u53F2",
+      key: "scandal",
+      hidden: true,
+      linked: 2
+    },
+    {
+      category: "proficient",
+      categoryName: "\u719F\u7EC3\u5EA6",
+      name: "\u821E\u53F0\u573A\u6240",
+      key: "stage_prof",
+      hidden: true,
+      linked: 0
+    },
+    {
+      category: "proficient",
+      categoryName: "\u719F\u7EC3\u5EA6",
+      name: "\u6B4C\u66F2",
+      key: "song_prof",
+      hidden: true,
+      linked: 0
+    },
+    {
+      category: "proficient",
+      categoryName: "\u719F\u7EC3\u5EA6",
+      name: "\u7F16\u821E",
+      key: "choreo_prof",
+      hidden: true,
+      linked: 0
+    },
+    {
       category: "hidden",
       categoryName: "\u9690\u85CF\u5C5E\u6027",
       name: "\u81EA\u6211",
@@ -18567,14 +20735,6 @@ var attributes_default = {
       key: "fit",
       hidden: true,
       linked: 2
-    },
-    {
-      category: "status",
-      categoryName: "\u72B6\u6001",
-      name: "\u4F53\u529B",
-      key: "stamina",
-      hidden: false,
-      linked: 1
     },
     {
       category: "fans",
@@ -18629,9 +20789,9 @@ var attributes_default = {
 
 // ../core/data/balance.json
 var balance_default = {
-  _\u8BF4\u660E: "\u5168\u5C40\u6570\u503C\u8868\u3002\u6539\u8FD9\u91CC\u5C31\u80FD\u8C03\u5E73\u8861\uFF0C\u4E0D\u9700\u8981\u78B0\u4EE3\u7801",
+  _\u8BF4\u660E: "\u5168\u5C40\u6570\u503C\u8868\u3002\u6539\u8FD9\u91CC\u5C31\u80FD\u8C03\u5E73\u8861\uFF0C\u4E0D\u9700\u8981\u78B0\u4EE3\u7801\uFF1B\u7F3A\u5C11 staminaMax \u65F6\u4EE3\u7801\u56DE\u843D\u5230 100",
   balance: {
-    actionMinutes: 1,
+    actionMinutes: 10,
     dailySlots: 3,
     showSlots: 3,
     startMoney: 8e3,
@@ -18649,115 +20809,559 @@ var balance_default = {
 
 // ../core/data/events.json
 var events_default = {
-  _\u8BF4\u660E: "\u4E8B\u4EF6\u8868\u3002routine=\u5E38\u89C4\u4E8B\u4EF6\uFF08\u4E0D\u6682\u505C\u65F6\u95F4\uFF0C\u53EA\u6539\u6570\u503C\uFF09\uFF1Bstory=\u5267\u60C5\u4E8B\u4EF6\uFF08major=true \u65F6\u6682\u505C\u65F6\u95F4\u7B49\u73A9\u5BB6\u6289\u62E9\uFF09\u3002requires \u662F\u89E6\u53D1\u6761\u4EF6\uFF0C\u89C1 docs/22 \u7684\u8BF4\u660E",
+  _\u8BF4\u660E: "\u4E8B\u4EF6\u8868\u3002routine=\u5E38\u89C4\u4E8B\u4EF6\uFF08\u4E0D\u6682\u505C\u65F6\u95F4\uFF0C\u53EA\u6539\u6570\u503C\uFF09\uFF1Bstory=\u5267\u60C5\u4E8B\u4EF6\uFF08major=true \u65F6\u6682\u505C\u65F6\u95F4\u7B49\u73A9\u5BB6\u6289\u62E9\uFF09\uFF0Cchoices \u6765\u81EA all.xlsx \u7684 choices \u8868\u3002requires \u662F\u89E6\u53D1\u6761\u4EF6\uFF0C\u89C1 docs/22 \u7684\u8BF4\u660E",
   routine: [
     {
-      id: "r-rehearsal",
-      text: "\u6392\u7EC3\u5BA4\u7A7A\u7740\uFF0C\u4F60\u591A\u7EC3\u4E86\u534A\u5C0F\u65F6\u3002",
+      id: "r-rep-01",
+      text: "\u6392\u7EC3\u5BA4\u7A7A\u7740\u3002\u4F60\u628A\u706F\u5168\u6253\u5F00\uFF0C\u591A\u7EC3\u4E86\u534A\u5C0F\u65F6\u3002",
       stamina: -3,
       stat: "dance",
       statName: "\u821E\u8E48",
       gain: 1
     },
     {
-      id: "r-convenience",
-      text: "\u4FBF\u5229\u5E97\u7684\u5173\u4E1C\u716E\u6253\u6298\uFF0C\u4F60\u4E70\u4E86\u4E00\u4EFD\u3002",
-      stamina: 4
-    },
-    {
-      id: "r-train",
-      text: "\u672B\u73ED\u8F66\u4E0A\u6709\u4EBA\u8BA4\u51FA\u4F60\uFF0C\u5C0F\u58F0\u8BF4\u4E86\u53E5\u52A0\u6CB9\u3002",
-      stamina: 2,
+      id: "r-rep-02",
+      text: "\u9694\u95F4\u91CC\u6709\u4EBA\u5728\u7EC3\u540C\u4E00\u9996\u6B4C\u3002\u4F60\u505C\u4E0B\u6765\u542C\u4E86\u4E00\u4F1A\u513F\uFF0C\u53D1\u73B0\u81EA\u5DF1\u7B2C\u4E09\u53E5\u4E00\u76F4\u5531\u9519\u3002",
+      stamina: -1,
       stat: "vocal",
       statName: "\u6F14\u5531",
       gain: 1
     },
     {
-      id: "r-note",
-      text: "\u4F60\u5728\u624B\u673A\u5907\u5FD8\u5F55\u91CC\u5199\u4E0B\u4E00\u53E5\u6B4C\u8BCD\u3002",
-      stamina: -1,
-      stat: "acting",
-      statName: "\u6F14\u6280",
-      gain: 1
-    },
-    {
-      id: "r-tired",
-      text: "\u4ECA\u5929\u72B6\u6001\u4E00\u822C\uFF0C\u7EC3\u5F97\u6709\u70B9\u6563\u3002",
-      stamina: -2
-    },
-    {
-      id: "r-mirror",
-      text: "\u5BF9\u7740\u955C\u5B50\u8C03\u6574\u4E86\u5F88\u4E45\u7684\u8868\u60C5\u3002",
-      stamina: -2,
-      stat: "talk",
-      statName: "\u53E3\u624D",
-      gain: 1
-    },
-    {
-      id: "r-rain",
-      text: "\u4E0B\u96E8\u4E86\uFF0C\u4F60\u5728\u5730\u94C1\u53E3\u7B49\u4E86\u5F88\u4E45\u3002",
-      stamina: -1
-    },
-    {
-      id: "r-fan-gift",
-      text: "\u6709\u7C89\u4E1D\u585E\u7ED9\u4F60\u4E00\u5305\u7CD6\uFF0C\u6CA1\u6562\u591A\u8BF4\u8BDD\u3002",
-      stamina: 3
-    },
-    {
-      id: "r-roommate",
-      text: "\u5BA4\u53CB\u5728\u5BA2\u5385\u770B\u7535\u89C6\uFF0C\u4F60\u6234\u7740\u8033\u673A\u7EC3\u52A8\u4F5C\u3002",
+      id: "r-rep-03",
+      text: "\u5730\u677F\u80F6\u5E26\u6362\u8FC7\u4E86\uFF0C\u8D70\u4F4D\u6807\u8BB0\u5168\u4E71\u3002\u4F60\u91CD\u65B0\u8D34\u4E86\u4E00\u904D\uFF0C\u8D34\u5230\u6700\u540E\u4E00\u4E2A\u624D\u60F3\u8D77\u6765\u54EA\u5BF9\u54EA\u3002",
       stamina: -2,
       stat: "dance",
       statName: "\u821E\u8E48",
       gain: 1
     },
     {
-      id: "r-callback",
-      text: "\u7ECF\u7EAA\u4EBA\u53D1\u6765\u4E00\u6761\u6CA1\u5934\u6CA1\u5C3E\u7684\u6D88\u606F\uFF1A\u300C\u4E0B\u5468\u518D\u8BF4\u300D\u3002",
-      stamina: 0
+      id: "r-rep-04",
+      text: "\u955C\u5B50\u4E0A\u6709\u4EBA\u7559\u4E86\u5F20\u4FBF\u7B7E\uFF1A\u300C\u8FD9\u9762\u955C\u5B50\u5F52\u6211\u4E86\u300D\u3002\u4F60\u5728\u4E0B\u9762\u5199\u300C\u90A3\u53E6\u4E00\u9762\u5F52\u6211\u300D\u3002",
+      stamina: 2
     },
     {
-      id: "r-old-video",
-      text: "\u4F60\u7FFB\u5230\u81EA\u5DF1\u4E00\u5E74\u524D\u7684\u7EC3\u4E60\u89C6\u9891\uFF0C\u770B\u5B8C\u4E86\u3002",
+      id: "r-rep-05",
+      text: "\u7A7A\u8C03\u574F\u4E86\u3002\u8DF3\u5230\u7B2C\u4E09\u904D\uFF0C\u6C57\u987A\u7740\u4E0B\u5DF4\u6EF4\u5728\u5730\u677F\u4E0A\u3002",
+      stamina: -4,
+      stat: "dance",
+      statName: "\u821E\u8E48",
+      gain: 1
+    },
+    {
+      id: "r-rep-06",
+      text: "\u4F60\u628A\u6574\u652F\u821E\u62CD\u6210\u6162\u653E\uFF0C\u4E00\u5E27\u4E00\u5E27\u770B\u81EA\u5DF1\u7684\u624B\u3002\u539F\u6765\u4E00\u76F4\u6CA1\u6253\u5F00\u3002",
+      stamina: -2,
+      stat: "dance",
+      statName: "\u821E\u8E48",
+      gain: 1
+    },
+    {
+      id: "r-rep-07",
+      text: "\u6392\u7EC3\u5BA4\u7684\u524D\u8F88\u5728\u6559\u65B0\u4EBA\u3002\u4F60\u5728\u65C1\u8FB9\u8DDF\u7740\u6BD4\u5212\uFF0C\u5077\u5B66\u4E86\u4E00\u6BB5\u3002",
+      stamina: -2,
+      stat: "dance",
+      statName: "\u821E\u8E48",
+      gain: 1
+    },
+    {
+      id: "r-rep-08",
+      text: "\u6709\u4EBA\u70B9\u4E86\u70B8\u9E21\u5916\u5356\uFF0C\u5168\u5C4B\u4EBA\u56F4\u7740\u4E00\u76D2\u5403\u3002\u6CA1\u4EBA\u8BF4\u8BDD\uFF0C\u53EA\u6709\u5480\u56BC\u58F0\u3002",
+      stamina: 3
+    },
+    {
+      id: "r-rep-09",
+      text: "\u4F60\u628A\u4E00\u9996\u6B4C\u964D\u4E86\u4E24\u4E2A\u534A\u97F3\u8BD5\u4E86\u4E00\u904D\u3002\u5531\u8D77\u6765\u8212\u670D\u591A\u4E86\uFF0C\u4F46\u4F60\u6015\u522B\u4EBA\u542C\u51FA\u6765\u3002",
+      stamina: -1,
+      stat: "vocal",
+      statName: "\u6F14\u5531",
+      gain: 1
+    },
+    {
+      id: "r-rep-10",
+      text: "\u97F3\u7BB1\u5DE6\u58F0\u9053\u4E0D\u51FA\u58F0\u3002\u4F60\u542C\u4E86\u4E00\u5C0F\u65F6\u5355\u58F0\u9053\uFF0C\u56DE\u5BB6\u8033\u6735\u8FD8\u5728\u54CD\u3002",
+      stamina: -2,
+      stat: "vocal",
+      statName: "\u6F14\u5531",
+      gain: 1
+    },
+    {
+      id: "r-rep-11",
+      text: "\u4F60\u5728\u767D\u677F\u4E0A\u5199\u4E0B\u8FD9\u4E2A\u6708\u7684\u76EE\u6807\uFF0C\u5199\u5B8C\u53C8\u64E6\u6389\u4E86\u4E00\u4E2A\u3002",
+      stamina: 1
+    },
+    {
+      id: "r-rep-12",
+      text: "\u9694\u58C1\u56E2\u7684\u6392\u7EC3\u58F0\u900F\u8FC7\u6765\uFF0C\u6BD4\u4F60\u4EEC\u6574\u9F50\u3002\u4F60\u4EEC\u8C01\u90FD\u6CA1\u8BF4\u8BDD\u3002",
+      stamina: -2
+    },
+    {
+      id: "r-rep-13",
+      text: "\u6392\u7EC3\u5BA4\u7684\u949F\u6162\u4E86\u5341\u4E94\u5206\u949F\u3002\u4F60\u7EC3\u8D85\u65F6\u4E86\uFF0C\u94A5\u5319\u662F\u7BA1\u7406\u5458\u6765\u6536\u7684\u3002",
+      stamina: -3,
+      stat: "dance",
+      statName: "\u821E\u8E48",
+      gain: 1
+    },
+    {
+      id: "r-rep-14",
+      text: "\u6709\u9762\u5899\u4E0A\u8D34\u6EE1\u4E86\u522B\u7684\u56E2\u7684\u6D77\u62A5\u3002\u4F60\u627E\u4E86\u4E09\u904D\uFF0C\u6CA1\u627E\u5230\u81EA\u5DF1\u3002",
+      stamina: -2
+    },
+    {
+      id: "r-rep-15",
+      text: "\u4F60\u8BD5\u4E86\u4E00\u6BB5\u65B0\u7F16\u821E\uFF0C\u6454\u4E86\u4E00\u6B21\u3002\u722C\u8D77\u6765\u7684\u90A3\u4E2A\u52A8\u4F5C\uFF0C\u53CD\u800C\u66F4\u597D\u770B\u3002",
+      stamina: -4,
+      stat: "dance",
+      statName: "\u821E\u8E48",
+      gain: 1
+    },
+    {
+      id: "r-store-01",
+      text: "\u5173\u4E1C\u716E\u6253\u6298\uFF0C\u4F60\u4E70\u4E86\u4E00\u4EFD\uFF0C\u7AD9\u5728\u95E8\u53E3\u5403\u5B8C\u3002\u6C64\u4E5F\u559D\u4E86\u3002",
+      stamina: 4
+    },
+    {
+      id: "r-store-02",
+      text: "\u5E97\u957F\u628A\u6392\u73ED\u6539\u5230\u4E0B\u5468\u3002\u4F60\u8981\u91CD\u65B0\u7B97\u4E00\u904D\u8FD9\u5468\u8FD8\u5269\u51E0\u4E2A\u65F6\u6BB5\u3002",
+      stamina: -1
+    },
+    {
+      id: "r-store-03",
+      text: "\u6709\u4F4D\u5BA2\u4EBA\u8BA4\u51FA\u4F60\uFF0C\u8BF4\u4E0A\u6B21\u5728\u6F2B\u5C55\u770B\u8FC7\u4F60\u7684\u821E\u53F0\u3002\u4F60\u591A\u7ED9\u4E86\u4ED6\u4E00\u5305\u7EB8\u5DFE\u3002",
+      stamina: 3,
+      stat: "talk",
+      statName: "\u53E3\u624D",
+      gain: 1
+    },
+    {
+      id: "r-store-04",
+      text: "\u8865\u8D27\u8865\u5230\u51CC\u6668\uFF0C\u51B7\u67DC\u7684\u98CE\u628A\u624B\u6307\u5439\u9EBB\u4E86\u3002",
+      stamina: -4
+    },
+    {
+      id: "r-store-05",
+      text: "\u6536\u94F6\u53F0\u524D\u7684\u6742\u5FD7\u4E0A\u6709\u522B\u7684\u5076\u50CF\u5C01\u9762\u3002\u4F60\u7FFB\u4E86\u4E24\u9875\uFF0C\u53C8\u653E\u56DE\u53BB\u4E86\u3002",
+      stamina: -1
+    },
+    {
+      id: "r-store-06",
+      text: "\u628A\u8FC7\u671F\u7684\u996D\u56E2\u5E26\u56DE\u5BB6\uFF0C\u70ED\u4E86\u4E00\u4E0B\u3002\u8FD8\u80FD\u5403\u3002",
+      stamina: 2
+    },
+    {
+      id: "r-store-07",
+      text: "\u6709\u4E2A\u5C0F\u5B69\u5728\u8D27\u67B6\u95F4\u54ED\u7740\u627E\u5988\u5988\u3002\u4F60\u966A\u4ED6\u7AD9\u5230\u4EBA\u6765\u3002",
+      stamina: -1,
+      stat: "talk",
+      statName: "\u53E3\u624D",
+      gain: 1
+    },
+    {
+      id: "r-store-08",
+      text: "\u540C\u4E8B\u95EE\u4F60\u4E3A\u4EC0\u4E48\u4E0D\u627E\u4E2A\u6B63\u7ECF\u5DE5\u4F5C\u3002\u4F60\u6CA1\u63A5\u8BDD\uFF0C\u628A\u8D27\u67B6\u6446\u5B8C\u4E86\u3002",
+      stamina: -3
+    },
+    {
+      id: "r-store-09",
+      text: "\u4F60\u628A\u5269\u4E0B\u7684\u5173\u4E1C\u716E\u6C64\u559D\u4E86\uFF0C\u6696\u548C\u4E86\u4E00\u4F1A\u513F\u3002",
+      stamina: 3
+    },
+    {
+      id: "r-store-10",
+      text: "\u5E97\u957F\u8BF4\u4F60\u7B11\u5F97\u592A\u5C11\uFF0C\u88AB\u5BA2\u4EBA\u6295\u8BC9\u4E86\u3002",
+      stamina: -2
+    },
+    {
+      id: "r-store-11",
+      text: "\u51CC\u6668\u7684\u4FBF\u5229\u5E97\u53EA\u6709\u4F60\u548C\u5E97\u5458\u3002\u4F60\u5728\u8D27\u67B6\u95F4\u8D70\u4E86\u4E09\u5708\uFF0C\u628A\u6BCF\u6837\u4E1C\u897F\u90FD\u770B\u4E86\u4E00\u904D\u3002",
+      stamina: 2,
+      stat: "talk",
+      statName: "\u53E3\u624D",
+      gain: 1
+    },
+    {
+      id: "r-store-12",
+      text: "\u6709\u4EBA\u628A\u4F60\u53D1\u7684\u4F20\u5355\u6298\u6210\u7EB8\u98DE\u673A\uFF0C\u6254\u8FDB\u4E86\u5783\u573E\u6876\u3002\u4F60\u6361\u8D77\u6765\uFF0C\u62B9\u5E73\uFF0C\u53C8\u53D1\u4E86\u51FA\u53BB\u3002",
+      stamina: -2
+    },
+    {
+      id: "r-train-01",
+      text: "\u672B\u73ED\u8F66\u4E0A\u6709\u4EBA\u8BA4\u51FA\u4F60\uFF0C\u5C0F\u58F0\u8BF4\u4E86\u53E5\u52A0\u6CB9\u3002\u4F60\u70B9\u5934\uFF0C\u6CA1\u6562\u591A\u8BF4\u8BDD\u3002",
+      stamina: 2,
+      stat: "vocal",
+      statName: "\u6F14\u5531",
+      gain: 1
+    },
+    {
+      id: "r-train-02",
+      text: "\u7761\u8FC7\u4E86\u4E00\u7AD9\u3002\u8D70\u56DE\u6765\u82B1\u4E86\u4E8C\u5341\u5206\u949F\u3002",
+      stamina: -3
+    },
+    {
+      id: "r-train-03",
+      text: "\u4F60\u5728\u7AD9\u53F0\u7684\u957F\u6905\u4E0A\u628A\u4E00\u6BB5\u6B4C\u8BCD\u5199\u5B8C\u4E86\u3002\u5199\u5B8C\u81EA\u5DF1\u4E5F\u770B\u4E0D\u61C2\u3002",
       stamina: -1,
       stat: "acting",
       statName: "\u6F14\u6280",
       gain: 1
     },
     {
-      id: "r-night",
-      text: "\u51CC\u6668\u7684\u4FBF\u5229\u5E97\uFF0C\u53EA\u6709\u4F60\u548C\u5E97\u5458\u3002",
+      id: "r-train-04",
+      text: "\u8F66\u53A2\u91CC\u5728\u653E\u4F60\u4EEC\u7684\u6B4C\u3002\u6CA1\u4EBA\u77E5\u9053\u4F60\u5728\u8F66\u4E0A\u3002",
+      stamina: 3
+    },
+    {
+      id: "r-train-05",
+      text: "\u672B\u73ED\u8F66\u6CA1\u8D76\u4E0A\uFF0C\u6253\u8F66\u56DE\u53BB\u82B1\u4E86\u516D\u5341\u5757\u3002",
+      stamina: -2
+    },
+    {
+      id: "r-train-06",
+      text: "\u6709\u4EBA\u5728\u8F66\u53A2\u8FDE\u63A5\u5904\u7EC3\u821E\u3002\u4F60\u770B\u4E86\u4E24\u7AD9\uFF0C\u4E0B\u8F66\u65F6\u8DDF\u4ED6\u8BF4\u300C\u624B\u518D\u9AD8\u4E00\u70B9\u300D\u3002",
+      stamina: 1,
+      stat: "dance",
+      statName: "\u821E\u8E48",
+      gain: 1
+    },
+    {
+      id: "r-train-07",
+      text: "\u4F60\u628A\u8033\u8FD4\u6458\u4E86\uFF0C\u7B2C\u4E00\u6B21\u542C\u6E05\u5217\u8F66\u8FDB\u7AD9\u7684\u58F0\u97F3\u3002",
+      stamina: 1
+    },
+    {
+      id: "r-train-08",
+      text: "\u7AD9\u53F0\u7684\u7535\u5B50\u5C4F\u574F\u4E86\uFF0C\u4E00\u76F4\u663E\u793A\u300C\u4E09\u5206\u949F\u300D\u3002\u4F60\u7B49\u4E86\u4E09\u5341\u5206\u949F\u3002",
+      stamina: 1
+    },
+    {
+      id: "r-train-09",
+      text: "\u6709\u4E2A\u5973\u5B69\u62B1\u7740\u5E94\u63F4\u68D2\u7761\u7740\u4E86\u3002\u5230\u7AD9\u65F6\u4F60\u66FF\u5979\u6276\u4E86\u4E00\u4E0B\u3002",
+      stamina: 2
+    },
+    {
+      id: "r-train-10",
+      text: "\u4E0B\u96E8\u4E86\u3002\u4F60\u5728\u5730\u94C1\u53E3\u7B49\u4E86\u5F88\u4E45\uFF0C\u978B\u5168\u6E7F\u4E86\uFF0C\u889C\u5B50\u91CC\u80FD\u62E7\u51FA\u6C34\u3002",
+      stamina: -1
+    },
+    {
+      id: "r-train-11",
+      text: "\u4F60\u5728\u8F66\u7AD9\u7684\u955C\u5B50\u91CC\u770B\u4E86\u81EA\u5DF1\u5F88\u4E45\u3002\u91CC\u9762\u90A3\u4E2A\u4EBA\u770B\u8D77\u6765\u8FD8\u884C\u3002",
+      stamina: -1,
+      stat: "acting",
+      statName: "\u6F14\u6280",
+      gain: 1
+    },
+    {
+      id: "r-train-12",
+      text: "\u6362\u4E58\u901A\u9053\u5F88\u957F\u3002\u4F60\u8D70\u7684\u65F6\u5019\u628A\u65B0\u6B4C\u7684\u95F4\u594F\u60F3\u597D\u4E86\u3002",
+      stamina: -1,
+      stat: "vocal",
+      statName: "\u6F14\u5531",
+      gain: 1
+    },
+    {
+      id: "r-stage-01",
+      text: "\u540E\u53F0\u53EA\u6709\u4E00\u9762\u955C\u5B50\u548C\u4E24\u628A\u6905\u5B50\u3002\u4F60\u628A\u5305\u653E\u5728\u6700\u91CC\u9762\uFF0C\u6015\u6321\u8DEF\u3002",
+      stamina: 1
+    },
+    {
+      id: "r-stage-02",
+      text: "\u524D\u4E00\u4E2A\u56E2\u7684\u5E94\u63F4\u58F0\u900F\u8FC7\u5899\u4F20\u8FC7\u6765\uFF0C\u5F88\u54CD\u3002\u4F60\u5728\u5FC3\u91CC\u6570\u4E86\u6570\u4EBA\u6570\u3002",
+      stamina: -2
+    },
+    {
+      id: "r-stage-03",
+      text: "\u4F60\u5E2E\u522B\u7684\u56E2\u642C\u4E86\u97F3\u7BB1\u3002\u4EBA\u5BB6\u8BF4\u4E86\u4E09\u6B21\u8C22\u8C22\uFF0C\u4F60\u8BF4\u4E86\u4E09\u6B21\u6CA1\u4E8B\u3002",
+      stamina: -3,
+      stat: "talk",
+      statName: "\u53E3\u624D",
+      gain: 1
+    },
+    {
+      id: "r-stage-04",
+      text: "\u6362\u8863\u95F4\u7684\u5E18\u5B50\u62C9\u4E0D\u4E25\u3002\u4F60\u7528\u5939\u5B50\u5939\u4E86\u4E00\u4E0B\uFF0C\u7AD9\u5728\u95E8\u53E3\u7B49\u4E86\u4E24\u5206\u949F\u3002",
+      stamina: 1
+    },
+    {
+      id: "r-stage-05",
+      text: "\u4F60\u7684\u540D\u5B57\u5728\u7269\u8D29\u8868\u4E0A\u6392\u7B2C\u4E03\u3002\u524D\u9762\u516D\u4E2A\u4F60\u90FD\u6CA1\u542C\u8FC7\u3002",
+      stamina: -1
+    },
+    {
+      id: "r-stage-06",
+      text: "\u6709\u4E2A\u5973\u5B69\u5728\u7269\u8D29\u644A\u524D\u7AD9\u4E86\u5F88\u4E45\uFF0C\u6700\u540E\u53EA\u4E70\u4E86\u4E00\u5F20\u3002\u5979\u8BF4\u4E0B\u6B21\u591A\u4E70\u4E24\u5F20\u3002",
+      stamina: 2
+    },
+    {
+      id: "r-stage-07",
+      text: "\u4F60\u5728\u540E\u53F0\u7684\u955C\u5B50\u4E0A\u8D34\u4E86\u81EA\u5DF1\u7684\u540D\u5B57\uFF0C\u8D70\u7684\u65F6\u5019\u6495\u6389\u4E86\u3002",
+      stamina: -1
+    },
+    {
+      id: "r-stage-08",
+      text: "\u68C0\u7968\u65F6\u6709\u4EBA\u558A\u4E86\u4F60\u7684\u540D\u5B57\u3002\u4F60\u56DE\u5934\u592A\u5FEB\uFF0C\u649E\u5230\u95E8\u6846\u3002",
+      stamina: -2
+    },
+    {
+      id: "r-stage-09",
+      text: "\u4F60\u628A\u81EA\u5DF1\u7684\u706F\u724C\u501F\u7ED9\u4E86\u65C1\u8FB9\u7684\u56E2\u3002\u5979\u4EEC\u8BF4\u6563\u573A\u8FD8\u4F60\uFF0C\u4E00\u76F4\u6CA1\u8FD8\u3002",
+      stamina: 2
+    },
+    {
+      id: "r-stage-10",
+      text: "\u6F14\u51FA\u524D\u5341\u5206\u949F\uFF0C\u4E3B\u5531\u8BF4\u5979\u55D3\u5B50\u4E0D\u884C\u4E86\u3002\u6240\u6709\u4EBA\u90FD\u5728\u770B\u4F60\u3002",
+      stamina: -3
+    },
+    {
+      id: "r-stage-11",
+      text: "\u4F60\u5728\u540E\u53F0\u542C\u5230\u6709\u4EBA\u8BA8\u8BBA\u4F60\u7684\u56E2\u300C\u8FD8\u5DEE\u4E00\u70B9\u300D\u3002\u5DEE\u54EA\u4E00\u70B9\uFF0C\u4ED6\u4EEC\u6CA1\u8BF4\u3002",
+      stamina: -2
+    },
+    {
+      id: "r-stage-12",
+      text: "\u6563\u573A\u540E\u4F60\u7559\u4E0B\u6765\u6361\u5783\u573E\u3002\u6361\u4E86\u534A\u888B\u5E94\u63F4\u68D2\uFF0C\u90FD\u662F\u522B\u4EBA\u5BB6\u7684\u989C\u8272\u3002",
+      stamina: -2
+    },
+    {
+      id: "r-stage-13",
+      text: "\u5173\u7CFB\u8005\u5E2D\u5750\u7740\u51E0\u4E2A\u770B\u8D77\u6765\u5F88\u91CD\u8981\u7684\u4EBA\u3002\u4ED6\u4EEC\u4E2D\u9014\u8D70\u4E86\u3002",
+      stamina: -2
+    },
+    {
+      id: "r-stage-14",
+      text: "\u4F60\u628A\u4ECA\u5929\u6389\u7684\u8033\u8FD4\u627E\u5230\u4E86\uFF0C\u5728\u97F3\u7BB1\u540E\u9762\uFF0C\u8FD8\u80FD\u7528\u3002",
+      stamina: 1
+    },
+    {
+      id: "r-stage-15",
+      text: "\u6709\u4E2A\u5DE5\u4F5C\u4EBA\u5458\u8BB0\u4F4F\u4E86\u4F60\u7684\u540D\u5B57\u3002\u4E0B\u6B21\u4ED6\u76F4\u63A5\u53EB\u4F60\uFF0C\u4E0D\u7528\u770B\u8868\u3002",
       stamina: 2,
       stat: "talk",
       statName: "\u53E3\u624D",
       gain: 1
+    },
+    {
+      id: "r-stage-16",
+      text: "\u4F60\u5728\u540E\u53F0\u7684\u7B7E\u540D\u677F\u4E0A\u627E\u5230\u4E86\u81EA\u5DF1\u4E0A\u6B21\u7684\u7B7E\u540D\u3002\u5B57\u6BD4\u73B0\u5728\u96BE\u770B\u3002",
+      stamina: 1
+    },
+    {
+      id: "r-street-01",
+      text: "\u53D1\u4F20\u5355\u65F6\u6709\u4EBA\u95EE\u4F60\u4EEC\u56E2\u53EB\u4EC0\u4E48\u3002\u4F60\u8BF4\u4E86\u4E09\u904D\uFF0C\u5979\u8BB0\u4F4F\u4E86\u3002",
+      stamina: -1,
+      stat: "talk",
+      statName: "\u53E3\u624D",
+      gain: 1
+    },
+    {
+      id: "r-street-02",
+      text: "\u8857\u5934\u5356\u5531\u65F6\u6709\u4E2A\u5927\u53D4\u5F80\u7434\u76D2\u91CC\u653E\u4E86\u4E00\u767E\u5757\uFF0C\u6CA1\u542C\u5C31\u8D70\u4E86\u3002",
+      stamina: 3
+    },
+    {
+      id: "r-street-03",
+      text: "\u4F60\u7684\u6D77\u62A5\u88AB\u4EBA\u6495\u4E86\u4E00\u89D2\u3002\u4F60\u7528\u80F6\u5E26\u8865\u4E0A\uFF0C\u8865\u5F97\u6B6A\u6B6A\u626D\u626D\u3002",
+      stamina: -1
+    },
+    {
+      id: "r-street-04",
+      text: "\u4E0B\u96E8\u4E86\u3002\u4F60\u8EB2\u5728\u4FBF\u5229\u5E97\u5C4B\u6A90\u4E0B\uFF0C\u628A\u4F20\u5355\u6536\u8FDB\u5305\u91CC\uFF0C\u4E00\u5F20\u90FD\u6CA1\u6E7F\u3002",
+      stamina: 1
+    },
+    {
+      id: "r-street-05",
+      text: "\u6709\u4E2A\u5973\u5B69\u63A5\u4E86\u4F20\u5355\uFF0C\u8BA4\u771F\u5730\u6298\u597D\uFF0C\u653E\u8FDB\u4E86\u5916\u5957\u5185\u888B\u3002",
+      stamina: 2
+    },
+    {
+      id: "r-street-06",
+      text: "\u5E7F\u573A\u4E0A\u53E6\u4E00\u7EC4\u4EBA\u5728\u62CD\u77ED\u89C6\u9891\uFF0C\u58F0\u97F3\u76D6\u8FC7\u4E86\u4F60\u3002\u4F60\u7B49\u5230\u4ED6\u4EEC\u62CD\u5B8C\u624D\u5F00\u53E3\u3002",
+      stamina: -2
+    },
+    {
+      id: "r-street-07",
+      text: "\u4F60\u5728\u8857\u89D2\u770B\u5230\u81EA\u5DF1\u56E2\u7684\u5E94\u63F4\u8272\u8D34\u5728\u7535\u7EBF\u6746\u4E0A\uFF0C\u8D34\u5F97\u6BD4\u6D77\u62A5\u8FD8\u9AD8\u3002",
+      stamina: 3
+    },
+    {
+      id: "r-street-08",
+      text: "\u57CE\u7BA1\u6765\u4E86\u3002\u4F60\u62B1\u7740\u6269\u97F3\u5668\u8DD1\u4E86\u534A\u6761\u8857\uFF0C\u7434\u76D2\u5DEE\u70B9\u6254\u4E86\u3002",
+      stamina: -3
+    },
+    {
+      id: "r-street-09",
+      text: "\u6709\u4E2A\u5C0F\u5B69\u8DDF\u7740\u4F60\u7684\u6B4C\u54FC\u4E86\u4E24\u53E5\uFF0C\u97F3\u51C6\u5F88\u597D\u3002",
+      stamina: 2,
+      stat: "vocal",
+      statName: "\u6F14\u5531",
+      gain: 1
+    },
+    {
+      id: "r-street-10",
+      text: "\u4F20\u5355\u53D1\u5B8C\u7684\u65F6\u5019\u5929\u5DF2\u7ECF\u9ED1\u4E86\u3002\u4F60\u5728\u8DEF\u706F\u4E0B\u6570\u4E86\u4E00\u4E0B\u5269\u4E0B\u7684\u6A61\u76AE\u7B4B\u3002",
+      stamina: -2
+    },
+    {
+      id: "r-street-11",
+      text: "\u6709\u4F4D\u963F\u59E8\u95EE\u4F60\u300C\u8FD9\u4E2A\u80FD\u5F53\u996D\u5403\u5417\u300D\u3002\u4F60\u60F3\u4E86\u5F88\u4E45\uFF0C\u8BF4\u300C\u73B0\u5728\u8FD8\u4E0D\u80FD\u300D\u3002",
+      stamina: -1
+    },
+    {
+      id: "r-street-12",
+      text: "\u4F60\u5728\u5929\u6865\u4E0A\u7AD9\u4E86\u4E00\u4F1A\u513F\uFF0C\u770B\u4E0B\u9762\u7684\u8F66\u6D41\u3002\u98CE\u5F88\u51C9\uFF0C\u4F46\u4F60\u6CA1\u60F3\u56DE\u53BB\u3002",
+      stamina: 1
+    },
+    {
+      id: "r-home-01",
+      text: "\u5BA4\u53CB\u5728\u5BA2\u5385\u770B\u7535\u89C6\u3002\u4F60\u6234\u7740\u8033\u673A\u5728\u623F\u95F4\u91CC\u7EC3\u52A8\u4F5C\uFF0C\u5730\u677F\u8DDF\u7740\u54CD\u3002",
+      stamina: -2,
+      stat: "dance",
+      statName: "\u821E\u8E48",
+      gain: 1
+    },
+    {
+      id: "r-home-02",
+      text: "\u6D17\u8863\u673A\u91CC\u7684\u8863\u670D\u5FD8\u4E86\u667E\uFF0C\u5168\u76B1\u4E86\u3002\u4F60\u7A7F\u7740\u76B1\u7684\u8863\u670D\u53BB\u6392\u7EC3\u3002",
+      stamina: -1
+    },
+    {
+      id: "r-home-03",
+      text: "\u4F60\u628A\u623F\u79DF\u8F6C\u51FA\u53BB\uFF0C\u4F59\u989D\u770B\u4E86\u4E09\u904D\u3002",
+      stamina: -1
+    },
+    {
+      id: "r-home-04",
+      text: "\u534A\u591C\u997F\u4E86\u3002\u4F60\u716E\u4E86\u4E00\u5305\u6CE1\u9762\uFF0C\u52A0\u4E86\u4E24\u4E2A\u86CB\u3002",
+      stamina: 3
+    },
+    {
+      id: "r-home-05",
+      text: "\u4F60\u5728\u5899\u4E0A\u8D34\u4E86\u4E00\u5F20\u6F14\u51FA\u7167\u7247\u3002\u8D34\u4E0A\u53BB\u624D\u53D1\u73B0\u662F\u6B6A\u7684\uFF0C\u4F46\u61D2\u5F97\u6495\u3002",
+      stamina: 1
+    },
+    {
+      id: "r-home-06",
+      text: "\u9694\u58C1\u5728\u88C5\u4FEE\u3002\u4F60\u6234\u7740\u8033\u585E\u80CC\u53F0\u8BCD\uFF0C\u80CC\u5230\u4E00\u534A\u5FD8\u4E86\u81EA\u5DF1\u80CC\u5230\u54EA\u3002",
+      stamina: -2,
+      stat: "acting",
+      statName: "\u6F14\u6280",
+      gain: 1
+    },
+    {
+      id: "r-home-07",
+      text: "\u4F60\u7FFB\u5230\u81EA\u5DF1\u4E00\u5E74\u524D\u7684\u7EC3\u4E60\u89C6\u9891\uFF0C\u4ECE\u5934\u770B\u5B8C\u4E86\u3002\u90A3\u65F6\u5019\u8DF3\u5F97\u771F\u96BE\u770B\uFF0C\u4F46\u90A3\u65F6\u773C\u775B\u662F\u4EAE\u7684\u3002",
+      stamina: -1,
+      stat: "acting",
+      statName: "\u6F14\u6280",
+      gain: 1
+    },
+    {
+      id: "r-home-08",
+      text: "\u70ED\u6C34\u5668\u574F\u4E86\u3002\u4F60\u7528\u9505\u70E7\u6C34\u6D17\u4E86\u5934\uFF0C\u6D17\u5230\u4E00\u534A\u6C34\u51C9\u4E86\u3002",
+      stamina: -2
+    },
+    {
+      id: "r-home-09",
+      text: "\u5FEB\u9012\u662F\u4E00\u7BB1\u5E94\u63F4\u7269\u3002\u4F60\u81EA\u5DF1\u4E70\u7684\uFF0C\u7B7E\u6536\u65F6\u7B7E\u4E86\u81EA\u5DF1\u7684\u827A\u540D\u3002",
+      stamina: 1
+    },
+    {
+      id: "r-home-10",
+      text: "\u4F60\u5728\u9633\u53F0\u4E0A\u6652\u88AB\u5B50\u3002\u592A\u9633\u5F88\u597D\uFF0C\u4F60\u8DB4\u5728\u680F\u6746\u4E0A\u6652\u4E86\u5341\u5206\u949F\u3002",
+      stamina: 3
+    },
+    {
+      id: "r-home-11",
+      text: "\u624B\u673A\u76F8\u518C\u81EA\u52A8\u6574\u7406\u51FA\u300C\u53BB\u5E74\u4ECA\u5929\u300D\u3002\u90A3\u5929\u4F60\u4E5F\u5728\u6392\u7EC3\u5BA4\u3002",
+      stamina: 1
+    },
+    {
+      id: "r-home-12",
+      text: "\u4F60\u628A\u6F14\u51FA\u670D\u6302\u8FDB\u8863\u67DC\u6700\u91CC\u9762\uFF0C\u6015\u5F04\u810F\u3002\u6302\u5B8C\u53C8\u62FF\u51FA\u6765\u770B\u4E86\u4E00\u904D\u3002",
+      stamina: 1
+    },
+    {
+      id: "r-etc-01",
+      text: "\u964D\u6E29\u4E86\u3002\u4F60\u5728\u5305\u91CC\u653E\u4E86\u4E24\u4E2A\u6696\u5B9D\u5B9D\uFF0C\u4E00\u4E2A\u81EA\u5DF1\u7528\uFF0C\u4E00\u4E2A\u7ED9\u4E86\u961F\u53CB\u3002",
+      stamina: 2
+    },
+    {
+      id: "r-etc-02",
+      text: "\u6709\u4EBA\u628A\u4F60\u7684\u6F14\u51FA\u7247\u6BB5\u526A\u6210\u89C6\u9891\u3002\u64AD\u653E\u91CF\u4E0D\u9AD8\uFF0C\u8BC4\u8BBA\u5374\u5F88\u957F\u3002",
+      stamina: 3
+    },
+    {
+      id: "r-etc-03",
+      text: "\u8BC4\u8BBA\u91CC\u6709\u4EBA\u8BF4\u300C\u8FD9\u4E2A\u4EBA\u8DF3\u821E\u597D\u7528\u529B\u300D\u3002\u4F60\u622A\u56FE\u5B58\u4E86\u4E0B\u6765\u3002",
+      stamina: 2
+    },
+    {
+      id: "r-etc-04",
+      text: "\u4F60\u5173\u6CE8\u7684\u56E2\u5BA3\u5E03\u89E3\u6563\u4E86\u3002\u5979\u4EEC\u7684\u6700\u540E\u4E00\u573A\u4F60\u6CA1\u62A2\u5230\u7968\u3002",
+      stamina: -3
+    },
+    {
+      id: "r-etc-05",
+      text: "\u540C\u671F\u53D1\u7684\u65B0\u6B4C\u4E0A\u4E86\u70ED\u95E8\u3002\u4F60\u5728\u8BC4\u8BBA\u533A\u70B9\u4E86\u4E2A\u8D5E\uFF0C\u7136\u540E\u5173\u6389\u624B\u673A\u3002",
+      stamina: -1
+    },
+    {
+      id: "r-etc-06",
+      text: "\u793E\u5A92\u4E0A\u6709\u4EBA\u95EE\u300C\u4EC0\u4E48\u65F6\u5019\u6709\u4E0B\u4E00\u573A\u300D\u3002\u4F60\u56DE\u590D\u4E86\u300C\u5FEB\u4E86\u300D\uFF0C\u5176\u5B9E\u8FD8\u6CA1\u5B9A\u3002",
+      stamina: 2
+    },
+    {
+      id: "r-etc-07",
+      text: "\u4F60\u628A\u7B80\u4ECB\u6539\u4E86\u4E09\u904D\uFF0C\u6700\u540E\u53EA\u7559\u4E86\u4E00\u53E5\uFF1A\u300C\u8FD8\u5728\u7EC3\u300D\u3002",
+      stamina: 1
+    },
+    {
+      id: "r-etc-08",
+      text: "\u6709\u4E2A\u7C89\u4E1D\u5BC4\u6765\u624B\u4F5C\u7684\u5E94\u63F4\u7269\u3002\u505A\u5DE5\u5F88\u7C97\u7CD9\uFF0C\u4F46\u7EBF\u5934\u90FD\u6536\u597D\u4E86\u3002",
+      stamina: 3
+    },
+    {
+      id: "r-etc-09",
+      text: "\u5929\u6C14\u9884\u62A5\u8BF4\u6709\u96E8\u3002\u4F60\u5E26\u4E86\u4F1E\uFF0C\u7ED3\u679C\u6CA1\u4E0B\u3002",
+      stamina: 1
+    },
+    {
+      id: "r-etc-10",
+      text: "\u4F60\u68A6\u89C1\u81EA\u5DF1\u5728\u53F0\u4E0A\u5FD8\u8BCD\u3002\u9192\u6765\u8FD8\u5728\u80CC\uFF0C\u80CC\u5230\u5929\u4EAE\u3002",
+      stamina: -1
+    },
+    {
+      id: "r-etc-11",
+      text: "\u751F\u8BDE\u796D\u7684\u65E5\u671F\u5B9A\u4E0B\u6765\u4E86\uFF0C\u5728\u4E09\u4E2A\u6708\u540E\u3002\u4F60\u5728\u65E5\u5386\u4E0A\u753B\u4E86\u4E2A\u5708\u3002",
+      stamina: 2
     }
   ],
   story: [
     {
       id: "first-audition",
       title: "\u4E00\u4E2A\u8BD5\u955C\u673A\u4F1A",
-      text: "\u7ECF\u7EAA\u4EBA\u63A8\u95E8\u8FDB\u6765\uFF1A\u300C\u6709\u4E2A\u5C0F\u573A\u5B50\u7684\u8BD5\u955C\uFF0C\u540E\u5929\u3002\u4F60\u6562\u4E0D\u6562\u53BB\uFF1F\u300D",
+      text: "\u7ECF\u7EAA\u4EBA\u63A8\u95E8\u8FDB\u6765\uFF0C\u624B\u91CC\u634F\u7740\u4E00\u5F20\u6253\u5370\u7EB8\uFF1A\u300C\u6709\u4E2A\u5C0F\u573A\u5B50\u7684\u8BD5\u955C\uFF0C\u540E\u5929\u4E0B\u5348\u3002\u4E09\u4E2A\u4EBA\u62A2\u4E00\u4E2A\u4F4D\uFF0C\u4F60\u6562\u4E0D\u6562\u53BB\uFF1F\u300D",
       major: true,
-      requires: {
-        statsAtLeast: {
-          dance: 15
-        },
-        flagsNot: [
-          "ev:first-audition"
-        ]
-      },
+      requires: 'dance >= 15 and not hasFlag("ev:first-audition")',
+      sourceRow: 2,
       choices: [
         {
           id: "go",
           label: "\u53BB\uFF0C\u53CD\u6B63\u4E5F\u6CA1\u4EC0\u4E48\u53EF\u8F93\u7684",
-          text: "\u4F60\u53BB\u4E86\u3002\u53F0\u4E0B\u53EA\u6709\u4E94\u4E2A\u4EBA\uFF0C\u4F46\u4F60\u8DF3\u5B8C\u4E86\u6574\u652F\u821E\u3002",
+          text: "\u4F60\u53BB\u4E86\u3002\u53F0\u4E0B\u53EA\u6709\u4E94\u4E2A\u4EBA\uFF0C\u5176\u4E2D\u4E00\u4E2A\u5728\u73A9\u624B\u673A\u3002\u4F60\u8FD8\u662F\u8DF3\u5B8C\u4E86\u6574\u652F\u821E\u3002",
           effects: {
             stamina: -10,
             axes: {
               self: 8,
               others: 4,
               fit: 3
+            },
+            traits: {
+              passion: 5
+            },
+            negatives: {
+              stress: 8
             }
           },
           setFlag: "first-audition"
@@ -18765,7 +21369,7 @@ var events_default = {
         {
           id: "prepare",
           label: "\u518D\u7EC3\u4E24\u5929\uFF0C\u51C6\u5907\u5145\u5206\u518D\u53BB",
-          text: "\u4F60\u591A\u7EC3\u4E86\u4E24\u5929\uFF0C\u52A8\u4F5C\u66F4\u7A33\u4E86\uFF0C\u4F46\u4E5F\u9519\u8FC7\u4E86\u8FD9\u6B21\u673A\u4F1A\u3002",
+          text: "\u4F60\u591A\u7EC3\u4E86\u4E24\u5929\uFF0C\u52A8\u4F5C\u66F4\u7A33\u4E86\u3002\u4F46\u90A3\u4E2A\u4F4D\u7F6E\u7ED9\u4E86\u522B\u4EBA\u3002\u4F60\u5728\u7FA4\u91CC\u770B\u5230\u5979\u4EEC\u7684\u5408\u7167\u3002",
           effects: {
             stamina: -5,
             axes: {
@@ -18774,6 +21378,12 @@ var events_default = {
             },
             stats: {
               dance: 2
+            },
+            traits: {
+              ambitious: 3
+            },
+            negatives: {
+              restless: 3
             }
           },
           setFlag: "first-audition"
@@ -18781,11 +21391,14 @@ var events_default = {
         {
           id: "skip",
           label: "\u7B97\u4E86\uFF0C\u8FD8\u6CA1\u51C6\u5907\u597D",
-          text: "\u4F60\u8BF4\u4E0B\u6B21\u5427\u3002\u7ECF\u7EAA\u4EBA\u6CA1\u518D\u8BF4\u4EC0\u4E48\u3002",
+          text: "\u4F60\u8BF4\u4E0B\u6B21\u5427\u3002\u7ECF\u7EAA\u4EBA\u8BF4\u4E86\u53E5\u300C\u884C\u300D\uFF0C\u7136\u540E\u628A\u7EB8\u6536\u8FDB\u5305\u91CC\uFF0C\u6CA1\u518D\u63D0\u3002",
           effects: {
             axes: {
               self: -6,
               others: -2
+            },
+            negatives: {
+              restless: 5
             }
           },
           setFlag: "first-audition"
@@ -18793,17 +21406,1532 @@ var events_default = {
       ]
     },
     {
+      id: "debut",
+      title: "\u51FA\u9053",
+      text: "\u793E\u957F\u628A\u5408\u540C\u63A8\u8FC7\u6765\uFF0C\u7EB8\u5F88\u8584\u3002\u4ED6\u8BF4\uFF1A\u300C\u7B7E\u4E86\u5C31\u662F\u51FA\u9053\u3002\u4F46\u4F60\u8981\u77E5\u9053\uFF0C\u5730\u4E0B\u6CA1\u6709\u6276\u68AF\uFF0C\u53EA\u6709\u53F0\u9636\u3002\u300D",
+      major: true,
+      requires: 'total >= 120 and not hasFlag("ev:debut")',
+      sourceRow: 3,
+      choices: [
+        {
+          id: "sign",
+          label: "\u7B7E",
+          text: "\u4F60\u7B7E\u4E86\u3002\u7B14\u662F\u501F\u7684\uFF0C\u7B7E\u5B8C\u624B\u8FD8\u5728\u6296\u3002\u793E\u957F\u628A\u5408\u540C\u6536\u8D70\uFF0C\u8BF4\uFF1A\u300C\u660E\u5929\u5F00\u59CB\uFF0C\u4F60\u6709\u540D\u5B57\u4E86\u3002\u300D",
+          effects: {
+            stamina: -10,
+            axes: {
+              self: 10,
+              others: 8,
+              fit: 6
+            },
+            mood: 10,
+            traits: {
+              ambitious: 5
+            },
+            negatives: {
+              stress: 10
+            }
+          },
+          setFlag: "debut"
+        },
+        {
+          id: "ask",
+          label: "\u5148\u95EE\u6E05\u695A\u6761\u4EF6",
+          text: "\u4F60\u4E00\u6761\u4E00\u6761\u95EE\uFF1A\u5206\u6210\u3001\u6392\u7EC3\u65F6\u95F4\u3001\u80FD\u4E0D\u80FD\u81EA\u5DF1\u9009\u6B4C\u3002\u793E\u957F\u7B11\u4E86\u4E00\u4E0B\uFF0C\u8BF4\u4F60\u662F\u7B2C\u4E00\u4E2A\u95EE\u8FD9\u4E9B\u7684\u3002",
+          effects: {
+            axes: {
+              self: 6,
+              others: 4,
+              fit: 4
+            },
+            traits: {
+              independent: 4
+            }
+          },
+          setFlag: "debut"
+        },
+        {
+          id: "delay",
+          label: "\u518D\u7B49\u7B49\uFF0C\u6211\u8FD8\u4E0D\u591F",
+          text: "\u4F60\u8BF4\u518D\u7ED9\u6211\u4E09\u4E2A\u6708\u3002\u793E\u957F\u628A\u5408\u540C\u6536\u56DE\u62BD\u5C49\uFF0C\u8BF4\uFF1A\u300C\u4E09\u4E2A\u6708\u540E\u6211\u8FD8\u5728\u8FD9\u513F\uFF0C\u4F46\u673A\u4F1A\u4E0D\u4E00\u5B9A\u3002\u300D",
+          effects: {
+            axes: {
+              self: 4,
+              others: -3,
+              fit: -4
+            },
+            mood: -5,
+            traits: {
+              ambitious: 3
+            },
+            negatives: {
+              restless: 6
+            }
+          },
+          setFlag: "debut"
+        }
+      ]
+    },
+    {
+      id: "party-first",
+      title: "\u7B2C\u4E00\u4E2A\u7EC4\u5408",
+      text: "\u6392\u7EC3\u5BA4\u91CC\u5750\u4E86\u4E09\u4E2A\u4EBA\uFF0C\u90FD\u662F\u88AB\u51D1\u5230\u4E00\u8D77\u7684\u3002\u6CA1\u6709\u4EBA\u5148\u5F00\u53E3\u3002\u684C\u5B50\u4E0A\u644A\u7740\u4E00\u5F20\u8FD8\u6CA1\u8D77\u540D\u7684\u4F01\u5212\u4E66\u3002",
+      major: true,
+      requires: 'hasFlag("ev:debut") and not hasFlag("ev:party-first")',
+      sourceRow: 4,
+      choices: [
+        {
+          id: "lead",
+          label: "\u5148\u8D77\u4E2A\u540D\u5B57\u5427",
+          text: "\u4F60\u62FF\u8D77\u7B14\u5199\u4E0B\u7B2C\u4E00\u4E2A\u540D\u5B57\u3002\u4E09\u4E2A\u4EBA\u90FD\u5ACC\u96BE\u542C\u3002\u5199\u5230\u7B2C\u4E03\u4E2A\uFF0C\u6CA1\u4EBA\u53CD\u5BF9\u4E86\u3002",
+          effects: {
+            axes: {
+              self: 6,
+              others: 5,
+              fit: 4
+            },
+            mood: 6,
+            traits: {
+              lead: 5
+            }
+          },
+          setFlag: "party-first"
+        },
+        {
+          id: "listen",
+          label: "\u5148\u542C\u542C\u5979\u4EEC\u60F3\u505A\u4EC0\u4E48",
+          text: "\u4F60\u6CA1\u8BF4\u8BDD\uFF0C\u8BA9\u5979\u4EEC\u4E00\u4E2A\u4E2A\u8BF4\u3002\u8BF4\u5230\u7B2C\u4E09\u4E2A\u7684\u65F6\u5019\uFF0C\u4F60\u53D1\u73B0\u4E09\u4E2A\u4EBA\u60F3\u8981\u7684\u5176\u5B9E\u662F\u540C\u4E00\u4EF6\u4E8B\u3002",
+          effects: {
+            axes: {
+              self: 3,
+              others: 8,
+              fit: 3
+            },
+            mood: 4,
+            traits: {
+              kind: 4,
+              coop: 4
+            }
+          },
+          setFlag: "party-first"
+        },
+        {
+          id: "rule",
+          label: "\u5148\u628A\u89C4\u77E9\u5B9A\u4E0B\u6765",
+          text: "\u4F60\u5B9A\u4E86\u4E09\u6761\uFF1A\u8FDF\u5230\u7684\u4EBA\u4E70\u6C34\u3001\u6F14\u51FA\u524D\u4E0D\u559D\u9152\u3001\u8C01\u90FD\u53EF\u4EE5\u8BF4\u300C\u4ECA\u5929\u4E0D\u884C\u300D\u3002\u5979\u4EEC\u90FD\u7B7E\u4E86\u5B57\u3002",
+          effects: {
+            axes: {
+              self: 5,
+              others: 2,
+              fit: 5
+            },
+            traits: {
+              lead: 4,
+              independent: 3
+            }
+          },
+          setFlag: "party-first"
+        }
+      ]
+    },
+    {
+      id: "first-cheki",
+      title: "\u7B2C\u4E00\u6B21\u7279\u5178\u4F1A",
+      text: "\u7B2C\u4E00\u6B21\u7AD9\u5728\u7269\u8D29\u684C\u540E\u9762\u3002\u684C\u4E0A\u6446\u7740\u9A6C\u514B\u7B14\u3001\u62CD\u7ACB\u5F97\uFF0C\u8FD8\u6709\u4E00\u5F20\u5199\u7740\u300C\u8BF7\u6392\u8FD9\u91CC\u300D\u7684\u7EB8\u3002\u4F60\u624B\u5FC3\u5728\u51FA\u6C57\u3002",
+      requires: 'hasFlag("ev:debut") and fans.gachi >= 20 and not hasFlag("ev:first-cheki")',
+      sourceRow: 5,
+      choices: [
+        {
+          id: "talk",
+          label: "\u4E00\u4E2A\u4E00\u4E2A\u804A\uFF0C\u522B\u6025",
+          text: "\u4F60\u628A\u6BCF\u4E00\u5F20\u62CD\u7ACB\u5F97\u90FD\u5199\u6EE1\u4E86\u3002\u5199\u5230\u7B2C\u4E8C\u5341\u5F20\uFF0C\u624B\u5DF2\u7ECF\u4E0D\u4F1A\u5199\u5B57\u4E86\uFF0C\u4F46\u6CA1\u4EBA\u50AC\u4F60\u3002",
+          effects: {
+            stamina: -8,
+            axes: {
+              self: 4,
+              others: 8
+            },
+            stats: {
+              talk: 2
+            },
+            mood: 6,
+            traits: {
+              kind: 5
+            }
+          },
+          setFlag: "first-cheki"
+        },
+        {
+          id: "fast",
+          label: "\u5FEB\u70B9\uFF0C\u522B\u8BA9\u4EBA\u7B49",
+          text: "\u4F60\u628A\u961F\u4F0D\u8FC7\u5F97\u5F88\u5FEB\u3002\u6709\u4EBA\u8BF4\u300C\u4E0D\u7528\u5199\u5B57\u4E5F\u884C\u300D\uFF0C\u4F60\u8FD8\u662F\u5199\u4E86\u3002\u6563\u573A\u65F6\u684C\u4E0A\u8FD8\u5269\u4E09\u5341\u5F20\u7A7A\u767D\u3002",
+          effects: {
+            stamina: -12,
+            axes: {
+              self: 6,
+              others: 2,
+              fit: 2
+            },
+            traits: {
+              coop: 3
+            },
+            negatives: {
+              fatigue: 5
+            }
+          },
+          setFlag: "first-cheki"
+        },
+        {
+          id: "free",
+          label: "\u4ECA\u5929\u4E0D\u6536\u94B1",
+          text: "\u4F60\u628A\u300C\u4E00\u5F20\u4E94\u5341\u300D\u7684\u724C\u5B50\u7FFB\u4E86\u8FC7\u53BB\u3002\u90A3\u5929\u4F60\u4E8F\u4E86\u94B1\uFF0C\u4F46\u8BB0\u4F4F\u4E86\u516D\u4E2A\u4EBA\u7684\u540D\u5B57\u3002",
+          effects: {
+            stamina: -6,
+            axes: {
+              self: 2,
+              others: 10,
+              fit: -3
+            },
+            mood: 8,
+            traits: {
+              kind: 6
+            }
+          },
+          setFlag: "first-cheki"
+        }
+      ]
+    },
+    {
+      id: "first-om",
+      title: "\u6709\u4EBA\u95EE\u8981\u4E0D\u8981\u529E\u4E13\u573A",
+      text: "\u573A\u5730\u65B9\u7684\u4EBA\u8BF4\uFF1A\u300C\u4F60\u4EEC\u73B0\u5728\u7684\u52A8\u5458\u91CF\uFF0C\u53EF\u4EE5\u8BD5\u4E00\u573A OM\u3002\u5468\u672B\u7684\u6863\uFF0C\u79DF\u91D1\u5148\u4ED8\u4E00\u534A\u3002\u300D",
+      major: true,
+      requires: 'total >= 220 and hasFlag("ev:debut") and not hasFlag("ev:first-om")',
+      sourceRow: 6,
+      choices: [
+        {
+          id: "take",
+          label: "\u63A5",
+          text: "\u4F60\u4ED8\u4E86\u5B9A\u91D1\u3002\u63A5\u4E0B\u6765\u7684\u4E00\u4E2A\u6708\uFF0C\u4F60\u6BCF\u5929\u90FD\u5728\u7B97\u7968\u3002",
+          effects: {
+            stamina: -10,
+            axes: {
+              self: 8,
+              others: 5,
+              fit: 6
+            },
+            mood: 5,
+            traits: {
+              ambitious: 5
+            },
+            negatives: {
+              stress: 10
+            }
+          },
+          setFlag: "first-om"
+        },
+        {
+          id: "smaller",
+          label: "\u95EE\u80FD\u4E0D\u80FD\u6362\u4E2A\u5C0F\u4E00\u70B9\u7684\u573A",
+          text: "\u573A\u5730\u65B9\u60F3\u4E86\u5F88\u4E45\uFF0C\u7ED9\u4F60\u6362\u4E86\u4E00\u4E2A\u4E00\u767E\u4E8C\u5341\u4EBA\u7684\u573A\u3002\u79DF\u91D1\u5C11\u4E86\u4E00\u534A\uFF0C\u4F46\u300C\u4E13\u573A\u300D\u4E24\u4E2A\u5B57\u8FD8\u662F\u90A3\u4E24\u4E2A\u3002",
+          effects: {
+            axes: {
+              self: 4,
+              others: 6,
+              fit: 4
+            },
+            mood: 4,
+            traits: {
+              independent: 4
+            }
+          },
+          setFlag: "first-om"
+        },
+        {
+          id: "pass",
+          label: "\u73B0\u5728\u8FD8\u4E0D\u914D",
+          text: "\u4F60\u8BF4\u518D\u7B49\u7B49\u3002\u5BF9\u65B9\u8BF4\u4E86\u53E5\u300C\u968F\u65F6\u300D\uFF0C\u8D70\u4E86\u3002\u4F60\u5728\u7A7A\u573A\u5730\u7AD9\u5230\u706F\u5173\u3002",
+          effects: {
+            axes: {
+              self: 3,
+              others: -4,
+              fit: -5
+            },
+            mood: -8,
+            negatives: {
+              restless: 6
+            }
+          },
+          setFlag: "first-om"
+        }
+      ]
+    },
+    {
+      id: "vocal-30",
+      title: "\u58F0\u97F3\u88AB\u5938\u4E86",
+      text: "\u8C03\u97F3\u5E08\u5728\u8FD4\u542C\u91CC\u8BF4\uFF1A\u300C\u8FD9\u4E2A\u58F0\u97F3\u53EF\u4EE5\u5F80\u524D\u63A8\u4E00\u70B9\u3002\u300D\u4F60\u4E0D\u77E5\u9053\u8FD9\u7B97\u4E0D\u7B97\u5938\u3002",
+      requires: 'vocal >= 30 and not hasFlag("ev:vocal-30")',
+      sourceRow: 7,
+      choices: [
+        {
+          id: "note",
+          label: "\u628A\u8FD9\u53E5\u8BDD\u8BB0\u4E0B\u6765",
+          text: "\u4F60\u5728\u624B\u673A\u5907\u5FD8\u5F55\u91CC\u5199\uFF1A\u300C\u5F80\u524D\u63A8\u4E00\u70B9\u3002\u300D\u540E\u6765\u8C03\u97F3\u65F6\u4F60\u6BCF\u6B21\u90FD\u60F3\u8D77\u8FD9\u53E5\u3002",
+          effects: {
+            axes: {
+              self: 3,
+              fit: 4
+            },
+            stats: {
+              vocal: 2
+            },
+            mood: 6
+          },
+          setFlag: "vocal-30"
+        },
+        {
+          id: "doubt",
+          label: "\u4ED6\u53EA\u662F\u968F\u53E3\u8BF4\u7684",
+          text: "\u4F60\u6CA1\u5F53\u56DE\u4E8B\u3002\u4F46\u90A3\u5929\u56DE\u5BB6\u8DEF\u4E0A\uFF0C\u4F60\u5728\u5FC3\u91CC\u628A\u90A3\u6BB5\u53C8\u5531\u4E86\u4E00\u904D\u3002",
+          effects: {
+            axes: {
+              self: -2,
+              fit: 2
+            },
+            stats: {
+              vocal: 1
+            },
+            mood: -3
+          },
+          setFlag: "vocal-30"
+        },
+        {
+          id: "ask",
+          label: "\u8FFD\u7740\u95EE\u4ED6\u8981\u600E\u4E48\u63A8",
+          text: "\u8C03\u97F3\u5E08\u88AB\u4F60\u95EE\u70E6\u4E86\uFF0C\u6700\u540E\u6559\u4E86\u4F60\u4E00\u4E2A\u547C\u5438\u7684\u65B9\u6CD5\u3002\u4F60\u7EC3\u4E86\u4E00\u4E2A\u6708\u3002",
+          effects: {
+            stamina: -6,
+            axes: {
+              self: 5,
+              fit: 3
+            },
+            stats: {
+              vocal: 3
+            },
+            traits: {
+              ambitious: 3
+            }
+          },
+          setFlag: "vocal-30"
+        }
+      ]
+    },
+    {
+      id: "vocal-60",
+      title: "\u6709\u4EBA\u62FF\u4F60\u548C\u522B\u4EBA\u6BD4",
+      text: "\u8BC4\u8BBA\u91CC\u6709\u4EBA\u5199\uFF1A\u300C\u4E3B\u5531\u4E0D\u5982\u9694\u58C1\u56E2\u7684\u3002\u300D\u4E0B\u9762\u6709\u4EBA\u56DE\uFF1A\u300C\u4F60\u542C\u8FC7\u73B0\u573A\u5417\u3002\u300D\u4E24\u6761\u90FD\u88AB\u4F60\u770B\u5230\u4E86\u3002",
+      requires: 'vocal >= 60 and not hasFlag("ev:vocal-60")',
+      sourceRow: 8,
+      choices: [
+        {
+          id: "reply",
+          label: "\u56DE\u4E00\u53E5",
+          text: "\u4F60\u56DE\u4E86\uFF1A\u300C\u90A3\u4F60\u6765\u73B0\u573A\u542C\u3002\u300D\u53D1\u9001\u4E4B\u540E\u5FC3\u8DF3\u4E86\u5F88\u4E45\uFF0C\u5BF9\u65B9\u6CA1\u518D\u56DE\u3002",
+          effects: {
+            axes: {
+              self: 6,
+              others: -3,
+              fit: 3
+            },
+            stats: {
+              talk: 2
+            },
+            mood: -3,
+            traits: {
+              ambitious: 4,
+              independent: 3
+            },
+            negatives: {
+              stress: 6
+            }
+          },
+          setFlag: "vocal-60"
+        },
+        {
+          id: "ignore",
+          label: "\u5173\u6389\u8BC4\u8BBA\uFF0C\u53BB\u7EC3",
+          text: "\u4F60\u628A\u624B\u673A\u7FFB\u8FC7\u53BB\uFF0C\u7EC3\u4E86\u4E24\u5C0F\u65F6\u3002\u55D3\u5B50\u54D1\u4E86\uFF0C\u4F46\u90A3\u53E5\u9AD8\u97F3\u7EC8\u4E8E\u4E0A\u53BB\u4E86\u3002",
+          effects: {
+            stamina: -8,
+            axes: {
+              self: 3,
+              fit: 7
+            },
+            stats: {
+              vocal: 2
+            },
+            mood: -5
+          },
+          setFlag: "vocal-60"
+        },
+        {
+          id: "screenshot",
+          label: "\u622A\u56FE\u5B58\u8D77\u6765",
+          text: "\u4F60\u628A\u90A3\u6761\u8BC4\u8BBA\u622A\u56FE\u5B58\u8FDB\u4E86\u4E00\u4E2A\u53EB\u300C\u4EE5\u540E\u300D\u7684\u76F8\u518C\u3002\u91CC\u9762\u5DF2\u7ECF\u6709\u4E00\u767E\u591A\u5F20\u4E86\u3002",
+          effects: {
+            axes: {
+              self: 4,
+              fit: 2
+            },
+            mood: -8,
+            negatives: {
+              stress: 6
+            }
+          },
+          setFlag: "vocal-60"
+        }
+      ]
+    },
+    {
+      id: "dance-40",
+      title: "\u52A8\u4F5C\u7EC8\u4E8E\u8DDF\u4E0A",
+      text: "\u5F55\u50CF\u56DE\u770B\u65F6\u4F60\u53D1\u73B0\uFF0C\u8FD9\u6B21\u4F60\u7684\u624B\u6BD4\u62CD\u5B50\u65E9\u4E86\u534A\u62CD\u2014\u2014\u4E0D\u662F\u6162\uFF0C\u662F\u63D0\u524D\u3002\u4F60\u5012\u56DE\u53BB\u770B\u4E86\u4E94\u904D\u3002",
+      requires: 'dance >= 40 and not hasFlag("ev:dance-40")',
+      sourceRow: 9,
+      choices: [
+        {
+          id: "freeze",
+          label: "\u628A\u8FD9\u4E00\u5E27\u53D1\u7ED9\u961F\u53CB",
+          text: "\u961F\u53CB\u56DE\u4E86\u4E00\u4E2A\u300C\uFF1F\uFF1F\uFF1F\u300D\u3002\u5979\u8BF4\u660E\u5929\u5E2E\u4F60\u770B\u770B\u3002",
+          effects: {
+            axes: {
+              self: 4,
+              others: 4,
+              fit: 3
+            },
+            stats: {
+              dance: 2
+            },
+            mood: 6,
+            traits: {
+              coop: 3
+            }
+          },
+          setFlag: "dance-40"
+        },
+        {
+          id: "loop",
+          label: "\u770B\u5230\u51CC\u6668\u4E09\u70B9",
+          text: "\u4F60\u628A\u8FD9\u6BB5\u770B\u4E86\u4E09\u5341\u904D\uFF0C\u76F4\u5230\u80FD\u80CC\u51FA\u6BCF\u4E00\u5E27\u3002\u7B2C\u4E8C\u5929\u6392\u7EC3\uFF0C\u4F60\u8FDF\u5230\u4E86\u4E00\u6B21\u3002",
+          effects: {
+            stamina: -6,
+            axes: {
+              self: 5,
+              fit: 4
+            },
+            stats: {
+              dance: 3
+            },
+            traits: {
+              ambitious: 4
+            },
+            negatives: {
+              fatigue: 5
+            }
+          },
+          setFlag: "dance-40"
+        },
+        {
+          id: "stop",
+          label: "\u5173\u6389\u89C6\u9891\uFF0C\u7761\u4E86",
+          text: "\u4F60\u544A\u8BC9\u81EA\u5DF1\u591F\u4E86\u3002\u8EBA\u4E0B\u7684\u65F6\u5019\uFF0C\u8111\u5B50\u91CC\u8FD8\u5728\u6570\u62CD\u5B50\u3002",
+          effects: {
+            axes: {
+              self: 2,
+              fit: 2
+            },
+            stats: {
+              dance: 1
+            },
+            mood: 3
+          },
+          setFlag: "dance-40"
+        }
+      ]
+    },
+    {
+      id: "acting-30",
+      title: "\u54ED\u620F",
+      text: "\u5DE5\u4F5C\u574A\u8001\u5E08\u8BA9\u4F60\u6F14\u4E00\u6BB5\u5931\u53BB\u3002\u4F60\u6F14\u5230\u4E00\u534A\u771F\u7684\u54ED\u4E86\uFF0C\u7136\u540E\u614C\u4E86\uFF0C\u6015\u522B\u4EBA\u770B\u51FA\u6765\u662F\u771F\u7684\u3002",
+      requires: 'acting >= 30 and not hasFlag("ev:acting-30")',
+      sourceRow: 10,
+      choices: [
+        {
+          id: "hide",
+          label: "\u5047\u88C5\u6CA1\u4E8B\uFF0C\u628A\u620F\u6F14\u5B8C",
+          text: "\u4F60\u628A\u773C\u6CEA\u64E6\u6389\uFF0C\u628A\u6700\u540E\u4E24\u53E5\u8BF4\u5B8C\u3002\u8001\u5E08\u9F13\u638C\uFF0C\u8BF4\u8FD9\u624D\u53EB\u6F14\u3002\u4F60\u4E0D\u786E\u5B9A\u3002",
+          effects: {
+            stamina: -4,
+            axes: {
+              self: -3,
+              others: 4,
+              fit: 5
+            },
+            stats: {
+              acting: 2
+            },
+            mood: -3,
+            negatives: {
+              stress: 5
+            }
+          },
+          setFlag: "acting-30"
+        },
+        {
+          id: "admit",
+          label: "\u627F\u8BA4\u662F\u771F\u7684",
+          text: "\u4F60\u8BF4\u300C\u6211\u521A\u624D\u662F\u771F\u7684\u96BE\u8FC7\u300D\u3002\u8001\u5E08\u6C89\u9ED8\u4E86\u4E00\u4F1A\u513F\uFF0C\u8BF4\uFF1A\u300C\u90A3\u4F60\u4EE5\u540E\u4F1A\u5F88\u8F9B\u82E6\u3002\u300D",
+          effects: {
+            axes: {
+              self: 7,
+              others: 3,
+              fit: 2
+            },
+            stats: {
+              acting: 1
+            },
+            mood: -5,
+            traits: {
+              kind: 4
+            }
+          },
+          setFlag: "acting-30"
+        },
+        {
+          id: "leave",
+          label: "\u53BB\u6D17\u624B\u95F4\u5F85\u5341\u5206\u949F",
+          text: "\u4F60\u5728\u9694\u95F4\u91CC\u5750\u5230\u4E0D\u6296\u4E86\u624D\u51FA\u6765\u3002\u56DE\u6765\u7684\u65F6\u5019\uFF0C\u5927\u5BB6\u5728\u7B49\u4F60\u3002",
+          effects: {
+            axes: {
+              self: 4,
+              others: 2
+            },
+            mood: 5,
+            negatives: {
+              stress: -5
+            }
+          },
+          setFlag: "acting-30"
+        }
+      ]
+    },
+    {
+      id: "talk-30",
+      title: "\u4E3B\u6301\u9996\u79C0",
+      text: "\u4E3B\u529E\u65B9\u4E34\u65F6\u7F3A\u4EBA\uFF0C\u628A\u8BDD\u7B52\u585E\u7ED9\u4E86\u4F60\u3002\u53F0\u4E0B\u4E09\u767E\u4EBA\uFF0C\u4F60\u53EA\u6709\u4E00\u5F20\u5199\u7740\u6D41\u7A0B\u7684\u4FBF\u5229\u8D34\u3002",
+      requires: 'talk >= 30 and not hasFlag("ev:talk-30")',
+      sourceRow: 11,
+      choices: [
+        {
+          id: "own",
+          label: "\u628A\u4FBF\u5229\u8D34\u6536\u8D77\u6765\uFF0C\u76F4\u63A5\u8BF4",
+          text: "\u4F60\u628A\u6D41\u7A0B\u6254\u4E86\uFF0C\u51ED\u8BB0\u5FC6\u4E32\u5B8C\u3002\u6709\u4E24\u5904\u8BF4\u9519\uFF0C\u4F46\u4F60\u628A\u5B83\u53D8\u6210\u4E86\u73A9\u7B11\u3002",
+          effects: {
+            stamina: -6,
+            axes: {
+              self: 7,
+              others: 6,
+              fit: 4
+            },
+            stats: {
+              talk: 3
+            },
+            mood: 8,
+            traits: {
+              lead: 4,
+              passion: 3
+            },
+            negatives: {
+              stress: 5
+            }
+          },
+          setFlag: "talk-30"
+        },
+        {
+          id: "read",
+          label: "\u7167\u6D41\u7A0B\u5FF5\uFF0C\u522B\u51FA\u9519",
+          text: "\u4F60\u4E00\u4E2A\u5B57\u4E00\u4E2A\u5B57\u5FF5\u5B8C\u4E86\u3002\u6CA1\u6709\u4E8B\u6545\uFF0C\u4E5F\u6CA1\u6709\u4EBA\u8BB0\u4F4F\u4F60\u3002",
+          effects: {
+            stamina: -4,
+            axes: {
+              self: 2,
+              others: 2,
+              fit: 5
+            },
+            stats: {
+              talk: 1
+            },
+            mood: -2
+          },
+          setFlag: "talk-30"
+        },
+        {
+          id: "ask-help",
+          label: "\u628A\u8BDD\u7B52\u9012\u7ED9\u65C1\u8FB9\u7684\u4EBA",
+          text: "\u4F60\u8BF4\u300C\u8FD9\u6BB5\u4EA4\u7ED9\u6211\u7684\u961F\u53CB\u300D\u3002\u5979\u63A5\u8FC7\u53BB\u7684\u65F6\u5019\u817F\u5728\u6296\uFF0C\u4F46\u5979\u63A5\u4F4F\u4E86\u3002",
+          effects: {
+            axes: {
+              self: 3,
+              others: 8,
+              fit: 3
+            },
+            mood: 5,
+            traits: {
+              coop: 5,
+              kind: 3
+            }
+          },
+          setFlag: "talk-30"
+        }
+      ]
+    },
+    {
+      id: "total-80",
+      title: "\u88AB\u53EB\u4E86\u4E00\u58F0\u8001\u5E08",
+      text: "\u540E\u53F0\u6709\u4E2A\u521A\u5165\u884C\u7684\u5973\u5B69\u8FC7\u6765\u95EE\u4F60\uFF1A\u300C\u8001\u5E08\uFF0C\u4E0A\u53F0\u524D\u7D27\u5F20\u600E\u4E48\u529E\uFF1F\u300D\u4F60\u6123\u4E86\u4E24\u79D2\u624D\u53CD\u5E94\u8FC7\u6765\u662F\u5728\u95EE\u4F60\u3002",
+      requires: 'total >= 80 and not hasFlag("ev:total-80")',
+      sourceRow: 12,
+      choices: [
+        {
+          id: "answer",
+          label: "\u8BA4\u771F\u56DE\u7B54",
+          text: "\u4F60\u8BF4\uFF1A\u300C\u7D27\u5F20\u662F\u597D\u4E8B\uFF0C\u8BF4\u660E\u4F60\u5728\u4E4E\u3002\u300D\u5979\u8BF4\u4E86\u58F0\u8C22\u8C22\uFF0C\u8DD1\u8D70\u4E86\u3002",
+          effects: {
+            axes: {
+              self: 5,
+              others: 6,
+              fit: 3
+            },
+            stats: {
+              talk: 2
+            },
+            mood: 6,
+            traits: {
+              kind: 4,
+              lead: 3
+            }
+          },
+          setFlag: "total-80"
+        },
+        {
+          id: "joke",
+          label: "\u5F00\u4E2A\u73A9\u7B11\u7CCA\u8FC7\u53BB",
+          text: "\u4F60\u8BF4\u300C\u6211\u4E5F\u7D27\u5F20\u300D\uFF0C\u5979\u7B11\u4E86\u3002\u540E\u6765\u4F60\u542C\u8BF4\uFF0C\u5979\u90A3\u5929\u771F\u7684\u4E0A\u53F0\u4E86\u3002",
+          effects: {
+            axes: {
+              self: 2,
+              others: 4
+            },
+            mood: 6,
+            traits: {
+              kind: 3
+            }
+          },
+          setFlag: "total-80"
+        },
+        {
+          id: "realize",
+          label: "\u6123\u4F4F\uFF0C\u7136\u540E\u4EC0\u4E48\u90FD\u6CA1\u8BF4",
+          text: "\u4F60\u7AD9\u5728\u539F\u5730\u5F88\u4E45\u3002\u539F\u6765\u5DF2\u7ECF\u6709\u4EBA\u628A\u4F60\u5F53\u6210\u300C\u524D\u9762\u7684\u4EBA\u300D\u4E86\u3002",
+          effects: {
+            axes: {
+              self: 5,
+              fit: 4
+            },
+            mood: 8
+          },
+          setFlag: "total-80"
+        }
+      ]
+    },
+    {
+      id: "total-200",
+      title: "\u6709\u4EBA\u5F00\u59CB\u7814\u7A76\u4F60\u7684\u8D70\u4F4D",
+      text: "\u6563\u573A\u65F6\u4F60\u542C\u89C1\u4E24\u4E2A\u5973\u5B69\u5728\u8BA8\u8BBA\uFF1A\u300C\u5979\u7B2C\u4E8C\u6BB5\u5F80\u5DE6\u8FB9\u8D70\u662F\u56E0\u4E3A\u90A3\u8FB9\u6709\u706F\u3002\u300D\u4F60\u81EA\u5DF1\u90FD\u6CA1\u610F\u8BC6\u5230\u3002",
+      requires: 'total >= 200 and not hasFlag("ev:total-200")',
+      sourceRow: 13,
+      choices: [
+        {
+          id: "change",
+          label: "\u4E0B\u4E00\u573A\uFF0C\u628A\u90A3\u4E2A\u8D70\u4F4D\u6539\u6389",
+          text: "\u4F60\u628A\u90A3\u6BB5\u8D70\u4F4D\u6539\u4E86\u3002\u6563\u573A\u65F6\u90A3\u4E24\u4E2A\u5973\u5B69\u8BF4\uFF1A\u300C\u4ECA\u5929\u4E0D\u4E00\u6837\u3002\u300D",
+          effects: {
+            axes: {
+              self: 6,
+              others: 3,
+              fit: 5
+            },
+            stats: {
+              dance: 2
+            },
+            mood: 5,
+            traits: {
+              independent: 3
+            }
+          },
+          setFlag: "total-200"
+        },
+        {
+          id: "keep",
+          label: "\u4E0D\u6539\uFF0C\u5C31\u7559\u7740",
+          text: "\u4F60\u6CA1\u6539\u3002\u6709\u4EBA\u8FDE\u706F\u7684\u4F4D\u7F6E\u90FD\u8BB0\u5F97\uFF0C\u4F60\u4E0D\u60F3\u8BA9\u5979\u767D\u8BB0\u3002",
+          effects: {
+            axes: {
+              self: 4,
+              others: 8,
+              fit: 2
+            },
+            mood: 8,
+            traits: {
+              kind: 5
+            }
+          },
+          setFlag: "total-200"
+        },
+        {
+          id: "tell",
+          label: "\u53BB\u8DDF\u5979\u4EEC\u8BF4\u58F0\u8C22\u8C22",
+          text: "\u4F60\u5728\u6563\u573A\u901A\u9053\u7B49\u5230\u5979\u4EEC\u3002\u5979\u4EEC\u53CD\u800C\u5413\u5230\u4E86\uFF0C\u8BF4\u300C\u6211\u4EEC\u8BF4\u8BDD\u662F\u4E0D\u662F\u592A\u5927\u58F0\u300D\u3002",
+          effects: {
+            axes: {
+              self: 3,
+              others: 10
+            },
+            mood: 10,
+            traits: {
+              kind: 5
+            }
+          },
+          setFlag: "total-200"
+        }
+      ]
+    },
+    {
+      id: "burnout",
+      title: "\u6491\u4E0D\u4F4F\u4E86",
+      text: "\u8FDE\u7740\u51E0\u5929\u6CA1\u7761\u591F\u3002\u6392\u7EC3\u5230\u4E00\u534A\uFF0C\u4F60\u5728\u5730\u677F\u4E0A\u5750\u4E0B\u6765\uFF0C\u5C31\u6CA1\u518D\u7AD9\u8D77\u6765\u3002\u5929\u82B1\u677F\u4E0A\u7684\u706F\u7BA1\u6709\u4E00\u6839\u5728\u95EA\u3002",
+      major: true,
+      requires: 'stamina < 20 and not hasFlag("ev:burnout")',
+      sourceRow: 14,
+      choices: [
+        {
+          id: "rest",
+          label: "\u8BF7\u4E24\u5929\u5047\uFF0C\u597D\u597D\u7761\u4E00\u89C9",
+          text: "\u4F60\u7761\u4E86\u4E00\u6574\u5929\uFF0C\u9192\u6765\u65F6\u5929\u5DF2\u7ECF\u9ED1\u4E86\u3002\u7FA4\u91CC 99+ \u6761\u6D88\u606F\uFF0C\u4F60\u4E00\u6761\u90FD\u6CA1\u70B9\u5F00\u3002",
+          effects: {
+            stamina: 30,
+            axes: {
+              self: 4
+            },
+            mood: 5,
+            negatives: {
+              stress: -10,
+              fatigue: -8
+            }
+          },
+          setFlag: "burnout"
+        },
+        {
+          id: "push",
+          label: "\u54AC\u7259\u7EE7\u7EED",
+          text: "\u4F60\u7EE7\u7EED\u7EC3\u3002\u52A8\u4F5C\u5F00\u59CB\u53D8\u5F62\uFF0C\u955C\u5B50\u91CC\u90A3\u4E2A\u4EBA\u770B\u8D77\u6765\u4E0D\u50CF\u4F60\u3002",
+          effects: {
+            stamina: -6,
+            axes: {
+              self: -5,
+              fit: 3
+            },
+            stats: {
+              dance: 2
+            },
+            mood: -8,
+            traits: {
+              ambitious: 4
+            },
+            negatives: {
+              fatigue: 10
+            }
+          },
+          setFlag: "burnout"
+        },
+        {
+          id: "tell",
+          label: "\u8DDF\u961F\u53CB\u8BF4\u4E00\u53E5\u300C\u6211\u4ECA\u5929\u4E0D\u884C\u300D",
+          text: "\u4F60\u8BF4\u5B8C\u8FD9\u53E5\u8BDD\uFF0C\u623F\u95F4\u5B89\u9759\u4E86\u4E09\u79D2\u3002\u7136\u540E\u6709\u4EBA\u8BF4\uFF1A\u300C\u90A3\u4ECA\u5929\u5C31\u7EC3\u8D70\u4F4D\u5427\uFF0C\u4F60\u5750\u7740\u770B\u3002\u300D",
+          effects: {
+            axes: {
+              self: 6,
+              others: 7,
+              fit: 2
+            },
+            mood: 8,
+            traits: {
+              coop: 5,
+              kind: 4
+            },
+            negatives: {
+              stress: -8
+            }
+          },
+          setFlag: "burnout"
+        }
+      ]
+    },
+    {
+      id: "insomnia",
+      title: "\u5931\u7720",
+      text: "\u8EBA\u4E0B\u4E09\u4E2A\u5C0F\u65F6\uFF0C\u8111\u5B50\u91CC\u4E00\u76F4\u5728\u8DD1\u540C\u4E00\u6BB5\u526F\u6B4C\u3002\u4F60\u628A\u95F9\u949F\u8C03\u665A\u4E86\u534A\u5C0F\u65F6\uFF0C\u7136\u540E\u53C8\u8C03\u56DE\u53BB\u3002",
+      requires: 'neg.stress >= 40 and not hasFlag("ev:insomnia")',
+      sourceRow: 15,
+      choices: [
+        {
+          id: "meditate",
+          label: "\u8BD5\u7740\u4EC0\u4E48\u90FD\u4E0D\u60F3",
+          text: "\u4F60\u8EBA\u7740\u6570\u547C\u5438\uFF0C\u6570\u5230\u56DB\u767E\u591A\u3002\u5929\u5FEB\u4EAE\u7684\u65F6\u5019\u7EC8\u4E8E\u7761\u7740\u4E86\u3002",
+          effects: {
+            stamina: 6,
+            axes: {
+              self: 3,
+              fit: 2
+            },
+            mood: 3,
+            negatives: {
+              stress: -8,
+              restless: -4
+            }
+          },
+          setFlag: "insomnia"
+        },
+        {
+          id: "write",
+          label: "\u8D77\u6765\u5199\u6B4C",
+          text: "\u51CC\u6668\u56DB\u70B9\uFF0C\u4F60\u5199\u5B8C\u4E86\u4E00\u6BB5\u8BCD\u3002\u7B2C\u4E8C\u5929\u770B\uFF0C\u53EA\u6709\u4E24\u53E5\u80FD\u7528\uFF0C\u4F46\u90A3\u4E24\u53E5\u5F88\u597D\u3002",
+          effects: {
+            stamina: -4,
+            axes: {
+              self: 4,
+              fit: 3
+            },
+            stats: {
+              vocal: 1,
+              talk: 1
+            },
+            mood: 2,
+            traits: {
+              passion: 4
+            },
+            negatives: {
+              fatigue: 4
+            }
+          },
+          setFlag: "insomnia"
+        },
+        {
+          id: "phone",
+          label: "\u5237\u624B\u673A\u5230\u5929\u4EAE",
+          text: "\u4F60\u5237\u5230\u540C\u671F\u7684\u56E2\u5728\u5E86\u795D\u3002\u5929\u4EAE\u7684\u65F6\u5019\uFF0C\u4F60\u628A\u624B\u673A\u6263\u5728\u80F8\u53E3\uFF0C\u773C\u775B\u5F88\u5E72\u3002",
+          effects: {
+            stamina: -6,
+            axes: {
+              self: -3,
+              others: -1,
+              fit: -2
+            },
+            mood: -6,
+            negatives: {
+              stress: 8
+            }
+          },
+          setFlag: "insomnia"
+        }
+      ]
+    },
+    {
+      id: "knee",
+      title: "\u819D\u76D6\u54CD",
+      text: "\u4E0B\u697C\u68AF\u7684\u65F6\u5019\u819D\u76D6\u54CD\u4E86\u4E00\u58F0\u3002\u4F60\u7AD9\u5728\u53F0\u9636\u4E0A\u8BD5\u4E86\u4E09\u6B21\uFF0C\u6BCF\u6B21\u90FD\u54CD\u3002",
+      requires: 'neg.fatigue >= 30 and not hasFlag("ev:knee")',
+      sourceRow: 16,
+      choices: [
+        {
+          id: "hospital",
+          label: "\u53BB\u533B\u9662\u67E5\u4E00\u4E0B",
+          text: "\u6302\u53F7\u3001\u62CD\u7247\u3001\u7B49\u7ED3\u679C\u3002\u533B\u751F\u8BF4\u534A\u6708\u677F\u6709\u70B9\u78E8\u635F\uFF0C\u300C\u4E0D\u80FD\u518D\u8FD9\u4E48\u8DF3\u4E86\u300D\u3002\u4F60\u628A\u7247\u5B50\u6298\u8D77\u6765\u653E\u8FDB\u5305\u91CC\u3002",
+          effects: {
+            stamina: -8,
+            axes: {
+              self: 5,
+              fit: 2
+            },
+            mood: -5,
+            negatives: {
+              fatigue: -6
+            }
+          },
+          setFlag: "knee"
+        },
+        {
+          id: "tape",
+          label: "\u8D34\u808C\u8D34\uFF0C\u63A5\u7740\u8DF3",
+          text: "\u4F60\u4E70\u4E86\u4E24\u5377\u808C\u8D34\uFF0C\u5BA4\u53CB\u5E2E\u4F60\u8D34\u7684\uFF0C\u8D34\u5F97\u5F88\u96BE\u770B\u3002\u8DF3\u7684\u65F6\u5019\u786E\u5B9E\u6CA1\u90A3\u4E48\u75BC\u3002",
+          effects: {
+            stamina: -4,
+            axes: {
+              self: 3,
+              fit: 3
+            },
+            stats: {
+              dance: 2
+            },
+            mood: -3,
+            traits: {
+              ambitious: 3
+            },
+            negatives: {
+              fatigue: 8
+            }
+          },
+          setFlag: "knee"
+        },
+        {
+          id: "change",
+          label: "\u6539\u52A8\u4F5C\uFF0C\u7ED5\u5F00\u90A3\u4E00\u4E0B",
+          text: "\u4F60\u91CD\u7F16\u4E86\u4E24\u4E2A\u516B\u62CD\u3002\u65B0\u7684\u8D70\u4F4D\u66F4\u7B80\u5355\uFF0C\u4F46\u4F60\u82B1\u4E86\u4E09\u4E2A\u665A\u4E0A\u624D\u4E60\u60EF\u3002",
+          effects: {
+            stamina: -6,
+            axes: {
+              self: 2,
+              fit: 4
+            },
+            stats: {
+              dance: 1
+            },
+            mood: 2,
+            traits: {
+              independent: 3
+            },
+            negatives: {
+              fatigue: -3
+            }
+          },
+          setFlag: "knee"
+        }
+      ]
+    },
+    {
+      id: "old-video",
+      title: "\u65E7\u89C6\u9891\u88AB\u7FFB\u51FA\u6765\u4E86",
+      text: "\u6709\u4EBA\u7FFB\u51FA\u4F60\u4E24\u5E74\u524D\u7684\u4E00\u6BB5\u89C6\u9891\u3002\u90A3\u65F6\u5019\u4F60\u5728\u53E6\u4E00\u4E2A\u56E2\uFF0C\u5986\u5F88\u6D53\uFF0C\u8DF3\u5F97\u4E5F\u4E0D\u597D\u770B\u3002\u8BC4\u8BBA\u533A\u5F00\u59CB\u70ED\u95F9\u3002",
+      requires: 'neg.scandal >= 10 and not hasFlag("ev:old-video")',
+      sourceRow: 17,
+      choices: [
+        {
+          id: "own",
+          label: "\u81EA\u5DF1\u8F6C\u53D1\uFF0C\u5199\u4E00\u53E5\u300C\u90A3\u65F6\u5019\u771F\u96BE\u770B\u300D",
+          text: "\u4F60\u8F6C\u53D1\u4E86\uFF0C\u914D\u4E86\u53E5\u81EA\u5632\u3002\u8BC4\u8BBA\u533A\u53CD\u800C\u5B89\u9759\u4E86\uFF0C\u6709\u4EBA\u8BF4\u300C\u73B0\u5728\u597D\u770B\u591A\u4E86\u300D\u3002",
+          effects: {
+            axes: {
+              self: 8,
+              others: 4
+            },
+            stats: {
+              talk: 2
+            },
+            mood: 5,
+            traits: {
+              independent: 5
+            },
+            negatives: {
+              scandal: -6,
+              stress: -4
+            }
+          },
+          setFlag: "old-video"
+        },
+        {
+          id: "delete",
+          label: "\u8054\u7CFB\u5E73\u53F0\u5220\u6389",
+          text: "\u89C6\u9891\u5220\u4E86\uFF0C\u4F46\u622A\u56FE\u5DF2\u7ECF\u5728\u4F20\u3002\u6709\u4EBA\u95EE\u4F60\u662F\u4E0D\u662F\u5FC3\u865A\u3002",
+          effects: {
+            stamina: -4,
+            axes: {
+              self: -2,
+              others: -3
+            },
+            mood: -8,
+            negatives: {
+              scandal: 4,
+              stress: 8
+            }
+          },
+          setFlag: "old-video"
+        },
+        {
+          id: "silent",
+          label: "\u4EC0\u4E48\u90FD\u4E0D\u505A",
+          text: "\u4F60\u5173\u4E86\u624B\u673A\uFF0C\u7B2C\u4E8C\u5929\u7167\u5E38\u6392\u7EC3\u3002\u4E09\u5929\u540E\u6CA1\u4EBA\u518D\u63D0\u3002",
+          effects: {
+            axes: {
+              self: 3,
+              fit: 2
+            },
+            mood: -4,
+            negatives: {
+              scandal: -3
+            }
+          },
+          setFlag: "old-video"
+        }
+      ]
+    },
+    {
+      id: "misread",
+      title: "\u88AB\u8BEF\u4F1A\u4E86",
+      text: "\u6709\u4EBA\u62CD\u5230\u4F60\u548C\u4E00\u4E2A\u7537\u751F\u5728\u4FBF\u5229\u5E97\u95E8\u53E3\u8BF4\u8BDD\u3002\u7167\u7247\u53EA\u6709\u4E00\u5F20\uFF0C\u89D2\u5EA6\u5F88\u5DE7\u3002\u7FA4\u91CC\u5F00\u59CB\u6709\u4EBA\u95EE\u3002",
+      requires: 'neg.desire >= 20 and not hasFlag("ev:misread")',
+      sourceRow: 18,
+      choices: [
+        {
+          id: "explain",
+          label: "\u5728\u793E\u5A92\u4E0A\u8BF4\u6E05\u695A",
+          text: "\u4F60\u5199\u4E86\u4E00\u6BB5\u8BDD\uFF0C\u5220\u4E86\u4E09\u904D\u3002\u6700\u540E\u53D1\u51FA\u53BB\u7684\u90A3\u7248\u53EA\u6709\u4E24\u53E5\uFF0C\u53CD\u800C\u6700\u50CF\u4F60\u3002",
+          effects: {
+            axes: {
+              self: 5,
+              others: 6,
+              fit: 2
+            },
+            stats: {
+              talk: 2
+            },
+            mood: -3,
+            traits: {
+              independent: 3
+            },
+            negatives: {
+              scandal: -4,
+              stress: -3
+            }
+          },
+          setFlag: "misread"
+        },
+        {
+          id: "ignore",
+          label: "\u4E0D\u56DE\u5E94",
+          text: "\u4F60\u6CA1\u56DE\u5E94\u3002\u8BDD\u9898\u8FC7\u4E86\u4E24\u5929\u81EA\u5DF1\u51B7\u4E86\uFF0C\u4F46\u622A\u56FE\u7559\u5728\u4E86\u522B\u4EBA\u624B\u673A\u91CC\u3002",
+          effects: {
+            axes: {
+              self: 2,
+              others: -2
+            },
+            mood: -6,
+            negatives: {
+              scandal: 3,
+              stress: 5
+            }
+          },
+          setFlag: "misread"
+        },
+        {
+          id: "ask",
+          label: "\u5148\u95EE\u6E05\u695A\u90A3\u4E2A\u7537\u751F\u662F\u8C01",
+          text: "\u4F60\u7FFB\u904D\u4E86\u901A\u8BAF\u5F55\uFF0C\u624D\u60F3\u8D77\u6765\u90A3\u662F\u9694\u58C1\u56E2\u7684\u5409\u4ED6\u624B\uFF0C\u90A3\u5929\u5728\u501F\u6253\u706B\u673A\u3002\u4F60\u89C9\u5F97\u5F88\u8352\u5510\u3002",
+          effects: {
+            axes: {
+              self: 4,
+              others: 3
+            },
+            mood: 2,
+            negatives: {
+              stress: -2
+            }
+          },
+          setFlag: "misread"
+        }
+      ]
+    },
+    {
+      id: "comment-war",
+      title: "\u8BC4\u8BBA\u533A",
+      text: "\u4E00\u6761\u8BC4\u8BBA\u8BF4\u4F60\u300C\u9760\u8138\u300D\u3002\u5E95\u4E0B\u5435\u4E86\u4E24\u767E\u6761\u3002\u4F60\u7FFB\u5230\u6700\u4E0B\u9762\uFF0C\u770B\u89C1\u6709\u4EBA\u66FF\u4F60\u8BF4\u8BDD\uFF0C\u7136\u540E\u88AB\u9A82\u4E86\u3002",
+      requires: 'neg.stress >= 60 and not hasFlag("ev:comment-war")',
+      sourceRow: 19,
+      choices: [
+        {
+          id: "reply-one",
+          label: "\u53EA\u56DE\u90A3\u4E00\u6761\u66FF\u4F60\u8BF4\u8BDD\u7684",
+          text: "\u4F60\u56DE\u4E86\u4E00\u53E5\u300C\u8C22\u8C22\u300D\u3002\u5979\u540E\u6765\u6210\u4E86\u6BCF\u573A\u90FD\u5728\u7684\u4EBA\u3002",
+          effects: {
+            axes: {
+              self: 4,
+              others: 7
+            },
+            stats: {
+              talk: 1
+            },
+            mood: 4,
+            traits: {
+              kind: 4
+            },
+            negatives: {
+              stress: -6
+            }
+          },
+          setFlag: "comment-war"
+        },
+        {
+          id: "close",
+          label: "\u5173\u8BC4\u8BBA",
+          text: "\u4F60\u5173\u4E86\u4E00\u5468\u3002\u8FD9\u4E00\u5468\u4F60\u7EC3\u5F97\u7279\u522B\u4E13\u5FC3\uFF0C\u4E5F\u7279\u522B\u4E0D\u60F3\u8BF4\u8BDD\u3002",
+          effects: {
+            stamina: -4,
+            axes: {
+              self: 3,
+              others: -2,
+              fit: 4
+            },
+            stats: {
+              vocal: 1
+            },
+            mood: -4,
+            negatives: {
+              stress: -4,
+              scandal: 2
+            }
+          },
+          setFlag: "comment-war"
+        },
+        {
+          id: "fight",
+          label: "\u4E00\u6761\u4E00\u6761\u603C\u56DE\u53BB",
+          text: "\u4F60\u603C\u5230\u51CC\u6668\u4E09\u70B9\u3002\u7B2C\u4E8C\u5929\u4E0A\u70ED\u641C\u7684\u4E0D\u662F\u4F60\u7684\u821E\u53F0\u3002",
+          effects: {
+            stamina: -8,
+            axes: {
+              self: -4,
+              others: -6
+            },
+            mood: -10,
+            negatives: {
+              scandal: 8,
+              stress: 10
+            }
+          },
+          setFlag: "comment-war"
+        }
+      ]
+    },
+    {
+      id: "manager-doubt",
+      title: "\u7ECF\u7EAA\u4EBA\u7684\u72B9\u8C6B",
+      text: "\u300C\u4F60\u6700\u8FD1\u2026\u2026\u8FD8\u6491\u5F97\u4F4F\u5417\uFF1F\u300D\u4ED6\u628A\u8BDD\u8BF4\u5230\u4E00\u534A\u53C8\u54BD\u4E86\u56DE\u53BB\uFF0C\u628A\u4E0B\u4E00\u573A\u6F14\u51FA\u7684\u8D44\u6599\u63A8\u8FC7\u6765\u3002",
+      requires: 'fit < 34 and not hasFlag("ev:manager-doubt")',
+      sourceRow: 20,
+      choices: [
+        {
+          id: "honest",
+          label: "\u8BF4\u5B9E\u8BDD\uFF0C\u6211\u4E0D\u592A\u786E\u5B9A",
+          text: "\u4ED6\u6C89\u9ED8\u4E86\u5F88\u4E45\uFF0C\u8BF4\uFF1A\u300C\u90A3\u5C31\u6162\u4E00\u70B9\u3002\u300D\u7136\u540E\u628A\u8D44\u6599\u6536\u4E86\u56DE\u53BB\u3002",
+          effects: {
+            stamina: 5,
+            axes: {
+              self: 7,
+              others: 3
+            },
+            mood: 5,
+            negatives: {
+              stress: -5
+            }
+          },
+          setFlag: "manager-doubt"
+        },
+        {
+          id: "brave",
+          label: "\u6211\u6CA1\u4E8B\uFF0C\u518D\u7ED9\u6211\u70B9\u65F6\u95F4",
+          text: "\u4ED6\u70B9\u70B9\u5934\uFF0C\u628A\u4E0B\u4E00\u573A\u6F14\u51FA\u7684\u8D44\u6599\u63A8\u7ED9\u4F60\u3002\u4F60\u63A5\u8FC7\u6765\u7684\u65F6\u5019\uFF0C\u624B\u6709\u70B9\u6296\u3002",
+          effects: {
+            stamina: -5,
+            axes: {
+              self: -3,
+              others: 5,
+              fit: 4
+            },
+            mood: -3,
+            traits: {
+              ambitious: 4
+            },
+            negatives: {
+              stress: 6
+            }
+          },
+          setFlag: "manager-doubt"
+        },
+        {
+          id: "firm",
+          label: "\u6211\u4F1A\u8BC1\u660E\u7ED9\u4F60\u770B",
+          text: "\u4F60\u628A\u8FD9\u53E5\u8BDD\u8BF4\u5F97\u6CA1\u6709\u4E00\u4E1D\u72B9\u8C6B\u3002\u4ED6\u770B\u4E86\u4F60\u4E24\u79D2\uFF0C\u8BF4\u300C\u597D\u300D\u3002",
+          effects: {
+            stamina: -3,
+            axes: {
+              self: 2,
+              fit: 3
+            },
+            mood: 3,
+            traits: {
+              ambitious: 2
+            }
+          },
+          setFlag: "manager-doubt",
+          requires: "ambitious >= 3",
+          sourceRow: 58
+        }
+      ]
+    },
+    {
+      id: "manager-push",
+      title: "\u63A8\u4F60\u53BB\u62FC\u76D8",
+      text: "\u7ECF\u7EAA\u4EBA\u585E\u7ED9\u4F60\u4E00\u5F20\u5BFE\u30D0\u30F3\u7684\u540D\u5355\uFF1A\u300C\u8FD9\u573A\u6709\u56DB\u4E2A\u56E2\uFF0C\u53F0\u4E0B\u90FD\u662F\u522B\u5BB6\u7684\u7C89\u3002\u4F60\u8981\u62A2\u4EBA\u3002\u300D",
+      requires: 'total >= 100 and not hasFlag("ev:manager-push")',
+      sourceRow: 21,
+      choices: [
+        {
+          id: "take",
+          label: "\u53BB\uFF0C\u628A\u573A\u5B50\u62A2\u4E0B\u6765",
+          text: "\u4F60\u53BB\u4E86\u3002\u524D\u4E09\u4E2A\u56E2\u5531\u5B8C\uFF0C\u53F0\u4E0B\u8D70\u4E86\u4E09\u5206\u4E4B\u4E00\u3002\u8F6E\u5230\u4F60\u7684\u65F6\u5019\uFF0C\u4F60\u53EA\u8BF4\u4E86\u4E00\u53E5\u300C\u7559\u4E00\u4E0B\u300D\u3002",
+          effects: {
+            stamina: -10,
+            axes: {
+              self: 8,
+              others: 6,
+              fit: 5
+            },
+            mood: 6,
+            traits: {
+              ambitious: 4,
+              passion: 3
+            },
+            negatives: {
+              stress: 6
+            }
+          },
+          setFlag: "manager-push"
+        },
+        {
+          id: "safe",
+          label: "\u5531\u6700\u7A33\u7684\u90A3\u9996",
+          text: "\u4F60\u5531\u4E86\u6700\u719F\u7684\u6B4C\u3002\u6CA1\u51FA\u9519\uFF0C\u4E5F\u6CA1\u7559\u4E0B\u4EC0\u4E48\u3002\u6709\u4E2A\u5973\u5B69\u8BB0\u4F4F\u4E86\u4F60\u7684\u540D\u5B57\u3002",
+          effects: {
+            stamina: -6,
+            axes: {
+              self: 3,
+              others: 4,
+              fit: 3
+            },
+            mood: 2
+          },
+          setFlag: "manager-push"
+        },
+        {
+          id: "refuse",
+          label: "\u8FD9\u6B21\u4E0D\u53BB\uFF0C\u6211\u60F3\u5148\u628A\u4E13\u573A\u51C6\u5907\u597D",
+          text: "\u7ECF\u7EAA\u4EBA\u6123\u4E86\u4E00\u4E0B\uFF0C\u8BF4\u300C\u884C\u300D\u3002\u4F60\u4E0D\u77E5\u9053\u8FD9\u4E2A\u300C\u884C\u300D\u662F\u4E0D\u662F\u771F\u7684\u884C\u3002",
+          effects: {
+            axes: {
+              self: 5,
+              others: -2,
+              fit: 4
+            },
+            mood: -4,
+            traits: {
+              independent: 5
+            },
+            negatives: {
+              stress: 4
+            }
+          },
+          setFlag: "manager-push"
+        }
+      ]
+    },
+    {
+      id: "teammate-quit",
+      title: "\u961F\u53CB\u8BF4\u8981\u6BD5\u4E1A",
+      text: "\u6392\u7EC3\u7ED3\u675F\u540E\u5979\u7559\u4E0B\u6765\uFF0C\u8BF4\uFF1A\u300C\u6211\u505A\u5230\u8FD9\u4E2A\u6708\u5E95\u3002\u300D\u5979\u628A\u6392\u7EC3\u5BA4\u7684\u94A5\u5319\u653E\u5728\u684C\u4E0A\u3002",
+      major: true,
+      requires: 'hasFlag("ev:party-first") and not hasFlag("ev:teammate-quit")',
+      sourceRow: 22,
+      choices: [
+        {
+          id: "let-go",
+          label: "\u9001\u5979\u8D70",
+          text: "\u4F60\u5E2E\u5979\u628A\u4E1C\u897F\u642C\u4E0B\u697C\u3002\u5979\u8D70\u5230\u8DEF\u53E3\u56DE\u5934\u8BF4\uFF1A\u300C\u4F60\u4EEC\u4F1A\u597D\u7684\u3002\u300D\u4F60\u7AD9\u5728\u539F\u5730\u770B\u5979\u8D70\u8FDC\u3002",
+          effects: {
+            stamina: -4,
+            axes: {
+              self: 3,
+              others: 6
+            },
+            mood: -6,
+            traits: {
+              kind: 5
+            },
+            negatives: {
+              stress: 4
+            }
+          },
+          setFlag: "teammate-quit"
+        },
+        {
+          id: "ask-stay",
+          label: "\u95EE\u5979\u80FD\u4E0D\u80FD\u518D\u60F3\u60F3",
+          text: "\u5979\u60F3\u4E86\u5F88\u4E45\uFF0C\u8BF4\uFF1A\u300C\u6211\u4E0D\u80FD\u3002\u300D\u4F60\u6CA1\u518D\u8BF4\u8BDD\uFF0C\u628A\u5979\u9001\u5230\u4E86\u8F66\u7AD9\u3002",
+          effects: {
+            stamina: -2,
+            axes: {
+              self: 4,
+              others: 3
+            },
+            mood: -4,
+            traits: {
+              coop: 4
+            },
+            negatives: {
+              stress: 6
+            }
+          },
+          setFlag: "teammate-quit"
+        },
+        {
+          id: "ask-why",
+          label: "\u95EE\u5979\u4E3A\u4EC0\u4E48",
+          text: "\u5979\u8BF4\uFF1A\u300C\u6211\u5728\u8FD9\u91CC\u770B\u4E0D\u5230\u81EA\u5DF1\u3002\u300D\u8FD9\u53E5\u8BDD\u4F60\u8BB0\u4E86\u5F88\u4E45\u3002",
+          effects: {
+            axes: {
+              self: 6,
+              others: 4,
+              fit: 2
+            },
+            mood: -2,
+            traits: {
+              independent: 3
+            }
+          },
+          setFlag: "teammate-quit"
+        }
+      ]
+    },
+    {
+      id: "teammate-conflict",
+      title: "\u6392\u7EC3\u5435\u67B6",
+      text: "\u4E3A\u4E86\u4E00\u4E2A\u8D70\u4F4D\uFF0C\u4E24\u4E2A\u4EBA\u5435\u4E86\u4E8C\u5341\u5206\u949F\u3002\u4F60\u7AD9\u5728\u4E2D\u95F4\uFF0C\u8C01\u90FD\u6CA1\u5E2E\u3002",
+      requires: 'others >= 40 and not hasFlag("ev:teammate-conflict")',
+      sourceRow: 23,
+      choices: [
+        {
+          id: "mediate",
+          label: "\u4E24\u8FB9\u90FD\u542C\uFF0C\u91CD\u65B0\u6392\u4E00\u904D",
+          text: "\u4F60\u8BA9\u4E24\u4E2A\u4EBA\u5206\u522B\u8D70\u4E86\u4E00\u904D\u3002\u7B2C\u4E09\u904D\u7684\u65F6\u5019\uFF0C\u5979\u4EEC\u81EA\u5DF1\u627E\u5230\u4E86\u4F4D\u7F6E\u3002",
+          effects: {
+            stamina: -4,
+            axes: {
+              self: 5,
+              others: 8,
+              fit: 3
+            },
+            mood: 4,
+            traits: {
+              coop: 5,
+              lead: 3
+            },
+            negatives: {
+              stress: -3
+            }
+          },
+          setFlag: "teammate-conflict"
+        },
+        {
+          id: "decide",
+          label: "\u6211\u51B3\u5B9A\uFF0C\u6309\u6211\u8BF4\u7684\u6765",
+          text: "\u4F60\u5B9A\u4E86\u3002\u4E00\u4E2A\u4EBA\u5F53\u573A\u8D70\u5F00\uFF0C\u53E6\u4E00\u4E2A\u4EBA\u7559\u4E0B\u6765\u966A\u4F60\u7EC3\u5230\u5341\u4E00\u70B9\u3002",
+          effects: {
+            stamina: -6,
+            axes: {
+              self: 4,
+              others: -4,
+              fit: 5
+            },
+            mood: -4,
+            traits: {
+              lead: 5
+            },
+            negatives: {
+              stress: 6
+            }
+          },
+          setFlag: "teammate-conflict"
+        },
+        {
+          id: "leave",
+          label: "\u8BA9\u5979\u4EEC\u5435\u5B8C",
+          text: "\u4F60\u53BB\u697C\u4E0B\u4E70\u4E86\u56DB\u74F6\u6C34\u3002\u56DE\u6765\u7684\u65F6\u5019\u5979\u4EEC\u5DF2\u7ECF\u4E0D\u5435\u4E86\uFF0C\u8C01\u4E5F\u6CA1\u63D0\u521A\u624D\u7684\u4E8B\u3002",
+          effects: {
+            axes: {
+              self: 1,
+              others: 2
+            },
+            mood: -2
+          },
+          setFlag: "teammate-conflict"
+        }
+      ]
+    },
+    {
+      id: "peer-bad",
+      title: "\u540C\u671F\u7684\u56E2\u706B\u4E86",
+      text: "\u540C\u671F\u7684\u56E2\u4E0A\u4E86\u63A8\u8350\u4F4D\u3002\u5979\u4EEC\u7684\u7968\u5728\u534A\u5C0F\u65F6\u5185\u5356\u5B8C\u3002\u4F60\u5728\u7FA4\u91CC\u53D1\u4E86\u4E2A\u606D\u559C\uFF0C\u6CA1\u4EBA\u56DE\u3002",
+      requires: 'fans.stage >= 100 and not hasFlag("ev:peer-bad")',
+      sourceRow: 24,
+      choices: [
+        {
+          id: "study",
+          label: "\u4E70\u7968\u53BB\u770B\u5979\u4EEC\u7684\u6F14\u51FA",
+          text: "\u4F60\u4E70\u4E86\u6700\u540E\u6392\u7684\u7968\uFF0C\u770B\u5B8C\u4E86\u4E00\u6574\u573A\u3002\u56DE\u6765\u4F60\u5199\u4E86\u4E00\u6574\u9875\u7B14\u8BB0\u3002",
+          effects: {
+            stamina: -8,
+            axes: {
+              self: 6,
+              others: 3,
+              fit: 6
+            },
+            stats: {
+              dance: 1
+            },
+            mood: -2,
+            traits: {
+              ambitious: 5
+            },
+            negatives: {
+              restless: 4
+            }
+          },
+          setFlag: "peer-bad"
+        },
+        {
+          id: "close",
+          label: "\u628A App \u5173\u4E86\uFF0C\u7EC3\u81EA\u5DF1\u7684",
+          text: "\u4F60\u628A\u624B\u673A\u653E\u8FDB\u62BD\u5C49\uFF0C\u7EC3\u5230\u6DF1\u591C\u3002\u7B2C\u4E8C\u5929\u770B\u5230\u5979\u4EEC\u53C8\u4E0A\u4E86\u4E00\u4E2A\u63A8\u8350\u4F4D\u3002",
+          effects: {
+            stamina: -6,
+            axes: {
+              self: 4,
+              fit: 5
+            },
+            stats: {
+              vocal: 1
+            },
+            mood: -5,
+            negatives: {
+              restless: 5
+            }
+          },
+          setFlag: "peer-bad"
+        },
+        {
+          id: "congrat",
+          label: "\u5728\u7FA4\u91CC\u53D1\u4E00\u53E5\u606D\u559C",
+          text: "\u6CA1\u4EBA\u56DE\u3002\u7B2C\u4E8C\u5929\u5979\u4EEC\u56DE\u4E86\uFF0C\u8BF4\u8C22\u8C22\u3002\u4F60\u628A\u90A3\u6761\u6D88\u606F\u70B9\u4E86\u6536\u85CF\u3002",
+          effects: {
+            axes: {
+              self: 2,
+              others: 5
+            },
+            mood: -3,
+            traits: {
+              kind: 4
+            }
+          },
+          setFlag: "peer-bad"
+        }
+      ]
+    },
+    {
+      id: "venue-closing",
+      title: "\u5E38\u53BB\u7684\u573A\u8981\u5173\u4E86",
+      text: "\u8001\u677F\u5728\u95E8\u53E3\u8D34\u4E86\u5F20\u7EB8\uFF1A\u300C\u56E0\u79DF\u7EA6\u5230\u671F\uFF0C\u672C\u5E97\u8425\u4E1A\u81F3\u6708\u5E95\u3002\u300D\u4F60\u5728\u90A3\u5F20\u7EB8\u524D\u7AD9\u4E86\u5F88\u4E45\u3002",
+      requires: 'fans.stage >= 60 and not hasFlag("ev:venue-closing")',
+      sourceRow: 25,
+      choices: [
+        {
+          id: "last",
+          label: "\u628A\u6700\u540E\u4E00\u573A\u529E\u5F97\u597D\u770B\u4E00\u70B9",
+          text: "\u4F60\u8DDF\u8001\u677F\u8BF4\u8981\u529E\u6700\u540E\u4E00\u573A\u3002\u4ED6\u7B11\u4E86\uFF0C\u8BF4\u300C\u90A3\u6211\u628A\u706F\u90FD\u4FEE\u4E00\u4E0B\u300D\u3002",
+          effects: {
+            stamina: -10,
+            axes: {
+              self: 7,
+              others: 8,
+              fit: 4
+            },
+            mood: 8,
+            traits: {
+              passion: 5
+            },
+            negatives: {
+              fatigue: 6
+            }
+          },
+          setFlag: "venue-closing"
+        },
+        {
+          id: "photo",
+          label: "\u5728\u5173\u95E8\u524D\u62CD\u4E00\u7EC4\u7167\u7247",
+          text: "\u4F60\u5728\u7A7A\u573A\u5730\u4E0A\u62CD\u4E86\u4E00\u7EC4\u7167\u7247\u3002\u706F\u53EA\u5F00\u4E86\u4E24\u76CF\uFF0C\u4F46\u62CD\u51FA\u6765\u5F88\u597D\u770B\u3002",
+          effects: {
+            stamina: -3,
+            axes: {
+              self: 5,
+              others: 4
+            },
+            mood: 6
+          },
+          setFlag: "venue-closing"
+        },
+        {
+          id: "find",
+          label: "\u5F00\u59CB\u627E\u4E0B\u4E00\u4E2A\u573A\u5730",
+          text: "\u4F60\u8DD1\u4E86\u4E09\u4E2A\u533A\uFF0C\u770B\u4E86\u4E94\u4E2A\u573A\u3002\u6709\u4E00\u4E2A\u4E0D\u9519\uFF0C\u4F46\u8981\u63D0\u524D\u4E09\u4E2A\u6708\u8BA2\u3002",
+          effects: {
+            stamina: -8,
+            axes: {
+              self: 4,
+              others: 3,
+              fit: 5
+            },
+            mood: -3,
+            traits: {
+              independent: 3
+            }
+          },
+          setFlag: "venue-closing"
+        }
+      ]
+    },
+    {
       id: "fan-letter",
       title: "\u7B2C\u4E00\u5C01\u4FE1",
-      text: "\u540E\u53F0\u6536\u5230\u4E00\u5C01\u624B\u5199\u4FE1\uFF0C\u5B57\u8FF9\u5F88\u8BA4\u771F\uFF1A\u300C\u8C22\u8C22\u4F60\u4E0A\u5468\u90A3\u573A\u6F14\u51FA\u3002\u300D",
-      requires: {
-        axesAtLeast: {
-          others: 45
-        },
-        flagsNot: [
-          "ev:fan-letter"
-        ]
-      },
+      text: "\u540E\u53F0\u6536\u5230\u4E00\u5C01\u624B\u5199\u4FE1\uFF0C\u5B57\u8FF9\u5F88\u8BA4\u771F\uFF1A\u300C\u8C22\u8C22\u4F60\u4E0A\u5468\u90A3\u573A\u6F14\u51FA\u3002\u6211\u672C\u6765\u90A3\u5929\u60F3\u8BF7\u5047\u7684\u3002\u300D",
+      requires: 'others >= 45 and not hasFlag("ev:fan-letter")',
+      sourceRow: 26,
       choices: [
         {
           id: "reply",
@@ -18813,6 +22941,13 @@ var events_default = {
             axes: {
               self: 3,
               others: 6
+            },
+            stats: {
+              talk: 1
+            },
+            mood: 6,
+            traits: {
+              kind: 5
             }
           },
           setFlag: "fan-letter"
@@ -18820,10 +22955,31 @@ var events_default = {
         {
           id: "keep",
           label: "\u6536\u8D77\u6765\uFF0C\u597D\u597D\u4FDD\u5B58",
-          text: "\u4F60\u628A\u4FE1\u5939\u8FDB\u7B14\u8BB0\u672C\u91CC\uFF0C\u6CA1\u8DDF\u4EFB\u4F55\u4EBA\u8BF4\u3002",
+          text: "\u4F60\u628A\u4FE1\u5939\u8FDB\u7B14\u8BB0\u672C\u91CC\uFF0C\u6CA1\u8DDF\u4EFB\u4F55\u4EBA\u8BF4\u3002\u540E\u6765\u642C\u5BB6\u65F6\u5B83\u8FD8\u5728\u3002",
           effects: {
             axes: {
               self: 5
+            },
+            mood: 6
+          },
+          setFlag: "fan-letter"
+        },
+        {
+          id: "post",
+          label: "\u628A\u4FE1\u62CD\u7167\u53D1\u51FA\u6765\uFF08\u4E0D\u62CD\u540D\u5B57\uFF09",
+          text: "\u4F60\u53D1\u4E86\u7167\u7247\uFF0C\u5199\u4E86\u300C\u6536\u5230\u4E86\u300D\u3002\u90A3\u5929\u665A\u4E0A\u53C8\u6709\u4E09\u4E2A\u4EBA\u5199\u4E86\u4FE1\u3002",
+          effects: {
+            axes: {
+              self: 2,
+              others: 8,
+              fit: 2
+            },
+            stats: {
+              talk: 1
+            },
+            mood: 5,
+            traits: {
+              passion: 3
             }
           },
           setFlag: "fan-letter"
@@ -18831,59 +22987,11 @@ var events_default = {
       ]
     },
     {
-      id: "burnout",
-      title: "\u6491\u4E0D\u4F4F\u4E86",
-      text: "\u8FDE\u7740\u51E0\u5929\u6CA1\u7761\u591F\uFF0C\u4F60\u5728\u6392\u7EC3\u5BA4\u7684\u5730\u677F\u4E0A\u5750\u4E86\u5F88\u4E45\u3002",
-      major: true,
-      requires: {
-        staminaBelow: 20,
-        flagsNot: [
-          "ev:burnout"
-        ]
-      },
-      choices: [
-        {
-          id: "rest",
-          label: "\u8BF7\u4E24\u5929\u5047\uFF0C\u597D\u597D\u7761\u4E00\u89C9",
-          text: "\u4F60\u7761\u4E86\u4E00\u6574\u5929\uFF0C\u9192\u6765\u65F6\u5929\u5DF2\u7ECF\u9ED1\u4E86\u3002",
-          effects: {
-            stamina: 40,
-            axes: {
-              self: 4
-            }
-          },
-          setFlag: "burnout"
-        },
-        {
-          id: "push",
-          label: "\u54AC\u7259\u7EE7\u7EED",
-          text: "\u4F60\u7EE7\u7EED\u7EC3\uFF0C\u4F46\u52A8\u4F5C\u5F00\u59CB\u53D8\u5F62\u3002",
-          effects: {
-            stamina: -5,
-            axes: {
-              self: -5,
-              fit: 2
-            },
-            stats: {
-              dance: 1
-            }
-          },
-          setFlag: "burnout"
-        }
-      ]
-    },
-    {
       id: "crowded-fans",
       title: "\u6709\u4EBA\u4E3E\u4F60\u7684\u540D\u5B57",
-      text: "\u524D\u6392\u6709\u4EBA\u4E3E\u8D77\u4E86\u5199\u7740\u4F60\u7684\u706F\u724C\uFF0C\u4F60\u5DEE\u70B9\u5FD8\u4E86\u4E0B\u4E00\u53E5\u6B4C\u8BCD\u3002",
-      requires: {
-        fansAtLeast: {
-          stage: 50
-        },
-        flagsNot: [
-          "ev:crowded-fans"
-        ]
-      },
+      text: "\u524D\u6392\u6709\u4EBA\u4E3E\u8D77\u4E86\u5199\u7740\u4F60\u7684\u706F\u724C\u3002\u4F60\u5DEE\u70B9\u5FD8\u4E86\u4E0B\u4E00\u53E5\u6B4C\u8BCD\uFF0C\u53EA\u80FD\u7B11\u7740\u628A\u8BDD\u7B52\u9012\u7ED9\u53F0\u4E0B\u3002",
+      requires: 'fans.stage >= 50 and not hasFlag("ev:crowded-fans")',
+      sourceRow: 27,
       choices: [
         {
           id: "look",
@@ -18894,6 +23002,10 @@ var events_default = {
             axes: {
               self: 2,
               others: 6
+            },
+            mood: 5,
+            traits: {
+              passion: 3
             }
           },
           setFlag: "crowded-fans"
@@ -18901,7 +23013,7 @@ var events_default = {
         {
           id: "focus",
           label: "\u4E13\u5FC3\u5531\u5B8C\u8FD9\u9996\u6B4C",
-          text: "\u4F60\u6CA1\u6709\u62AC\u5934\uFF0C\u4F46\u628A\u8FD9\u9996\u6B4C\u5531\u5230\u4E86\u6700\u597D\u3002",
+          text: "\u4F60\u6CA1\u6709\u62AC\u5934\uFF0C\u4F46\u628A\u8FD9\u9996\u6B4C\u5531\u5230\u4E86\u6700\u597D\u3002\u6563\u573A\u540E\u5979\u54ED\u4E86\u3002",
           effects: {
             axes: {
               self: 4,
@@ -18909,51 +23021,275 @@ var events_default = {
             },
             stats: {
               vocal: 1
-            }
+            },
+            mood: 4
           },
           setFlag: "crowded-fans"
+        },
+        {
+          id: "wave",
+          label: "\u671D\u90A3\u8FB9\u6325\u6325\u624B",
+          text: "\u4F60\u51B2\u7740\u4EBA\u7FA4\u6325\u4E86\u6325\u624B\u3002\u6B22\u547C\u58F0\u66F4\u5927\u4E86\uFF0C\u4F60\u5FD8\u4E86\u4E0B\u4E00\u53E5\u3002",
+          effects: {
+            stamina: -2,
+            axes: {
+              others: 4
+            },
+            mood: 3
+          },
+          setFlag: "crowded-fans",
+          requires: "trait.passion >= 3",
+          sourceRow: 79
         }
       ]
     },
     {
-      id: "manager-doubt",
-      title: "\u7ECF\u7EAA\u4EBA\u7684\u72B9\u8C6B",
-      text: "\u300C\u4F60\u6700\u8FD1\u2026\u2026\u8FD8\u6491\u5F97\u4F4F\u5417\uFF1F\u300D\u4ED6\u628A\u8BDD\u8BF4\u5230\u4E00\u534A\u53C8\u54BD\u4E86\u56DE\u53BB\u3002",
-      requires: {
-        axesBelow: {
-          fit: 34
+      id: "fan-gift",
+      title: "\u7C89\u4E1D\u9001\u4E86\u8D35\u7684\u4E1C\u897F",
+      text: "\u7279\u5178\u4F1A\u4E0A\uFF0C\u4E00\u4E2A\u5973\u5B69\u628A\u4E00\u4E2A\u4FE1\u5C01\u585E\u7ED9\u4F60\uFF0C\u8BF4\u300C\u522B\u5728\u8FD9\u91CC\u6253\u5F00\u300D\u3002\u56DE\u540E\u53F0\u4E00\u770B\uFF0C\u91CC\u9762\u662F\u94B1\u3002",
+      requires: 'fans.gachi >= 60 and not hasFlag("ev:fan-gift")',
+      sourceRow: 28,
+      choices: [
+        {
+          id: "return",
+          label: "\u8FD8\u56DE\u53BB",
+          text: "\u4F60\u8FFD\u5230\u95E8\u53E3\u628A\u4FE1\u5C01\u8FD8\u4E86\u3002\u5979\u8BF4\u300C\u4E3A\u4EC0\u4E48\u300D\uFF0C\u4F60\u8BF4\u300C\u8FD9\u6837\u6211\u4E0B\u6B21\u89C1\u5230\u4F60\u4F1A\u4E0D\u597D\u610F\u601D\u300D\u3002",
+          effects: {
+            stamina: -4,
+            axes: {
+              self: 6,
+              others: 6,
+              fit: 2
+            },
+            mood: 2,
+            traits: {
+              kind: 4,
+              independent: 3
+            }
+          },
+          setFlag: "fan-gift"
         },
-        flagsNot: [
-          "ev:manager-doubt"
-        ]
-      },
+        {
+          id: "keep",
+          label: "\u6536\u4E0B\uFF0C\u5F53\u4F5C\u5E94\u63F4",
+          text: "\u4F60\u6536\u4E0B\u4E86\u3002\u90A3\u7B14\u94B1\u521A\u597D\u591F\u4ED8\u4E0B\u4E2A\u6708\u7684\u6392\u7EC3\u5BA4\u3002",
+          effects: {
+            axes: {
+              self: -3,
+              others: 4,
+              fit: 3
+            },
+            mood: -4,
+            negatives: {
+              desire: 4
+            }
+          },
+          setFlag: "fan-gift"
+        },
+        {
+          id: "report",
+          label: "\u544A\u8BC9\u7ECF\u7EAA\u4EBA",
+          text: "\u7ECF\u7EAA\u4EBA\u5904\u7406\u5F97\u5F88\u5FEB\u3002\u5979\u8BF4\u4EE5\u540E\u8FD9\u79CD\u4E8B\u76F4\u63A5\u4EA4\u7ED9\u5979\u3002\u4F60\u89C9\u5F97\u8F7B\u677E\uFF0C\u4E5F\u89C9\u5F97\u5C11\u4E86\u70B9\u4EC0\u4E48\u3002",
+          effects: {
+            axes: {
+              self: 4,
+              others: 3,
+              fit: 4
+            },
+            mood: 2,
+            traits: {
+              coop: 3
+            }
+          },
+          setFlag: "fan-gift"
+        }
+      ]
+    },
+    {
+      id: "fan-birthday",
+      title: "\u751F\u8BDE\u796D",
+      text: "\u751F\u8BDE\u59D4\u7684\u4EBA\u6765\u95EE\u4F60\u60F3\u8981\u4EC0\u4E48\u989C\u8272\u7684\u86CB\u7CD5\u3002\u4F60\u8BF4\u4E86\u4E09\u79CD\uFF0C\u5979\u4EEC\u8BB0\u4E0B\u6765\uFF0C\u6700\u540E\u9009\u4E86\u6700\u4FBF\u5B9C\u7684\u90A3\u79CD\u3002",
+      requires: 'fans.gachi >= 40 and not hasFlag("ev:fan-birthday")',
+      sourceRow: 29,
+      choices: [
+        {
+          id: "let-them",
+          label: "\u8BA9\u5979\u4EEC\u529E",
+          text: "\u5979\u4EEC\u6BD4\u4F60\u8FD8\u4E0A\u5FC3\u3002\u86CB\u7CD5\u662F\u4E09\u79CD\u989C\u8272\u62FC\u7684\uFF0C\u8721\u70DB\u63D2\u6B6A\u4E86\u3002\u4F60\u8BB8\u4E86\u4E00\u4E2A\u5F88\u4FD7\u7684\u613F\u3002",
+          effects: {
+            stamina: -6,
+            axes: {
+              self: 4,
+              others: 9
+            },
+            mood: 12,
+            traits: {
+              kind: 5
+            }
+          },
+          setFlag: "fan-birthday"
+        },
+        {
+          id: "small",
+          label: "\u8BF4\u7B80\u5355\u4E00\u70B9\u5C31\u597D",
+          text: "\u5979\u4EEC\u6700\u540E\u53EA\u4E70\u4E86\u4E00\u4E2A\u5C0F\u86CB\u7CD5\uFF0C\u5728\u540E\u53F0\u5206\u7740\u5403\u3002\u6709\u4EBA\u8BF4\u300C\u660E\u5E74\u529E\u5927\u4E00\u70B9\u300D\u3002",
+          effects: {
+            axes: {
+              self: 3,
+              others: 6
+            },
+            mood: 8,
+            traits: {
+              kind: 3
+            }
+          },
+          setFlag: "fan-birthday"
+        },
+        {
+          id: "hide",
+          label: "\u8BF4\u90A3\u5929\u6709\u5DE5\u4F5C",
+          text: "\u90A3\u5929\u4F60\u786E\u5B9E\u6709\u5DE5\u4F5C\u3002\u665A\u4E0A\u5237\u5230\u5979\u4EEC\u5728\u5E97\u91CC\u5531\u6B4C\u7684\u89C6\u9891\uFF0C\u4F60\u770B\u4E86\u4E09\u904D\u3002",
+          effects: {
+            stamina: -8,
+            axes: {
+              self: 2,
+              others: -4,
+              fit: 2
+            },
+            mood: -6,
+            negatives: {
+              stress: 4
+            }
+          },
+          setFlag: "fan-birthday"
+        }
+      ]
+    },
+    {
+      id: "fan-leave",
+      title: "\u8001\u7C89\u4E0D\u6765\u4E86",
+      text: "\u4F60\u7FFB\u53C2\u6218\u8BB0\u5F55\uFF0C\u53D1\u73B0\u6709\u4E2A ID \u5DF2\u7ECF\u4E09\u4E2A\u6708\u6CA1\u51FA\u73B0\u4E86\u3002\u5979\u4EE5\u524D\u6BCF\u573A\u90FD\u5728\u7B2C\u4E00\u6392\u3002",
+      requires: 'fans.stage >= 120 and not hasFlag("ev:fan-leave")',
+      sourceRow: 30,
+      choices: [
+        {
+          id: "message",
+          label: "\u79C1\u4FE1\u95EE\u5979\u6700\u8FD1\u600E\u4E48\u6837",
+          text: "\u5979\u56DE\u4E86\uFF1A\u300C\u6BD5\u4E1A\u4E86\uFF0C\u5DE5\u4F5C\u4E86\u3002\u8FD8\u4F1A\u53BB\u770B\u4F60\u4EEC\u7684\u3002\u300D\u540E\u9762\u8DDF\u4E86\u4E00\u4E2A\u7B11\u8138\u3002",
+          effects: {
+            axes: {
+              self: 5,
+              others: 5
+            },
+            mood: 4,
+            traits: {
+              kind: 5
+            }
+          },
+          setFlag: "fan-leave"
+        },
+        {
+          id: "nothing",
+          label: "\u4EC0\u4E48\u90FD\u4E0D\u505A",
+          text: "\u4F60\u7FFB\u5B8C\u4E86\u5979\u7684\u5168\u90E8\u53C2\u6218\u8BB0\u5F55\uFF0C\u7136\u540E\u5173\u6389\u4E86\u9875\u9762\u3002",
+          effects: {
+            axes: {
+              self: 3,
+              others: -2
+            },
+            mood: -6,
+            negatives: {
+              stress: 4
+            }
+          },
+          setFlag: "fan-leave"
+        },
+        {
+          id: "one-more",
+          label: "\u5728\u4E0B\u4E00\u573A\u5531\u5979\u90A3\u9996\u70B9\u8FC7\u7684\u6B4C",
+          text: "\u4F60\u5728\u5B89\u53EF\u65F6\u5531\u4E86\u3002\u53F0\u4E0B\u6709\u4EBA\u8DDF\u7740\u5531\uFF0C\u4F60\u4E0D\u77E5\u9053\u662F\u4E0D\u662F\u5979\u3002",
+          effects: {
+            stamina: -6,
+            axes: {
+              self: 5,
+              others: 6,
+              fit: 2
+            },
+            mood: 6,
+            traits: {
+              passion: 4
+            }
+          },
+          setFlag: "fan-leave"
+        }
+      ]
+    },
+    {
+      id: "rival",
+      title: "\u9694\u58C1\u56E2\u7684\u5973\u5B69",
+      text: "\u9694\u58C1\u56E2\u7684\u5973\u5B69\u5728\u6D17\u624B\u95F4\u8865\u5986\uFF0C\u770B\u89C1\u4F60\uFF0C\u8BF4\uFF1A\u300C\u4F60\u4EEC\u90A3\u9996\u65B0\u6B4C\uFF0C\u6211\u542C\u4E86\u3002\u300D\u8BED\u6C14\u542C\u4E0D\u51FA\u4EC0\u4E48\u610F\u601D\u3002",
+      requires: 'total >= 150 and not hasFlag("ev:rival")',
+      sourceRow: 31,
       choices: [
         {
           id: "honest",
-          label: "\u8BF4\u5B9E\u8BDD\uFF0C\u6211\u4E0D\u592A\u786E\u5B9A",
-          text: "\u4ED6\u6C89\u9ED8\u4E86\u5F88\u4E45\uFF0C\u8BF4\u300C\u90A3\u5C31\u6162\u4E00\u70B9\u300D\u3002",
+          label: "\u300C\u8C22\u8C22\u4F60\u542C\u4E86\u3002\u300D",
+          text: "\u5979\u7B11\u4E86\u4E00\u4E0B\uFF0C\u8BF4\uFF1A\u300C\u526F\u6B4C\u90A3\u53E5\u4F60\u6362\u6C14\u4E86\u3002\u300D\u7136\u540E\u6D17\u4E86\u624B\u8D70\u4E86\u3002",
           effects: {
-            stamina: 5,
             axes: {
-              self: 7,
-              others: 3
+              self: 5,
+              others: 6,
+              fit: 2
+            },
+            stats: {
+              talk: 2
+            },
+            mood: 4,
+            traits: {
+              kind: 3
             }
           },
-          setFlag: "manager-doubt"
+          setFlag: "rival"
         },
         {
-          id: "brave",
-          label: "\u6211\u6CA1\u4E8B\uFF0C\u518D\u7ED9\u6211\u70B9\u65F6\u95F4",
-          text: "\u4ED6\u70B9\u70B9\u5934\uFF0C\u628A\u4E0B\u4E00\u573A\u6F14\u51FA\u7684\u8D44\u6599\u63A8\u7ED9\u4F60\u3002",
+          id: "guard",
+          label: "\u300C\u662F\u5417\u3002\u300D\u7136\u540E\u4E0D\u8BF4\u4E86",
+          text: "\u5979\u4E5F\u6CA1\u518D\u8BF4\u3002\u6D17\u624B\u95F4\u7684\u955C\u5B50\u91CC\uFF0C\u4F60\u4EEC\u4E24\u4E2A\u90FD\u5728\u770B\u81EA\u5DF1\u3002",
           effects: {
-            stamina: -5,
             axes: {
-              self: -3,
-              others: 5,
-              fit: 4
+              self: 3,
+              others: -2
+            },
+            mood: -4,
+            traits: {
+              independent: 3
+            },
+            negatives: {
+              stress: 3
             }
           },
-          setFlag: "manager-doubt"
+          setFlag: "rival"
+        },
+        {
+          id: "ask",
+          label: "\u300C\u4F60\u89C9\u5F97\u54EA\u91CC\u8FD8\u80FD\u6539\uFF1F\u300D",
+          text: "\u5979\u6123\u4E86\u4E00\u4E0B\uFF0C\u8BA4\u771F\u5730\u8BF4\u4E86\u4E09\u70B9\u3002\u5176\u4E2D\u4E24\u70B9\u4F60\u540E\u6765\u771F\u7684\u6539\u4E86\u3002",
+          effects: {
+            axes: {
+              self: 4,
+              others: 5,
+              fit: 4
+            },
+            stats: {
+              dance: 1,
+              talk: 1
+            },
+            mood: 2,
+            traits: {
+              coop: 4
+            }
+          },
+          setFlag: "rival"
         }
       ]
     }
@@ -18975,7 +23311,9 @@ var pools_default = {
         "\u767D\u9732",
         "\u82CF\u665A",
         "\u4F55\u662D",
-        "\u8BB8\u77E5"
+        "\u8BB8\u77E5",
+        "\u65B9\u7CD6",
+        "\u79CB\u5C7F"
       ]
     },
     {
@@ -18989,7 +23327,8 @@ var pools_default = {
         "\u5B8B\u8FDF",
         "\u5434\u5FF5",
         "\u987E\u5357",
-        "\u97E9\u661F"
+        "\u97E9\u661F",
+        "\u6C5F\u7167"
       ]
     },
     {
@@ -19002,12 +23341,37 @@ var pools_default = {
         "\u66F9\u4E91",
         "\u9093\u67EF",
         "\u949F\u79BB",
-        "\u65B9\u7CD6",
         "\u962E\u9752\u79BE",
         "\u8C22\u9065",
         "\u65BD\u7136",
         "\u5D14\u7FBD",
-        "\u8303\u5C7F"
+        "\u8303\u5C7F",
+        "\u7B80\u5B81"
+      ]
+    },
+    {
+      id: "pool-online",
+      name: "\u7EBF\u4E0A\u540C\u597D",
+      members: [
+        "\u5F6D\u91CE",
+        "\u8463\u590F",
+        "\u8881\u6E05",
+        "\u9646\u542C",
+        "\u65F6\u96E8",
+        "\u767D\u6816",
+        "\u795D\u5B89"
+      ]
+    },
+    {
+      id: "pool-workshop",
+      name: "\u6392\u7EC3\u5BA4\u62FC\u573A",
+      members: [
+        "\u5C91\u91CE",
+        "\u82CF\u53F6",
+        "\u8FDF\u79BE",
+        "\u5E94\u661F",
+        "\u95FB\u7B1B",
+        "\u6C88\u96EB"
       ]
     }
   ]
@@ -19024,6 +23388,8 @@ var RAW_POOLS = pools_default.pools;
 
 // ../core/src/expr.ts
 var import_filtrex = __toESM(require_filtrex(), 1);
+
+// ../core/src/expr-rules.js
 var STAT_KEYS = ["vocal", "dance", "acting", "talk"];
 var ALIAS = {
   \u6F14\u5531: "vocal",
@@ -19035,43 +23401,80 @@ var ALIAS = {
   \u9002\u914D: "fit",
   \u4F53\u529B: "stamina",
   \u8D44\u91D1: "money",
+  \u5FC3\u60C5: "mood",
+  \u9971\u8179: "satiety",
   \u7C89\u4E1D\u6570: "friends",
   \u597D\u53CB\u6570: "friends",
   \u603B\u5C5E\u6027: "total"
 };
+var BARE_GROUP = {
+  kind: "trait",
+  lead: "trait",
+  coop: "trait",
+  independent: "trait",
+  ambitious: "trait",
+  passion: "trait",
+  stress: "neg",
+  restless: "neg",
+  fatigue: "neg",
+  desire: "neg",
+  scandal: "neg",
+  stage_prof: "prof",
+  song_prof: "prof",
+  choreo_prof: "prof"
+};
+var GROUP_PREFIXES = ["innate", "trait", "neg", "prof"];
+var FIXED_NAMES = ["self", "others", "fit", "stamina", "money", "friends", "total", "mood", "satiety"];
+var FAN_TYPES = ["stage", "gachi", "music", "live", "growth", "power"];
 var KNOWN = /* @__PURE__ */ new Set([
   ...STAT_KEYS,
-  "self",
-  "others",
-  "fit",
-  "stamina",
-  "money",
-  "friends",
-  "total",
-  ...[
-    "stage",
-    "gachi",
-    "music",
-    "live",
-    "growth",
-    "power"
-  ].map((t) => `fans.${t}`)
+  ...FIXED_NAMES,
+  ...FAN_TYPES.map((t) => `fans.${t}`)
 ]);
+var KEYWORDS = ["and", "or", "not", "true", "false", "mod", "in"];
+var FUNCTIONS = ["sum", "max", "min", "abs"];
+var FLAG_PREFIX = "flag_";
+var NAME_CANDIDATES = [
+  ...Object.keys(ALIAS),
+  ...Object.keys(BARE_GROUP),
+  ...Object.entries(BARE_GROUP).map(([bare, group]) => `${group}.${bare}`),
+  ...KNOWN
+];
 var sanitizeFlag = (name) => "flag_" + String(name).replace(/[^A-Za-z0-9_]/g, "_");
-function normalize(src) {
+function normalizeExpr(src) {
   let out = src;
   for (const [cn, en] of Object.entries(ALIAS)) {
     out = out.split(cn).join(en);
   }
   out = out.replace(
-    /hasFlag\s*\(\s*"([^"]+)"\s*\)/g,
-    (_m, name) => sanitizeFlag(name)
+    /\b([A-Za-z_][A-Za-z0-9_]*)\b/g,
+    (m) => BARE_GROUP[m] ? `${BARE_GROUP[m]}.${m}` : m
   );
+  out = out.replace(/hasFlag\s*\(\s*"([^"]+)"\s*\)/g, (_m, name) => sanitizeFlag(name));
   out = out.replace(/&&/g, " and ").replace(/\|\|/g, " or ");
   out = out.replace(/!(?!=)/g, " not ");
   return out;
 }
-function toData(state) {
+function isKnownName(name) {
+  if (KEYWORDS.includes(name)) return true;
+  if (FUNCTIONS.includes(name)) return true;
+  if (KNOWN.has(name)) return true;
+  if (name.startsWith(FLAG_PREFIX)) return true;
+  return GROUP_PREFIXES.some((p) => name.startsWith(p + "."));
+}
+function findUnknownNames(expression) {
+  const scanSrc = expression.replace(/"[^"]*"/g, '""');
+  const out = [];
+  for (const name of scanSrc.match(/[A-Za-z_][A-Za-z0-9_.]*/g) ?? []) {
+    if (isKnownName(name)) continue;
+    out.push(name);
+  }
+  return out;
+}
+
+// ../core/src/expr.ts
+var STAT_KEYS2 = STAT_KEYS;
+function buildExprData(state) {
   const data = {
     vocal: state.stats.vocal,
     dance: state.stats.dance,
@@ -19082,12 +23485,19 @@ function toData(state) {
     fit: state.axes.fit,
     stamina: state.stamina,
     money: state.money,
+    mood: state.mood ?? 70,
+    satiety: state.satiety ?? 70,
     friends: (state.friends ?? []).length,
-    total: STAT_KEYS.reduce((sum, k) => sum + state.stats[k], 0),
+    total: STAT_KEYS2.reduce((sum, k) => sum + state.stats[k], 0),
     flags: state.flags
   };
+  for (const key of declaredFlagKeys) data[key] = false;
+  for (const [k, v] of Object.entries(state.innate ?? {})) data["innate." + k] = v;
+  for (const [k, v] of Object.entries(state.traits ?? {})) data["trait." + k] = v;
+  for (const [k, v] of Object.entries(state.negatives ?? {})) data["neg." + k] = v;
+  for (const [k, v] of Object.entries(state.proficiency ?? {})) data["prof." + k] = v;
   for (const [flag, on] of Object.entries(state.flags ?? {})) {
-    data[sanitizeFlag(flag)] = on ? 1 : 0;
+    data[sanitizeFlag(flag)] = Boolean(on);
   }
   for (const [type, value] of Object.entries(state.fans.byType)) {
     data[`fans.${type}`] = value;
@@ -19095,22 +23505,22 @@ function toData(state) {
   return data;
 }
 var sumFn = (...args) => args.reduce((a, b) => a + (Number(b) || 0), 0);
-function compileExpression(src) {
-  const expression = normalize(src);
-  const scanSrc = expression.replace(/"[^"]*"/g, '""');
-  for (const name of scanSrc.match(/[A-Za-z_][A-Za-z0-9_.]*/g) ?? []) {
-    if (["and", "or", "not", "true", "false", "mod", "in"].includes(name)) continue;
-    if (name === "sum" || name === "max" || name === "min" || name === "abs") {
-      continue;
-    }
-    if (KNOWN.has(name) || name.startsWith("flag_")) continue;
-    throw new ReferenceError(`\u672A\u77E5\u53D8\u91CF\u300C${name}\u300D`);
+var declaredFlagKeys = /* @__PURE__ */ new Set();
+function registerFlags(src) {
+  for (const m of src.matchAll(/hasFlag\s*\(\s*"([^"]+)"\s*\)/g)) {
+    if (m[1]) declaredFlagKeys.add(sanitizeFlag(m[1]));
   }
+}
+function compileExpression(src) {
+  registerFlags(src);
+  const expression = normalizeExpr(src);
+  const unknown = findUnknownNames(expression);
+  if (unknown.length > 0) throw new ReferenceError(`\u672A\u77E5\u53D8\u91CF\u300C${unknown[0]}\u300D`);
   const fn = (0, import_filtrex.compileExpression)(expression, {
     extraFunctions: { sum: sumFn }
   });
   return (s) => {
-    const result = fn(toData(s));
+    const result = fn(buildExprData(s));
     if (result instanceof Error) return false;
     return Boolean(result);
   };
@@ -19139,11 +23549,11 @@ function matchObjectCondition(state, req) {
   }
   if (typeof req.staminaBelow === "number" && state.stamina >= req.staminaBelow) return false;
   if (typeof req.statsSumAtLeast === "number") {
-    const sum = STAT_KEYS.reduce((acc, k) => acc + state.stats[k], 0);
+    const sum = STAT_KEYS2.reduce((acc, k) => acc + state.stats[k], 0);
     if (sum < req.statsSumAtLeast) return false;
   }
   if (typeof req.statsSumBelow === "number") {
-    const sum = STAT_KEYS.reduce((acc, k) => acc + state.stats[k], 0);
+    const sum = STAT_KEYS2.reduce((acc, k) => acc + state.stats[k], 0);
     if (sum >= req.statsSumBelow) return false;
   }
   if (req.fansAtLeast) {
@@ -19198,9 +23608,14 @@ var STORY_EVENTS = RAW_STORY.map((e) => ({
     effects: {
       stamina: c.effects.stamina,
       stats: c.effects.stats,
-      axes: c.effects.axes
+      axes: c.effects.axes,
+      traits: c.effects.traits,
+      negatives: c.effects.negatives,
+      mood: c.effects.mood,
+      satiety: c.effects.satiety
     },
-    setFlag: c.setFlag
+    setFlag: c.setFlag,
+    requires: (s) => matchesCondition(s, c.requires)
   }))
 }));
 function findStoryEvent(state) {
@@ -19216,6 +23631,7 @@ function findStoryEvent(state) {
 // ../core/src/content.ts
 var MIN = 6e4;
 var ACTION_MINUTES = BALANCE.actionMinutes;
+var ACTION_MS = ACTION_MINUTES * MIN;
 var DAILY_SLOTS = BALANCE.dailySlots;
 var SHOW_SLOTS = BALANCE.showSlots;
 var DAY_MS = DAILY_SLOTS * ACTION_MINUTES * MIN;
@@ -19285,6 +23701,14 @@ function remainingTimes(state, actionId) {
   ).length;
   return Math.max(0, meta.times - used);
 }
+function staminaMaxFrom(balance) {
+  const v = Number(balance?.staminaMax);
+  return Number.isFinite(v) && v > 0 ? v : 100;
+}
+var STAMINA_MAX = staminaMaxFrom(BALANCE);
+function clampStamina(v) {
+  return Math.max(0, Math.min(STAMINA_MAX, Math.round(v)));
+}
 
 // ../core/src/rng.ts
 function hashSeed(seed) {
@@ -19311,7 +23735,7 @@ function randInt(rng, min, max) {
 
 // ../core/data/shop.json
 var shop_default = {
-  _\u8BF4\u660E: "\u88C5\u5907\u8868\u3002common=\u666E\u901A\uFF08\u6BCF\u5468\u8D27\u67B6 3 \u4EF6\uFF09\uFF0Crare=\u7A00\u6709\uFF08\u6BCF\u5468 1 \u4EF6\uFF09\uFF1Bstat/statName \u662F\u5C5E\u6027\u5B57\u6BB5\u540D\u4E0E\u4E2D\u6587\u540D",
+  _\u8BF4\u660E: "\u88C5\u5907\u8868\u3002common=\u666E\u901A\uFF08\u6BCF\u5468\u8D27\u67B6 3 \u4EF6\uFF09\uFF0Crare=\u7A00\u6709\uFF08\u6BCF\u5468 1 \u4EF6\uFF09\uFF1B\u4EF7\u683C\u53D6\u81EA balance \u8868\u7684 commonPrice / rarePrice",
   shop: {
     commonPrice: 800,
     rarePrice: 2e3,
@@ -19329,7 +23753,31 @@ var shop_default = {
         value: 2
       },
       {
+        name: "\u9ED1\u8272\u6253\u5E95\u8863",
+        stat: "dance",
+        statName: "\u821E\u8E48",
+        value: 2
+      },
+      {
+        name: "\u5E06\u5E03\u978B",
+        stat: "dance",
+        statName: "\u821E\u8E48",
+        value: 2
+      },
+      {
         name: "\u767D\u886C\u886B",
+        stat: "acting",
+        statName: "\u6F14\u6280",
+        value: 2
+      },
+      {
+        name: "\u68C9\u9EBB\u957F\u88D9",
+        stat: "acting",
+        statName: "\u6F14\u6280",
+        value: 2
+      },
+      {
+        name: "\u6210\u719F\u897F\u88C5\u88D9",
         stat: "acting",
         statName: "\u6F14\u6280",
         value: 2
@@ -19341,13 +23789,37 @@ var shop_default = {
         value: 2
       },
       {
-        name: "\u8FD0\u52A8\u5916\u5957",
-        stat: "dance",
-        statName: "\u821E\u8E48",
+        name: "\u8FDE\u5E3D\u886B",
+        stat: "vocal",
+        statName: "\u6F14\u5531",
+        value: 2
+      },
+      {
+        name: "\u4EAE\u7247\u80CC\u5FC3",
+        stat: "vocal",
+        statName: "\u6F14\u5531",
         value: 2
       },
       {
         name: "\u5BBD\u677ET\u6064",
+        stat: "talk",
+        statName: "\u53E3\u624D",
+        value: 2
+      },
+      {
+        name: "JK \u5236\u670D",
+        stat: "talk",
+        statName: "\u53E3\u624D",
+        value: 2
+      },
+      {
+        name: "\u59B9\u7CFB\u540A\u5E26\u88D9",
+        stat: "talk",
+        statName: "\u53E3\u624D",
+        value: 2
+      },
+      {
+        name: "\u886C\u886B\u52A0\u80CC\u5FC3",
         stat: "talk",
         statName: "\u53E3\u624D",
         value: 2
@@ -19361,15 +23833,9 @@ var shop_default = {
         value: 5
       },
       {
-        name: "\u53E4\u98CE\u957F\u88D9",
-        stat: "acting",
-        statName: "\u6F14\u6280",
-        value: 5
-      },
-      {
-        name: "Lolita \u5957\u88C5",
-        stat: "talk",
-        statName: "\u53E3\u624D",
+        name: "\u821E\u53F0\u7528\u9A6C\u4E01\u9774",
+        stat: "dance",
+        statName: "\u821E\u8E48",
         value: 5
       },
       {
@@ -19377,6 +23843,36 @@ var shop_default = {
         stat: "vocal",
         statName: "\u6F14\u5531",
         value: 5
+      },
+      {
+        name: "\u767D\u88D9\xB7\u6BD5\u4E1A\u573A",
+        stat: "vocal",
+        statName: "\u6F14\u5531",
+        value: 4
+      },
+      {
+        name: "\u53E4\u98CE\u957F\u88D9",
+        stat: "acting",
+        statName: "\u6F14\u6280",
+        value: 5
+      },
+      {
+        name: "\u5730\u96F7\u7CFB\u8FDE\u8863\u88D9",
+        stat: "acting",
+        statName: "\u6F14\u6280",
+        value: 5
+      },
+      {
+        name: "\u75C5\u5A07\u7CFB\u9ED1\u88D9",
+        stat: "acting",
+        statName: "\u6F14\u6280",
+        value: 4
+      },
+      {
+        name: "Lolita \u5957\u88C5",
+        stat: "talk",
+        statName: "\u53E3\u624D",
+        value: 4
       }
     ]
   }
@@ -19438,10 +23934,18 @@ function pickActionResult(state, actionId) {
 }
 function showFanType(state) {
   const s = effectiveStats(state);
-  if (s.dance >= s.vocal && s.dance >= s.acting && s.dance >= s.talk) return "stage";
-  if (s.vocal >= s.acting && s.vocal >= s.talk) return "music";
-  if (s.acting >= s.talk) return "growth";
-  return "gachi";
+  const innate = state.innate ?? {};
+  const traits = state.traits ?? {};
+  const scores = {
+    stage: s.dance + (innate.height ?? 50) / 4 + (innate.proportion ?? 50) / 4,
+    music: s.vocal,
+    growth: s.acting + (s.vocal + s.dance) / 4,
+    gachi: (innate.appearance ?? 50) + (traits.kind ?? 0) / 2,
+    live: s.talk + (traits.passion ?? 0) / 2,
+    power: (s.vocal + s.dance) / 2 + (traits.ambitious ?? 0) / 2
+  };
+  const best = Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
+  return best ? best[0] : "stage";
 }
 var rollValue = (v, rng) => {
   if (Array.isArray(v)) return randInt(rng, v[0], v[1]);
@@ -19457,6 +23961,8 @@ function resolveAction(state, actionId, rng) {
   const stamina = result.effects.stamina ?? 0;
   const money = result.effects.money ?? 0;
   const fans = result.effects.fans ?? 0;
+  const mood = result.effects.mood ?? 0;
+  const satiety = result.effects.satiety ?? 0;
   let text = result.text;
   for (const [k, v] of Object.entries(stats)) {
     text = text.split(`{${k}}`).join(String(v));
@@ -19465,7 +23971,7 @@ function resolveAction(state, actionId, rng) {
   text = text.split("{n}").join(String(firstStat));
   text = text.split("{stamina}").join(String(stamina));
   text = text.split("{money}").join(String(money));
-  return { resultId: result.id, stamina, money, fans, stats, text };
+  return { resultId: result.id, stamina, money, mood, satiety, fans, stats, text };
 }
 function previewAction(state, actionId) {
   const result = pickActionResult(state, actionId);
@@ -19484,7 +23990,7 @@ function previewAction(state, actionId) {
 }
 
 // ../core/src/fans.ts
-var FAN_TYPES = ["stage", "gachi", "music", "live", "growth", "power"];
+var FAN_TYPES2 = ["stage", "gachi", "music", "live", "growth", "power"];
 var LOYALTY_ORDER = ["casual", "dd", "group", "solo"];
 var AFFECTION_MAX = 100;
 var PROMOTE_RATIO = 0.05;
@@ -19496,9 +24002,9 @@ function zeroed(keys) {
 }
 function createFans(total = 0) {
   return {
-    byType: zeroed(FAN_TYPES),
+    byType: zeroed(FAN_TYPES2),
     loyalty: { casual: total, dd: 0, group: 0, solo: 0 },
-    affection: zeroed(FAN_TYPES)
+    affection: zeroed(FAN_TYPES2)
   };
 }
 function applyFanAction(fans, type, newFans, affection) {
@@ -19531,6 +24037,524 @@ function promoteOnce(fans) {
   }
 }
 
+// ../core/data/tasks.json
+var tasks_default = {
+  _\u8BF4\u660E: "\u4EFB\u52A1\u8868\uFF1AdisplayCondition=\u53EF\u89C1\u6761\u4EF6\uFF1BacceptCondition=\u53EF\u9886\u53D6\u6761\u4EF6\uFF1BcompleteCondition=\u5B8C\u6210\u6761\u4EF6\u3002\u9886\u53D6\u540E\u8FDB\u5165\u8FDB\u884C\u4E2D\uFF0C\u6761\u4EF6\u8FBE\u6210\u81EA\u52A8\u5B8C\u6210\u5E76\u53D1\u5956",
+  tasks: [
+    {
+      id: "task-first-debut",
+      type: "once",
+      name: "\u7B2C\u4E00\u6B21\u51FA\u9053",
+      displayCondition: {},
+      acceptCondition: "total >= 120",
+      completeCondition: 'hasFlag("ev:debut")',
+      rewards: {
+        money: 3e3,
+        fans: 100
+      },
+      times: 1,
+      content: "\u56DB\u9879\u5C5E\u6027\u603B\u548C\u5230 120\uFF0C\u5C31\u6709\u8D44\u683C\u62A5\u540D\u51FA\u9053\u6F14\u51FA\u3002\u8FC7\u4E86\uFF0C\u4F60\u624D\u7B97\u771F\u7684\u8FDB\u4E86\u8FD9\u884C\u3002",
+      brief: "\u56DB\u9879\u5C5E\u6027\u603B\u548C\u5230 120 \u540E\u62A5\u540D\u51FA\u9053",
+      priority: 10
+    },
+    {
+      id: "task-vocal-20",
+      type: "once",
+      name: "\u58F0\u97F3\u5148\u7ACB\u4F4F",
+      displayCondition: {},
+      acceptCondition: "vocal >= 10",
+      completeCondition: "vocal >= 20",
+      rewards: {
+        money: 300
+      },
+      times: 1,
+      content: "\u5148\u628A\u6F14\u5531\u7EC3\u5230 20\u3002\u5531 K \u4FBF\u5B9C\uFF0C\u5C31\u662F\u8D39\u55D3\u5B50\uFF0C\u522B\u8FDE\u7740\u6392\u4E09\u4E2A\u65F6\u6BB5\u3002",
+      brief: "\u6F14\u5531\u7EC3\u5230 20",
+      priority: 20,
+      deadlineDays: 3
+    },
+    {
+      id: "task-dance-20",
+      type: "once",
+      name: "\u5148\u628A\u52A8\u4F5C\u62A0\u5E72\u51C0",
+      displayCondition: {},
+      acceptCondition: "dance >= 10",
+      completeCondition: "dance >= 20",
+      rewards: {
+        money: 300
+      },
+      times: 1,
+      content: "\u821E\u8E48\u5230 20\u3002\u5F55\u4E00\u904D\u56DE\u770B\uFF0C\u6BD4\u95F7\u5934\u8DF3\u4E8C\u5341\u904D\u6709\u7528\u3002",
+      brief: "\u821E\u8E48\u7EC3\u5230 20",
+      priority: 21,
+      deadlineDays: 3
+    },
+    {
+      id: "task-acting-20",
+      type: "once",
+      name: "\u955C\u5934\u524D\u522B\u50F5",
+      displayCondition: {},
+      acceptCondition: "acting >= 10",
+      completeCondition: "acting >= 20",
+      rewards: {
+        money: 300
+      },
+      times: 1,
+      content: "\u6F14\u6280\u5230 20\u3002\u81EA\u62CD\u5C0F\u77ED\u5267\u4E0D\u82B1\u94B1\uFF0C\u8FD8\u80FD\u987A\u624B\u6DA8\u4E00\u70B9\u7C89\u3002",
+      brief: "\u6F14\u6280\u7EC3\u5230 20",
+      priority: 22,
+      deadlineDays: 3
+    },
+    {
+      id: "task-talk-20",
+      type: "once",
+      name: "\u4F1A\u8BF4\u4EBA\u8BDD",
+      displayCondition: {},
+      acceptCondition: "talk >= 10",
+      completeCondition: "talk >= 20",
+      rewards: {
+        money: 300
+      },
+      times: 1,
+      content: "\u53E3\u624D\u5230 20\u3002\u4E32\u573A\u8BCD\u8BF4\u987A\u4E86\uFF0C\u522B\u4EBA\u624D\u4F1A\u5728\u6563\u573A\u65F6\u8BB0\u4F4F\u4F60\u3002",
+      brief: "\u53E3\u624D\u7EC3\u5230 20",
+      priority: 23,
+      deadlineDays: 3
+    },
+    {
+      id: "task-dance-30",
+      type: "once",
+      name: "\u821E\u8E48\u4E09\u5341",
+      displayCondition: {},
+      acceptCondition: "dance >= 20",
+      completeCondition: "dance >= 30",
+      rewards: {
+        money: 500,
+        stamina: 10
+      },
+      times: 1,
+      content: "\u628A\u821E\u8E48\u7EC3\u5230 30\uFF0C\u8BF4\u660E\u4F60\u5DF2\u7ECF\u4E0D\u662F\u65B0\u4EBA\u4E86\u3002\u5269\u4E0B\u7684\u9760\u4E0A\u53F0\u3002",
+      brief: "\u821E\u8E48\u7EC3\u5230 30",
+      priority: 30,
+      deadlineDays: 5
+    },
+    {
+      id: "task-first-show",
+      type: "repeat",
+      name: "\u7AD9\u4E0A\u821E\u53F0",
+      displayCondition: "total >= 60",
+      acceptCondition: "total >= 60",
+      completeCondition: "fans.stage >= 100",
+      rewards: {
+        money: 800
+      },
+      times: 5,
+      content: "\u6F14\u51FA\u4F1A\u628A\u8DEF\u4EBA\u53D8\u6210\u7C89\u4E1D\u3002\u821E\u53F0\u7C89\u6512\u5230 100\uFF0C\u7FA4\u91CC\u5C31\u4F1A\u5F00\u59CB\u6709\u4EBA\u8BA4\u4F60\u3002",
+      brief: "\u821E\u53F0\u7C89\u7D2F\u8BA1\u5230 100",
+      priority: 31,
+      deadlineDays: 1,
+      reset: "daily"
+    },
+    {
+      id: "task-show-10",
+      type: "repeat",
+      name: "\u7B2C\u5341\u573A",
+      displayCondition: "fans.stage >= 60",
+      acceptCondition: "fans.stage >= 60",
+      completeCondition: "fans.stage >= 400",
+      rewards: {
+        money: 1500
+      },
+      times: 3,
+      content: "\u8DD1\u5230\u7B2C\u5341\u573A\u7684\u65F6\u5019\uFF0C\u4F60\u4F1A\u53D1\u73B0\u6709\u4E9B\u8138\u662F\u91CD\u590D\u7684\u3002\u90A3\u4E9B\u4EBA\u624D\u662F\u4F60\u7684\u3002",
+      brief: "\u821E\u53F0\u7C89\u7D2F\u8BA1\u5230 400",
+      priority: 32,
+      deadlineDays: 3,
+      reset: "daily"
+    },
+    {
+      id: "task-money-10000",
+      type: "once",
+      name: "\u6512\u5230\u4E00\u4E07",
+      displayCondition: {},
+      acceptCondition: "money >= 5000",
+      completeCondition: "money >= 10000",
+      rewards: {
+        stamina: 20
+      },
+      times: 1,
+      content: "\u623F\u79DF\u6BCF\u5468\u90FD\u8981\u4EA4\u3002\u624B\u91CC\u6709\u4E00\u4E07\u5757\uFF0C\u624D\u6562\u6392\u4E00\u6B21\u65C5\u6E38\u3002",
+      brief: "\u8D44\u91D1\u8FBE\u5230 10000",
+      priority: 40,
+      deadlineDays: 7
+    },
+    {
+      id: "task-money-50000",
+      type: "once",
+      name: "\u6512\u5230\u4E94\u4E07",
+      displayCondition: {},
+      acceptCondition: "money >= 20000",
+      completeCondition: "money >= 50000",
+      rewards: {
+        money: 3e3
+      },
+      times: 1,
+      content: "\u4E94\u4E07\u662F\u4E2A\u5206\u6C34\u5CAD\uFF1A\u591F\u4ED8\u4E00\u573A OM \u7684\u5B9A\u91D1\uFF0C\u4E5F\u591F\u6491\u8FC7\u4E24\u4E2A\u6708\u7684\u7A7A\u7A97\u3002",
+      brief: "\u8D44\u91D1\u8FBE\u5230 50000",
+      priority: 41
+    },
+    {
+      id: "task-friend",
+      type: "once",
+      name: "\u8BA4\u8BC6\u4E00\u4E2A\u4EBA",
+      displayCondition: {},
+      acceptCondition: {},
+      completeCondition: "friends >= 1",
+      rewards: {
+        money: 200
+      },
+      times: 1,
+      content: "\u53BB\u6F2B\u5C55\u3001\u770B\u6F14\u51FA\u3001\u8BA9\u670B\u53CB\u4ECB\u7ECD\u2014\u2014\u5730\u4E0B\u5708\u7684\u56E2\u57FA\u672C\u90FD\u662F\u8FD9\u4E48\u51D1\u8D77\u6765\u7684\u3002",
+      brief: "\u670B\u53CB\u5708\u81F3\u5C11\u6709 1 \u4E2A\u4EBA",
+      priority: 50,
+      deadlineDays: 3
+    },
+    {
+      id: "task-party-5",
+      type: "once",
+      name: "\u51D1\u591F\u4E94\u4E2A\u4EBA",
+      displayCondition: 'hasFlag("ev:debut")',
+      acceptCondition: 'hasFlag("ev:debut")',
+      completeCondition: "friends >= 5",
+      rewards: {
+        money: 800
+      },
+      times: 1,
+      content: "\u4E00\u4E2A\u4EBA\u4E5F\u80FD\u4E0A\u53F0\uFF0C\u4F46\u4E94\u4E2A\u4EBA\u7684\u821E\u53F0\u624D\u50CF\u4E00\u573A\u6F14\u51FA\u3002\u5148\u628A\u4EBA\u8BA4\u5168\u3002",
+      brief: "\u670B\u53CB\u5708\u6709 5 \u4E2A\u4EBA",
+      priority: 51,
+      deadlineDays: 5
+    },
+    {
+      id: "task-debut-party",
+      type: "once",
+      name: "\u7EC4\u4E2A\u56E2",
+      displayCondition: 'hasFlag("ev:debut")',
+      acceptCondition: 'hasFlag("ev:debut")',
+      completeCondition: 'hasFlag("ev:party-first")',
+      rewards: {
+        money: 500
+      },
+      times: 1,
+      content: "\u51FA\u9053\u4E4B\u540E\u5C31\u80FD\u5EFA\u7EC4\u5408\u3002\u540D\u5B57\u968F\u4FBF\u8D77\uFF0C\u53CD\u6B63\u4EE5\u540E\u4F1A\u6539\u3002",
+      brief: "\u521B\u5EFA\u7B2C\u4E00\u4E2A\u7EC4\u5408",
+      priority: 52
+    },
+    {
+      id: "task-first-cheki",
+      type: "once",
+      name: "\u7B2C\u4E00\u6B21\u7279\u5178",
+      displayCondition: 'hasFlag("ev:debut")',
+      acceptCondition: "fans.gachi >= 20",
+      completeCondition: 'hasFlag("ev:first-cheki")',
+      rewards: {
+        money: 400
+      },
+      times: 1,
+      content: "\u7279\u5178\u4F1A\u662F\u5730\u4E0B\u5076\u50CF\u771F\u6B63\u7684\u6536\u5165\u6765\u6E90\u3002\u62CD\u5207\u3001\u5199\u540D\u5B57\u3001\u542C\u5979\u4EEC\u8BF4\u5B8C\u3002",
+      brief: "\u5F00\u4E00\u6B21\u7279\u5178\u4F1A",
+      priority: 53
+    },
+    {
+      id: "task-manager-push",
+      type: "once",
+      name: "\u88AB\u63A8\u53BB\u62FC\u76D8",
+      displayCondition: "total >= 100",
+      acceptCondition: "total >= 100",
+      completeCondition: 'hasFlag("ev:manager-push")',
+      rewards: {
+        money: 600
+      },
+      times: 1,
+      content: "\u62FC\u76D8\u7684\u53F0\u4E0B\u5168\u662F\u522B\u5BB6\u7684\u7C89\u3002\u62A2\u4E0D\u62A2\u5F97\u5230\uFF0C\u770B\u4F60\u5728\u53F0\u4E0A\u90A3\u5341\u5206\u949F\u3002",
+      brief: "\u53C2\u52A0\u4E00\u573A\u62FC\u76D8",
+      priority: 54
+    },
+    {
+      id: "task-first-om",
+      type: "once",
+      name: "\u7B2C\u4E00\u573A OM",
+      displayCondition: "total >= 220",
+      acceptCondition: "total >= 220",
+      completeCondition: 'hasFlag("ev:first-om")',
+      rewards: {
+        money: 2e3
+      },
+      times: 1,
+      content: "OM \u662F\u300C\u53EA\u6709\u4F60\u4EEC\u300D\u7684\u610F\u601D\u3002\u6CA1\u6709\u522B\u7684\u56E2\u5728\u524D\u9762\uFF0C\u7968\u5F97\u81EA\u5DF1\u5356\u5B8C\u3002",
+      brief: "\u529E\u4E00\u573A OM \u821E\u53F0",
+      priority: 55
+    },
+    {
+      id: "task-total-200",
+      type: "once",
+      name: "\u56DB\u9879\u90FD\u4E0D\u96BE\u770B",
+      displayCondition: {},
+      acceptCondition: "total >= 160",
+      completeCondition: "total >= 200",
+      rewards: {
+        money: 2e3,
+        fans: 50
+      },
+      times: 1,
+      content: "\u4E0D\u8981\u6C42\u6837\u6837\u62D4\u5C16\uFF0C\u4F46\u6CA1\u6709\u77ED\u677F\u624D\u63A5\u5F97\u4F4F\u5404\u79CD\u901A\u544A\u3002",
+      brief: "\u56DB\u9879\u5C5E\u6027\u603B\u548C\u5230 200",
+      priority: 60,
+      deadlineDays: 5
+    },
+    {
+      id: "task-total-300",
+      type: "once",
+      name: "\u591F\u5F97\u7740\u5927\u573A",
+      displayCondition: {},
+      acceptCondition: "total >= 240",
+      completeCondition: "total >= 300",
+      rewards: {
+        money: 5e3,
+        fans: 200
+      },
+      times: 1,
+      content: "\u603B\u548C 300 \u662F\u5546\u6F14\u548C OM \u7684\u95E8\u69DB\u3002\u5230\u4E86\u8FD9\u4E2A\u6570\uFF0C\u4F60\u624D\u6709\u8D44\u683C\u6311\u6D3B\u3002",
+      brief: "\u56DB\u9879\u5C5E\u6027\u603B\u548C\u5230 300",
+      priority: 61,
+      deadlineDays: 7
+    },
+    {
+      id: "task-fans-300",
+      type: "once",
+      name: "\u4E09\u767E\u4EBA",
+      displayCondition: {},
+      acceptCondition: "fans.stage >= 100",
+      completeCondition: "fans.stage >= 300",
+      rewards: {
+        money: 1200
+      },
+      times: 1,
+      content: "\u4E09\u767E\u4E2A\u4EBA\u7684\u573A\u5B50\uFF0C\u7AD9\u6EE1\u7684\u65F6\u5019\u540E\u6392\u662F\u770B\u4E0D\u6E05\u8138\u7684\u3002\u4F46\u4F60\u542C\u5F97\u89C1\u3002",
+      brief: "\u821E\u53F0\u7C89\u5230 300",
+      priority: 62,
+      deadlineDays: 5
+    },
+    {
+      id: "task-fans-1000",
+      type: "once",
+      name: "\u4E00\u5343\u4EBA",
+      displayCondition: {},
+      acceptCondition: "fans.stage >= 500",
+      completeCondition: "fans.stage >= 1000",
+      rewards: {
+        money: 3e3
+      },
+      times: 1,
+      content: "\u5230\u4E00\u5343\u4EBA\u7684\u65F6\u5019\uFF0C\u4F1A\u5F00\u59CB\u6709\u4EBA\u81EA\u79F0\u300C\u8001\u7C89\u300D\u3002\u522B\u8BA9\u5979\u4EEC\u5931\u671B\u3002",
+      brief: "\u821E\u53F0\u7C89\u5230 1000",
+      priority: 63,
+      deadlineDays: 7
+    },
+    {
+      id: "task-burnout",
+      type: "once",
+      name: "\u5B66\u4F1A\u4F11\u606F",
+      displayCondition: "total >= 80",
+      acceptCondition: "total >= 80",
+      completeCondition: 'hasFlag("ev:burnout")',
+      rewards: {
+        money: 300
+      },
+      times: 1,
+      content: "\u6491\u4E0D\u4F4F\u4E0D\u662F\u5931\u8D25\u3002\u613F\u610F\u505C\u4E0B\u6765\u7684\u4EBA\uFF0C\u624D\u8DD1\u5F97\u5B8C\u4E24\u5E74\u3002",
+      brief: "\u7ECF\u5386\u4E00\u6B21\u6491\u4E0D\u4F4F",
+      priority: 70
+    },
+    {
+      id: "task-fan-letter",
+      type: "once",
+      name: "\u7B2C\u4E00\u5C01\u4FE1",
+      displayCondition: {},
+      acceptCondition: "others >= 30",
+      completeCondition: 'hasFlag("ev:fan-letter")',
+      rewards: {
+        money: 300
+      },
+      times: 1,
+      content: "\u6709\u4EBA\u613F\u610F\u82B1\u65F6\u95F4\u5199\u4E0B\u6765\uFF0C\u8BF4\u660E\u4F60\u5728\u5979\u90A3\u513F\u4E0D\u662F\u4E00\u4E2A\u53EF\u6709\u53EF\u65E0\u7684\u540D\u5B57\u3002",
+      brief: "\u6536\u5230\u7B2C\u4E00\u5C01\u7C89\u4E1D\u4FE1",
+      priority: 71
+    },
+    {
+      id: "task-first-audition",
+      type: "once",
+      name: "\u522B\u53EA\u662F\u8DEF\u8FC7",
+      displayCondition: {},
+      acceptCondition: {},
+      completeCondition: 'hasFlag("ev:first-audition")',
+      rewards: {
+        money: 200
+      },
+      times: 1,
+      content: "\u7B2C\u4E00\u6B21\u8BD5\u955C\u4E0D\u7BA1\u6210\u4E0D\u6210\uFF0C\u53BB\u8FC7\u7684\u548C\u6CA1\u53BB\u8FC7\u7684\uFF0C\u662F\u4E24\u79CD\u4EBA\u3002",
+      brief: "\u53BB\u4E00\u6B21\u8BD5\u955C",
+      priority: 72
+    },
+    {
+      id: "task-daily-repeat",
+      type: "repeat",
+      name: "\u6BCF\u65E5\u4E00\u7EC3",
+      displayCondition: "total >= 60",
+      acceptCondition: "total >= 60",
+      completeCondition: "total >= 240",
+      rewards: {
+        money: 800,
+        stamina: 10
+      },
+      times: 10,
+      content: "\u6BCF\u5929\u7EC3\u4E00\u70B9\u3002\u7EC3\u5230\u603B\u548C 240\uFF0C\u4F60\u5C31\u5230\u4E86\u80FD\u5403\u8FD9\u7897\u996D\u7684\u8FB9\u4E0A\u3002",
+      brief: "\u56DB\u9879\u5C5E\u6027\u603B\u548C\u5230 240",
+      priority: 80,
+      deadlineDays: 1,
+      reset: "daily"
+    }
+  ]
+};
+
+// ../core/src/tasks.ts
+var TASKS = tasks_default.tasks.slice().sort(
+  (a, b) => a.priority - b.priority
+);
+var acceptedKey = (id) => `task:${id}:acceptedAt`;
+var doneKey = (id) => `task:${id}:doneAt`;
+var doneDayKey = (id) => `task:${id}:doneDay`;
+var countKey = (id) => `task:${id}:count`;
+var expiredDayKey = (id) => `task:${id}:expiredDay`;
+var expiredCountKey = (id) => `task:${id}:expiredCount`;
+var gameDay = (at) => Math.floor(at / DAY_MS);
+function acceptedAt(state, taskId) {
+  return Number(state.flags[acceptedKey(taskId)] ?? 0);
+}
+function doneAt(state, taskId) {
+  return Number(state.flags[doneKey(taskId)] ?? 0);
+}
+function doneTimes(state, taskId) {
+  return Number(state.flags[countKey(taskId)] ?? 0);
+}
+function expiredTimes(state, taskId) {
+  return Number(state.flags[expiredCountKey(taskId)] ?? 0);
+}
+function lastDoneDay(state, taskId) {
+  const raw2 = state.flags[doneDayKey(taskId)];
+  if (typeof raw2 === "number" && Number.isFinite(raw2)) return raw2;
+  return gameDay(doneAt(state, taskId));
+}
+function taskExhausted(state, task) {
+  if (task.times <= 0) return false;
+  return doneTimes(state, task.id) >= task.times;
+}
+function expiredDay(state, taskId) {
+  const raw2 = state.flags[expiredDayKey(taskId)];
+  if (typeof raw2 === "number" && Number.isFinite(raw2)) return raw2;
+  return null;
+}
+function pastDeadline(state, task) {
+  const days = task.deadlineDays ?? 0;
+  if (!(days > 0)) return false;
+  if (acceptedAt(state, task.id) <= 0) return false;
+  if (doneAt(state, task.id) > 0) return false;
+  return state.at - acceptedAt(state, task.id) > days * DAY_MS;
+}
+function resetPeriodDays(task) {
+  if (task.reset === "none") return 0;
+  if (task.reset === "daily") return 1;
+  if (task.reset === "weekly") return 7;
+  return null;
+}
+function prerequisitesDone(state, task, path) {
+  const pre = task.prerequisite ?? [];
+  if (pre.length === 0) return true;
+  if (path.has(task.id)) return false;
+  path.add(task.id);
+  let ok = true;
+  for (const depId of pre) {
+    const dep = TASKS.find((t) => t.id === depId);
+    if (!dep || statusOf(state, dep, path) !== "done") {
+      ok = false;
+      break;
+    }
+  }
+  path.delete(task.id);
+  return ok;
+}
+function statusOf(state, task, path) {
+  if (!prerequisitesDone(state, task, path)) return "hidden";
+  if (!matchesCondition(state, task.displayCondition)) return "hidden";
+  if (taskExhausted(state, task)) return "done";
+  const accepted = acceptedAt(state, task.id) > 0;
+  const finished = doneAt(state, task.id) > 0;
+  const period = resetPeriodDays(task);
+  const repeats = period === null ? task.type === "repeat" : period > 0;
+  if (finished && repeats) {
+    const days = gameDay(state.at) - lastDoneDay(state, task.id);
+    if (days < (period ?? 1)) return "done";
+    return matchesCondition(state, task.acceptCondition) ? "claimable" : "locked";
+  }
+  if (accepted) {
+    if (finished) return "done";
+    if (matchesCondition(state, task.completeCondition)) return "completable";
+    if (pastDeadline(state, task)) {
+      const expired = expiredDay(state, task.id);
+      const today = gameDay(state.at);
+      const acceptedDay = gameDay(acceptedAt(state, task.id));
+      if (expired !== null && expired >= acceptedDay) {
+        if (expired === today) return "expired";
+        if (today > expired) {
+          return matchesCondition(state, task.acceptCondition) ? "claimable" : "locked";
+        }
+      }
+      return "expired";
+    }
+    return "active";
+  }
+  const canAccept = matchesCondition(state, task.acceptCondition);
+  return canAccept ? "claimable" : "locked";
+}
+function expireTasks(state, tasks = TASKS) {
+  let next = state;
+  for (const task of tasks) {
+    if (statusOf(next, task, /* @__PURE__ */ new Set()) !== "expired") continue;
+    const today = gameDay(next.at);
+    if (expiredDay(next, task.id) === today) continue;
+    next = {
+      ...next,
+      flags: {
+        ...next.flags,
+        [expiredDayKey(task.id)]: today,
+        [expiredCountKey(task.id)]: expiredTimes(next, task.id) + 1
+      },
+      log: [
+        ...next.log,
+        {
+          at: next.at,
+          actionId: `task-expired:${task.id}`,
+          text: `\u901A\u544A\u300C${task.name}\u300D\u8D85\u65F6\u672A\u5B8C\u6210\u3002`,
+          staminaDelta: 0,
+          statDelta: {},
+          kind: "action"
+        }
+      ]
+    };
+  }
+  return next;
+}
+
 // ../core/src/settle.ts
 var clamp = (v, min, max) => Math.min(max, Math.max(min, v));
 var ROUTINE_CHANCE = BALANCE.routineChance;
@@ -19557,7 +24581,6 @@ function settle(run, schedule, from, to, seed, opts = {}) {
   if (state.pendingEvent) {
     return { state, executed: [], stoppedReason: "event" };
   }
-  const rng = mulberry32(hashSeed(seed));
   const executed = [];
   let stoppedReason = null;
   let cursor = Math.max(from, run.at);
@@ -19570,6 +24593,7 @@ function settle(run, schedule, from, to, seed, opts = {}) {
     }
     const action = ACTIONS[item.actionId];
     if (!action) continue;
+    const rng = mulberry32(hashSeed(`${seed}:action:${item.id}`));
     if (remainingTimes(state, item.actionId) <= 0) {
       stoppedReason = "stopped";
       break;
@@ -19586,23 +24610,54 @@ function settle(run, schedule, from, to, seed, opts = {}) {
     }
     const resolved = resolveAction(state, item.actionId, rng);
     if (!resolved) continue;
-    state.stamina = clamp(state.stamina + resolved.stamina, 0, 100);
+    const nextMood = Math.max(0, Math.min(100, (state.mood ?? 70) + resolved.mood));
+    const nextSatiety = Math.max(0, Math.min(100, (state.satiety ?? 70) + resolved.satiety));
+    const negatives = state.negatives ?? {};
+    const proficiency = state.proficiency ?? {};
+    let efficiency = 1;
+    if (nextMood < 30) efficiency *= 0.7;
+    else if (nextMood > 70) efficiency *= 1.05;
+    if (nextSatiety < 20) efficiency *= 0.8;
+    if ((negatives.restless ?? 0) > 50) efficiency *= 0.95;
+    if ((negatives.stress ?? 0) > 60) efficiency *= 0.95;
+    const fatigueMul = (negatives.fatigue ?? 0) > 50 ? 1.2 : 1;
+    const staminaCost = resolved.stamina < 0 ? Math.round(resolved.stamina * fatigueMul) : resolved.stamina;
+    const staminaApplied = staminaCost > 0 && nextSatiety < 20 ? Math.round(staminaCost * 0.5) : staminaCost;
+    state.stamina = clampStamina(state.stamina + staminaApplied);
     state.money += resolved.money;
+    state.mood = nextMood;
+    state.satiety = nextSatiety;
     if (resolved.fans > 0) {
       state.fans = applyFanAction(state.fans, showFanType(state), resolved.fans, 0.3);
     }
+    const profFor = {
+      vocal: "song_prof",
+      dance: "choreo_prof"
+    };
+    const nextProf = { ...proficiency };
     const statDelta = {};
     for (const [k, v] of Object.entries(resolved.stats)) {
       const key = k;
       const before = state.stats[key];
-      state.stats[key] = clamp(before + (v ?? 0), 0, 100);
+      const raw2 = v ?? 0;
+      const profKey = profFor[key];
+      const profMul = profKey ? 1 + (nextProf[profKey] ?? 0) / 200 : 1;
+      const gained = raw2 > 0 ? Math.floor(raw2 * efficiency * profMul) : raw2;
+      state.stats[key] = clamp(before + gained, 0, 100);
       statDelta[key] = state.stats[key] - before;
+      if (gained > 0 && profKey) {
+        nextProf[profKey] = Math.min(100, (nextProf[profKey] ?? 0) + 1);
+      }
     }
+    if (resolved.fans > 0) {
+      nextProf.stage_prof = Math.min(100, (nextProf.stage_prof ?? 0) + 2);
+    }
+    state.proficiency = nextProf;
     state.log.push({
       at: item.endAt,
       actionId: action.id,
       text: resolved.text,
-      staminaDelta: resolved.stamina,
+      staminaDelta: staminaApplied,
       statDelta,
       kind: "action"
     });
@@ -19611,7 +24666,7 @@ function settle(run, schedule, from, to, seed, opts = {}) {
     executed.push(item.id);
     if (rng() < routineChance) {
       const t = ROUTINE_TEMPLATES[Math.floor(rng() * ROUTINE_TEMPLATES.length)];
-      state.stamina = clamp(state.stamina + t.stamina, 0, 100);
+      state.stamina = clampStamina(state.stamina + t.stamina);
       if (t.stat && t.gain) {
         state.stats[t.stat] = clamp(state.stats[t.stat] + t.gain, 0, 100);
       }
@@ -19658,7 +24713,7 @@ function settle(run, schedule, from, to, seed, opts = {}) {
   if (opts.endAt !== void 0 && state.at >= opts.endAt) {
     stoppedReason = "ending";
   }
-  return { state, executed, stoppedReason };
+  return { state: expireTasks(state), executed, stoppedReason };
 }
 
 // ../core/data/endings.json
@@ -19670,294 +24725,294 @@ var endings_default = {
       title: "\u79EF\u52B3\u6210\u75BE",
       group: "interrupt",
       groupName: "\u4E2D\u65AD\u7ED3\u5C40",
-      text: "\u4F60\u5728\u6392\u7EC3\u5BA4\u6655\u5012\uFF0C\u533B\u751F\u8BF4\u5FC5\u987B\u505C\u4E0B\u6765\u3002"
+      text: "\u4F60\u5728\u6392\u7EC3\u5BA4\u7684\u5730\u677F\u4E0A\u9192\u8FC7\u6765\uFF0C\u5929\u82B1\u677F\u6709\u4E00\u6839\u706F\u7BA1\u5728\u95EA\u3002\u533B\u751F\u8BF4\u662F\u8FC7\u52B3\uFF0C\u8981\u505C\u4E09\u4E2A\u6708\uFF0C\u300C\u518D\u8FD9\u6837\u4E0B\u53BB\uFF0C\u4E0D\u662F\u4F11\u606F\u80FD\u89E3\u51B3\u7684\u300D\u3002\u7FA4\u91CC\u7684\u4EBA\u8F6E\u6D41\u6765\u770B\u4F60\uFF0C\u5E26\u4E86\u5F88\u591A\u6C34\u679C\uFF0C\u6700\u540E\u90FD\u653E\u574F\u4E86\u3002\u4F60\u5076\u5C14\u8FD8\u4F1A\u68A6\u5230\u90A3\u6BB5\u6CA1\u8DF3\u5B8C\u7684\u821E\uFF0C\u68A6\u91CC\u7684\u4F60\u4ECE\u6765\u6CA1\u6709\u7D2F\u8FC7\u3002\u4E09\u4E2A\u6708\u540E\u4F60\u80FD\u8D70\u8DEF\u4E86\uFF0C\u4F46\u4E0D\u6562\u518D\u8D70\u8FDB\u4EFB\u4F55\u4E00\u95F4\u6709\u955C\u5B50\u7684\u623F\u95F4\u3002"
     },
     {
       id: "int-void",
       title: "\u6D51\u6D51\u5669\u5669",
       group: "interrupt",
       groupName: "\u4E2D\u65AD\u7ED3\u5C40",
-      text: "\u4F60\u5F00\u59CB\u8BB0\u4E0D\u6E05\u4E0A\u5468\u53D1\u751F\u4E86\u4EC0\u4E48\u3002"
+      text: "\u4F60\u5F00\u59CB\u8BB0\u4E0D\u6E05\u4E0A\u5468\u53D1\u751F\u4E86\u4EC0\u4E48\u3002\u65E5\u7A0B\u8868\u8FD8\u662F\u6709\uFF0C\u4F46\u6BCF\u4E00\u683C\u90FD\u957F\u5F97\u4E00\u6837\u3002\u6709\u5929\u4F60\u5728\u4FBF\u5229\u5E97\u7ED3\u8D26\uFF0C\u5E97\u5458\u8BF4\u4E86\u4E24\u904D\u300C\u4E00\u5171\u4E09\u5341\u516B\u300D\uFF0C\u4F60\u624D\u53CD\u5E94\u8FC7\u6765\u3002\u90A3\u6BB5\u65F6\u95F4\u4F60\u7167\u5E38\u4E0A\u53F0\uFF0C\u7167\u5E38\u8BF4\u611F\u8C22\u7684\u8BDD\uFF0C\u53EA\u662F\u56DE\u5230\u540E\u53F0\u4F1A\u5FD8\u6389\u81EA\u5DF1\u521A\u624D\u5531\u4E86\u4EC0\u4E48\u3002\u540E\u6765\u6709\u4EBA\u95EE\u4F60\u90A3\u4E24\u5E74\uFF0C\u4F60\u8BF4\u300C\u8FD8\u884C\u5427\u300D\u3002\u4E0D\u662F\u6577\u884D\uFF0C\u662F\u771F\u7684\u60F3\u4E0D\u8D77\u6765\u4E86\u3002"
     },
     {
       id: "int-desire",
       title: "\u60F3\u5165\u975E\u975E",
       group: "interrupt",
       groupName: "\u4E2D\u65AD\u7ED3\u5C40",
-      text: "\u4E00\u6BB5\u6CA1\u5904\u7406\u597D\u7684\u5173\u7CFB\u4F20\u904D\u4E86\u5708\u5B50\u3002"
+      text: "\u90A3\u5F20\u7167\u7247\u53EA\u62CD\u5230\u4E00\u4E2A\u4FA7\u8138\u548C\u4E00\u53EA\u624B\uFF0C\u4F46\u591F\u7528\u4E86\u3002\u4E09\u5929\u4E4B\u5185\uFF0C\u6240\u6709\u7FA4\u91CC\u90FD\u5728\u4F20\u3002\u4F60\u53D1\u8FC7\u58F0\u660E\uFF0C\u4E5F\u5220\u8FC7\u8D34\uFF0C\u8D8A\u89E3\u91CA\u8D8A\u50CF\u63A9\u9970\u3002\u56E2\u91CC\u6CA1\u6709\u4EBA\u602A\u4F60\uFF0C\u8FD9\u8BA9\u4F60\u66F4\u96BE\u53D7\u3002\u6700\u540E\u4E00\u6B21\u6392\u7EC3\uFF0C\u5927\u5BB6\u628A\u6B4C\u5355\u4ECE\u5934\u6392\u4E86\u4E00\u904D\uFF0C\u8C01\u90FD\u6CA1\u63D0\u90A3\u4EF6\u4E8B\u3002\u6563\u573A\u65F6\u6709\u4EBA\u8BF4\u4E86\u53E5\u300C\u8DEF\u4E0A\u5C0F\u5FC3\u300D\uFF0C\u8BED\u6C14\u548C\u5E73\u65F6\u4E00\u6837\u3002\u4F60\u7AD9\u5728\u8DEF\u706F\u4E0B\u7B49\u5230\u5F88\u665A\uFF0C\u4E5F\u6CA1\u7B49\u5230\u4EFB\u4F55\u4E00\u8F86\u7A7A\u8F66\u3002"
     },
     {
       id: "int-condemn",
       title: "\u5343\u592B\u6240\u6307",
       group: "interrupt",
       groupName: "\u4E2D\u65AD\u7ED3\u5C40",
-      text: "\u8BC4\u8BBA\u533A\u5173\u4E86\u53C8\u5F00\uFF0C\u9A82\u58F0\u8FD8\u5728\u3002"
+      text: "\u8BC4\u8BBA\u533A\u5173\u4E86\u53C8\u5F00\uFF0C\u9A82\u58F0\u8FD8\u5728\u3002\u6709\u4EBA\u6574\u7406\u4E86\u4E00\u4EFD\u300C\u52A3\u8FF9\u6E05\u5355\u300D\uFF0C\u4F60\u7684\u540D\u5B57\u6392\u5728\u7B2C\u56DB\u3002\u5408\u4F5C\u65B9\u4E00\u4E2A\u4E2A\u64A4\u4E86\uFF0C\u7406\u7531\u90FD\u5199\u5F97\u5F88\u5BA2\u6C14\u3002\u4F60\u628A\u624B\u673A\u8C03\u6210\u9759\u97F3\uFF0C\u540E\u6765\u5E72\u8106\u4E0D\u518D\u6253\u5F00\u3002\u4F4F\u7684\u5730\u65B9\u88AB\u4EBA\u627E\u5230\u4E86\uFF0C\u95E8\u53E3\u5806\u7740\u4E0D\u77E5\u9053\u8BE5\u4E0D\u8BE5\u7B97\u5FEB\u9012\u7684\u4E1C\u897F\u3002\u642C\u8D70\u90A3\u5929\uFF0C\u4F60\u628A\u6240\u6709\u5468\u8FB9\u88C5\u8FDB\u4E24\u4E2A\u7EB8\u7BB1\uFF0C\u6CA1\u6709\u4E00\u4EF6\u662F\u522B\u4EBA\u9001\u7684\u3002"
     },
     {
       id: "int-injury",
       title: "\u56E0\u4F24\u9000\u573A",
       group: "interrupt",
       groupName: "\u4E2D\u65AD\u7ED3\u5C40",
-      text: "\u533B\u751F\u8BF4\u8FD9\u4E2A\u4F24\uFF0C\u4E0D\u80FD\u518D\u8DF3\u4E86\u3002"
+      text: "\u533B\u751F\u8BF4\u8FD9\u4E2A\u4F24\uFF0C\u4E0D\u80FD\u518D\u8DF3\u4E86\u3002\u4F60\u95EE\u4E86\u4E09\u6B21\u300C\u4E00\u70B9\u90FD\u4E0D\u80FD\u5417\u300D\uFF0C\u7B2C\u4E09\u6B21\u4ED6\u6CA1\u6709\u518D\u56DE\u7B54\u3002\u4F60\u9000\u6389\u4E86\u4E0B\u4E2A\u6708\u7684\u573A\uFF0C\u4E5F\u9000\u6389\u4E86\u6392\u7EC3\u5BA4\u7684\u94A5\u5319\u3002\u819D\u76D6\u5728\u9634\u5929\u8FD8\u662F\u4F1A\u75BC\uFF0C\u50CF\u6709\u4EBA\u5728\u91CC\u9762\u6572\u3002\u540E\u6765\u4F60\u53BB\u770B\u8FC7\u4E00\u573A\u6F14\u51FA\uFF0C\u7AD9\u5728\u6700\u540E\u4E00\u6392\uFF0C\u770B\u89C1\u53F0\u4E0A\u7684\u5973\u5B69\u843D\u5730\u65F6\u819D\u76D6\u5F2F\u4E86\u4E00\u4E0B\u2014\u2014\u4F60\u5DEE\u70B9\u558A\u51FA\u58F0\uFF0C\u4F46\u4F60\u6CA1\u6709\u3002"
     },
     {
       id: "int-broke",
       title: "\u5C71\u7A77\u6C34\u5C3D",
       group: "interrupt",
       groupName: "\u4E2D\u65AD\u7ED3\u5C40",
-      text: "\u623F\u79DF\u6B20\u4E86\u4E24\u4E2A\u6708\uFF0C\u4F60\u6536\u62FE\u884C\u674E\u56DE\u4E86\u5BB6\u3002"
+      text: "\u623F\u79DF\u6B20\u4E86\u4E24\u4E2A\u6708\uFF0C\u623F\u4E1C\u5728\u95E8\u4E0A\u8D34\u4E86\u5F20\u7EB8\u3002\u4F60\u6536\u62FE\u884C\u674E\u56DE\u4E86\u5BB6\uFF0C\u8DEF\u4E0A\u628A\u6F14\u51FA\u670D\u53E0\u597D\u653E\u5728\u6700\u4E0A\u9762\uFF0C\u6015\u538B\u76B1\u3002\u5230\u5BB6\u90A3\u5929\u4E0B\u4E86\u96E8\uFF0C\u5988\u5988\u6CA1\u95EE\u4F60\u4E3A\u4EC0\u4E48\u4E0D\u5E72\u4E86\uFF0C\u53EA\u8BF4\u300C\u5148\u5403\u996D\u300D\u3002\u4F60\u5728\u5BB6\u4F4F\u4E86\u4E00\u4E2A\u6708\uFF0C\u6BCF\u5929\u7761\u5230\u4E2D\u5348\u3002\u6709\u4E00\u5929\u4F60\u6253\u5F00\u8863\u67DC\uFF0C\u770B\u89C1\u90A3\u4EF6\u6F14\u51FA\u670D\uFF0C\u624D\u60F3\u8D77\u6765\u81EA\u5DF1\u597D\u50CF\u5DF2\u7ECF\u5F88\u4E45\u6CA1\u542C\u6B4C\u4E86\u3002"
     },
     {
       id: "int-cold",
       title: "\u5FC3\u7070\u610F\u51B7",
       group: "interrupt",
       groupName: "\u4E2D\u65AD\u7ED3\u5C40",
-      text: "\u67D0\u5929\u4F60\u53D1\u73B0\uFF0C\u81EA\u5DF1\u5DF2\u7ECF\u4E09\u5468\u6CA1\u6253\u5F00\u6392\u7EC3\u5BA4\u7684\u95E8\u3002"
+      text: "\u67D0\u5929\u4F60\u53D1\u73B0\uFF0C\u81EA\u5DF1\u5DF2\u7ECF\u4E09\u5468\u6CA1\u6253\u5F00\u6392\u7EC3\u5BA4\u7684\u95E8\u3002\u94A5\u5319\u8FD8\u5728\u5305\u91CC\uFF0C\u548C\u522B\u7684\u94A5\u5319\u6DF7\u5728\u4E00\u8D77\u3002\u6CA1\u6709\u4EBA\u50AC\u4F60\uFF0C\u8FD9\u6BD4\u50AC\u4F60\u66F4\u96BE\u53D7\u3002\u4F60\u628A\u6F14\u51FA\u670D\u6D17\u4E86\uFF0C\u6302\u597D\uFF0C\u7136\u540E\u5F00\u59CB\u627E\u5DE5\u4F5C\u3002\u9762\u8BD5\u7684\u65F6\u5019\u4EBA\u5BB6\u95EE\u4F60\u8FD9\u4E24\u5E74\u5728\u505A\u4EC0\u4E48\uFF0C\u4F60\u8BF4\u300C\u505A\u70B9\u5C0F\u6F14\u51FA\u300D\u3002\u540E\u6765\u4F60\u518D\u4E5F\u6CA1\u8DF3\u8FC7\u821E\uFF0C\u4F46\u6BCF\u6B21\u8DEF\u8FC7\u5730\u4E0B\u8857\u7684\u9636\u68AF\u53E3\uFF0C\u8FD8\u662F\u4F1A\u5F80\u4E0B\u770B\u4E00\u773C\u3002"
     },
     {
       id: "int-quit",
       title: "\u6025\u6D41\u52C7\u9000",
       group: "interrupt",
       groupName: "\u4E2D\u65AD\u7ED3\u5C40",
-      text: "\u4F60\u9009\u5728\u4E00\u4E2A\u8FD8\u7B97\u4F53\u9762\u7684\u65F6\u523B\uFF0C\u8BF4\u4E86\u518D\u89C1\u3002"
+      text: "\u4F60\u9009\u5728\u4E00\u4E2A\u8FD8\u7B97\u4F53\u9762\u7684\u65F6\u523B\u8BF4\u4E86\u518D\u89C1\u3002\u90A3\u5929\u4EBA\u4E0D\u5C11\uFF0C\u5B89\u53EF\u558A\u4E86\u4E24\u904D\u3002\u4F60\u5728\u53F0\u4E0A\u8BF4\u5B8C\u6700\u540E\u4E00\u53E5\uFF0C\u97A0\u4E86\u4E00\u8EAC\uFF0C\u6CA1\u6709\u54ED\u3002\u6563\u573A\u540E\u4F60\u628A\u8BDD\u7B52\u64E6\u5E72\u51C0\u653E\u56DE\u539F\u4F4D\uFF0C\u548C\u7BA1\u7406\u5458\u8BF4\u4E86\u58F0\u8C22\u8C22\u3002\u56DE\u5BB6\u7684\u5730\u94C1\u4E0A\u4F60\u7AD9\u7740\uFF0C\u6CA1\u6709\u5EA7\u4F4D\uFF0C\u4E5F\u6CA1\u6709\u89C9\u5F97\u7D2F\u3002\u540E\u6765\u6709\u4EBA\u5728\u8BC4\u8BBA\u533A\u95EE\u4F60\u53BB\u54EA\u4E86\uFF0C\u8001\u7C89\u56DE\uFF1A\u5979\u53EA\u662F\u5230\u7AD9\u4E86\u3002"
     },
     {
       id: "fan-gachi",
       title: "\u56FD\u6C11\u521D\u604B",
       group: "stage-fan",
       groupName: "\u7C89\u4E1D\u5411\u7ED3\u5C40",
-      text: "\u7C89\u4E1D\u8BF4\u4F60\u662F\u300C\u53EF\u4EE5\u5E26\u56DE\u8001\u5BB6\u7684\u90A3\u79CD\u4EBA\u300D\u3002"
+      text: "\u7C89\u4E1D\u8BF4\u4F60\u662F\u300C\u53EF\u4EE5\u5E26\u56DE\u8001\u5BB6\u7684\u90A3\u79CD\u4EBA\u300D\u3002\u8FD9\u8BDD\u540E\u6765\u4E0A\u4E86\u70ED\u641C\uFF0C\u8FDE\u4F60\u5988\u90FD\u8F6C\u53D1\u4E86\u3002\u4F60\u7684\u5E94\u63F4\u8272\u53D8\u6210\u4E86\u90A3\u79CD\u5F88\u6DE1\u7684\u7C89\uFF0C\u8D70\u5230\u54EA\u513F\u90FD\u6709\u4EBA\u5C0F\u58F0\u8BF4\u300C\u662F\u5979\u300D\u3002\u4F60\u4E0A\u8FC7\u5F88\u591A\u8282\u76EE\uFF0C\u88AB\u95EE\u5F97\u6700\u591A\u7684\u8FD8\u662F\u300C\u4EC0\u4E48\u65F6\u5019\u8C08\u604B\u7231\u300D\uFF0C\u4F60\u6BCF\u6B21\u90FD\u7B11\u7740\u8BF4\u4E0D\u6025\u3002\u591A\u5E74\u540E\u4F60\u5728\u4E00\u6B21\u91C7\u8BBF\u91CC\u8BF4\uFF1A\u88AB\u90A3\u4E48\u591A\u4EBA\u559C\u6B22\u8FC7\uFF0C\u5C31\u5F88\u96BE\u518D\u5BF9\u8C01\u968F\u4FBF\u4E86\u3002"
     },
     {
       id: "fan-stage",
       title: "\u5267\u573A\u5973\u795E",
       group: "stage-fan",
       groupName: "\u7C89\u4E1D\u5411\u7ED3\u5C40",
-      text: "\u5C0F\u573A\u5B50\u7684\u706F\u4E00\u4EAE\uFF0C\u6240\u6709\u4EBA\u90FD\u5728\u770B\u4F60\u3002"
+      text: "\u5C0F\u573A\u5B50\u7684\u706F\u4E00\u4EAE\uFF0C\u6240\u6709\u4EBA\u90FD\u5728\u770B\u4F60\u3002\u90A3\u4E9B\u573A\u5730\u90FD\u5F88\u5C0F\uFF0C\u7A7A\u8C03\u4E0D\u597D\uFF0C\u6905\u5B50\u786C\uFF0C\u4F46\u4F60\u4E00\u7AD9\u4E0A\u53BB\uFF0C\u524D\u6392\u5C31\u4E0D\u8BB2\u8BDD\u4E86\u3002\u6709\u4EBA\u4E3A\u4E86\u770B\u4F60\u5750\u4E09\u5C0F\u65F6\u9AD8\u94C1\uFF0C\u6563\u573A\u540E\u8FD8\u8981\u8D76\u672B\u73ED\u8F66\u56DE\u53BB\u3002\u4F60\u4ECE\u6765\u4E0D\u89C9\u5F97\u81EA\u5DF1\u7EA2\u4E86\uFF0C\u53EA\u662F\u6BCF\u573A\u90FD\u80FD\u770B\u89C1\u719F\u8138\u3002\u5341\u5E74\u540E\u6709\u4EBA\u529E\u5730\u4E0B\u5076\u50CF\u7684\u5C55\uFF0C\u4F60\u7684\u7167\u7247\u88AB\u653E\u5728\u5F88\u9760\u524D\u7684\u4F4D\u7F6E\uFF0C\u4E0B\u9762\u5199\u7740\u300C\u90A3\u4E00\u4EE3\u7684\u53F0\u67F1\u300D\u3002"
     },
     {
       id: "fan-music",
       title: "\u91D1\u66F2\u6B4C\u540E",
       group: "stage-fan",
       groupName: "\u7C89\u4E1D\u5411\u7ED3\u5C40",
-      text: "\u90A3\u9996\u6B4C\u5728\u699C\u5355\u4E0A\u6302\u4E86\u5F88\u4E45\u3002"
+      text: "\u90A3\u9996\u6B4C\u5728\u699C\u5355\u4E0A\u6302\u4E86\u5F88\u4E45\u3002\u5F55\u5B83\u7684\u65F6\u5019\u53EA\u7528\u4E86\u4E24\u5929\uFF0C\u4F60\u751A\u81F3\u89C9\u5F97\u6CA1\u5531\u597D\u3002\u540E\u6765\u5B83\u5728\u5F88\u591A\u4EBA\u7684\u5A5A\u793C\u4E0A\u88AB\u653E\u8FC7\uFF0C\u4E5F\u5728\u5F88\u591A\u4EBA\u7684\u6DF1\u591C\u88AB\u5355\u66F2\u5FAA\u73AF\u8FC7\u3002\u4F60\u62FF\u4E86\u4E00\u4E2A\u5956\uFF0C\u4E0A\u53F0\u7684\u65F6\u5019\u7A3F\u5B50\u5FD8\u4E86\u5E26\uFF0C\u53EA\u8BF4\u4E86\u53E5\u300C\u8FD9\u9996\u6B4C\u662F\u5199\u7ED9\u6211\u81EA\u5DF1\u7684\u300D\u3002\u56DE\u540E\u53F0\u6709\u4EBA\u9012\u6C34\uFF0C\u4F60\u624D\u53D1\u73B0\u81EA\u5DF1\u624B\u4E00\u76F4\u5728\u6296\u3002"
     },
     {
       id: "fan-live",
       title: "\u73B0\u573A\u4F20\u8BF4",
       group: "stage-fan",
       groupName: "\u7C89\u4E1D\u5411\u7ED3\u5C40",
-      text: "\u63D0\u8D77\u90A3\u4E00\u665A\u7684\u5E94\u63F4\uFF0C\u8001\u7C89\u773C\u775B\u8FD8\u4F1A\u4EAE\u3002"
+      text: "\u63D0\u8D77\u90A3\u4E00\u665A\u7684\u5E94\u63F4\uFF0C\u8001\u7C89\u773C\u775B\u8FD8\u4F1A\u4EAE\u3002\u90A3\u662F\u4E00\u573A\u5F88\u666E\u901A\u7684\u62FC\u76D8\uFF0C\u97F3\u54CD\u8FD8\u574F\u4E86\u4E24\u6B21\uFF0C\u4F46\u5B89\u53EF\u7684\u65F6\u5019\u5168\u573A\u4E00\u8D77\u558A\u4E86\u56DB\u5206\u949F\u3002\u4F60\u5728\u53F0\u4E0A\u4E0D\u77E5\u9053\u8BE5\u505A\u4EC0\u4E48\uFF0C\u53EA\u662F\u7AD9\u7740\u542C\u3002\u540E\u6765\u4F60\u628A\u90A3\u6BB5\u5F55\u50CF\u5B58\u4E86\u4E09\u4EFD\u3002\u6709\u4EBA\u8BF4\u90A3\u665A\u4E4B\u540E\uFF0C\u8FD9\u4E2A\u5708\u5B50\u7684\u5E94\u63F4\u65B9\u5F0F\u53D8\u4E86\u3002\u4F60\u6CA1\u89C9\u5F97\u81EA\u5DF1\u505A\u4E86\u4EC0\u4E48\uFF0C\u4F60\u53EA\u662F\u6CA1\u8BA9\u4E0B\u9762\u7684\u4EBA\u767D\u558A\u3002"
     },
     {
       id: "fan-growth",
       title: "\u957F\u60C5\u5076\u50CF",
       group: "stage-fan",
       groupName: "\u7C89\u4E1D\u5411\u7ED3\u5C40",
-      text: "\u6709\u4EBA\u4ECE\u7B2C\u4E00\u573A\u8DDF\u5230\u4E86\u6700\u540E\u4E00\u573A\u3002"
+      text: "\u6709\u4EBA\u4ECE\u7B2C\u4E00\u573A\u8DDF\u5230\u4E86\u6700\u540E\u4E00\u573A\u3002\u516B\u5E74\uFF0C\u4E00\u767E\u591A\u573A\uFF0C\u5979\u6362\u8FC7\u4E09\u6B21\u5DE5\u4F5C\uFF0C\u642C\u8FC7\u56DB\u6B21\u5BB6\uFF0C\u6BCF\u6B21\u90FD\u8FD8\u80FD\u51FA\u73B0\u5728\u524D\u6392\u3002\u4F60\u8BB0\u5F97\u5979\u7684\u540D\u5B57\uFF0C\u4E5F\u8BB0\u5F97\u5979\u7B2C\u4E00\u6B21\u6765\u770B\u4F60\u90A3\u5929\u7A7F\u7684\u4EC0\u4E48\u3002\u6700\u540E\u4E00\u573A\u4F60\u5531\u4E86\u6700\u521D\u90A3\u9996\u6CA1\u4EBA\u542C\u7684\u6B4C\u3002\u5979\u5728\u53F0\u4E0B\u54ED\uFF0C\u4F60\u5728\u53F0\u4E0A\u6CA1\u6562\u770B\u5979\u3002\u6563\u573A\u540E\u5979\u9012\u7ED9\u4F60\u4E00\u5C01\u4FE1\uFF0C\u8BF4\u300C\u8FD9\u6B21\u4E0D\u7528\u56DE\u4E86\u300D\u3002"
     },
     {
       id: "fan-power",
       title: "\u5B9E\u529B\u6807\u6746",
       group: "stage-fan",
       groupName: "\u7C89\u4E1D\u5411\u7ED3\u5C40",
-      text: "\u540E\u8F88\u88AB\u6559\u5BFC\uFF1A\u5148\u53BB\u770B\u5979\u7684\u73B0\u573A\u3002"
+      text: "\u540E\u8F88\u88AB\u6559\u5BFC\uFF1A\u5148\u53BB\u770B\u5979\u7684\u73B0\u573A\u3002\u8FD9\u53E5\u8BDD\u4F20\u5230\u4F60\u8033\u6735\u91CC\u7684\u65F6\u5019\uFF0C\u4F60\u5DF2\u7ECF\u4E0D\u600E\u4E48\u6F14\u51FA\u4E86\u3002\u4F60\u7684\u540D\u5B57\u53D8\u6210\u4E86\u4E00\u4E2A\u6807\u51C6\uFF0C\u7528\u6765\u8861\u91CF\u522B\u4EBA\u591F\u4E0D\u591F\u7A33\u3002\u6709\u65B0\u4EBA\u6765\u8BF7\u6559\u4F60\u600E\u4E48\u7EC3\uFF0C\u4F60\u60F3\u4E86\u5F88\u4E45\uFF0C\u8BF4\u300C\u591A\u4E0A\u53F0\u300D\u3002\u5979\u597D\u50CF\u6709\u70B9\u5931\u671B\u3002\u4F46\u4F60\u786E\u5B9E\u6CA1\u6709\u522B\u7684\u65B9\u6CD5\uFF0C\u4F60\u53EA\u662F\u6BD4\u522B\u4EBA\u591A\u7AD9\u4E86\u51E0\u767E\u6B21\u800C\u5DF2\u3002"
     },
     {
       id: "stat-vocal",
       title: "\u6B4C\u575B\u5929\u540E",
       group: "stage-stat",
       groupName: "\u5C5E\u6027\u5411\u7ED3\u5C40",
-      text: "\u4F60\u7684\u58F0\u97F3\u6210\u4E86\u8FD9\u4E2A\u5708\u5B50\u7684\u6807\u51C6\u3002"
+      text: "\u4F60\u7684\u58F0\u97F3\u6210\u4E86\u8FD9\u4E2A\u5708\u5B50\u7684\u6807\u51C6\u3002\u6709\u4EBA\u8BF4\u95ED\u7740\u773C\u775B\u4E5F\u80FD\u542C\u51FA\u662F\u4F60\uFF0C\u8FD9\u8BDD\u4F60\u542C\u4E86\u4F1A\u7B11\uFF0C\u56E0\u4E3A\u4F60\u4EE5\u524D\u5531\u5F97\u8FDE\u81EA\u5DF1\u90FD\u4E0D\u60F3\u542C\u3002\u5F55\u97F3\u5BA4\u7684\u8001\u5E08\u8BF4\u4F60\u6700\u96BE\u641E\uFF0C\u4E00\u4E2A\u5C3E\u97F3\u80FD\u5531\u4E8C\u5341\u904D\u3002\u540E\u6765\u4F60\u505A\u4E86\u5236\u4F5C\u4EBA\uFF0C\u7B7E\u7684\u7B2C\u4E00\u4E2A\u65B0\u4EBA\u5BF9\u4F60\u8BF4\u300C\u6211\u4ECE\u5C0F\u542C\u60A8\u7684\u6B4C\u300D\u3002\u4F60\u6123\u4E86\u4E00\u4E0B\uFF0C\u624D\u53D1\u73B0\u65F6\u95F4\u5DF2\u7ECF\u8FC7\u53BB\u8FD9\u4E48\u4E45\u4E86\u3002"
     },
     {
       id: "stat-dance",
       title: "\u821E\u53F0\u5973\u738B",
       group: "stage-stat",
       groupName: "\u5C5E\u6027\u5411\u7ED3\u5C40",
-      text: "\u4F60\u8DF3\u8FC7\u7684\u5730\u677F\uFF0C\u522B\u4EBA\u4E0D\u6562\u518D\u7AD9\u3002"
+      text: "\u4F60\u8DF3\u8FC7\u7684\u5730\u677F\uFF0C\u522B\u4EBA\u4E0D\u6562\u518D\u7AD9\u3002\u4E0D\u662F\u56E0\u4E3A\u4F60\u8DF3\u5F97\u591A\u9AD8\uFF0C\u662F\u56E0\u4E3A\u4F60\u843D\u5730\u7684\u65B9\u5F0F\u3002\u7F16\u821E\u8001\u5E08\u628A\u4F60\u7684\u52A8\u4F5C\u62C6\u5F00\u8BB2\u7ED9\u65B0\u4EBA\u542C\uFF0C\u8BB2\u5230\u7B2C\u4E09\u904D\u8BF4\u300C\u8FD9\u4E2A\u5B66\u4E0D\u6765\u300D\u3002\u4F60\u4E09\u5341\u5C81\u90A3\u5E74\u8FD8\u80FD\u5B8C\u6574\u8DF3\u5B8C\u4E00\u6574\u573A\uFF0C\u8FD9\u5728\u5708\u91CC\u662F\u4E2A\u4F20\u8BF4\u3002\u53EA\u6709\u4F60\u81EA\u5DF1\u77E5\u9053\uFF0C\u6BCF\u6B21\u4E0B\u53F0\u90FD\u8981\u5728\u540E\u53F0\u5750\u5341\u5206\u949F\u624D\u80FD\u7AD9\u8D77\u6765\u3002"
     },
     {
       id: "stat-acting",
       title: "\u94F6\u5E55\u5F71\u540E",
       group: "stage-stat",
       groupName: "\u5C5E\u6027\u5411\u7ED3\u5C40",
-      text: "\u955C\u5934\u7EC8\u4E8E\u613F\u610F\u505C\u5728\u4F60\u7684\u8138\u4E0A\u3002"
+      text: "\u955C\u5934\u7EC8\u4E8E\u613F\u610F\u505C\u5728\u4F60\u7684\u8138\u4E0A\u3002\u4F60\u6F14\u8FC7\u5F88\u591A\u89D2\u8272\uFF0C\u6700\u50CF\u81EA\u5DF1\u7684\u90A3\u4E2A\u53CD\u800C\u6CA1\u4EBA\u8BB0\u5F97\u3002\u5BFC\u6F14\u8BF4\u4F60\u8EAB\u4E0A\u6709\u79CD\u300C\u4E0D\u592A\u60F3\u88AB\u770B\u89C1\u300D\u7684\u4E1C\u897F\uFF0C\u6240\u4EE5\u9002\u5408\u62CD\u7279\u5199\u3002\u9881\u5956\u90A3\u665A\u4F60\u7A7F\u4E86\u5F88\u7B80\u5355\u7684\u88D9\u5B50\uFF0C\u81F4\u8F9E\u53EA\u6709\u4E00\u53E5\uFF1A\u300C\u8C22\u8C22\u90A3\u51E0\u5E74\u6CA1\u4EBA\u770B\u6211\u7684\u65F6\u5019\u3002\u300D\u53F0\u4E0B\u5B89\u9759\u4E86\u4E24\u79D2\uFF0C\u7136\u540E\u638C\u58F0\u8D77\u6765\u4E86\u3002"
     },
     {
       id: "stat-talk",
       title: "\u7EFC\u827A\u5973\u738B",
       group: "stage-stat",
       groupName: "\u5C5E\u6027\u5411\u7ED3\u5C40",
-      text: "\u4F60\u4E00\u53E5\u8BDD\u80FD\u8BA9\u5168\u573A\u7B11\uFF0C\u4E5F\u80FD\u8BA9\u5168\u573A\u9759\u3002"
+      text: "\u4F60\u4E00\u53E5\u8BDD\u80FD\u8BA9\u5168\u573A\u7B11\uFF0C\u4E5F\u80FD\u8BA9\u5168\u573A\u9759\u3002\u8FD9\u672C\u4E8B\u662F\u5728\u5730\u4E0B\u573A\u7684\u4E32\u573A\u91CC\u7EC3\u51FA\u6765\u7684\u2014\u2014\u53F0\u4E0B\u53EA\u6709\u5341\u51E0\u4E2A\u4EBA\uFF0C\u8FD8\u5F97\u8BA9\u4ED6\u4EEC\u4E0D\u8D70\u3002\u540E\u6765\u4F60\u4E3B\u6301\u4E86\u5F88\u591A\u8282\u76EE\uFF0C\u6700\u7231\u7684\u8FD8\u662F\u90A3\u79CD\u6CA1\u6709\u63D0\u8BCD\u5668\u7684\u76F4\u64AD\u3002\u6709\u4EBA\u95EE\u4F60\u600E\u4E48\u63A5\u5F97\u4F4F\uFF0C\u4F60\u8BF4\u300C\u63A5\u4E0D\u4F4F\u5C31\u8BF4\u63A5\u4E0D\u4F4F\u300D\u3002\u8FD9\u53E5\u8BDD\u540E\u6765\u88AB\u5370\u5728\u4E86\u5F88\u591A\u4EBA\u7684\u5DE5\u4F4D\u4E0A\u3002"
     },
     {
       id: "stat-visual",
       title: "T\u53F0\u540D\u6A21",
       group: "stage-stat",
       groupName: "\u5C5E\u6027\u5411\u7ED3\u5C40",
-      text: "\u4F60\u7AD9\u5728\u90A3\u513F\uFF0C\u5C31\u5DF2\u7ECF\u662F\u753B\u9762\u3002"
+      text: "\u4F60\u7AD9\u5728\u90A3\u513F\uFF0C\u5C31\u5DF2\u7ECF\u662F\u753B\u9762\u3002\u4ECE\u5730\u4E0B\u573A\u5230\u65F6\u88C5\u5468\uFF0C\u4E2D\u95F4\u9694\u4E86\u5F88\u591A\u5E74\uFF0C\u4F46\u4F60\u8D70\u8DEF\u7684\u59FF\u52BF\u4E00\u76F4\u6CA1\u53D8\u2014\u2014\u8FD8\u662F\u5F53\u5E74\u5728\u6392\u7EC3\u5BA4\u5BF9\u7740\u955C\u5B50\u7EC3\u7684\u90A3\u5957\u3002\u6709\u8BB0\u8005\u95EE\u4F60\u4E3A\u4EC0\u4E48\u4E0D\u518D\u5531\u6B4C\uFF0C\u4F60\u8BF4\u300C\u6211\u672C\u6765\u5C31\u4E0D\u662F\u5531\u6B4C\u7684\u300D\u3002\u8FD9\u8BDD\u6709\u70B9\u4F24\u4EBA\uFF0C\u4F46\u4F60\u8BF4\u7684\u662F\u771F\u8BDD\u3002"
     },
     {
       id: "low-corner",
       title: "\u89D2\u843D\u4F34\u821E",
       group: "stage-low",
       groupName: "\u4F4E\u8C37\u7ED3\u5C40",
-      text: "\u4F60\u8FD8\u5728\u53F0\u4E0A\uFF0C\u53EA\u662F\u6CA1\u4EBA\u8BB0\u5F97\u540D\u5B57\u3002"
+      text: "\u4F60\u8FD8\u5728\u53F0\u4E0A\uFF0C\u53EA\u662F\u6CA1\u4EBA\u8BB0\u5F97\u540D\u5B57\u3002\u4F34\u821E\u7684\u4F4D\u7F6E\u5728\u6700\u540E\u4E00\u6392\uFF0C\u706F\u6253\u4E0D\u5230\u3002\u4F60\u8DF3\u5F97\u6BD4\u8C01\u90FD\u51C6\uFF0C\u56E0\u4E3A\u4E0D\u51C6\u5C31\u4F1A\u88AB\u6362\u6389\u3002\u6BCF\u573A\u7ED3\u675F\u4F60\u90FD\u8DDF\u7740\u97A0\u8EAC\uFF0C\u7136\u540E\u4ECE\u4FA7\u5E55\u4E0B\u53BB\uFF0C\u628A\u4F4D\u7F6E\u8BA9\u7ED9\u8981\u8C22\u5E55\u7684\u4EBA\u3002\u8FD9\u4EFD\u5DE5\u4F5C\u5F88\u7A33\u5B9A\uFF0C\u7A33\u5B9A\u5230\u4F60\u6709\u65F6\u4F1A\u5FD8\u8BB0\u81EA\u5DF1\u66FE\u7ECF\u60F3\u7AD9\u4E2D\u95F4\u3002"
     },
     {
       id: "low-short",
       title: "\u7AD6\u5C4F\u6F14\u5458",
       group: "stage-low",
       groupName: "\u4F4E\u8C37\u7ED3\u5C40",
-      text: "\u4F60\u5F00\u59CB\u63A5\u7AD6\u5C4F\u77ED\u5267\uFF0C\u4E00\u5929\u62CD\u5B8C\u3002"
+      text: "\u4F60\u5F00\u59CB\u63A5\u7AD6\u5C4F\u77ED\u5267\uFF0C\u4E00\u5929\u62CD\u5B8C\u3002\u5267\u672C\u6C38\u8FDC\u662F\u90A3\u51E0\u79CD\uFF0C\u53F0\u8BCD\u6C38\u8FDC\u662F\u90A3\u51E0\u53E5\uFF0C\u4F46\u4E00\u5929\u516B\u767E\uFF0C\u5F53\u5929\u7ED3\u3002\u4F60\u5728\u7247\u573A\u5B66\u4F1A\u4E86\u600E\u4E48\u5728\u4E09\u79D2\u5185\u54ED\u51FA\u6765\u3002\u6709\u6B21\u5237\u5230\u81EA\u5DF1\u6F14\u7684\u7247\u6BB5\uFF0C\u64AD\u653E\u91CF\u4E24\u767E\u4E07\uFF0C\u8BC4\u8BBA\u8BF4\u300C\u8FD9\u4E2A\u5973\u914D\u6F14\u6280\u4E0D\u9519\u300D\u3002\u4F60\u60F3\u56DE\u4E00\u53E5\u8C22\u8C22\uFF0C\u53C8\u89C9\u5F97\u6CA1\u4EC0\u4E48\u597D\u8C22\u7684\u3002"
     },
     {
       id: "low-mid",
       title: "\u8170\u90E8\u7F51\u7EA2",
       group: "stage-low",
       groupName: "\u4F4E\u8C37\u7ED3\u5C40",
-      text: "\u6709\u70B9\u6D41\u91CF\uFF0C\u4F46\u4E0A\u4E0D\u53BB\uFF0C\u4E5F\u4E0B\u4E0D\u6765\u3002"
+      text: "\u6709\u70B9\u6D41\u91CF\uFF0C\u4F46\u4E0A\u4E0D\u53BB\uFF0C\u4E5F\u4E0B\u4E0D\u6765\u3002\u4F60\u6709\u51E0\u5341\u4E07\u7C89\u4E1D\uFF0C\u63A5\u5F97\u5230\u5E7F\u544A\uFF0C\u4F46\u6BCF\u6B21\u76F4\u64AD\u90FD\u6709\u4EBA\u5728\u8BC4\u8BBA\u533A\u95EE\u300C\u4F60\u662F\u4E0D\u662F\u90A3\u4E2A\u8C01\u300D\u3002\u4F60\u8FD8\u5728\u53D1\u6B4C\uFF0C\u4E00\u9996\u6BD4\u4E00\u9996\u8BA4\u771F\uFF0C\u64AD\u653E\u91CF\u5374\u4E00\u9996\u6BD4\u4E00\u9996\u4F4E\u3002\u6709\u65F6\u5019\u4F60\u4F1A\u60F3\u8D77\u5730\u4E0B\u573A\u90A3\u51E0\u5341\u4E2A\u4EBA\uFF0C\u4ED6\u4EEC\u662F\u771F\u7684\u5728\u542C\u3002"
     },
     {
       id: "low-fade",
       title: "\u9EEF\u7136\u9000\u573A",
       group: "stage-low",
       groupName: "\u4F4E\u8C37\u7ED3\u5C40",
-      text: "\u6CA1\u6709\u4EBA\u9001\u522B\uFF0C\u4F60\u4E5F\u5C31\u6CA1\u6253\u6270\u8C01\u3002"
+      text: "\u6CA1\u6709\u4EBA\u9001\u522B\uFF0C\u4F60\u4E5F\u5C31\u6CA1\u6253\u6270\u8C01\u3002\u6700\u540E\u4E00\u573A\u7684\u573A\u5730\u4E34\u65F6\u6362\u4E86\uFF0C\u6765\u7684\u4EBA\u6BD4\u9884\u60F3\u7684\u5C11\u4E00\u534A\u3002\u4F60\u5531\u5B8C\u4E86\u6240\u6709\u6B4C\uFF0C\u5B89\u53EF\u53EA\u6709\u4E00\u58F0\u3002\u6563\u573A\u540E\u4F60\u81EA\u5DF1\u628A\u8BBE\u5907\u6536\u4E86\uFF0C\u548C\u7BA1\u7406\u5458\u8BF4\u300C\u4EE5\u540E\u53EF\u80FD\u4E0D\u6765\u4E86\u300D\u3002\u4ED6\u8BF4\u300C\u597D\u300D\uFF0C\u7136\u540E\u7EE7\u7EED\u62D6\u5730\u3002\u4F60\u8D70\u51FA\u90A3\u680B\u697C\u7684\u65F6\u5019\uFF0C\u5929\u8FD8\u6CA1\u9ED1\u3002"
     },
     {
       id: "back-talk",
       title: "\u91D1\u724C\u7ECF\u7EAA",
       group: "backstage",
       groupName: "\u5E55\u540E\u7ED3\u5C40",
-      text: "\u4F60\u5E26\u7684\u65B0\u4EBA\uFF0C\u7B2C\u4E00\u6B21\u4E0A\u7535\u89C6\u65F6\u8BF4\u8C22\u8C22\u59D0\u3002"
+      text: "\u4F60\u5E26\u7684\u65B0\u4EBA\u7B2C\u4E00\u6B21\u4E0A\u7535\u89C6\uFF0C\u8BF4\u8C22\u8C22\u59D0\u3002\u4F60\u5728\u76D1\u89C6\u5668\u540E\u9762\u6CA1\u8BF4\u8BDD\uFF0C\u53EA\u662F\u628A\u5979\u4E0A\u53F0\u524D\u5FD8\u5728\u5316\u5986\u95F4\u7684\u8033\u8FD4\u6536\u8FDB\u5305\u91CC\u3002\u4F60\u73B0\u5728\u4E00\u773C\u5C31\u80FD\u770B\u51FA\u8C01\u5728\u786C\u6491\uFF0C\u56E0\u4E3A\u4F60\u786C\u6491\u8FC7\u3002\u8FD9\u884C\u91CC\u6700\u96BE\u7684\u4E0D\u662F\u628A\u4EBA\u6367\u7EA2\uFF0C\u662F\u8BA9\u5979\u4EEC\u5728\u7EA2\u4E4B\u524D\u522B\u6563\u3002\u4F60\u5E26\u7684\u7B2C\u4E09\u4E2A\u56E2\u4ECA\u5E74\u529E\u4E86\u7B2C\u4E00\u573A OM\uFF0C\u7968\u5356\u5B8C\u4E86\u3002"
     },
     {
       id: "back-dance",
       title: "\u7F16\u821E\u5BFC\u5E08",
       group: "backstage",
       groupName: "\u5E55\u540E\u7ED3\u5C40",
-      text: "\u4F60\u7F16\u7684\u821E\uFF0C\u88AB\u522B\u7684\u56E2\u8DF3\u706B\u4E86\u3002"
+      text: "\u4F60\u7F16\u7684\u821E\uFF0C\u88AB\u522B\u7684\u56E2\u8DF3\u706B\u4E86\u3002\u89C6\u9891\u4E0B\u9762\u7684\u8BC4\u8BBA\u90FD\u5728\u5938\u90A3\u4E2A\u56E2\uFF0C\u6CA1\u4EBA\u77E5\u9053\u52A8\u4F5C\u662F\u8C01\u6392\u7684\u3002\u4F60\u628A\u89C6\u9891\u770B\u4E86\u4E24\u904D\uFF0C\u7136\u540E\u5173\u6389\uFF0C\u53BB\u4E0A\u4E0B\u4E00\u8282\u8BFE\u3002\u5B66\u751F\u95EE\u4F60\u300C\u8001\u5E08\u4F60\u4EE5\u524D\u662F\u505A\u4EC0\u4E48\u7684\u300D\uFF0C\u4F60\u8BF4\u300C\u4E5F\u662F\u8DF3\u821E\u7684\u300D\u3002\u5979\u4EEC\u4E0D\u592A\u4FE1\uFF0C\u56E0\u4E3A\u4F60\u793A\u8303\u7684\u65F6\u5019\u819D\u76D6\u4F1A\u54CD\u3002"
     },
     {
       id: "back-vocal",
       title: "\u5E55\u540E\u5236\u4F5C",
       group: "backstage",
       groupName: "\u5E55\u540E\u7ED3\u5C40",
-      text: "\u4F60\u5728\u8C03\u97F3\u53F0\u540E\u9762\uFF0C\u628A\u4E00\u9996\u6B4C\u6551\u6D3B\u4E86\u3002"
+      text: "\u4F60\u5728\u8C03\u97F3\u53F0\u540E\u9762\uFF0C\u628A\u4E00\u9996\u6B4C\u6551\u6D3B\u4E86\u3002\u90A3\u5929\u6B4C\u624B\u5531\u5230\u7B2C\u4E09\u904D\u8FD8\u5728\u98D8\uFF0C\u4F60\u628A\u6DF7\u54CD\u4E00\u5C42\u5C42\u53E0\u4E0A\u53BB\uFF0C\u51FA\u6765\u7684\u65F6\u5019\u6240\u6709\u4EBA\u90FD\u8BF4\u597D\u542C\u3002\u53EA\u6709\u4F60\u77E5\u9053\u90A3\u4E0D\u662F\u5979\u5531\u7684\u3002\u540E\u6765\u4F60\u505A\u4E86\u5F88\u591A\u6B4C\uFF0C\u540D\u5B57\u5F88\u5C11\u51FA\u73B0\u5728\u5236\u4F5C\u540D\u5355\u4E0A\u3002\u4F60\u4E0D\u5728\u610F\uFF0C\u4F60\u5728\u610F\u7684\u662F\u90A3\u9996\u6B4C\u6709\u6CA1\u6709\u4EBA\u5355\u66F2\u5FAA\u73AF\u3002"
     },
     {
       id: "back-acting",
       title: "\u8868\u6F14\u6307\u5BFC",
       group: "backstage",
       groupName: "\u5E55\u540E\u7ED3\u5C40",
-      text: "\u4F60\u6559\u4ED6\u4EEC\u600E\u4E48\u54ED\uFF0C\u81EA\u5DF1\u5374\u5F88\u4E45\u6CA1\u54ED\u8FC7\u3002"
+      text: "\u4F60\u6559\u4ED6\u4EEC\u600E\u4E48\u54ED\uFF0C\u81EA\u5DF1\u5374\u5F88\u4E45\u6CA1\u54ED\u8FC7\u3002\u4F60\u6709\u4E00\u5957\u81EA\u5DF1\u7684\u65B9\u6CD5\uFF1A\u4E0D\u8BB2\u60C5\u7EEA\uFF0C\u53EA\u8BB2\u52A8\u4F5C\u2014\u2014\u624B\u653E\u54EA\u513F\uFF0C\u773C\u775B\u770B\u54EA\u513F\uFF0C\u547C\u5438\u5728\u7B2C\u51E0\u53E5\u505C\u3002\u5B66\u751F\u4EEC\u8BF4\u4F60\u7684\u8BFE\u6700\u96BE\uFF0C\u56E0\u4E3A\u4F60\u4ECE\u6765\u4E0D\u5938\u4EBA\u3002\u5176\u5B9E\u4F60\u5938\u8FC7\uFF0C\u53EA\u662F\u5F53\u9762\u8BF4\u4E0D\u51FA\u53E3\u3002\u6709\u4E00\u6B21\u4E00\u4E2A\u5B66\u751F\u5728\u53F0\u4E0A\u771F\u7684\u54ED\u4E86\uFF0C\u4F60\u5728\u53F0\u4E0B\u4E5F\u5DEE\u70B9\u3002"
     },
     {
       id: "back-boss",
       title: "\u5382\u724C\u4E3B\u7406",
       group: "backstage",
       groupName: "\u5E55\u540E\u7ED3\u5C40",
-      text: "\u4F60\u5F00\u4E86\u81EA\u5DF1\u7684\u5C0F\u5382\u724C\u3002"
+      text: "\u4F60\u5F00\u4E86\u81EA\u5DF1\u7684\u5C0F\u5382\u724C\u3002\u529E\u516C\u5BA4\u662F\u4E00\u95F4\u6539\u9020\u8FC7\u7684\u6392\u7EC3\u5BA4\uFF0C\u5899\u4E0A\u7684\u955C\u5B50\u6CA1\u62C6\u3002\u4F60\u7B7E\u4E86\u4E09\u4E2A\u56E2\uFF0C\u90FD\u4E0D\u7EA2\uFF0C\u4F46\u90FD\u80FD\u6D3B\u3002\u4F60\u6BD4\u8C01\u90FD\u6E05\u695A\u8FD9\u884C\u600E\u4E48\u584C\uFF0C\u6240\u4EE5\u4F60\u5C3D\u91CF\u4E0D\u6B20\u94B1\u3001\u4E0D\u753B\u997C\u3001\u4E0D\u8BA9\u4EBA\u767D\u71AC\u3002\u6BCF\u5E74\u751F\u8BDE\u796D\u4F60\u4F1A\u4EB2\u81EA\u53BB\u4E70\u86CB\u7CD5\uFF0C\u56E0\u4E3A\u5F53\u5E74\u6CA1\u4EBA\u7ED9\u4F60\u4E70\u3002"
     },
     {
       id: "job-police",
       title: "\u8B66\u5FBD\u5728\u8EAB",
       group: "job",
       groupName: "\u5DE5\u4F5C\u7ED3\u5C40",
-      text: "\u4F60\u7A7F\u4E0A\u4E86\u53E6\u4E00\u5957\u5236\u670D\u3002"
+      text: "\u4F60\u7A7F\u4E0A\u4E86\u53E6\u4E00\u5957\u5236\u670D\u3002\u4F53\u80FD\u6D4B\u8BD5\u90A3\u5929\u4F60\u8DD1\u5F97\u6BD4\u6240\u6709\u4EBA\u90FD\u5FEB\uFF0C\u6559\u5B98\u95EE\u4F60\u662F\u4E0D\u662F\u7EC3\u8FC7\uFF0C\u4F60\u8BF4\u300C\u7EC3\u8FC7\u4E00\u70B9\u300D\u3002\u65B0\u540C\u4E8B\u4E0D\u77E5\u9053\u4F60\u4EE5\u524D\u662F\u8C01\uFF0C\u4F60\u4E5F\u61D2\u5F97\u8BF4\u3002\u6709\u6B21\u591C\u91CC\u6267\u52E4\uFF0C\u8DEF\u8FB9\u6709\u4EBA\u5728\u5435\u67B6\uFF0C\u4F60\u8FC7\u53BB\u529D\uFF0C\u5176\u4E2D\u4E00\u4E2A\u4EBA\u7A81\u7136\u8BF4\u300C\u4F60\u8BF4\u8BDD\u597D\u597D\u542C\u300D\u3002\u4F60\u6123\u4E86\u4E00\u4E0B\uFF0C\u7B11\u4E86\u3002"
     },
     {
       id: "job-office",
       title: "\u671D\u4E5D\u665A\u4E94",
       group: "job",
       groupName: "\u5DE5\u4F5C\u7ED3\u5C40",
-      text: "\u6253\u5361\u3001\u5348\u4F11\u3001\u4E0B\u73ED\uFF0C\u65E5\u5B50\u610F\u5916\u5730\u7A33\u3002"
+      text: "\u6253\u5361\u3001\u5348\u4F11\u3001\u4E0B\u73ED\uFF0C\u65E5\u5B50\u610F\u5916\u5730\u7A33\u3002\u4F60\u6709\u4E86\u81EA\u5DF1\u7684\u5DE5\u4F4D\u3001\u81EA\u5DF1\u7684\u676F\u5B50\u3001\u8FD8\u6709\u4E00\u5F20\u6392\u73ED\u8868\u2014\u2014\u53EA\u662F\u4E0A\u9762\u6CA1\u6709\u6F14\u51FA\u3002\u540C\u4E8B\u8BF4\u4F60\u6C14\u8D28\u4E0D\u50CF\u5750\u529E\u516C\u5BA4\u7684\uFF0C\u4F60\u8BF4\u4EE5\u524D\u7AD9\u60EF\u4E86\u3002\u5E74\u4F1A\u7684\u65F6\u5019\u6709\u4EBA\u8D77\u54C4\u8BA9\u4F60\u5531\u6B4C\uFF0C\u4F60\u5531\u4E86\u4E00\u9996\uFF0C\u5168\u573A\u5B89\u9759\u4E0B\u6765\u3002\u5531\u5B8C\u4F60\u8BF4\u300C\u732E\u4E11\u4E86\u300D\uFF0C\u7136\u540E\u5750\u4E0B\u7EE7\u7EED\u5403\u83DC\u3002"
     },
     {
       id: "job-teach",
       title: "\u6843\u674E\u6EE1\u95E8",
       group: "job",
       groupName: "\u5DE5\u4F5C\u7ED3\u5C40",
-      text: "\u4F60\u6559\u7684\u5B69\u5B50\uFF0C\u540E\u6765\u4E5F\u4E0A\u4E86\u53F0\u3002"
+      text: "\u4F60\u6559\u7684\u5B69\u5B50\uFF0C\u540E\u6765\u4E5F\u4E0A\u4E86\u53F0\u3002\u4F60\u5728\u53F0\u4E0B\u770B\u5979\u4EEC\uFF0C\u6BD4\u5F53\u5E74\u81EA\u5DF1\u4E0A\u53F0\u8FD8\u7D27\u5F20\u3002\u4F60\u6559\u7684\u7B2C\u4E00\u4EF6\u4E8B\u4E0D\u662F\u52A8\u4F5C\uFF0C\u662F\u300C\u4E0A\u53F0\u524D\u5148\u6DF1\u547C\u5438\u4E09\u6B21\u300D\u3002\u6709\u4E2A\u5B66\u751F\u6BD5\u4E1A\u65F6\u95EE\u4F60\u540E\u4E0D\u540E\u6094\uFF0C\u4F60\u60F3\u4E86\u5F88\u4E45\uFF0C\u8BF4\u300C\u6211\u73B0\u5728\u4E5F\u5728\u53F0\u4E0A\uFF0C\u53EA\u662F\u4F4D\u7F6E\u6362\u4E86\u300D\u3002\u5979\u597D\u50CF\u6CA1\u542C\u61C2\uFF0C\u4F46\u70B9\u4E86\u5934\u3002"
     },
     {
       id: "job-back",
       title: "\u91CD\u8FD4\u804C\u573A",
       group: "job",
       groupName: "\u5DE5\u4F5C\u7ED3\u5C40",
-      text: "\u7B80\u5386\u4E0A\u90A3\u4E24\u5E74\uFF0C\u4F60\u53EA\u5199\u300C\u81EA\u7531\u804C\u4E1A\u300D\u3002"
+      text: "\u7B80\u5386\u4E0A\u90A3\u4E24\u5E74\uFF0C\u4F60\u53EA\u5199\u300C\u81EA\u7531\u804C\u4E1A\u300D\u3002\u9762\u8BD5\u5B98\u95EE\u505A\u8FC7\u4EC0\u4E48\u9879\u76EE\uFF0C\u4F60\u8BF4\u300C\u5E26\u8FC7\u4E00\u4E2A\u5C0F\u56E2\u961F\uFF0C\u505A\u8FC7\u7EBF\u4E0B\u6D3B\u52A8\u300D\u3002\u8FD9\u4E9B\u8BDD\u8BF4\u51FA\u6765\u81EA\u5DF1\u90FD\u89C9\u5F97\u964C\u751F\u3002\u5165\u804C\u7B2C\u4E00\u5468\u4F60\u5F88\u4E0D\u4E60\u60EF\uFF0C\u56E0\u4E3A\u6CA1\u4EBA\u4F1A\u5728\u4F60\u8BF4\u8BDD\u4E4B\u540E\u9F13\u638C\u3002\u4E09\u4E2A\u6708\u540E\u4F60\u4E60\u60EF\u4E86\u3002\u5076\u5C14\u52A0\u73ED\u5230\u5F88\u665A\uFF0C\u4F1A\u60F3\u8D77\u6392\u7EC3\u5BA4\u90A3\u76CF\u603B\u5728\u95EA\u7684\u706F\u3002"
     },
     {
       id: "job-code",
       title: "\u4EE3\u7801\u4EBA\u751F",
       group: "job",
       groupName: "\u5DE5\u4F5C\u7ED3\u5C40",
-      text: "\u4F60\u56DE\u5230\u4E86\u90A3\u53F0\u7B14\u8BB0\u672C\u524D\u3002"
+      text: "\u4F60\u56DE\u5230\u4E86\u90A3\u53F0\u7B14\u8BB0\u672C\u524D\u3002\u952E\u76D8\u58F0\u6BD4\u6253 call \u58F0\u5B89\u9759\u5F97\u591A\uFF0C\u4F46\u4F60\u53D1\u73B0\u81EA\u5DF1\u5728\u5199\u4EE3\u7801\u7684\u65F6\u5019\uFF0C\u8FD8\u662F\u4F1A\u4E0D\u81EA\u89C9\u5730\u6570\u62CD\u5B50\u3002\u540C\u4E8B\u8BF4\u4F60\u5BA1\u7F8E\u4E0D\u9519\uFF0C\u4F60\u8BF4\u4EE5\u524D\u505A\u8FC7\u89C6\u89C9\u76F8\u5173\u7684\u3002\u6709\u6B21\u56E2\u5EFA\u53BB KTV\uFF0C\u4F60\u88AB\u63A8\u4E0A\u53BB\u5531\u4E86\u4E00\u9996\uFF0C\u5531\u5B8C\u6709\u4EBA\u8BF4\u300C\u4F60\u662F\u4E0D\u662F\u4E13\u4E1A\u7684\u300D\u3002\u4F60\u8BF4\u4E0D\u662F\uFF0C\u5F88\u4E45\u4EE5\u524D\u7EC3\u8FC7\u3002"
     },
     {
       id: "job-live",
       title: "\u5E26\u8D27\u4E3B\u64AD",
       group: "job",
       groupName: "\u5DE5\u4F5C\u7ED3\u5C40",
-      text: "\u955C\u5934\u6362\u6210\u7AD6\u5C4F\uFF0C\u8BDD\u672F\u6362\u4E86\u4E00\u5957\u3002"
+      text: "\u955C\u5934\u6362\u6210\u7AD6\u5C4F\uFF0C\u8BDD\u672F\u6362\u4E86\u4E00\u5957\u3002\u4F60\u73B0\u5728\u4E00\u665A\u4E0A\u80FD\u8BF4\u516B\u5343\u53E5\uFF0C\u6BD4\u5F53\u5E74\u5728\u5730\u4E0B\u573A\u8BF4\u4E00\u5E74\u8FD8\u591A\u3002\u6570\u636E\u597D\u7684\u65F6\u5019\u4F60\u4F1A\u5174\u594B\uFF0C\u4F46\u90A3\u79CD\u5174\u594B\u548C\u7AD9\u5728\u53F0\u4E0A\u4E0D\u4E00\u6837\u2014\u2014\u53F0\u4E0B\u6CA1\u6709\u4EBA\u770B\u7740\u4F60\u7684\u773C\u775B\u3002\u6709\u4E00\u6B21\u4F60\u4ECB\u7ECD\u4E00\u6B3E\u9EA6\u514B\u98CE\uFF0C\u8BB2\u5230\u4E00\u534A\u7A81\u7136\u5361\u4F4F\u4E86\uFF0C\u56E0\u4E3A\u4F60\u60F3\u8D77\u81EA\u5DF1\u7B2C\u4E00\u6B21\u62FF\u8BDD\u7B52\u7684\u6837\u5B50\u3002"
     },
     {
       id: "life-plain",
       title: "\u5E73\u6DE1\u662F\u798F",
       group: "life",
       groupName: "\u751F\u6D3B\u7ED3\u5C40",
-      text: "\u4F60\u5AC1\u4E86\u4EBA\uFF0C\u5076\u5C14\u8FD8\u4F1A\u54FC\u90A3\u9996\u6CA1\u5531\u5B8C\u7684\u6B4C\u3002"
+      text: "\u4F60\u5AC1\u4E86\u4EBA\uFF0C\u5076\u5C14\u8FD8\u4F1A\u54FC\u90A3\u9996\u6CA1\u5531\u5B8C\u7684\u6B4C\u3002\u4ED6\u95EE\u4F60\u90A3\u662F\u4EC0\u4E48\u6B4C\uFF0C\u4F60\u8BF4\u300C\u4EE5\u524D\u5531\u8FC7\u7684\u300D\u3002\u5BB6\u91CC\u7684\u67DC\u5B50\u91CC\u6709\u4E00\u4E2A\u7BB1\u5B50\uFF0C\u88C5\u7740\u6F14\u51FA\u670D\u548C\u706F\u724C\uFF0C\u4F60\u8BF4\u7B49\u6709\u7A7A\u6574\u7406\uFF0C\u4E00\u76F4\u6CA1\u6709\u7A7A\u3002\u5B69\u5B50\u4E94\u5C81\u90A3\u5E74\u7FFB\u51FA\u6765\uFF0C\u4E3E\u7740\u706F\u724C\u95EE\u4F60\u8FD9\u662F\u4EC0\u4E48\uFF0C\u4F60\u8BF4\uFF1A\u300C\u662F\u5988\u5988\u4EE5\u524D\u5F88\u4EAE\u7684\u65F6\u5019\u7528\u7684\u3002\u300D"
     },
     {
       id: "life-rich",
       title: "\u5AC1\u5165\u8C6A\u95E8",
       group: "life",
       groupName: "\u751F\u6D3B\u7ED3\u5C40",
-      text: "\u5A5A\u793C\u4E0A\u6CA1\u4EBA\u63D0\u8D77\u4F60\u4EE5\u524D\u7684\u540D\u5B57\u3002"
+      text: "\u5A5A\u793C\u4E0A\u6CA1\u4EBA\u63D0\u8D77\u4F60\u4EE5\u524D\u7684\u540D\u5B57\u3002\u6765\u5BBE\u5F88\u591A\uFF0C\u4E00\u534A\u4F60\u4E0D\u8BA4\u8BC6\u3002\u656C\u9152\u5230\u7B2C\u4E09\u684C\uFF0C\u6709\u4E2A\u8FDC\u623F\u4EB2\u621A\u8BF4\u300C\u542C\u8BF4\u4F60\u4EE5\u524D\u662F\u641E\u827A\u672F\u7684\u300D\uFF0C\u4F60\u7B11\u7740\u8BF4\u300C\u73A9\u8FC7\u4E00\u9635\u300D\u3002\u90A3\u5929\u665A\u4E0A\u4F60\u5378\u5986\u5378\u4E86\u5F88\u4E45\uFF0C\u955C\u5B50\u91CC\u7684\u81EA\u5DF1\u8FD8\u662F\u5F88\u50CF\u5F53\u5E74\u90A3\u4E2A\u5728\u540E\u53F0\u7B49\u4E0A\u573A\u7684\u4EBA\u3002\u4F60\u628A\u6F14\u51FA\u670D\u4ECE\u65E7\u5BB6\u5E26\u8FC7\u6765\u4E86\uFF0C\u653E\u5728\u8863\u67DC\u6700\u4E0A\u5C42\u3002"
     },
     {
       id: "life-exec",
       title: "\u897F\u88C5\u9769\u5C65",
       group: "life",
       groupName: "\u751F\u6D3B\u7ED3\u5C40",
-      text: "\u4F60\u6210\u4E86\u90A3\u4E2A\u7B7E\u5408\u540C\u7684\u4EBA\u3002"
+      text: "\u4F60\u6210\u4E86\u90A3\u4E2A\u7B7E\u5408\u540C\u7684\u4EBA\u3002\u4F1A\u8BAE\u5BA4\u91CC\u6CA1\u4EBA\u77E5\u9053\u4F60\u4F1A\u8DF3\u821E\uFF0C\u53EA\u6709\u4E00\u6B21\u56E2\u5EFA\uFF0C\u4E3B\u6301\u4EBA\u4E34\u65F6\u62C9\u4F60\u4E0A\u53F0\uFF0C\u4F60\u968F\u624B\u8DF3\u4E86\u4E00\u6BB5\uFF0C\u5168\u573A\u70B8\u4E86\u3002\u7B2C\u4E8C\u5929\u6709\u4EBA\u5728\u7535\u68AF\u91CC\u95EE\u4F60\u300C\u4F60\u4EE5\u524D\u662F\u4E0D\u662F\u4E13\u4E1A\u7684\u300D\uFF0C\u4F60\u8BF4\u300C\u4E0D\u7B97\u4E13\u4E1A\uFF0C\u7EC3\u8FC7\u51E0\u5E74\u300D\u3002\u7535\u68AF\u5230\u4E86\uFF0C\u4F60\u5148\u51FA\u53BB\u3002"
     },
     {
       id: "life-startup",
       title: "\u767D\u624B\u8D77\u5BB6",
       group: "life",
       groupName: "\u751F\u6D3B\u7ED3\u5C40",
-      text: "\u4F60\u5F00\u4E86\u5BB6\u5C0F\u5E97\uFF0C\u751F\u610F\u8FD8\u4E0D\u9519\u3002"
+      text: "\u4F60\u5F00\u4E86\u5BB6\u5C0F\u5E97\uFF0C\u751F\u610F\u8FD8\u4E0D\u9519\u3002\u5E97\u540D\u662F\u5F53\u5E74\u7EC4\u5408\u7684\u540D\u5B57\uFF0C\u6539\u4E86\u4E00\u4E2A\u5B57\u3002\u5899\u4E0A\u6302\u7740\u4E00\u5F20\u6F14\u51FA\u7167\u7247\uFF0C\u5BA2\u4EBA\u5E38\u95EE\u90A3\u662F\u4E0D\u662F\u4F60\uFF0C\u4F60\u8BF4\u662F\u3002\u6709\u4E2A\u5973\u5B69\u6765\u5E97\u91CC\uFF0C\u770B\u89C1\u7167\u7247\u6123\u4E86\u5F88\u4E45\uFF0C\u8BF4\u5979\u4EE5\u524D\u770B\u8FC7\u4F60\u7684\u6F14\u51FA\u3002\u90A3\u5929\u4F60\u8BF7\u5979\u559D\u4E86\u676F\u4E1C\u897F\uFF0C\u804A\u5230\u6253\u70CA\u3002\u5979\u8D70\u7684\u65F6\u5019\u8BF4\uFF1A\u300C\u4F60\u73B0\u5728\u770B\u8D77\u6765\u633A\u597D\u7684\u3002\u300D"
     },
     {
       id: "bad-hard",
       title: "\u8270\u96BE\u7EF4\u751F",
       group: "bad",
       groupName: "\u574F\u7ED3\u5C40",
-      text: "\u4F60\u5728\u4FBF\u5229\u5E97\u4E0A\u591C\u73ED\uFF0C\u5076\u5C14\u5237\u5230\u4EE5\u524D\u7684\u89C6\u9891\u3002"
+      text: "\u4F60\u5728\u4FBF\u5229\u5E97\u4E0A\u591C\u73ED\uFF0C\u5076\u5C14\u5237\u5230\u4EE5\u524D\u7684\u89C6\u9891\u3002\u89C6\u9891\u91CC\u7684\u81EA\u5DF1\u8DF3\u5F97\u5F88\u7528\u529B\uFF0C\u5986\u6709\u70B9\u82B1\uFF0C\u4F46\u773C\u775B\u662F\u4EAE\u7684\u3002\u4F60\u628A\u58F0\u97F3\u8C03\u5C0F\uFF0C\u6015\u5435\u5230\u8D27\u67B6\u95F4\u7684\u5BA2\u4EBA\u3002\u6709\u6B21\u4E00\u4E2A\u5973\u5B69\u6765\u4E70\u4E1C\u897F\uFF0C\u76EF\u7740\u4F60\u770B\u4E86\u5F88\u4E45\uFF0C\u6700\u540E\u4EC0\u4E48\u90FD\u6CA1\u8BF4\u3002\u7ED3\u8D26\u7684\u65F6\u5019\u5979\u591A\u7ED9\u4E86\u4E00\u767E\uFF0C\u4F60\u8FFD\u51FA\u53BB\u8FD8\u5979\uFF0C\u5979\u8BF4\u300C\u4E0D\u7528\u300D\u3002\u4F60\u7AD9\u5728\u95E8\u53E3\uFF0C\u98CE\u5F88\u51C9\u3002"
     },
     {
       id: "bad-cold",
       title: "\u4EBA\u8D70\u8336\u51C9",
       group: "bad",
       groupName: "\u574F\u7ED3\u5C40",
-      text: "\u7FA4\u91CC\u8FD8\u5728\u804A\u5929\uFF0C\u53EA\u662F\u6CA1\u4EBA\u827E\u7279\u4F60\u3002"
+      text: "\u7FA4\u91CC\u8FD8\u5728\u804A\u5929\uFF0C\u53EA\u662F\u6CA1\u4EBA\u827E\u7279\u4F60\u3002\u4F60\u5076\u5C14\u4F1A\u70B9\u8FDB\u53BB\u770B\uFF0C\u770B\u5979\u4EEC\u8BA8\u8BBA\u65B0\u7684\u573A\u5730\u3001\u65B0\u7684\u6B4C\u3001\u65B0\u7684\u540D\u5B57\u3002\u6709\u4E00\u6B21\u4F60\u60F3\u8BF4\u70B9\u4EC0\u4E48\uFF0C\u6253\u4E86\u4E00\u534A\u53C8\u5220\u4E86\u3002\u4F60\u8FD8\u5728\u8FD9\u4E2A\u57CE\u5E02\uFF0C\u53EA\u662F\u4E0D\u518D\u51FA\u73B0\u5728\u4EFB\u4F55\u4E00\u5F20\u6D77\u62A5\u4E0A\u3002\u6709\u5929\u5730\u94C1\u7ECF\u8FC7\u90A3\u4E2A\u7AD9\uFF0C\u4F60\u6CA1\u6709\u4E0B\u8F66\u3002"
     },
     {
       id: "bad-ignore",
       title: "\u65E0\u4EBA\u95EE\u6D25",
       group: "bad",
       groupName: "\u574F\u7ED3\u5C40",
-      text: "\u641C\u7D22\u4F60\u7684\u540D\u5B57\uFF0C\u53EA\u5269\u51E0\u6761\u65E7\u94FE\u63A5\u3002"
+      text: "\u641C\u7D22\u4F60\u7684\u540D\u5B57\uFF0C\u53EA\u5269\u51E0\u6761\u65E7\u94FE\u63A5\u3002\u6709\u4E00\u6761\u662F\u5F53\u5E74\u6F2B\u5C55\u7684\u8282\u76EE\u5355\uFF0C\u4F60\u7684\u540D\u5B57\u5728\u7B2C\u4E03\u6392\uFF0C\u5B57\u4F53\u5F88\u5C0F\u3002\u4F60\u70B9\u8FDB\u53BB\u770B\u4E86\u5F88\u4E45\uFF0C\u9875\u9762\u4E0A\u6709\u5F20\u5408\u7167\uFF0C\u4F60\u5728\u6700\u8FB9\u4E0A\uFF0C\u88AB\u88C1\u6389\u4E86\u4E00\u534A\u3002\u540E\u6765\u4F60\u4E0D\u518D\u641C\u7D22\u4E86\u3002\u624B\u673A\u6362\u4E86\u4E24\u6B21\uFF0C\u90A3\u4E9B\u94FE\u63A5\u4E5F\u6162\u6162\u6253\u4E0D\u5F00\u4E86\u3002"
     },
     {
       id: "bad-ruin",
       title: "\u6F66\u5012\u6536\u573A",
       group: "bad",
       groupName: "\u574F\u7ED3\u5C40",
-      text: "\u4F60\u628A\u6700\u540E\u4E00\u7BB1\u5468\u8FB9\u5356\u7ED9\u4E86\u6536\u5E9F\u54C1\u7684\u3002"
+      text: "\u4F60\u628A\u6700\u540E\u4E00\u7BB1\u5468\u8FB9\u5356\u7ED9\u4E86\u6536\u5E9F\u54C1\u7684\u3002\u4ED6\u6309\u65A4\u79F0\uFF0C\u4E00\u5171\u4E8C\u5341\u4E09\u5757\u3002\u4F60\u8BF4\u91CC\u9762\u6709\u7B7E\u540D\uFF0C\u4ED6\u8BF4\u7B7E\u540D\u4E0D\u503C\u94B1\u3002\u7BB1\u5B50\u642C\u8D70\u7684\u65F6\u5019\u6389\u51FA\u6765\u4E00\u4E2A\u706F\u724C\uFF0C\u7535\u6C60\u8FD8\u6709\u7535\uFF0C\u5728\u5730\u4E0A\u4EAE\u4E86\u51E0\u79D2\u5C31\u706D\u4E86\u3002\u4F60\u8E72\u4E0B\u53BB\u6361\uFF0C\u53D1\u73B0\u4E0A\u9762\u5199\u7684\u4E0D\u662F\u4F60\u7684\u540D\u5B57\u3002"
     }
   ]
 };
@@ -20006,7 +25061,19 @@ var members_default = {
       "\u5F6D\u91CE",
       "\u8463\u590F",
       "\u8881\u6E05",
-      "\u9646\u542C"
+      "\u9646\u542C",
+      "\u6C5F\u7167",
+      "\u65F6\u96E8",
+      "\u5C91\u91CE",
+      "\u7B80\u5B81",
+      "\u767D\u6816",
+      "\u82CF\u53F6",
+      "\u8FDF\u79BE",
+      "\u5E94\u661F",
+      "\u95FB\u7B1B",
+      "\u795D\u5B89",
+      "\u79CB\u5C7F",
+      "\u6C88\u96EB"
     ],
     biases: [
       "vocal",
@@ -20025,9 +25092,98 @@ var members_default = {
   }
 };
 
+// ../core/data/channels.json
+var channels_default = {
+  _\u8BF4\u660E: "\u8BA4\u8BC6\u65B0\u670B\u53CB\u7684\u6E20\u9053\u8868\uFF1A\u6BCF\u4E2A\u6E20\u9053\u82B1\u94B1\u8BA4\u8BC6\u4E00\u4E2A\u4EBA\uFF0CbiasPool \u51B3\u5B9A\u5927\u6982\u7387\u662F\u4EC0\u4E48\u7C7B\u578B\uFF0Cquality \u662F\u5F3A\u5EA6\u7CFB\u6570\u533A\u95F4\uFF0CpoolId \u6307\u5411\u5361\u6C60",
+  channels: [
+    {
+      id: "comic-con",
+      name: "\u901B\u6F2B\u5C55",
+      cost: 200,
+      biasPool: [
+        "dance",
+        "acting"
+      ],
+      quality: [
+        0.8,
+        1.05
+      ],
+      poolId: "pool-comic",
+      text: "\u5728\u4EBA\u5806\u91CC\u6324\u4E86\u4E00\u5929\uFF0C\u52A0\u5230\u4E86\u51E0\u4E2A\u540C\u597D\u3002\u5979\u4EEC\u7684\u5305\u91CC\u90FD\u63D2\u7740\u4E0D\u540C\u56E2\u7684\u5E94\u63F4\u68D2\u3002"
+    },
+    {
+      id: "live-show",
+      name: "\u770B\u6F14\u51FA",
+      cost: 300,
+      biasPool: [
+        "vocal",
+        "dance"
+      ],
+      quality: [
+        0.85,
+        1.1
+      ],
+      poolId: "pool-stage",
+      text: "\u6563\u573A\u540E\u5728\u540E\u95E8\u7B49\u5230\u5F88\u665A\u3002\u6709\u4E24\u4E2A\u540C\u6837\u5728\u7EC3\u7684\u4EBA\u4E5F\u6CA1\u8D70\uFF0C\u5C31\u8FD9\u6837\u804A\u8D77\u6765\u4E86\u3002"
+    },
+    {
+      id: "friend-intro",
+      name: "\u670B\u53CB\u4ECB\u7ECD",
+      cost: 500,
+      biasPool: [
+        "vocal",
+        "dance",
+        "acting",
+        "talk"
+      ],
+      quality: [
+        0.95,
+        1.15
+      ],
+      poolId: "pool-intro",
+      text: "\u670B\u53CB\u628A\u5979\u62C9\u8FDB\u7FA4\uFF0C\u8BF4\u4E86\u53E5\u300C\u4F60\u4EEC\u5E94\u8BE5\u804A\u5F97\u6765\u300D\u3002\u7B2C\u4E00\u6B21\u89C1\u9762\u5C31\u804A\u5230\u6253\u70CA\u3002"
+    },
+    {
+      id: "online",
+      name: "\u7EBF\u4E0A\u540C\u597D",
+      cost: 150,
+      biasPool: [
+        "vocal",
+        "talk"
+      ],
+      quality: [
+        0.75,
+        1
+      ],
+      poolId: "pool-online",
+      text: "\u5728\u8D85\u8BDD\u91CC\u804A\u4E86\u534A\u4E2A\u6708\uFF0C\u7EA6\u5728\u7EBF\u4E0B\u89C1\u4E86\u4E00\u9762\u3002\u771F\u4EBA\u6BD4\u5934\u50CF\u5B89\u9759\uFF0C\u4F46\u8BDD\u5F88\u5B9E\u5728\u3002"
+    },
+    {
+      id: "workshop",
+      name: "\u6392\u7EC3\u5BA4\u62FC\u573A",
+      cost: 400,
+      biasPool: [
+        "dance",
+        "acting"
+      ],
+      quality: [
+        0.9,
+        1.1
+      ],
+      poolId: "pool-workshop",
+      text: "\u62FC\u573A\u65F6\u5BF9\u9762\u7F3A\u4E00\u4E2A\u4EBA\uFF0C\u4F60\u9876\u4E0A\u53BB\u3002\u4E24\u4E2A\u5C0F\u65F6\u4E0B\u6765\uFF0C\u5979\u4EEC\u95EE\u4F60\u8981\u4E0D\u8981\u52A0\u7FA4\u3002"
+    }
+  ]
+};
+
+// ../core/src/friends.ts
+var CHANNELS = channels_default.channels;
+var DUP_CAP = BALANCE.dupCap ?? 10;
+var PARTY_MAX = BALANCE.partyMax ?? 10;
+
 // ../core/src/members.ts
 var RECRUIT_COST = BALANCE.recruitCost;
-var DUP_CAP = BALANCE.dupCap;
+var DUP_CAP2 = BALANCE.dupCap;
 var NPC_BASE_RATIO = BALANCE.npcBaseRatio;
 var NAMES = members_default.members.namePool;
 var BIASES = members_default.members.biases;
@@ -20048,188 +25204,34 @@ var ATTRIBUTE_MAP = Object.fromEntries(
   ATTRIBUTES.map((a) => [a.key, a])
 );
 var byCategory = (cat) => ATTRIBUTES.filter((a) => a.category === cat);
-var STAT_KEYS2 = byCategory("visible").map((a) => a.key);
+var STAT_KEYS3 = byCategory("visible").map((a) => a.key);
 var AXIS_KEYS = byCategory("hidden").map((a) => a.key);
 var FAN_KEYS = byCategory("fans").map((a) => a.key);
 var STAT_LABEL = Object.fromEntries(
   ATTRIBUTES.map((a) => [a.key, a.name])
 );
 
-// ../core/data/channels.json
-var channels_default = {
-  _\u8BF4\u660E: "\u8BA4\u8BC6\u65B0\u670B\u53CB\u7684\u6E20\u9053\u8868\uFF1A\u6BCF\u4E2A\u6E20\u9053\u82B1\u94B1\u8BA4\u8BC6\u4E00\u4E2A\u4EBA\uFF0CbiasPool \u51B3\u5B9A\u5927\u6982\u7387\u662F\u4EC0\u4E48\u7C7B\u578B\uFF0Cquality \u662F\u5F3A\u5EA6\u7CFB\u6570\u533A\u95F4\uFF0CpoolId \u6307\u5411\u5361\u6C60",
-  channels: [
-    {
-      id: "comic-con",
-      name: "\u901B\u6F2B\u5C55",
-      cost: 200,
-      biasPool: [
-        "dance",
-        "acting"
-      ],
-      quality: [
-        0.8,
-        1.05
-      ],
-      poolId: "pool-comic",
-      text: "\u5728\u4EBA\u5806\u91CC\u6324\u4E86\u4E00\u5929\uFF0C\u52A0\u5230\u4E86\u51E0\u4E2A\u540C\u597D\u3002"
-    },
-    {
-      id: "live-show",
-      name: "\u770B\u6F14\u51FA",
-      cost: 300,
-      biasPool: [
-        "vocal",
-        "dance"
-      ],
-      quality: [
-        0.85,
-        1.1
-      ],
-      poolId: "pool-stage",
-      text: "\u6563\u573A\u540E\u5728\u540E\u95E8\u7B49\u5230\u5F88\u665A\uFF0C\u8BA4\u8BC6\u4E86\u4E24\u4E2A\u540C\u6837\u5728\u7EC3\u7684\u4EBA\u3002"
-    },
-    {
-      id: "friend-intro",
-      name: "\u670B\u53CB\u4ECB\u7ECD",
-      cost: 500,
-      biasPool: [
-        "vocal",
-        "dance",
-        "acting",
-        "talk"
-      ],
-      quality: [
-        0.95,
-        1.15
-      ],
-      poolId: "pool-intro",
-      text: "\u670B\u53CB\u628A\u5979\u62C9\u8FDB\u7FA4\uFF0C\u8BF4\u4E86\u53E5\u300C\u4F60\u4EEC\u5E94\u8BE5\u804A\u5F97\u6765\u300D\u3002"
-    }
-  ]
+// ../core/src/task-progress.ts
+var CATEGORY_PREFIX = {
+  innate: "innate",
+  trait: "trait",
+  negative: "neg",
+  proficient: "prof",
+  fans: "fans"
 };
-
-// ../core/src/friends.ts
-var CHANNELS = channels_default.channels;
-var DUP_CAP2 = BALANCE.dupCap ?? 10;
-var PARTY_MAX = BALANCE.partyMax ?? 10;
-
-// ../core/data/tasks.json
-var tasks_default = {
-  _\u8BF4\u660E: "\u4EFB\u52A1\u8868\uFF1AdisplayCondition=\u53EF\u89C1\u6761\u4EF6\uFF1BacceptCondition=\u53EF\u9886\u53D6\u6761\u4EF6\uFF1BcompleteCondition=\u5B8C\u6210\u6761\u4EF6\u3002\u9886\u53D6\u540E\u8FDB\u5165\u8FDB\u884C\u4E2D\uFF0C\u6761\u4EF6\u8FBE\u6210\u81EA\u52A8\u5B8C\u6210\u5E76\u53D1\u5956",
-  tasks: [
-    {
-      id: "task-first-debut",
-      type: "once",
-      name: "\u7B2C\u4E00\u6B21\u51FA\u9053",
-      displayCondition: {},
-      acceptCondition: {
-        statsSumAtLeast: 120
-      },
-      completeCondition: {
-        flagsContain: [
-          "ev:debut"
-        ]
-      },
-      rewards: {
-        money: 3e3,
-        fans: 100
-      },
-      times: 1,
-      content: "\u56DB\u9879\u5C5E\u6027\u603B\u548C\u8FBE\u5230\u51FA\u9053\u95E8\u69DB\u540E\uFF0C\u9886\u53D6\u4EFB\u52A1\uFF0C\u7136\u540E\u70B9\u300C\u51FA\u9053\u300D\u3002",
-      brief: "\u5B8C\u6210\u51FA\u9053",
-      priority: 10
-    },
-    {
-      id: "task-dance-30",
-      type: "once",
-      name: "\u821E\u8E48\u4E09\u5341",
-      displayCondition: {},
-      acceptCondition: {
-        statsAtLeast: {
-          dance: 20
-        }
-      },
-      completeCondition: {
-        statsAtLeast: {
-          dance: 30
-        }
-      },
-      rewards: {
-        money: 500,
-        stamina: 10
-      },
-      times: 1,
-      content: "\u628A\u821E\u8E48\u7EC3\u5230 30\uFF0C\u8BF4\u660E\u4F60\u5DF2\u7ECF\u4E0D\u662F\u65B0\u4EBA\u4E86\u3002",
-      brief: "\u821E\u8E48\u7EC3\u5230 30",
-      priority: 20
-    },
-    {
-      id: "task-first-show",
-      type: "repeat",
-      name: "\u7AD9\u4E0A\u821E\u53F0",
-      displayCondition: {
-        statsSumAtLeast: 60
-      },
-      acceptCondition: {
-        statsSumAtLeast: 60
-      },
-      completeCondition: {
-        fansAtLeast: {
-          stage: 100
-        }
-      },
-      rewards: {
-        money: 800
-      },
-      times: 5,
-      content: "\u6F14\u51FA\u4F1A\u628A\u8DEF\u4EBA\u53D8\u6210\u7C89\u4E1D\u3002\u6512\u5230 100 \u821E\u53F0\u7C89\u3002",
-      brief: "\u821E\u53F0\u7C89\u7D2F\u8BA1\u5230 100",
-      priority: 30
-    },
-    {
-      id: "task-money-10000",
-      type: "once",
-      name: "\u6512\u5230\u4E00\u4E07",
-      displayCondition: {},
-      acceptCondition: {
-        moneyAtLeast: 5e3
-      },
-      completeCondition: {
-        moneyAtLeast: 1e4
-      },
-      rewards: {
-        stamina: 20
-      },
-      times: 1,
-      content: "\u623F\u79DF\u5F88\u8D35\uFF0C\u624B\u91CC\u6709\u4E00\u4E07\u5757\u4F1A\u8E0F\u5B9E\u4E00\u70B9\u3002",
-      brief: "\u8D44\u91D1\u8FBE\u5230 10000",
-      priority: 40
-    },
-    {
-      id: "task-friend",
-      type: "once",
-      name: "\u8BA4\u8BC6\u4E00\u4E2A\u4EBA",
-      displayCondition: {},
-      acceptCondition: {},
-      completeCondition: {
-        friendsAtLeast: 1
-      },
-      rewards: {
-        money: 200
-      },
-      times: 1,
-      content: "\u53BB\u6F2B\u5C55\u6216\u8005\u770B\u6F14\u51FA\uFF0C\u8BA4\u8BC6\u7B2C\u4E00\u4E2A\u670B\u53CB\u3002",
-      brief: "\u670B\u53CB\u5708\u81F3\u5C11\u6709 1 \u4E2A\u4EBA",
-      priority: 50
-    }
-  ]
-};
-
-// ../core/src/tasks.ts
-var TASKS = tasks_default.tasks.slice().sort(
-  (a, b) => a.priority - b.priority
-);
+var VARIABLE_LABEL = (() => {
+  const map = /* @__PURE__ */ new Map();
+  for (const attr of RAW_ATTRIBUTES) {
+    if (!attr.key || !attr.name) continue;
+    map.set(attr.key, attr.name);
+    const prefix = CATEGORY_PREFIX[attr.category];
+    if (prefix) map.set(`${prefix}.${attr.key}`, attr.name);
+  }
+  for (const [cn, en] of Object.entries(ALIAS)) {
+    if (!map.has(en)) map.set(en, cn);
+  }
+  return map;
+})();
 
 // ../../node_modules/.pnpm/@supabase+supabase-js@2.118.0/node_modules/@supabase/supabase-js/dist/index.mjs
 var dist_exports = {};

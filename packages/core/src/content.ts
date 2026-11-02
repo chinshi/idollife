@@ -7,6 +7,9 @@ const MIN = 60_000;
 /** 一个行动流逝多少游戏分钟 */
 export const ACTION_MINUTES = BALANCE.actionMinutes;
 
+/** 一个行动对应的游戏毫秒（= actionMinutes 分钟 × 60s）；倒计时按它换算剩余行动次数 */
+export const ACTION_MS = ACTION_MINUTES * MIN;
+
 /** 每天的行动位 */
 export const DAILY_SLOTS = BALANCE.dailySlots;
 export const SHOW_SLOTS = BALANCE.showSlots;
@@ -140,8 +143,14 @@ export function remainingTimes(state: RunState, actionId: string): number {
   return Math.max(0, meta.times - used);
 }
 
-/** 体力上限（配置表 balance.staminaMax） */
-export const STAMINA_MAX: number = BALANCE.staminaMax ?? 100;
+/** 体力上限：表里有 staminaMax 就用表里的，没有回落 100 */
+export function staminaMaxFrom(balance: Record<string, unknown>): number {
+  const v = Number(balance?.staminaMax);
+  return Number.isFinite(v) && v > 0 ? v : 100;
+}
+
+/** 体力上限（配置表 balance.staminaMax，缺省 100） */
+export const STAMINA_MAX: number = staminaMaxFrom(BALANCE as unknown as Record<string, unknown>);
 
 /** 把体力夹到 0~上限 */
 export function clampStamina(v: number): number {

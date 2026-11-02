@@ -2138,6 +2138,26 @@ body { overflow: hidden; }
 .task-state.claimable { background: #ffeada; color: #b35a00; font-weight: 600; }
 .task-state.active { background: #e8f1ff; color: #2f6fd0; }
 .task-state.done { background: #eef1f6; color: #7b8496; }
+/* 任务倒计时（T-010）：紧跟状态标签，文案短，不吃掉右侧按钮的空间 */
+.task-deadline {
+  font-size: 10px;
+  color: var(--muted);
+  white-space: nowrap;
+  flex: 0 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.task-deadline.urgent {
+  color: #b35a00;
+  font-weight: 600;
+}
+.task-deadline.due {
+  color: #c0392b;
+}
+/* T-011：已错过是既成事实，用中性灰，红色只留给「期限已到」的警告 */
+.task-deadline.missed {
+  color: var(--muted);
+}
 
 /* 菜单角标 */
 .menu-badge {
@@ -2191,6 +2211,21 @@ body { overflow: hidden; }
   font-style: normal;
   color: #9aa2b3;
   margin-right: 4px;
+}
+/* 任务进度条（T-008）：宽度百分比在 JS 里已按 100% 截断，这里只管样式 */
+.task-progress {
+  display: block;
+  height: 4px;
+  margin-top: 6px;
+  border-radius: 2px;
+  background: #eef1f6;
+  overflow: hidden;
+}
+.task-progress > span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.22s linear;
 }
 .task-state.completable { background: #e6f7ec; color: #1f8f4e; font-weight: 600; }
 /* 认识新朋友：抽取记录 */

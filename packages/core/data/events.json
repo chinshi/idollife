@@ -1,100 +1,545 @@
 {
-  "_说明": "事件表。routine=常规事件（不暂停时间，只改数值）；story=剧情事件（major=true 时暂停时间等玩家抉择）。requires 是触发条件，见 docs/22 的说明",
+  "_说明": "事件表。routine=常规事件（不暂停时间，只改数值）；story=剧情事件（major=true 时暂停时间等玩家抉择），choices 来自 all.xlsx 的 choices 表。requires 是触发条件，见 docs/22 的说明",
   "routine": [
     {
-      "id": "r-rehearsal",
-      "text": "排练室空着，你多练了半小时。",
+      "id": "r-rep-01",
+      "text": "排练室空着。你把灯全打开，多练了半小时。",
       "stamina": -3,
       "stat": "dance",
       "statName": "舞蹈",
       "gain": 1
     },
     {
-      "id": "r-convenience",
-      "text": "便利店的关东煮打折，你买了一份。",
-      "stamina": 4
-    },
-    {
-      "id": "r-train",
-      "text": "末班车上有人认出你，小声说了句加油。",
-      "stamina": 2,
+      "id": "r-rep-02",
+      "text": "隔间里有人在练同一首歌。你停下来听了一会儿，发现自己第三句一直唱错。",
+      "stamina": -1,
       "stat": "vocal",
       "statName": "演唱",
       "gain": 1
     },
     {
-      "id": "r-note",
-      "text": "你在手机备忘录里写下一句歌词。",
-      "stamina": -1,
-      "stat": "acting",
-      "statName": "演技",
-      "gain": 1
-    },
-    {
-      "id": "r-tired",
-      "text": "今天状态一般，练得有点散。",
-      "stamina": -2
-    },
-    {
-      "id": "r-mirror",
-      "text": "对着镜子调整了很久的表情。",
-      "stamina": -2,
-      "stat": "talk",
-      "statName": "口才",
-      "gain": 1
-    },
-    {
-      "id": "r-rain",
-      "text": "下雨了，你在地铁口等了很久。",
-      "stamina": -1
-    },
-    {
-      "id": "r-fan-gift",
-      "text": "有粉丝塞给你一包糖，没敢多说话。",
-      "stamina": 3
-    },
-    {
-      "id": "r-roommate",
-      "text": "室友在客厅看电视，你戴着耳机练动作。",
+      "id": "r-rep-03",
+      "text": "地板胶带换过了，走位标记全乱。你重新贴了一遍，贴到最后一个才想起来哪对哪。",
       "stamina": -2,
       "stat": "dance",
       "statName": "舞蹈",
       "gain": 1
     },
     {
-      "id": "r-callback",
-      "text": "经纪人发来一条没头没尾的消息：「下周再说」。",
-      "stamina": 0
+      "id": "r-rep-04",
+      "text": "镜子上有人留了张便签：「这面镜子归我了」。你在下面写「那另一面归我」。",
+      "stamina": 2
     },
     {
-      "id": "r-old-video",
-      "text": "你翻到自己一年前的练习视频，看完了。",
+      "id": "r-rep-05",
+      "text": "空调坏了。跳到第三遍，汗顺着下巴滴在地板上。",
+      "stamina": -4,
+      "stat": "dance",
+      "statName": "舞蹈",
+      "gain": 1
+    },
+    {
+      "id": "r-rep-06",
+      "text": "你把整支舞拍成慢放，一帧一帧看自己的手。原来一直没打开。",
+      "stamina": -2,
+      "stat": "dance",
+      "statName": "舞蹈",
+      "gain": 1
+    },
+    {
+      "id": "r-rep-07",
+      "text": "排练室的前辈在教新人。你在旁边跟着比划，偷学了一段。",
+      "stamina": -2,
+      "stat": "dance",
+      "statName": "舞蹈",
+      "gain": 1
+    },
+    {
+      "id": "r-rep-08",
+      "text": "有人点了炸鸡外卖，全屋人围着一盒吃。没人说话，只有咀嚼声。",
+      "stamina": 3
+    },
+    {
+      "id": "r-rep-09",
+      "text": "你把一首歌降了两个半音试了一遍。唱起来舒服多了，但你怕别人听出来。",
+      "stamina": -1,
+      "stat": "vocal",
+      "statName": "演唱",
+      "gain": 1
+    },
+    {
+      "id": "r-rep-10",
+      "text": "音箱左声道不出声。你听了一小时单声道，回家耳朵还在响。",
+      "stamina": -2,
+      "stat": "vocal",
+      "statName": "演唱",
+      "gain": 1
+    },
+    {
+      "id": "r-rep-11",
+      "text": "你在白板上写下这个月的目标，写完又擦掉了一个。",
+      "stamina": 1
+    },
+    {
+      "id": "r-rep-12",
+      "text": "隔壁团的排练声透过来，比你们整齐。你们谁都没说话。",
+      "stamina": -2
+    },
+    {
+      "id": "r-rep-13",
+      "text": "排练室的钟慢了十五分钟。你练超时了，钥匙是管理员来收的。",
+      "stamina": -3,
+      "stat": "dance",
+      "statName": "舞蹈",
+      "gain": 1
+    },
+    {
+      "id": "r-rep-14",
+      "text": "有面墙上贴满了别的团的海报。你找了三遍，没找到自己。",
+      "stamina": -2
+    },
+    {
+      "id": "r-rep-15",
+      "text": "你试了一段新编舞，摔了一次。爬起来的那个动作，反而更好看。",
+      "stamina": -4,
+      "stat": "dance",
+      "statName": "舞蹈",
+      "gain": 1
+    },
+    {
+      "id": "r-store-01",
+      "text": "关东煮打折，你买了一份，站在门口吃完。汤也喝了。",
+      "stamina": 4
+    },
+    {
+      "id": "r-store-02",
+      "text": "店长把排班改到下周。你要重新算一遍这周还剩几个时段。",
+      "stamina": -1
+    },
+    {
+      "id": "r-store-03",
+      "text": "有位客人认出你，说上次在漫展看过你的舞台。你多给了他一包纸巾。",
+      "stamina": 3,
+      "stat": "talk",
+      "statName": "口才",
+      "gain": 1
+    },
+    {
+      "id": "r-store-04",
+      "text": "补货补到凌晨，冷柜的风把手指吹麻了。",
+      "stamina": -4
+    },
+    {
+      "id": "r-store-05",
+      "text": "收银台前的杂志上有别的偶像封面。你翻了两页，又放回去了。",
+      "stamina": -1
+    },
+    {
+      "id": "r-store-06",
+      "text": "把过期的饭团带回家，热了一下。还能吃。",
+      "stamina": 2
+    },
+    {
+      "id": "r-store-07",
+      "text": "有个小孩在货架间哭着找妈妈。你陪他站到人来。",
+      "stamina": -1,
+      "stat": "talk",
+      "statName": "口才",
+      "gain": 1
+    },
+    {
+      "id": "r-store-08",
+      "text": "同事问你为什么不找个正经工作。你没接话，把货架摆完了。",
+      "stamina": -3
+    },
+    {
+      "id": "r-store-09",
+      "text": "你把剩下的关东煮汤喝了，暖和了一会儿。",
+      "stamina": 3
+    },
+    {
+      "id": "r-store-10",
+      "text": "店长说你笑得太少，被客人投诉了。",
+      "stamina": -2
+    },
+    {
+      "id": "r-store-11",
+      "text": "凌晨的便利店只有你和店员。你在货架间走了三圈，把每样东西都看了一遍。",
+      "stamina": 2,
+      "stat": "talk",
+      "statName": "口才",
+      "gain": 1
+    },
+    {
+      "id": "r-store-12",
+      "text": "有人把你发的传单折成纸飞机，扔进了垃圾桶。你捡起来，抹平，又发了出去。",
+      "stamina": -2
+    },
+    {
+      "id": "r-train-01",
+      "text": "末班车上有人认出你，小声说了句加油。你点头，没敢多说话。",
+      "stamina": 2,
+      "stat": "vocal",
+      "statName": "演唱",
+      "gain": 1
+    },
+    {
+      "id": "r-train-02",
+      "text": "睡过了一站。走回来花了二十分钟。",
+      "stamina": -3
+    },
+    {
+      "id": "r-train-03",
+      "text": "你在站台的长椅上把一段歌词写完了。写完自己也看不懂。",
       "stamina": -1,
       "stat": "acting",
       "statName": "演技",
       "gain": 1
     },
     {
-      "id": "r-night",
-      "text": "凌晨的便利店，只有你和店员。",
+      "id": "r-train-04",
+      "text": "车厢里在放你们的歌。没人知道你在车上。",
+      "stamina": 3
+    },
+    {
+      "id": "r-train-05",
+      "text": "末班车没赶上，打车回去花了六十块。",
+      "stamina": -2
+    },
+    {
+      "id": "r-train-06",
+      "text": "有人在车厢连接处练舞。你看了两站，下车时跟他说「手再高一点」。",
+      "stamina": 1,
+      "stat": "dance",
+      "statName": "舞蹈",
+      "gain": 1
+    },
+    {
+      "id": "r-train-07",
+      "text": "你把耳返摘了，第一次听清列车进站的声音。",
+      "stamina": 1
+    },
+    {
+      "id": "r-train-08",
+      "text": "站台的电子屏坏了，一直显示「三分钟」。你等了三十分钟。",
+      "stamina": 1
+    },
+    {
+      "id": "r-train-09",
+      "text": "有个女孩抱着应援棒睡着了。到站时你替她扶了一下。",
+      "stamina": 2
+    },
+    {
+      "id": "r-train-10",
+      "text": "下雨了。你在地铁口等了很久，鞋全湿了，袜子里能拧出水。",
+      "stamina": -1
+    },
+    {
+      "id": "r-train-11",
+      "text": "你在车站的镜子里看了自己很久。里面那个人看起来还行。",
+      "stamina": -1,
+      "stat": "acting",
+      "statName": "演技",
+      "gain": 1
+    },
+    {
+      "id": "r-train-12",
+      "text": "换乘通道很长。你走的时候把新歌的间奏想好了。",
+      "stamina": -1,
+      "stat": "vocal",
+      "statName": "演唱",
+      "gain": 1
+    },
+    {
+      "id": "r-stage-01",
+      "text": "后台只有一面镜子和两把椅子。你把包放在最里面，怕挡路。",
+      "stamina": 1
+    },
+    {
+      "id": "r-stage-02",
+      "text": "前一个团的应援声透过墙传过来，很响。你在心里数了数人数。",
+      "stamina": -2
+    },
+    {
+      "id": "r-stage-03",
+      "text": "你帮别的团搬了音箱。人家说了三次谢谢，你说了三次没事。",
+      "stamina": -3,
+      "stat": "talk",
+      "statName": "口才",
+      "gain": 1
+    },
+    {
+      "id": "r-stage-04",
+      "text": "换衣间的帘子拉不严。你用夹子夹了一下，站在门口等了两分钟。",
+      "stamina": 1
+    },
+    {
+      "id": "r-stage-05",
+      "text": "你的名字在物贩表上排第七。前面六个你都没听过。",
+      "stamina": -1
+    },
+    {
+      "id": "r-stage-06",
+      "text": "有个女孩在物贩摊前站了很久，最后只买了一张。她说下次多买两张。",
+      "stamina": 2
+    },
+    {
+      "id": "r-stage-07",
+      "text": "你在后台的镜子上贴了自己的名字，走的时候撕掉了。",
+      "stamina": -1
+    },
+    {
+      "id": "r-stage-08",
+      "text": "检票时有人喊了你的名字。你回头太快，撞到门框。",
+      "stamina": -2
+    },
+    {
+      "id": "r-stage-09",
+      "text": "你把自己的灯牌借给了旁边的团。她们说散场还你，一直没还。",
+      "stamina": 2
+    },
+    {
+      "id": "r-stage-10",
+      "text": "演出前十分钟，主唱说她嗓子不行了。所有人都在看你。",
+      "stamina": -3
+    },
+    {
+      "id": "r-stage-11",
+      "text": "你在后台听到有人讨论你的团「还差一点」。差哪一点，他们没说。",
+      "stamina": -2
+    },
+    {
+      "id": "r-stage-12",
+      "text": "散场后你留下来捡垃圾。捡了半袋应援棒，都是别人家的颜色。",
+      "stamina": -2
+    },
+    {
+      "id": "r-stage-13",
+      "text": "关系者席坐着几个看起来很重要的人。他们中途走了。",
+      "stamina": -2
+    },
+    {
+      "id": "r-stage-14",
+      "text": "你把今天掉的耳返找到了，在音箱后面，还能用。",
+      "stamina": 1
+    },
+    {
+      "id": "r-stage-15",
+      "text": "有个工作人员记住了你的名字。下次他直接叫你，不用看表。",
       "stamina": 2,
       "stat": "talk",
       "statName": "口才",
       "gain": 1
+    },
+    {
+      "id": "r-stage-16",
+      "text": "你在后台的签名板上找到了自己上次的签名。字比现在难看。",
+      "stamina": 1
+    },
+    {
+      "id": "r-street-01",
+      "text": "发传单时有人问你们团叫什么。你说了三遍，她记住了。",
+      "stamina": -1,
+      "stat": "talk",
+      "statName": "口才",
+      "gain": 1
+    },
+    {
+      "id": "r-street-02",
+      "text": "街头卖唱时有个大叔往琴盒里放了一百块，没听就走了。",
+      "stamina": 3
+    },
+    {
+      "id": "r-street-03",
+      "text": "你的海报被人撕了一角。你用胶带补上，补得歪歪扭扭。",
+      "stamina": -1
+    },
+    {
+      "id": "r-street-04",
+      "text": "下雨了。你躲在便利店屋檐下，把传单收进包里，一张都没湿。",
+      "stamina": 1
+    },
+    {
+      "id": "r-street-05",
+      "text": "有个女孩接了传单，认真地折好，放进了外套内袋。",
+      "stamina": 2
+    },
+    {
+      "id": "r-street-06",
+      "text": "广场上另一组人在拍短视频，声音盖过了你。你等到他们拍完才开口。",
+      "stamina": -2
+    },
+    {
+      "id": "r-street-07",
+      "text": "你在街角看到自己团的应援色贴在电线杆上，贴得比海报还高。",
+      "stamina": 3
+    },
+    {
+      "id": "r-street-08",
+      "text": "城管来了。你抱着扩音器跑了半条街，琴盒差点扔了。",
+      "stamina": -3
+    },
+    {
+      "id": "r-street-09",
+      "text": "有个小孩跟着你的歌哼了两句，音准很好。",
+      "stamina": 2,
+      "stat": "vocal",
+      "statName": "演唱",
+      "gain": 1
+    },
+    {
+      "id": "r-street-10",
+      "text": "传单发完的时候天已经黑了。你在路灯下数了一下剩下的橡皮筋。",
+      "stamina": -2
+    },
+    {
+      "id": "r-street-11",
+      "text": "有位阿姨问你「这个能当饭吃吗」。你想了很久，说「现在还不能」。",
+      "stamina": -1
+    },
+    {
+      "id": "r-street-12",
+      "text": "你在天桥上站了一会儿，看下面的车流。风很凉，但你没想回去。",
+      "stamina": 1
+    },
+    {
+      "id": "r-home-01",
+      "text": "室友在客厅看电视。你戴着耳机在房间里练动作，地板跟着响。",
+      "stamina": -2,
+      "stat": "dance",
+      "statName": "舞蹈",
+      "gain": 1
+    },
+    {
+      "id": "r-home-02",
+      "text": "洗衣机里的衣服忘了晾，全皱了。你穿着皱的衣服去排练。",
+      "stamina": -1
+    },
+    {
+      "id": "r-home-03",
+      "text": "你把房租转出去，余额看了三遍。",
+      "stamina": -1
+    },
+    {
+      "id": "r-home-04",
+      "text": "半夜饿了。你煮了一包泡面，加了两个蛋。",
+      "stamina": 3
+    },
+    {
+      "id": "r-home-05",
+      "text": "你在墙上贴了一张演出照片。贴上去才发现是歪的，但懒得撕。",
+      "stamina": 1
+    },
+    {
+      "id": "r-home-06",
+      "text": "隔壁在装修。你戴着耳塞背台词，背到一半忘了自己背到哪。",
+      "stamina": -2,
+      "stat": "acting",
+      "statName": "演技",
+      "gain": 1
+    },
+    {
+      "id": "r-home-07",
+      "text": "你翻到自己一年前的练习视频，从头看完了。那时候跳得真难看，但那时眼睛是亮的。",
+      "stamina": -1,
+      "stat": "acting",
+      "statName": "演技",
+      "gain": 1
+    },
+    {
+      "id": "r-home-08",
+      "text": "热水器坏了。你用锅烧水洗了头，洗到一半水凉了。",
+      "stamina": -2
+    },
+    {
+      "id": "r-home-09",
+      "text": "快递是一箱应援物。你自己买的，签收时签了自己的艺名。",
+      "stamina": 1
+    },
+    {
+      "id": "r-home-10",
+      "text": "你在阳台上晒被子。太阳很好，你趴在栏杆上晒了十分钟。",
+      "stamina": 3
+    },
+    {
+      "id": "r-home-11",
+      "text": "手机相册自动整理出「去年今天」。那天你也在排练室。",
+      "stamina": 1
+    },
+    {
+      "id": "r-home-12",
+      "text": "你把演出服挂进衣柜最里面，怕弄脏。挂完又拿出来看了一遍。",
+      "stamina": 1
+    },
+    {
+      "id": "r-etc-01",
+      "text": "降温了。你在包里放了两个暖宝宝，一个自己用，一个给了队友。",
+      "stamina": 2
+    },
+    {
+      "id": "r-etc-02",
+      "text": "有人把你的演出片段剪成视频。播放量不高，评论却很长。",
+      "stamina": 3
+    },
+    {
+      "id": "r-etc-03",
+      "text": "评论里有人说「这个人跳舞好用力」。你截图存了下来。",
+      "stamina": 2
+    },
+    {
+      "id": "r-etc-04",
+      "text": "你关注的团宣布解散了。她们的最后一场你没抢到票。",
+      "stamina": -3
+    },
+    {
+      "id": "r-etc-05",
+      "text": "同期发的新歌上了热门。你在评论区点了个赞，然后关掉手机。",
+      "stamina": -1
+    },
+    {
+      "id": "r-etc-06",
+      "text": "社媒上有人问「什么时候有下一场」。你回复了「快了」，其实还没定。",
+      "stamina": 2
+    },
+    {
+      "id": "r-etc-07",
+      "text": "你把简介改了三遍，最后只留了一句：「还在练」。",
+      "stamina": 1
+    },
+    {
+      "id": "r-etc-08",
+      "text": "有个粉丝寄来手作的应援物。做工很粗糙，但线头都收好了。",
+      "stamina": 3
+    },
+    {
+      "id": "r-etc-09",
+      "text": "天气预报说有雨。你带了伞，结果没下。",
+      "stamina": 1
+    },
+    {
+      "id": "r-etc-10",
+      "text": "你梦见自己在台上忘词。醒来还在背，背到天亮。",
+      "stamina": -1
+    },
+    {
+      "id": "r-etc-11",
+      "text": "生诞祭的日期定下来了，在三个月后。你在日历上画了个圈。",
+      "stamina": 2
     }
   ],
   "story": [
     {
       "id": "first-audition",
       "title": "一个试镜机会",
-      "text": "经纪人推门进来：「有个小场子的试镜，后天。你敢不敢去？」",
+      "text": "经纪人推门进来，手里捏着一张打印纸：「有个小场子的试镜，后天下午。三个人抢一个位，你敢不敢去？」",
       "major": true,
       "requires": "dance >= 15 and not hasFlag(\"ev:first-audition\")",
+      "sourceRow": 2,
       "choices": [
         {
           "id": "go",
           "label": "去，反正也没什么可输的",
-          "text": "你去了。台下只有五个人，但你跳完了整支舞。",
+          "text": "你去了。台下只有五个人，其中一个在玩手机。你还是跳完了整支舞。",
           "effects": {
             "stamina": -10,
             "axes": {
@@ -114,7 +559,7 @@
         {
           "id": "prepare",
           "label": "再练两天，准备充分再去",
-          "text": "你多练了两天，动作更稳了，但也错过了这次机会。",
+          "text": "你多练了两天，动作更稳了。但那个位置给了别人。你在群里看到她们的合照。",
           "effects": {
             "stamina": -5,
             "axes": {
@@ -136,7 +581,7 @@
         {
           "id": "skip",
           "label": "算了，还没准备好",
-          "text": "你说下次吧。经纪人没再说什么。",
+          "text": "你说下次吧。经纪人说了句「行」，然后把纸收进包里，没再提。",
           "effects": {
             "axes": {
               "self": -6,
@@ -151,55 +596,734 @@
       ]
     },
     {
-      "id": "fan-letter",
-      "title": "第一封信",
-      "text": "后台收到一封手写信，字迹很认真：「谢谢你上周那场演出。」",
-      "requires": "others >= 45 and not hasFlag(\"ev:fan-letter\")",
+      "id": "debut",
+      "title": "出道",
+      "text": "社长把合同推过来，纸很薄。他说：「签了就是出道。但你要知道，地下没有扶梯，只有台阶。」",
+      "major": true,
+      "requires": "total >= 120 and not hasFlag(\"ev:debut\")",
+      "sourceRow": 3,
       "choices": [
         {
-          "id": "reply",
-          "label": "回一封",
-          "text": "你写了回信。一周后，她又来了，还带了朋友。",
+          "id": "sign",
+          "label": "签",
+          "text": "你签了。笔是借的，签完手还在抖。社长把合同收走，说：「明天开始，你有名字了。」",
+          "effects": {
+            "stamina": -10,
+            "axes": {
+              "self": 10,
+              "others": 8,
+              "fit": 6
+            },
+            "mood": 10,
+            "traits": {
+              "ambitious": 5
+            },
+            "negatives": {
+              "stress": 10
+            }
+          },
+          "setFlag": "debut"
+        },
+        {
+          "id": "ask",
+          "label": "先问清楚条件",
+          "text": "你一条一条问：分成、排练时间、能不能自己选歌。社长笑了一下，说你是第一个问这些的。",
+          "effects": {
+            "axes": {
+              "self": 6,
+              "others": 4,
+              "fit": 4
+            },
+            "traits": {
+              "independent": 4
+            }
+          },
+          "setFlag": "debut"
+        },
+        {
+          "id": "delay",
+          "label": "再等等，我还不够",
+          "text": "你说再给我三个月。社长把合同收回抽屉，说：「三个月后我还在这儿，但机会不一定。」",
+          "effects": {
+            "axes": {
+              "self": 4,
+              "others": -3,
+              "fit": -4
+            },
+            "mood": -5,
+            "traits": {
+              "ambitious": 3
+            },
+            "negatives": {
+              "restless": 6
+            }
+          },
+          "setFlag": "debut"
+        }
+      ]
+    },
+    {
+      "id": "party-first",
+      "title": "第一个组合",
+      "text": "排练室里坐了三个人，都是被凑到一起的。没有人先开口。桌子上摊着一张还没起名的企划书。",
+      "major": true,
+      "requires": "hasFlag(\"ev:debut\") and not hasFlag(\"ev:party-first\")",
+      "sourceRow": 4,
+      "choices": [
+        {
+          "id": "lead",
+          "label": "先起个名字吧",
+          "text": "你拿起笔写下第一个名字。三个人都嫌难听。写到第七个，没人反对了。",
+          "effects": {
+            "axes": {
+              "self": 6,
+              "others": 5,
+              "fit": 4
+            },
+            "mood": 6,
+            "traits": {
+              "lead": 5
+            }
+          },
+          "setFlag": "party-first"
+        },
+        {
+          "id": "listen",
+          "label": "先听听她们想做什么",
+          "text": "你没说话，让她们一个个说。说到第三个的时候，你发现三个人想要的其实是同一件事。",
           "effects": {
             "axes": {
               "self": 3,
-              "others": 6
+              "others": 8,
+              "fit": 3
             },
+            "mood": 4,
+            "traits": {
+              "kind": 4,
+              "coop": 4
+            }
+          },
+          "setFlag": "party-first"
+        },
+        {
+          "id": "rule",
+          "label": "先把规矩定下来",
+          "text": "你定了三条：迟到的人买水、演出前不喝酒、谁都可以说「今天不行」。她们都签了字。",
+          "effects": {
+            "axes": {
+              "self": 5,
+              "others": 2,
+              "fit": 5
+            },
+            "traits": {
+              "lead": 4,
+              "independent": 3
+            }
+          },
+          "setFlag": "party-first"
+        }
+      ]
+    },
+    {
+      "id": "first-cheki",
+      "title": "第一次特典会",
+      "text": "第一次站在物贩桌后面。桌上摆着马克笔、拍立得，还有一张写着「请排这里」的纸。你手心在出汗。",
+      "requires": "hasFlag(\"ev:debut\") and fans.gachi >= 20 and not hasFlag(\"ev:first-cheki\")",
+      "sourceRow": 5,
+      "choices": [
+        {
+          "id": "talk",
+          "label": "一个一个聊，别急",
+          "text": "你把每一张拍立得都写满了。写到第二十张，手已经不会写字了，但没人催你。",
+          "effects": {
+            "stamina": -8,
+            "axes": {
+              "self": 4,
+              "others": 8
+            },
+            "stats": {
+              "talk": 2
+            },
+            "mood": 6,
             "traits": {
               "kind": 5
             }
           },
-          "setFlag": "fan-letter"
+          "setFlag": "first-cheki"
+        },
+        {
+          "id": "fast",
+          "label": "快点，别让人等",
+          "text": "你把队伍过得很快。有人说「不用写字也行」，你还是写了。散场时桌上还剩三十张空白。",
+          "effects": {
+            "stamina": -12,
+            "axes": {
+              "self": 6,
+              "others": 2,
+              "fit": 2
+            },
+            "traits": {
+              "coop": 3
+            },
+            "negatives": {
+              "fatigue": 5
+            }
+          },
+          "setFlag": "first-cheki"
+        },
+        {
+          "id": "free",
+          "label": "今天不收钱",
+          "text": "你把「一张五十」的牌子翻了过去。那天你亏了钱，但记住了六个人的名字。",
+          "effects": {
+            "stamina": -6,
+            "axes": {
+              "self": 2,
+              "others": 10,
+              "fit": -3
+            },
+            "mood": 8,
+            "traits": {
+              "kind": 6
+            }
+          },
+          "setFlag": "first-cheki"
+        }
+      ]
+    },
+    {
+      "id": "first-om",
+      "title": "有人问要不要办专场",
+      "text": "场地方的人说：「你们现在的动员量，可以试一场 OM。周末的档，租金先付一半。」",
+      "major": true,
+      "requires": "total >= 220 and hasFlag(\"ev:debut\") and not hasFlag(\"ev:first-om\")",
+      "sourceRow": 6,
+      "choices": [
+        {
+          "id": "take",
+          "label": "接",
+          "text": "你付了定金。接下来的一个月，你每天都在算票。",
+          "effects": {
+            "stamina": -10,
+            "axes": {
+              "self": 8,
+              "others": 5,
+              "fit": 6
+            },
+            "mood": 5,
+            "traits": {
+              "ambitious": 5
+            },
+            "negatives": {
+              "stress": 10
+            }
+          },
+          "setFlag": "first-om"
+        },
+        {
+          "id": "smaller",
+          "label": "问能不能换个小一点的场",
+          "text": "场地方想了很久，给你换了一个一百二十人的场。租金少了一半，但「专场」两个字还是那两个。",
+          "effects": {
+            "axes": {
+              "self": 4,
+              "others": 6,
+              "fit": 4
+            },
+            "mood": 4,
+            "traits": {
+              "independent": 4
+            }
+          },
+          "setFlag": "first-om"
+        },
+        {
+          "id": "pass",
+          "label": "现在还不配",
+          "text": "你说再等等。对方说了句「随时」，走了。你在空场地站到灯关。",
+          "effects": {
+            "axes": {
+              "self": 3,
+              "others": -4,
+              "fit": -5
+            },
+            "mood": -8,
+            "negatives": {
+              "restless": 6
+            }
+          },
+          "setFlag": "first-om"
+        }
+      ]
+    },
+    {
+      "id": "vocal-30",
+      "title": "声音被夸了",
+      "text": "调音师在返听里说：「这个声音可以往前推一点。」你不知道这算不算夸。",
+      "requires": "vocal >= 30 and not hasFlag(\"ev:vocal-30\")",
+      "sourceRow": 7,
+      "choices": [
+        {
+          "id": "note",
+          "label": "把这句话记下来",
+          "text": "你在手机备忘录里写：「往前推一点。」后来调音时你每次都想起这句。",
+          "effects": {
+            "axes": {
+              "self": 3,
+              "fit": 4
+            },
+            "stats": {
+              "vocal": 2
+            },
+            "mood": 6
+          },
+          "setFlag": "vocal-30"
+        },
+        {
+          "id": "doubt",
+          "label": "他只是随口说的",
+          "text": "你没当回事。但那天回家路上，你在心里把那段又唱了一遍。",
+          "effects": {
+            "axes": {
+              "self": -2,
+              "fit": 2
+            },
+            "stats": {
+              "vocal": 1
+            },
+            "mood": -3
+          },
+          "setFlag": "vocal-30"
+        },
+        {
+          "id": "ask",
+          "label": "追着问他要怎么推",
+          "text": "调音师被你问烦了，最后教了你一个呼吸的方法。你练了一个月。",
+          "effects": {
+            "stamina": -6,
+            "axes": {
+              "self": 5,
+              "fit": 3
+            },
+            "stats": {
+              "vocal": 3
+            },
+            "traits": {
+              "ambitious": 3
+            }
+          },
+          "setFlag": "vocal-30"
+        }
+      ]
+    },
+    {
+      "id": "vocal-60",
+      "title": "有人拿你和别人比",
+      "text": "评论里有人写：「主唱不如隔壁团的。」下面有人回：「你听过现场吗。」两条都被你看到了。",
+      "requires": "vocal >= 60 and not hasFlag(\"ev:vocal-60\")",
+      "sourceRow": 8,
+      "choices": [
+        {
+          "id": "reply",
+          "label": "回一句",
+          "text": "你回了：「那你来现场听。」发送之后心跳了很久，对方没再回。",
+          "effects": {
+            "axes": {
+              "self": 6,
+              "others": -3,
+              "fit": 3
+            },
+            "stats": {
+              "talk": 2
+            },
+            "mood": -3,
+            "traits": {
+              "ambitious": 4,
+              "independent": 3
+            },
+            "negatives": {
+              "stress": 6
+            }
+          },
+          "setFlag": "vocal-60"
+        },
+        {
+          "id": "ignore",
+          "label": "关掉评论，去练",
+          "text": "你把手机翻过去，练了两小时。嗓子哑了，但那句高音终于上去了。",
+          "effects": {
+            "stamina": -8,
+            "axes": {
+              "self": 3,
+              "fit": 7
+            },
+            "stats": {
+              "vocal": 2
+            },
+            "mood": -5
+          },
+          "setFlag": "vocal-60"
+        },
+        {
+          "id": "screenshot",
+          "label": "截图存起来",
+          "text": "你把那条评论截图存进了一个叫「以后」的相册。里面已经有一百多张了。",
+          "effects": {
+            "axes": {
+              "self": 4,
+              "fit": 2
+            },
+            "mood": -8,
+            "negatives": {
+              "stress": 6
+            }
+          },
+          "setFlag": "vocal-60"
+        }
+      ]
+    },
+    {
+      "id": "dance-40",
+      "title": "动作终于跟上",
+      "text": "录像回看时你发现，这次你的手比拍子早了半拍——不是慢，是提前。你倒回去看了五遍。",
+      "requires": "dance >= 40 and not hasFlag(\"ev:dance-40\")",
+      "sourceRow": 9,
+      "choices": [
+        {
+          "id": "freeze",
+          "label": "把这一帧发给队友",
+          "text": "队友回了一个「？？？」。她说明天帮你看看。",
+          "effects": {
+            "axes": {
+              "self": 4,
+              "others": 4,
+              "fit": 3
+            },
+            "stats": {
+              "dance": 2
+            },
+            "mood": 6,
+            "traits": {
+              "coop": 3
+            }
+          },
+          "setFlag": "dance-40"
+        },
+        {
+          "id": "loop",
+          "label": "看到凌晨三点",
+          "text": "你把这段看了三十遍，直到能背出每一帧。第二天排练，你迟到了一次。",
+          "effects": {
+            "stamina": -6,
+            "axes": {
+              "self": 5,
+              "fit": 4
+            },
+            "stats": {
+              "dance": 3
+            },
+            "traits": {
+              "ambitious": 4
+            },
+            "negatives": {
+              "fatigue": 5
+            }
+          },
+          "setFlag": "dance-40"
+        },
+        {
+          "id": "stop",
+          "label": "关掉视频，睡了",
+          "text": "你告诉自己够了。躺下的时候，脑子里还在数拍子。",
+          "effects": {
+            "axes": {
+              "self": 2,
+              "fit": 2
+            },
+            "stats": {
+              "dance": 1
+            },
+            "mood": 3
+          },
+          "setFlag": "dance-40"
+        }
+      ]
+    },
+    {
+      "id": "acting-30",
+      "title": "哭戏",
+      "text": "工作坊老师让你演一段失去。你演到一半真的哭了，然后慌了，怕别人看出来是真的。",
+      "requires": "acting >= 30 and not hasFlag(\"ev:acting-30\")",
+      "sourceRow": 10,
+      "choices": [
+        {
+          "id": "hide",
+          "label": "假装没事，把戏演完",
+          "text": "你把眼泪擦掉，把最后两句说完。老师鼓掌，说这才叫演。你不确定。",
+          "effects": {
+            "stamina": -4,
+            "axes": {
+              "self": -3,
+              "others": 4,
+              "fit": 5
+            },
+            "stats": {
+              "acting": 2
+            },
+            "mood": -3,
+            "negatives": {
+              "stress": 5
+            }
+          },
+          "setFlag": "acting-30"
+        },
+        {
+          "id": "admit",
+          "label": "承认是真的",
+          "text": "你说「我刚才是真的难过」。老师沉默了一会儿，说：「那你以后会很辛苦。」",
+          "effects": {
+            "axes": {
+              "self": 7,
+              "others": 3,
+              "fit": 2
+            },
+            "stats": {
+              "acting": 1
+            },
+            "mood": -5,
+            "traits": {
+              "kind": 4
+            }
+          },
+          "setFlag": "acting-30"
+        },
+        {
+          "id": "leave",
+          "label": "去洗手间待十分钟",
+          "text": "你在隔间里坐到不抖了才出来。回来的时候，大家在等你。",
+          "effects": {
+            "axes": {
+              "self": 4,
+              "others": 2
+            },
+            "mood": 5,
+            "negatives": {
+              "stress": -5
+            }
+          },
+          "setFlag": "acting-30"
+        }
+      ]
+    },
+    {
+      "id": "talk-30",
+      "title": "主持首秀",
+      "text": "主办方临时缺人，把话筒塞给了你。台下三百人，你只有一张写着流程的便利贴。",
+      "requires": "talk >= 30 and not hasFlag(\"ev:talk-30\")",
+      "sourceRow": 11,
+      "choices": [
+        {
+          "id": "own",
+          "label": "把便利贴收起来，直接说",
+          "text": "你把流程扔了，凭记忆串完。有两处说错，但你把它变成了玩笑。",
+          "effects": {
+            "stamina": -6,
+            "axes": {
+              "self": 7,
+              "others": 6,
+              "fit": 4
+            },
+            "stats": {
+              "talk": 3
+            },
+            "mood": 8,
+            "traits": {
+              "lead": 4,
+              "passion": 3
+            },
+            "negatives": {
+              "stress": 5
+            }
+          },
+          "setFlag": "talk-30"
+        },
+        {
+          "id": "read",
+          "label": "照流程念，别出错",
+          "text": "你一个字一个字念完了。没有事故，也没有人记住你。",
+          "effects": {
+            "stamina": -4,
+            "axes": {
+              "self": 2,
+              "others": 2,
+              "fit": 5
+            },
+            "stats": {
+              "talk": 1
+            },
+            "mood": -2
+          },
+          "setFlag": "talk-30"
+        },
+        {
+          "id": "ask-help",
+          "label": "把话筒递给旁边的人",
+          "text": "你说「这段交给我的队友」。她接过去的时候腿在抖，但她接住了。",
+          "effects": {
+            "axes": {
+              "self": 3,
+              "others": 8,
+              "fit": 3
+            },
+            "mood": 5,
+            "traits": {
+              "coop": 5,
+              "kind": 3
+            }
+          },
+          "setFlag": "talk-30"
+        }
+      ]
+    },
+    {
+      "id": "total-80",
+      "title": "被叫了一声老师",
+      "text": "后台有个刚入行的女孩过来问你：「老师，上台前紧张怎么办？」你愣了两秒才反应过来是在问你。",
+      "requires": "total >= 80 and not hasFlag(\"ev:total-80\")",
+      "sourceRow": 12,
+      "choices": [
+        {
+          "id": "answer",
+          "label": "认真回答",
+          "text": "你说：「紧张是好事，说明你在乎。」她说了声谢谢，跑走了。",
+          "effects": {
+            "axes": {
+              "self": 5,
+              "others": 6,
+              "fit": 3
+            },
+            "stats": {
+              "talk": 2
+            },
+            "mood": 6,
+            "traits": {
+              "kind": 4,
+              "lead": 3
+            }
+          },
+          "setFlag": "total-80"
+        },
+        {
+          "id": "joke",
+          "label": "开个玩笑糊过去",
+          "text": "你说「我也紧张」，她笑了。后来你听说，她那天真的上台了。",
+          "effects": {
+            "axes": {
+              "self": 2,
+              "others": 4
+            },
+            "mood": 6,
+            "traits": {
+              "kind": 3
+            }
+          },
+          "setFlag": "total-80"
+        },
+        {
+          "id": "realize",
+          "label": "愣住，然后什么都没说",
+          "text": "你站在原地很久。原来已经有人把你当成「前面的人」了。",
+          "effects": {
+            "axes": {
+              "self": 5,
+              "fit": 4
+            },
+            "mood": 8
+          },
+          "setFlag": "total-80"
+        }
+      ]
+    },
+    {
+      "id": "total-200",
+      "title": "有人开始研究你的走位",
+      "text": "散场时你听见两个女孩在讨论：「她第二段往左边走是因为那边有灯。」你自己都没意识到。",
+      "requires": "total >= 200 and not hasFlag(\"ev:total-200\")",
+      "sourceRow": 13,
+      "choices": [
+        {
+          "id": "change",
+          "label": "下一场，把那个走位改掉",
+          "text": "你把那段走位改了。散场时那两个女孩说：「今天不一样。」",
+          "effects": {
+            "axes": {
+              "self": 6,
+              "others": 3,
+              "fit": 5
+            },
+            "stats": {
+              "dance": 2
+            },
+            "mood": 5,
+            "traits": {
+              "independent": 3
+            }
+          },
+          "setFlag": "total-200"
         },
         {
           "id": "keep",
-          "label": "收起来，好好保存",
-          "text": "你把信夹进笔记本里，没跟任何人说。",
+          "label": "不改，就留着",
+          "text": "你没改。有人连灯的位置都记得，你不想让她白记。",
           "effects": {
             "axes": {
-              "self": 5
+              "self": 4,
+              "others": 8,
+              "fit": 2
+            },
+            "mood": 8,
+            "traits": {
+              "kind": 5
             }
           },
-          "setFlag": "fan-letter"
+          "setFlag": "total-200"
+        },
+        {
+          "id": "tell",
+          "label": "去跟她们说声谢谢",
+          "text": "你在散场通道等到她们。她们反而吓到了，说「我们说话是不是太大声」。",
+          "effects": {
+            "axes": {
+              "self": 3,
+              "others": 10
+            },
+            "mood": 10,
+            "traits": {
+              "kind": 5
+            }
+          },
+          "setFlag": "total-200"
         }
       ]
     },
     {
       "id": "burnout",
       "title": "撑不住了",
-      "text": "连着几天没睡够，你在排练室的地板上坐了很久。",
+      "text": "连着几天没睡够。排练到一半，你在地板上坐下来，就没再站起来。天花板上的灯管有一根在闪。",
       "major": true,
       "requires": "stamina < 20 and not hasFlag(\"ev:burnout\")",
+      "sourceRow": 14,
       "choices": [
         {
           "id": "rest",
           "label": "请两天假，好好睡一觉",
-          "text": "你睡了一整天，醒来时天已经黑了。",
+          "text": "你睡了一整天，醒来时天已经黑了。群里 99+ 条消息，你一条都没点开。",
           "effects": {
-            "stamina": 40,
+            "stamina": 30,
             "axes": {
               "self": 4
             },
+            "mood": 5,
             "negatives": {
               "stress": -10,
               "fatigue": -8
@@ -210,16 +1334,17 @@
         {
           "id": "push",
           "label": "咬牙继续",
-          "text": "你继续练，但动作开始变形。",
+          "text": "你继续练。动作开始变形，镜子里那个人看起来不像你。",
           "effects": {
-            "stamina": -5,
+            "stamina": -6,
             "axes": {
               "self": -5,
-              "fit": 2
+              "fit": 3
             },
             "stats": {
-              "dance": 1
+              "dance": 2
             },
+            "mood": -8,
             "traits": {
               "ambitious": 4
             },
@@ -228,76 +1353,392 @@
             }
           },
           "setFlag": "burnout"
+        },
+        {
+          "id": "tell",
+          "label": "跟队友说一句「我今天不行」",
+          "text": "你说完这句话，房间安静了三秒。然后有人说：「那今天就练走位吧，你坐着看。」",
+          "effects": {
+            "axes": {
+              "self": 6,
+              "others": 7,
+              "fit": 2
+            },
+            "mood": 8,
+            "traits": {
+              "coop": 5,
+              "kind": 4
+            },
+            "negatives": {
+              "stress": -8
+            }
+          },
+          "setFlag": "burnout"
         }
       ]
     },
     {
-      "id": "crowded-fans",
-      "title": "有人举你的名字",
-      "text": "前排有人举起了写着你的灯牌，你差点忘了下一句歌词。",
-      "requires": "fans.stage >= 50 and not hasFlag(\"ev:crowded-fans\")",
+      "id": "insomnia",
+      "title": "失眠",
+      "text": "躺下三个小时，脑子里一直在跑同一段副歌。你把闹钟调晚了半小时，然后又调回去。",
+      "requires": "neg.stress >= 40 and not hasFlag(\"ev:insomnia\")",
+      "sourceRow": 15,
       "choices": [
         {
-          "id": "look",
-          "label": "看过去，笑一下",
-          "text": "她愣了一下，然后喊得更大声了。",
+          "id": "meditate",
+          "label": "试着什么都不想",
+          "text": "你躺着数呼吸，数到四百多。天快亮的时候终于睡着了。",
           "effects": {
-            "stamina": 3,
+            "stamina": 6,
             "axes": {
-              "self": 2,
-              "others": 6
+              "self": 3,
+              "fit": 2
             },
-            "traits": {
-              "passion": 3
+            "mood": 3,
+            "negatives": {
+              "stress": -8,
+              "restless": -4
             }
           },
-          "setFlag": "crowded-fans"
+          "setFlag": "insomnia"
         },
         {
-          "id": "focus",
-          "label": "专心唱完这首歌",
-          "text": "你没有抬头，但把这首歌唱到了最好。",
+          "id": "write",
+          "label": "起来写歌",
+          "text": "凌晨四点，你写完了一段词。第二天看，只有两句能用，但那两句很好。",
+          "effects": {
+            "stamina": -4,
+            "axes": {
+              "self": 4,
+              "fit": 3
+            },
+            "stats": {
+              "vocal": 1,
+              "talk": 1
+            },
+            "mood": 2,
+            "traits": {
+              "passion": 4
+            },
+            "negatives": {
+              "fatigue": 4
+            }
+          },
+          "setFlag": "insomnia"
+        },
+        {
+          "id": "phone",
+          "label": "刷手机到天亮",
+          "text": "你刷到同期的团在庆祝。天亮的时候，你把手机扣在胸口，眼睛很干。",
+          "effects": {
+            "stamina": -6,
+            "axes": {
+              "self": -3,
+              "others": -1,
+              "fit": -2
+            },
+            "mood": -6,
+            "negatives": {
+              "stress": 8
+            }
+          },
+          "setFlag": "insomnia"
+        }
+      ]
+    },
+    {
+      "id": "knee",
+      "title": "膝盖响",
+      "text": "下楼梯的时候膝盖响了一声。你站在台阶上试了三次，每次都响。",
+      "requires": "neg.fatigue >= 30 and not hasFlag(\"ev:knee\")",
+      "sourceRow": 16,
+      "choices": [
+        {
+          "id": "hospital",
+          "label": "去医院查一下",
+          "text": "挂号、拍片、等结果。医生说半月板有点磨损，「不能再这么跳了」。你把片子折起来放进包里。",
+          "effects": {
+            "stamina": -8,
+            "axes": {
+              "self": 5,
+              "fit": 2
+            },
+            "mood": -5,
+            "negatives": {
+              "fatigue": -6
+            }
+          },
+          "setFlag": "knee"
+        },
+        {
+          "id": "tape",
+          "label": "贴肌贴，接着跳",
+          "text": "你买了两卷肌贴，室友帮你贴的，贴得很难看。跳的时候确实没那么疼。",
+          "effects": {
+            "stamina": -4,
+            "axes": {
+              "self": 3,
+              "fit": 3
+            },
+            "stats": {
+              "dance": 2
+            },
+            "mood": -3,
+            "traits": {
+              "ambitious": 3
+            },
+            "negatives": {
+              "fatigue": 8
+            }
+          },
+          "setFlag": "knee"
+        },
+        {
+          "id": "change",
+          "label": "改动作，绕开那一下",
+          "text": "你重编了两个八拍。新的走位更简单，但你花了三个晚上才习惯。",
+          "effects": {
+            "stamina": -6,
+            "axes": {
+              "self": 2,
+              "fit": 4
+            },
+            "stats": {
+              "dance": 1
+            },
+            "mood": 2,
+            "traits": {
+              "independent": 3
+            },
+            "negatives": {
+              "fatigue": -3
+            }
+          },
+          "setFlag": "knee"
+        }
+      ]
+    },
+    {
+      "id": "old-video",
+      "title": "旧视频被翻出来了",
+      "text": "有人翻出你两年前的一段视频。那时候你在另一个团，妆很浓，跳得也不好看。评论区开始热闹。",
+      "requires": "neg.scandal >= 10 and not hasFlag(\"ev:old-video\")",
+      "sourceRow": 17,
+      "choices": [
+        {
+          "id": "own",
+          "label": "自己转发，写一句「那时候真难看」",
+          "text": "你转发了，配了句自嘲。评论区反而安静了，有人说「现在好看多了」。",
+          "effects": {
+            "axes": {
+              "self": 8,
+              "others": 4
+            },
+            "stats": {
+              "talk": 2
+            },
+            "mood": 5,
+            "traits": {
+              "independent": 5
+            },
+            "negatives": {
+              "scandal": -6,
+              "stress": -4
+            }
+          },
+          "setFlag": "old-video"
+        },
+        {
+          "id": "delete",
+          "label": "联系平台删掉",
+          "text": "视频删了，但截图已经在传。有人问你是不是心虚。",
+          "effects": {
+            "stamina": -4,
+            "axes": {
+              "self": -2,
+              "others": -3
+            },
+            "mood": -8,
+            "negatives": {
+              "scandal": 4,
+              "stress": 8
+            }
+          },
+          "setFlag": "old-video"
+        },
+        {
+          "id": "silent",
+          "label": "什么都不做",
+          "text": "你关了手机，第二天照常排练。三天后没人再提。",
+          "effects": {
+            "axes": {
+              "self": 3,
+              "fit": 2
+            },
+            "mood": -4,
+            "negatives": {
+              "scandal": -3
+            }
+          },
+          "setFlag": "old-video"
+        }
+      ]
+    },
+    {
+      "id": "misread",
+      "title": "被误会了",
+      "text": "有人拍到你和一个男生在便利店门口说话。照片只有一张，角度很巧。群里开始有人问。",
+      "requires": "neg.desire >= 20 and not hasFlag(\"ev:misread\")",
+      "sourceRow": 18,
+      "choices": [
+        {
+          "id": "explain",
+          "label": "在社媒上说清楚",
+          "text": "你写了一段话，删了三遍。最后发出去的那版只有两句，反而最像你。",
+          "effects": {
+            "axes": {
+              "self": 5,
+              "others": 6,
+              "fit": 2
+            },
+            "stats": {
+              "talk": 2
+            },
+            "mood": -3,
+            "traits": {
+              "independent": 3
+            },
+            "negatives": {
+              "scandal": -4,
+              "stress": -3
+            }
+          },
+          "setFlag": "misread"
+        },
+        {
+          "id": "ignore",
+          "label": "不回应",
+          "text": "你没回应。话题过了两天自己冷了，但截图留在了别人手机里。",
+          "effects": {
+            "axes": {
+              "self": 2,
+              "others": -2
+            },
+            "mood": -6,
+            "negatives": {
+              "scandal": 3,
+              "stress": 5
+            }
+          },
+          "setFlag": "misread"
+        },
+        {
+          "id": "ask",
+          "label": "先问清楚那个男生是谁",
+          "text": "你翻遍了通讯录，才想起来那是隔壁团的吉他手，那天在借打火机。你觉得很荒唐。",
           "effects": {
             "axes": {
               "self": 4,
-              "fit": 6
+              "others": 3
+            },
+            "mood": 2,
+            "negatives": {
+              "stress": -2
+            }
+          },
+          "setFlag": "misread"
+        }
+      ]
+    },
+    {
+      "id": "comment-war",
+      "title": "评论区",
+      "text": "一条评论说你「靠脸」。底下吵了两百条。你翻到最下面，看见有人替你说话，然后被骂了。",
+      "requires": "neg.stress >= 60 and not hasFlag(\"ev:comment-war\")",
+      "sourceRow": 19,
+      "choices": [
+        {
+          "id": "reply-one",
+          "label": "只回那一条替你说话的",
+          "text": "你回了一句「谢谢」。她后来成了每场都在的人。",
+          "effects": {
+            "axes": {
+              "self": 4,
+              "others": 7
+            },
+            "stats": {
+              "talk": 1
+            },
+            "mood": 4,
+            "traits": {
+              "kind": 4
+            },
+            "negatives": {
+              "stress": -6
+            }
+          },
+          "setFlag": "comment-war"
+        },
+        {
+          "id": "close",
+          "label": "关评论",
+          "text": "你关了一周。这一周你练得特别专心，也特别不想说话。",
+          "effects": {
+            "stamina": -4,
+            "axes": {
+              "self": 3,
+              "others": -2,
+              "fit": 4
             },
             "stats": {
               "vocal": 1
+            },
+            "mood": -4,
+            "negatives": {
+              "stress": -4,
+              "scandal": 2
             }
           },
-          "setFlag": "crowded-fans"
+          "setFlag": "comment-war"
         },
         {
-          "id": "wave",
-          "label": "朝那边挥挥手",
-          "text": "你冲着人群挥了挥手，欢呼声更大了。",
+          "id": "fight",
+          "label": "一条一条怼回去",
+          "text": "你怼到凌晨三点。第二天上热搜的不是你的舞台。",
           "effects": {
-            "stamina": -2,
+            "stamina": -8,
             "axes": {
-              "others": 4
+              "self": -4,
+              "others": -6
+            },
+            "mood": -10,
+            "negatives": {
+              "scandal": 8,
+              "stress": 10
             }
           },
-          "requires": "trait.passion >= 3"
+          "setFlag": "comment-war"
         }
       ]
     },
     {
       "id": "manager-doubt",
       "title": "经纪人的犹豫",
-      "text": "「你最近……还撑得住吗？」他把话说到一半又咽了回去。",
+      "text": "「你最近……还撑得住吗？」他把话说到一半又咽了回去，把下一场演出的资料推过来。",
       "requires": "fit < 34 and not hasFlag(\"ev:manager-doubt\")",
+      "sourceRow": 20,
       "choices": [
         {
           "id": "honest",
           "label": "说实话，我不太确定",
-          "text": "他沉默了很久，说「那就慢一点」。",
+          "text": "他沉默了很久，说：「那就慢一点。」然后把资料收了回去。",
           "effects": {
             "stamina": 5,
             "axes": {
               "self": 7,
               "others": 3
             },
+            "mood": 5,
             "negatives": {
               "stress": -5
             }
@@ -307,7 +1748,7 @@
         {
           "id": "brave",
           "label": "我没事，再给我点时间",
-          "text": "他点点头，把下一场演出的资料推给你。",
+          "text": "他点点头，把下一场演出的资料推给你。你接过来的时候，手有点抖。",
           "effects": {
             "stamina": -5,
             "axes": {
@@ -315,6 +1756,7 @@
               "others": 5,
               "fit": 4
             },
+            "mood": -3,
             "traits": {
               "ambitious": 4
             },
@@ -327,18 +1769,717 @@
         {
           "id": "firm",
           "label": "我会证明给你看",
-          "text": "你把这句话说得没有一丝犹豫。",
+          "text": "你把这句话说得没有一丝犹豫。他看了你两秒，说「好」。",
           "effects": {
             "stamina": -3,
             "axes": {
               "self": 2,
               "fit": 3
             },
+            "mood": 3,
             "traits": {
               "ambitious": 2
             }
           },
-          "requires": "trait.ambitious >= 3"
+          "setFlag": "manager-doubt",
+          "requires": "ambitious >= 3",
+          "sourceRow": 58
+        }
+      ]
+    },
+    {
+      "id": "manager-push",
+      "title": "推你去拼盘",
+      "text": "经纪人塞给你一张対バン的名单：「这场有四个团，台下都是别家的粉。你要抢人。」",
+      "requires": "total >= 100 and not hasFlag(\"ev:manager-push\")",
+      "sourceRow": 21,
+      "choices": [
+        {
+          "id": "take",
+          "label": "去，把场子抢下来",
+          "text": "你去了。前三个团唱完，台下走了三分之一。轮到你的时候，你只说了一句「留一下」。",
+          "effects": {
+            "stamina": -10,
+            "axes": {
+              "self": 8,
+              "others": 6,
+              "fit": 5
+            },
+            "mood": 6,
+            "traits": {
+              "ambitious": 4,
+              "passion": 3
+            },
+            "negatives": {
+              "stress": 6
+            }
+          },
+          "setFlag": "manager-push"
+        },
+        {
+          "id": "safe",
+          "label": "唱最稳的那首",
+          "text": "你唱了最熟的歌。没出错，也没留下什么。有个女孩记住了你的名字。",
+          "effects": {
+            "stamina": -6,
+            "axes": {
+              "self": 3,
+              "others": 4,
+              "fit": 3
+            },
+            "mood": 2
+          },
+          "setFlag": "manager-push"
+        },
+        {
+          "id": "refuse",
+          "label": "这次不去，我想先把专场准备好",
+          "text": "经纪人愣了一下，说「行」。你不知道这个「行」是不是真的行。",
+          "effects": {
+            "axes": {
+              "self": 5,
+              "others": -2,
+              "fit": 4
+            },
+            "mood": -4,
+            "traits": {
+              "independent": 5
+            },
+            "negatives": {
+              "stress": 4
+            }
+          },
+          "setFlag": "manager-push"
+        }
+      ]
+    },
+    {
+      "id": "teammate-quit",
+      "title": "队友说要毕业",
+      "text": "排练结束后她留下来，说：「我做到这个月底。」她把排练室的钥匙放在桌上。",
+      "major": true,
+      "requires": "hasFlag(\"ev:party-first\") and not hasFlag(\"ev:teammate-quit\")",
+      "sourceRow": 22,
+      "choices": [
+        {
+          "id": "let-go",
+          "label": "送她走",
+          "text": "你帮她把东西搬下楼。她走到路口回头说：「你们会好的。」你站在原地看她走远。",
+          "effects": {
+            "stamina": -4,
+            "axes": {
+              "self": 3,
+              "others": 6
+            },
+            "mood": -6,
+            "traits": {
+              "kind": 5
+            },
+            "negatives": {
+              "stress": 4
+            }
+          },
+          "setFlag": "teammate-quit"
+        },
+        {
+          "id": "ask-stay",
+          "label": "问她能不能再想想",
+          "text": "她想了很久，说：「我不能。」你没再说话，把她送到了车站。",
+          "effects": {
+            "stamina": -2,
+            "axes": {
+              "self": 4,
+              "others": 3
+            },
+            "mood": -4,
+            "traits": {
+              "coop": 4
+            },
+            "negatives": {
+              "stress": 6
+            }
+          },
+          "setFlag": "teammate-quit"
+        },
+        {
+          "id": "ask-why",
+          "label": "问她为什么",
+          "text": "她说：「我在这里看不到自己。」这句话你记了很久。",
+          "effects": {
+            "axes": {
+              "self": 6,
+              "others": 4,
+              "fit": 2
+            },
+            "mood": -2,
+            "traits": {
+              "independent": 3
+            }
+          },
+          "setFlag": "teammate-quit"
+        }
+      ]
+    },
+    {
+      "id": "teammate-conflict",
+      "title": "排练吵架",
+      "text": "为了一个走位，两个人吵了二十分钟。你站在中间，谁都没帮。",
+      "requires": "others >= 40 and not hasFlag(\"ev:teammate-conflict\")",
+      "sourceRow": 23,
+      "choices": [
+        {
+          "id": "mediate",
+          "label": "两边都听，重新排一遍",
+          "text": "你让两个人分别走了一遍。第三遍的时候，她们自己找到了位置。",
+          "effects": {
+            "stamina": -4,
+            "axes": {
+              "self": 5,
+              "others": 8,
+              "fit": 3
+            },
+            "mood": 4,
+            "traits": {
+              "coop": 5,
+              "lead": 3
+            },
+            "negatives": {
+              "stress": -3
+            }
+          },
+          "setFlag": "teammate-conflict"
+        },
+        {
+          "id": "decide",
+          "label": "我决定，按我说的来",
+          "text": "你定了。一个人当场走开，另一个人留下来陪你练到十一点。",
+          "effects": {
+            "stamina": -6,
+            "axes": {
+              "self": 4,
+              "others": -4,
+              "fit": 5
+            },
+            "mood": -4,
+            "traits": {
+              "lead": 5
+            },
+            "negatives": {
+              "stress": 6
+            }
+          },
+          "setFlag": "teammate-conflict"
+        },
+        {
+          "id": "leave",
+          "label": "让她们吵完",
+          "text": "你去楼下买了四瓶水。回来的时候她们已经不吵了，谁也没提刚才的事。",
+          "effects": {
+            "axes": {
+              "self": 1,
+              "others": 2
+            },
+            "mood": -2
+          },
+          "setFlag": "teammate-conflict"
+        }
+      ]
+    },
+    {
+      "id": "peer-bad",
+      "title": "同期的团火了",
+      "text": "同期的团上了推荐位。她们的票在半小时内卖完。你在群里发了个恭喜，没人回。",
+      "requires": "fans.stage >= 100 and not hasFlag(\"ev:peer-bad\")",
+      "sourceRow": 24,
+      "choices": [
+        {
+          "id": "study",
+          "label": "买票去看她们的演出",
+          "text": "你买了最后排的票，看完了一整场。回来你写了一整页笔记。",
+          "effects": {
+            "stamina": -8,
+            "axes": {
+              "self": 6,
+              "others": 3,
+              "fit": 6
+            },
+            "stats": {
+              "dance": 1
+            },
+            "mood": -2,
+            "traits": {
+              "ambitious": 5
+            },
+            "negatives": {
+              "restless": 4
+            }
+          },
+          "setFlag": "peer-bad"
+        },
+        {
+          "id": "close",
+          "label": "把 App 关了，练自己的",
+          "text": "你把手机放进抽屉，练到深夜。第二天看到她们又上了一个推荐位。",
+          "effects": {
+            "stamina": -6,
+            "axes": {
+              "self": 4,
+              "fit": 5
+            },
+            "stats": {
+              "vocal": 1
+            },
+            "mood": -5,
+            "negatives": {
+              "restless": 5
+            }
+          },
+          "setFlag": "peer-bad"
+        },
+        {
+          "id": "congrat",
+          "label": "在群里发一句恭喜",
+          "text": "没人回。第二天她们回了，说谢谢。你把那条消息点了收藏。",
+          "effects": {
+            "axes": {
+              "self": 2,
+              "others": 5
+            },
+            "mood": -3,
+            "traits": {
+              "kind": 4
+            }
+          },
+          "setFlag": "peer-bad"
+        }
+      ]
+    },
+    {
+      "id": "venue-closing",
+      "title": "常去的场要关了",
+      "text": "老板在门口贴了张纸：「因租约到期，本店营业至月底。」你在那张纸前站了很久。",
+      "requires": "fans.stage >= 60 and not hasFlag(\"ev:venue-closing\")",
+      "sourceRow": 25,
+      "choices": [
+        {
+          "id": "last",
+          "label": "把最后一场办得好看一点",
+          "text": "你跟老板说要办最后一场。他笑了，说「那我把灯都修一下」。",
+          "effects": {
+            "stamina": -10,
+            "axes": {
+              "self": 7,
+              "others": 8,
+              "fit": 4
+            },
+            "mood": 8,
+            "traits": {
+              "passion": 5
+            },
+            "negatives": {
+              "fatigue": 6
+            }
+          },
+          "setFlag": "venue-closing"
+        },
+        {
+          "id": "photo",
+          "label": "在关门前拍一组照片",
+          "text": "你在空场地上拍了一组照片。灯只开了两盏，但拍出来很好看。",
+          "effects": {
+            "stamina": -3,
+            "axes": {
+              "self": 5,
+              "others": 4
+            },
+            "mood": 6
+          },
+          "setFlag": "venue-closing"
+        },
+        {
+          "id": "find",
+          "label": "开始找下一个场地",
+          "text": "你跑了三个区，看了五个场。有一个不错，但要提前三个月订。",
+          "effects": {
+            "stamina": -8,
+            "axes": {
+              "self": 4,
+              "others": 3,
+              "fit": 5
+            },
+            "mood": -3,
+            "traits": {
+              "independent": 3
+            }
+          },
+          "setFlag": "venue-closing"
+        }
+      ]
+    },
+    {
+      "id": "fan-letter",
+      "title": "第一封信",
+      "text": "后台收到一封手写信，字迹很认真：「谢谢你上周那场演出。我本来那天想请假的。」",
+      "requires": "others >= 45 and not hasFlag(\"ev:fan-letter\")",
+      "sourceRow": 26,
+      "choices": [
+        {
+          "id": "reply",
+          "label": "回一封",
+          "text": "你写了回信。一周后，她又来了，还带了朋友。",
+          "effects": {
+            "axes": {
+              "self": 3,
+              "others": 6
+            },
+            "stats": {
+              "talk": 1
+            },
+            "mood": 6,
+            "traits": {
+              "kind": 5
+            }
+          },
+          "setFlag": "fan-letter"
+        },
+        {
+          "id": "keep",
+          "label": "收起来，好好保存",
+          "text": "你把信夹进笔记本里，没跟任何人说。后来搬家时它还在。",
+          "effects": {
+            "axes": {
+              "self": 5
+            },
+            "mood": 6
+          },
+          "setFlag": "fan-letter"
+        },
+        {
+          "id": "post",
+          "label": "把信拍照发出来（不拍名字）",
+          "text": "你发了照片，写了「收到了」。那天晚上又有三个人写了信。",
+          "effects": {
+            "axes": {
+              "self": 2,
+              "others": 8,
+              "fit": 2
+            },
+            "stats": {
+              "talk": 1
+            },
+            "mood": 5,
+            "traits": {
+              "passion": 3
+            }
+          },
+          "setFlag": "fan-letter"
+        }
+      ]
+    },
+    {
+      "id": "crowded-fans",
+      "title": "有人举你的名字",
+      "text": "前排有人举起了写着你的灯牌。你差点忘了下一句歌词，只能笑着把话筒递给台下。",
+      "requires": "fans.stage >= 50 and not hasFlag(\"ev:crowded-fans\")",
+      "sourceRow": 27,
+      "choices": [
+        {
+          "id": "look",
+          "label": "看过去，笑一下",
+          "text": "她愣了一下，然后喊得更大声了。",
+          "effects": {
+            "stamina": 3,
+            "axes": {
+              "self": 2,
+              "others": 6
+            },
+            "mood": 5,
+            "traits": {
+              "passion": 3
+            }
+          },
+          "setFlag": "crowded-fans"
+        },
+        {
+          "id": "focus",
+          "label": "专心唱完这首歌",
+          "text": "你没有抬头，但把这首歌唱到了最好。散场后她哭了。",
+          "effects": {
+            "axes": {
+              "self": 4,
+              "fit": 6
+            },
+            "stats": {
+              "vocal": 1
+            },
+            "mood": 4
+          },
+          "setFlag": "crowded-fans"
+        },
+        {
+          "id": "wave",
+          "label": "朝那边挥挥手",
+          "text": "你冲着人群挥了挥手。欢呼声更大了，你忘了下一句。",
+          "effects": {
+            "stamina": -2,
+            "axes": {
+              "others": 4
+            },
+            "mood": 3
+          },
+          "setFlag": "crowded-fans",
+          "requires": "trait.passion >= 3",
+          "sourceRow": 79
+        }
+      ]
+    },
+    {
+      "id": "fan-gift",
+      "title": "粉丝送了贵的东西",
+      "text": "特典会上，一个女孩把一个信封塞给你，说「别在这里打开」。回后台一看，里面是钱。",
+      "requires": "fans.gachi >= 60 and not hasFlag(\"ev:fan-gift\")",
+      "sourceRow": 28,
+      "choices": [
+        {
+          "id": "return",
+          "label": "还回去",
+          "text": "你追到门口把信封还了。她说「为什么」，你说「这样我下次见到你会不好意思」。",
+          "effects": {
+            "stamina": -4,
+            "axes": {
+              "self": 6,
+              "others": 6,
+              "fit": 2
+            },
+            "mood": 2,
+            "traits": {
+              "kind": 4,
+              "independent": 3
+            }
+          },
+          "setFlag": "fan-gift"
+        },
+        {
+          "id": "keep",
+          "label": "收下，当作应援",
+          "text": "你收下了。那笔钱刚好够付下个月的排练室。",
+          "effects": {
+            "axes": {
+              "self": -3,
+              "others": 4,
+              "fit": 3
+            },
+            "mood": -4,
+            "negatives": {
+              "desire": 4
+            }
+          },
+          "setFlag": "fan-gift"
+        },
+        {
+          "id": "report",
+          "label": "告诉经纪人",
+          "text": "经纪人处理得很快。她说以后这种事直接交给她。你觉得轻松，也觉得少了点什么。",
+          "effects": {
+            "axes": {
+              "self": 4,
+              "others": 3,
+              "fit": 4
+            },
+            "mood": 2,
+            "traits": {
+              "coop": 3
+            }
+          },
+          "setFlag": "fan-gift"
+        }
+      ]
+    },
+    {
+      "id": "fan-birthday",
+      "title": "生诞祭",
+      "text": "生诞委的人来问你想要什么颜色的蛋糕。你说了三种，她们记下来，最后选了最便宜的那种。",
+      "requires": "fans.gachi >= 40 and not hasFlag(\"ev:fan-birthday\")",
+      "sourceRow": 29,
+      "choices": [
+        {
+          "id": "let-them",
+          "label": "让她们办",
+          "text": "她们比你还上心。蛋糕是三种颜色拼的，蜡烛插歪了。你许了一个很俗的愿。",
+          "effects": {
+            "stamina": -6,
+            "axes": {
+              "self": 4,
+              "others": 9
+            },
+            "mood": 12,
+            "traits": {
+              "kind": 5
+            }
+          },
+          "setFlag": "fan-birthday"
+        },
+        {
+          "id": "small",
+          "label": "说简单一点就好",
+          "text": "她们最后只买了一个小蛋糕，在后台分着吃。有人说「明年办大一点」。",
+          "effects": {
+            "axes": {
+              "self": 3,
+              "others": 6
+            },
+            "mood": 8,
+            "traits": {
+              "kind": 3
+            }
+          },
+          "setFlag": "fan-birthday"
+        },
+        {
+          "id": "hide",
+          "label": "说那天有工作",
+          "text": "那天你确实有工作。晚上刷到她们在店里唱歌的视频，你看了三遍。",
+          "effects": {
+            "stamina": -8,
+            "axes": {
+              "self": 2,
+              "others": -4,
+              "fit": 2
+            },
+            "mood": -6,
+            "negatives": {
+              "stress": 4
+            }
+          },
+          "setFlag": "fan-birthday"
+        }
+      ]
+    },
+    {
+      "id": "fan-leave",
+      "title": "老粉不来了",
+      "text": "你翻参战记录，发现有个 ID 已经三个月没出现了。她以前每场都在第一排。",
+      "requires": "fans.stage >= 120 and not hasFlag(\"ev:fan-leave\")",
+      "sourceRow": 30,
+      "choices": [
+        {
+          "id": "message",
+          "label": "私信问她最近怎么样",
+          "text": "她回了：「毕业了，工作了。还会去看你们的。」后面跟了一个笑脸。",
+          "effects": {
+            "axes": {
+              "self": 5,
+              "others": 5
+            },
+            "mood": 4,
+            "traits": {
+              "kind": 5
+            }
+          },
+          "setFlag": "fan-leave"
+        },
+        {
+          "id": "nothing",
+          "label": "什么都不做",
+          "text": "你翻完了她的全部参战记录，然后关掉了页面。",
+          "effects": {
+            "axes": {
+              "self": 3,
+              "others": -2
+            },
+            "mood": -6,
+            "negatives": {
+              "stress": 4
+            }
+          },
+          "setFlag": "fan-leave"
+        },
+        {
+          "id": "one-more",
+          "label": "在下一场唱她那首点过的歌",
+          "text": "你在安可时唱了。台下有人跟着唱，你不知道是不是她。",
+          "effects": {
+            "stamina": -6,
+            "axes": {
+              "self": 5,
+              "others": 6,
+              "fit": 2
+            },
+            "mood": 6,
+            "traits": {
+              "passion": 4
+            }
+          },
+          "setFlag": "fan-leave"
+        }
+      ]
+    },
+    {
+      "id": "rival",
+      "title": "隔壁团的女孩",
+      "text": "隔壁团的女孩在洗手间补妆，看见你，说：「你们那首新歌，我听了。」语气听不出什么意思。",
+      "requires": "total >= 150 and not hasFlag(\"ev:rival\")",
+      "sourceRow": 31,
+      "choices": [
+        {
+          "id": "honest",
+          "label": "「谢谢你听了。」",
+          "text": "她笑了一下，说：「副歌那句你换气了。」然后洗了手走了。",
+          "effects": {
+            "axes": {
+              "self": 5,
+              "others": 6,
+              "fit": 2
+            },
+            "stats": {
+              "talk": 2
+            },
+            "mood": 4,
+            "traits": {
+              "kind": 3
+            }
+          },
+          "setFlag": "rival"
+        },
+        {
+          "id": "guard",
+          "label": "「是吗。」然后不说了",
+          "text": "她也没再说。洗手间的镜子里，你们两个都在看自己。",
+          "effects": {
+            "axes": {
+              "self": 3,
+              "others": -2
+            },
+            "mood": -4,
+            "traits": {
+              "independent": 3
+            },
+            "negatives": {
+              "stress": 3
+            }
+          },
+          "setFlag": "rival"
+        },
+        {
+          "id": "ask",
+          "label": "「你觉得哪里还能改？」",
+          "text": "她愣了一下，认真地说了三点。其中两点你后来真的改了。",
+          "effects": {
+            "axes": {
+              "self": 4,
+              "others": 5,
+              "fit": 4
+            },
+            "stats": {
+              "dance": 1,
+              "talk": 1
+            },
+            "mood": 2,
+            "traits": {
+              "coop": 4
+            }
+          },
+          "setFlag": "rival"
         }
       ]
     }

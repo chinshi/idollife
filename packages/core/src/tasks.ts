@@ -7,16 +7,29 @@
  * 存档标记（flags）：
  *   task:<id>:acceptedAt  领取时间（游戏时间）
  *   task:<id>:doneAt      完成时间
+ *   task:<id>:doneDay     上次完成的游戏日（day 序号；repeat 任务跨日重置用）
  *   task:<id>:count       已完成次数
+ *   task:<id>:expiredDay  上次超时未完成的游戏日（T-007 A：同日不再出现）
  */
 import tasksJson from '../data/tasks.json';
+import { ACTION_MS, DAILY_SLOTS, DAY_MS } from './content';
 import { matchesCondition, type RawRequires } from './expr';
 import { applyFanAction } from './fans';
 import type { RunState, Stats } from './types';
 
 export type TaskType = 'once' | 'repeat';
 
-export type TaskStatus = 'hidden' | 'locked' | 'claimable' | 'active' | 'completable' | 'done';
+export type TaskStatus =
+  | 'hidden'
+  | 'locked'
+  | 'claimable'
+  | 'active'
+  | 'expired'
+  | 'completable'
+  | 'done';
+
+/** 重置周期（T-007 B）；字段缺省 = 兼容 D-011 旧行为 */
+export type TaskReset = 'none' | 'daily' | 'weekly';
 
 export interface TaskRewards {
   money?: number;
@@ -38,6 +51,12 @@ export interface TaskDef {
   content: string;
   brief: string;
   priority: number;
+  /** 过期时间（游戏日），0 或缺省 = 无限期（T-009 / docs/25 §2.5 A：一天 = 3 行动 = DAY_MS） */
+  deadlineDays?: number;
+  /** 重置周期（T-007 B）；缺省时保持 D-011 旧行为（repeat 跨日重置、once 永久完成） */
+  reset?: TaskReset;
+  /** 前置任务 id 列表（T-007 C）；未全部 done 时本任务 hidden */
+  prerequisite?: string[];
 }
 
 export const TASKS: TaskDef[] = (tasksJson.tasks as TaskDef[]).slice().sort(
@@ -51,7 +70,13 @@ export const TASK_TYPE_LABEL: Record<string, string> = {
 
 const acceptedKey = (id: string) => `task:${id}:acceptedAt`;
 const doneKey = (id: string) => `task:${id}:doneAt`;
+const doneDayKey = (id: string) => `task:${id}:doneDay`;
 const countKey = (id: string) => `task:${id}:count`;
+const expiredDayKey = (id: string) => `task:${id}:expiredDay`;
+const expiredCountKey = (id: string) => `task:${id}:expiredCount`;
+
+/** 游戏日序号（与 DAY_MS 对齐） */
+const gameDay = (at: number) => Math.floor(at / DAY_MS);
 
 export function acceptedAt(state: RunState, taskId: string): number {
   return Number(state.flags[acceptedKey(taskId)] ?? 0);
@@ -65,26 +90,198 @@ export function doneTimes(state: RunState, taskId: string): number {
   return Number(state.flags[countKey(taskId)] ?? 0);
 }
 
+/** 累计错过次数（T-011）；旧档没有这个 flag 按 0，不做迁移 */
+export function expiredTimes(state: RunState, taskId: string): number {
+  return Number(state.flags[expiredCountKey(taskId)] ?? 0);
+}
+
+/** 上次完成的游戏日；旧档没有 doneDay 时从 doneAt 推导 */
+export function lastDoneDay(state: RunState, taskId: string): number {
+  const raw = state.flags[doneDayKey(taskId)];
+  if (typeof raw === 'number' && Number.isFinite(raw)) return raw;
+  return gameDay(doneAt(state, taskId));
+}
+
 /** 次数用完（一次性/限次任务） */
 export function taskExhausted(state: RunState, task: TaskDef): boolean {
   if (task.times <= 0) return false;
   return doneTimes(state, task.id) >= task.times;
 }
 
-/** 当前任务状态 */
-export function taskStatus(state: RunState, task: TaskDef): TaskStatus {
+/** 上次超时未完成落在哪个游戏日；没记过返回 null（T-007 A） */
+export function expiredDay(state: RunState, taskId: string): number | null {
+  const raw = state.flags[expiredDayKey(taskId)];
+  if (typeof raw === 'number' && Number.isFinite(raw)) return raw;
+  return null;
+}
+
+/** 是否已过截止时间：只对「已领取、未完成」的任务成立（T-009：单位是游戏日 = DAY_MS） */
+function pastDeadline(state: RunState, task: TaskDef): boolean {
+  const days = task.deadlineDays ?? 0;
+  if (!(days > 0)) return false;
+  if (acceptedAt(state, task.id) <= 0) return false;
+  if (doneAt(state, task.id) > 0) return false;
+  return state.at - acceptedAt(state, task.id) > days * DAY_MS;
+}
+
+/**
+ * 重置周期（天）：0 = 不重置，1 = 每日，7 = 每周，null = 字段缺省（走 D-011 旧行为）。
+ * 缺省时不套用文档里的「none」，否则现有 3 条 repeat 任务会被改成永久完成（见 T-007 未决问题）。
+ */
+function resetPeriodDays(task: TaskDef): number | null {
+  if (task.reset === 'none') return 0;
+  if (task.reset === 'daily') return 1;
+  if (task.reset === 'weekly') return 7;
+  return null;
+}
+
+/** 前置任务是否全部 done（数据成环时保守当未满足；check:data 会单独拦环） */
+function prerequisitesDone(state: RunState, task: TaskDef, path: Set<string>): boolean {
+  const pre = task.prerequisite ?? [];
+  if (pre.length === 0) return true;
+  if (path.has(task.id)) return false;
+  path.add(task.id);
+  let ok = true;
+  for (const depId of pre) {
+    const dep = TASKS.find((t) => t.id === depId);
+    if (!dep || statusOf(state, dep, path) !== 'done') {
+      ok = false;
+      break;
+    }
+  }
+  path.delete(task.id);
+  return ok;
+}
+
+function statusOf(state: RunState, task: TaskDef, path: Set<string>): TaskStatus {
+  // C：前置任务没全部完成 → 不可见（不是 locked）
+  if (!prerequisitesDone(state, task, path)) return 'hidden';
   if (!matchesCondition(state, task.displayCondition as never)) return 'hidden';
   if (taskExhausted(state, task)) return 'done';
 
   const accepted = acceptedAt(state, task.id) > 0;
+  const finished = doneAt(state, task.id) > 0;
+
+  // D-011 + T-007 B：完成后按「重置周期」决定能否再领。
+  // reset 字段缺省时不改变旧行为：repeat 任务跨日重置、once 任务永久完成。
+  const period = resetPeriodDays(task);
+  const repeats = period === null ? task.type === 'repeat' : period > 0;
+  if (finished && repeats) {
+    const days = gameDay(state.at) - lastDoneDay(state, task.id);
+    if (days < (period ?? 1)) return 'done';
+    return matchesCondition(state, task.acceptCondition as never) ? 'claimable' : 'locked';
+  }
+
   if (accepted) {
-    if (doneAt(state, task.id) > 0) return 'done';
-    const complete = matchesCondition(state, task.completeCondition as never);
-    return complete ? 'completable' : 'active';
+    if (finished) return 'done';
+    if (matchesCondition(state, task.completeCondition as never)) return 'completable';
+    // A：只有「进行中（未完成）」才会超时；超时不消耗 times
+    if (pastDeadline(state, task)) {
+      const expired = expiredDay(state, task.id);
+      const today = gameDay(state.at);
+      const acceptedDay = gameDay(acceptedAt(state, task.id));
+      // 只有「这次领取期间」记过的超时才算数：更早的 expiredDay 是上一次领取留下的
+      if (expired !== null && expired >= acceptedDay) {
+        // T-011：当日冷却 = 仍可见但不可操作（不再隐藏，玩家要看到「已错过」）
+        if (expired === today) return 'expired';
+        if (today > expired) {
+          // 已过冷却日：机会还给玩家，按未领取处理（不消耗次数、不扣钱不扣粉）
+          return matchesCondition(state, task.acceptCondition as never) ? 'claimable' : 'locked';
+        }
+      }
+      return 'expired';
+    }
+    return 'active';
   }
 
   const canAccept = matchesCondition(state, task.acceptCondition as never);
   return canAccept ? 'claimable' : 'locked';
+}
+
+/** 当前任务状态 */
+export function taskStatus(state: RunState, task: TaskDef): TaskStatus {
+  return statusOf(state, task, new Set());
+}
+
+/**
+ * 结算超时：把「这次超时还没记过」的任务写 `task:<id>:expiredDay` + `expiredCount +1` + 一条日志。
+ * 纯函数（时间读 state.at）；没有 deadlineDays 的数据调用它等于什么都没做。
+ *
+ * T-011 幂等守卫：T-011 之后 expired 当天状态仍是 `expired`，所以每次结算都会命中分支；
+ * 若不在写 flag 前按「今天是否已经记过」拦截，就会每做一个行动刷一条日志、计数被灌爆。
+ */
+export function expireTasks(state: RunState, tasks: TaskDef[] = TASKS): RunState {
+  let next = state;
+  for (const task of tasks) {
+    if (statusOf(next, task, new Set()) !== 'expired') continue;
+    const today = gameDay(next.at);
+    if (expiredDay(next, task.id) === today) continue; // 今天已经结算过这次超时
+    next = {
+      ...next,
+      flags: {
+        ...next.flags,
+        [expiredDayKey(task.id)]: today,
+        [expiredCountKey(task.id)]: expiredTimes(next, task.id) + 1,
+      },
+      log: [
+        ...next.log,
+        {
+          at: next.at,
+          actionId: `task-expired:${task.id}`,
+          text: `通告「${task.name}」超时未完成。`,
+          staminaDelta: 0,
+          statDelta: {},
+          kind: 'action',
+        },
+      ],
+    };
+  }
+  return next;
+}
+
+export interface TaskDeadline {
+  /** 截止点（游戏时间戳，与 state.at 同口径） */
+  deadlineAt: number;
+  /** 剩余毫秒；已过截止点时为负 */
+  remainingMs: number;
+  /** 剩余可用行动次数，向上取整，最小 0（玩家真正消耗的资源单位） */
+  remainingSlots: number;
+  /** 剩余游戏日，向上取整，最小 0 */
+  remainingDays: number;
+  /** 已到/已过截止点 */
+  due: boolean;
+  /** 紧急：剩余 ≤ 1 个游戏日（= DAILY_SLOTS 次行动） */
+  urgent: boolean;
+}
+
+/**
+ * 只读倒计时（T-010，界面唯一真源）。
+ *
+ * 不塞进 taskStatus()：这是可以单独按任意 `state.at` 调用的纯函数。
+ * 无限期（`deadlineDays` 为 0/缺失）、未领取、已完成 → `null`；
+ * 已过期（taskStatus() === 'expired'）**不返回 null**——界面要能显示「已超时」。
+ */
+export function taskDeadline(state: RunState, task: TaskDef): TaskDeadline | null {
+  const days = task.deadlineDays ?? 0;
+  if (!(days > 0)) return null;
+  const accepted = acceptedAt(state, task.id);
+  if (accepted <= 0) return null;
+  if (doneAt(state, task.id) > 0) return null;
+
+  const deadlineAt = accepted + days * DAY_MS;
+  const remainingMs = deadlineAt - state.at;
+  // 向上取整：哪怕只剩 1ms，也算「还剩 1 次行动」，不能显示 0 次却还是进行中
+  const remainingSlots = Math.max(0, Math.ceil(remainingMs / ACTION_MS));
+
+  return {
+    deadlineAt,
+    remainingMs,
+    remainingSlots,
+    remainingDays: Math.max(0, Math.ceil(remainingMs / DAY_MS)),
+    // 这里的 >= 只表示「时间已到」；到期判定 pastDeadline() 用 >（恰好到期仍 active），两者不冲突
+    due: state.at >= deadlineAt,
+    urgent: remainingSlots <= DAILY_SLOTS,
+  };
 }
 
 /** 领取任务 → 进行中 */
@@ -159,6 +356,7 @@ export function claimTaskReward(
       flags: {
         ...state.flags,
         [doneKey(task.id)]: state.at,
+        [doneDayKey(task.id)]: gameDay(state.at),
         [countKey(task.id)]: doneTimes(state, task.id) + 1,
       },
       log: [

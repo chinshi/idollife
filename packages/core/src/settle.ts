@@ -5,6 +5,7 @@ import { createFans } from './fans';
 import { applyFanAction } from './fans';
 import { ROUTINE_TEMPLATES, findStoryEvent } from './events';
 import { hashSeed, mulberry32, randInt } from './rng';
+import { expireTasks } from './tasks';
 import type { RunState, ScheduleItem, SettleResult, Stats, StopReason } from './types';
 
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
@@ -64,7 +65,6 @@ export function settle(
     return { state, executed: [], stoppedReason: 'event' };
   }
 
-  const rng = mulberry32(hashSeed(seed));
   const executed: string[] = [];
   let stoppedReason: StopReason = null;
   let cursor = Math.max(from, run.at);
@@ -80,6 +80,10 @@ export function settle(
 
     const action = ACTIONS[item.actionId];
     if (!action) continue;
+
+    // D-010：随机流按「行动实例」派生，全局 seed + 行动稳定 id。
+    // 这样同一条排程无论一次算完还是拆成多次算，单条行动的随机序列都不变。
+    const rng = mulberry32(hashSeed(`${seed}:action:${item.id}`));
 
     // 次数限制（0 = 无限制）
     if (remainingTimes(state, item.actionId) <= 0) {
@@ -104,8 +108,8 @@ export function settle(
     if (!resolved) continue;
 
     // 心情 / 饱腹：先结算变化，再算它对本条行动的影响
-    const nextMood = Math.max(0, Math.min(100, (state.mood ?? 100) + resolved.mood));
-    const nextSatiety = Math.max(0, Math.min(100, (state.satiety ?? 100) + resolved.satiety));
+    const nextMood = Math.max(0, Math.min(100, (state.mood ?? 70) + resolved.mood));
+    const nextSatiety = Math.max(0, Math.min(100, (state.satiety ?? 70) + resolved.satiety));
 
     const negatives = state.negatives ?? {};
     const proficiency = state.proficiency ?? {};
@@ -233,5 +237,6 @@ export function settle(
     stoppedReason = 'ending';
   }
 
-  return { state, executed, stoppedReason };
+  // T-007 A：时间推进后统一结算任务超时（写冷却日 + 日志；无 deadlineDays 时不做任何事）
+  return { state: expireTasks(state), executed, stoppedReason };
 }

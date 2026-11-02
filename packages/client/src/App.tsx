@@ -362,7 +362,7 @@ function AppInner() {
   useEffect(() => {
     const t = setTimeout(() => {
       const ok = writeSave({
-        version: 1,
+        version: 2,
         runId,
         revision,
         updatedAt: Date.now(),

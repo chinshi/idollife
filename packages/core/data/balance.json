@@ -1,10 +1,9 @@
 {
-  "_说明": "全局数值表。改这里就能调平衡，不需要碰代码",
+  "_说明": "全局数值表。改这里就能调平衡，不需要碰代码；缺少 staminaMax 时代码回落到 100",
   "balance": {
-    "actionMinutes": 1,
+    "actionMinutes": 10,
     "dailySlots": 3,
     "showSlots": 3,
-    "staminaMax": 100,
     "startMoney": 8000,
     "rentPerWeek": 500,
     "debutThreshold": 120,

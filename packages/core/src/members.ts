@@ -6,6 +6,7 @@ export type { Bias, Member };
 
 import membersJson from '../data/members.json';
 import { BALANCE } from './data';
+import { PARTY_MAX } from './friends';
 
 export const RECRUIT_COST = BALANCE.recruitCost;
 export const DUP_CAP = BALANCE.dupCap;
@@ -22,7 +23,7 @@ export const BIAS_LABEL: Record<string, string> = Object.fromEntries(
 );
 
 export type PartyResult = 'ok' | 'not-debuted' | 'not-found' | 'no-party';
-export type RecruitResult = 'new' | 'dup' | 'poor' | 'no-party';
+export type RecruitResult = 'new' | 'dup' | 'poor' | 'no-party' | 'full';
 
 /** 是否够格出道 */
 export function canDebut(state: RunState): boolean {
@@ -95,6 +96,8 @@ export function activeParty(state: RunState): Party | null {
 export function recruit(state: RunState, seed: string): { state: RunState; result: RecruitResult } {
   const party = activeParty(state);
   if (!party) return { state, result: 'no-party' };
+  // D-012：PARTY_MAX 含主角自己，所以成员位只剩 PARTY_MAX - 1 个
+  if (party.members.length >= PARTY_MAX - 1) return { state, result: 'full' };
   if (state.money < RECRUIT_COST) return { state, result: 'poor' };
 
   const rng = mulberry32(hashSeed(seed + ':' + state.log.length));

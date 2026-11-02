@@ -9,75 +9,37 @@
  *   vocal / dance / acting / talk     四项显性属性
  *   self / others / fit               三轴
  *   stamina / money / friends / total 体力 / 资金 / 朋友圈人数 / 四属性总和
+ *   mood / satiety                    心情 / 饱腹（缺省 70）
  *   fans.stage / fans.gachi …         各类粉丝
  *   flags.xxx                         标记（0/1）
- *   中文别名：演唱 舞蹈 演技 口才 自我 他人 适配 体力 资金 粉丝数
+ *   中文别名：演唱 舞蹈 演技 口才 自我 他人 适配 体力 资金 心情 饱腹 粉丝数 总属性
  *
  * 函数：sum(...) / max(...) / min(...) / abs(x) / hasFlag("name")
  *
  * 旧的 JSON 对象条件继续支持。
  */
 import { compileExpression as filtrexCompile, type Options } from 'filtrex';
+import {
+  findUnknownNames,
+  normalizeExpr,
+  sanitizeFlag,
+  STAT_KEYS as RULE_STAT_KEYS,
+} from './expr-rules.js';
 import type { RunState, Stats } from './types';
 
-const STAT_KEYS: (keyof Stats)[] = ['vocal', 'dance', 'acting', 'talk'];
+/**
+ * 表达式规则（变量白名单 / 中文别名 / 裸字段别名 / 允许的前缀）统一放在 expr-rules.js，
+ * scripts/validate-data.mjs 用同一份规则做数据期校验，避免出现两套。
+ */
+const STAT_KEYS = RULE_STAT_KEYS as (keyof Stats)[];
 
-const ALIAS: Record<string, string> = {
-  演唱: 'vocal',
-  舞蹈: 'dance',
-  演技: 'acting',
-  口才: 'talk',
-  自我: 'self',
-  他人: 'others',
-  适配: 'fit',
-  体力: 'stamina',
-  资金: 'money',
-  粉丝数: 'friends',
-  好友数: 'friends',
-  总属性: 'total',
-};
-
-/** 允许出现在表达式里的变量名 */
-const KNOWN = new Set<string>([
-  ...STAT_KEYS,
-  'self',
-  'others',
-  'fit',
-  'stamina',
-  'money',
-  'friends',
-  'total',
-  ...[
-    'stage',
-    'gachi',
-    'music',
-    'live',
-    'growth',
-    'power',
-  ].map((t) => `fans.${t}`),
-]);
-
-const sanitizeFlag = (name: string) => 'flag_' + String(name).replace(/[^A-Za-z0-9_]/g, '_');
-
-/** 把中文别名替换成英文字段名 */
-function normalize(src: string): string {
-  let out = src;
-  for (const [cn, en] of Object.entries(ALIAS)) {
-    out = out.split(cn).join(en);
-  }
-  // hasFlag("ev:debut") → flag_ev_debut（转成变量，靠 data 求值）
-  out = out.replace(/hasFlag\s*\(\s*"([^"]+)"\s*\)/g, (_m: string, name: string) =>
-    sanitizeFlag(name),
-  );
-
-  // Godot / JS 风格运算符 → filtrex 关键字
-  out = out.replace(/&&/g, ' and ').replace(/\|\|/g, ' or ');
-  out = out.replace(/!(?!=)/g, ' not ');
-  return out;
-}
-
-/** 把状态摊平成表达式可读的数据 */
-function toData(state: RunState): Record<string, unknown> {
+/**
+ * 把状态摊平成表达式可读的数据。
+ *
+ * 这是「变量取值」的唯一来源：编译求值（compileExpression）与任务进度（task-progress）
+ * 都必须用它，别在别处另写一套，否则 mood 缺省 70 这类规则会漂移。
+ */
+export function buildExprData(state: RunState): Record<string, unknown> {
   const data: Record<string, unknown> = {
     vocal: state.stats.vocal,
     dance: state.stats.dance,
@@ -122,26 +84,18 @@ function registerFlags(src: string): void {
 /** 编译表达式，返回 (state) => boolean；语法错误会 throw */
 export function compileExpression(src: string): (s: RunState) => boolean {
   registerFlags(src);
-  const expression = normalize(src);
+  const expression = normalizeExpr(src);
 
-  // 变量白名单校验（编译期就报错，不等运行时）；先去掉字符串字面量
-  const scanSrc = expression.replace(/"[^"]*"/g, '""');
-  for (const name of scanSrc.match(/[A-Za-z_][A-Za-z0-9_.]*/g) ?? []) {
-    if (['and', 'or', 'not', 'true', 'false', 'mod', 'in'].includes(name)) continue;
-    if (name === 'sum' || name === 'max' || name === 'min' || name === 'abs') {
-      continue;
-    }
-    if (KNOWN.has(name) || name.startsWith('flag_')) continue;
-    if (/^(innate|trait|neg|prof)\./.test(name)) continue;
-    throw new ReferenceError(`未知变量「${name}」`);
-  }
+  // 变量白名单校验（编译期就报错，不等运行时）；规则与 scripts/validate-data.mjs 共用 expr-rules.js
+  const unknown = findUnknownNames(expression);
+  if (unknown.length > 0) throw new ReferenceError(`未知变量「${unknown[0]}」`);
 
   const fn = filtrexCompile(expression, {
     extraFunctions: { sum: sumFn },
   } as Options);
 
   return (s: RunState) => {
-    const result = fn(toData(s));
+    const result = fn(buildExprData(s));
     if (result instanceof Error) return false;
     return Boolean(result);
   };
