@@ -290,6 +290,8 @@ function AppInner() {
   const [boxH, setBoxH] = useState(0);
   const gameNowRef = useRef<number>(Math.max(boot?.run?.at ?? T0, bootClock));
   const resumeAfterEvent = useRef(false);
+  /** T-013 bug 1：同一条行程连续结算不了几次就丢弃，防止时间轴被永久冻住 */
+  const stuckRef = useRef<{ id: string; n: number }>({ id: '', n: 0 });
   const dbgLines = useRef<string[]>([]);
   const [showDebug, setShowDebug] = useState(false);
   const [activeEventId, setActiveEventId] = useState<string | null>(null);
@@ -417,8 +419,8 @@ function AppInner() {
   useEffect(() => {
     if (!running) return;
 
-    const anchorPerf = performance.now();
-    const anchorGame = Math.max(runRef.current.at, gameNowRef.current);
+    let anchorPerf = performance.now();
+    let anchorGame = Math.max(runRef.current.at, gameNowRef.current);
     dbg('时钟启动 anchorGame=' + String(anchorGame) + ' speed=' + String(speed));
     let raf = 0;
     let lastProcess = 0;
@@ -477,6 +479,21 @@ function AppInner() {
           .filter((s) => !s.done)
           .sort((a, b) => a.startAt - b.startAt)[0];
 
+        // 防「永远执行不了」的行程项把时间轴冻住：同一条连续 3 个 tick 卡住就丢弃
+        if (next) {
+          if (stuckRef.current.id === next.id) stuckRef.current.n += 1;
+          else stuckRef.current = { id: next.id, n: 1 };
+          if (stuckRef.current.n >= 3) {
+            const dropped = scheduleRef.current.filter((s) => s.id !== next.id);
+            scheduleRef.current = dropped;
+            setSchedule(dropped);
+            setNotice('有一条行程没法结算，已跳过。');
+            dbg('行程 ' + next.id + ' 连续 3 次结算不了，已丢弃');
+            stuckRef.current = { id: '', n: 0 };
+            return;
+          }
+        }
+
         const unknown =
           next && (!ACTIONS[next.actionId] || !previewAction(runRef.current, next.actionId));
 
@@ -486,11 +503,17 @@ function AppInner() {
           setSchedule(cleaned);
           dbg('丢弃未知行为 ' + next!.actionId + '（配置里没有）');
         } else if (next && next.startAt > runRef.current.at) {
-          // 中间有空档：把时间对齐到它的开始，避免空转
-          const healed = { ...runRef.current, at: next.startAt };
-          runRef.current = healed;
-          setRun(healed);
-          dbg('对齐到下一个行动 at=' + String(next.startAt));
+          // 中间有空档：把时间对齐到它的开始，避免空转。
+          // 关键：heal 会把 run.at 直接前移，锚点必须同步重设，否则 target 被钉死在新的 run.at 上，
+          // 倒计时会“冻住”到墙钟把这段差补回来为止（跨日时最明显）。
+          const prevAt = runRef.current.at;
+          runRef.current = { ...runRef.current, at: next.startAt };
+          setRun(runRef.current);
+          anchorGame = runRef.current.at;
+          anchorPerf = nowPerf;
+          setGameNow(runRef.current.at);
+          dbg('跨空档对齐：跳到 ' + String(next.startAt) +
+              ' 跨越 ' + String(Math.floor((next.startAt - prevAt) / DAY_MS)) + ' 天');
         } else if (next) {
           // 重叠：把待执行行程整体顺延，让它们重新首尾相接
           const fixed = repairChain(scheduleRef.current, runRef.current.at);
@@ -1087,6 +1110,8 @@ function AppInner() {
     const r = claimTaskReward(run, taskId);
     if (r.result === 'ok') {
       setRun(r.state);
+      // T-013 bug 2：任务标记（doneAt/count）要推给服务端，否则云端重算会把本地任务状态冲掉
+      void pushWholeState(r.state);
       setNotice('任务奖励已领取。');
       return;
     }
@@ -1097,6 +1122,8 @@ function AppInner() {
     const r = acceptTask(run, taskId);
     if (r.result === 'ok') {
       setRun(r.state);
+      // T-013 bug 2：acceptedAt 标记要推给服务端（与 doBuy/doEquip 一致）
+      void pushWholeState(r.state);
       setNotice('任务已领取，完成后会自动结算奖励。');
       return;
     }

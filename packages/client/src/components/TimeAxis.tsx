@@ -96,7 +96,9 @@ export function TimeAxis(props: TimeAxisProps) {
             </div>
             <div className="tlx-card-meta">
               {running && nextItem
-                ? `还剩 ${Math.ceil(remainMs / 1000)} 秒`
+                ? remainMs === 0
+                  ? '结算中…'
+                  : `还剩 ${Math.ceil(remainMs / 1000)} 秒`
                 : nextItem
                   ? `行动${actionNo(nextItem)} · 待执行`
                   : '时间已停止'}

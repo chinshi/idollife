@@ -1,6 +1,5 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import { settle } from '@idollife/core';
 import type { RunState, ScheduleItem } from '@idollife/core';
 import { getUserFromRequest } from './auth';
 import { getStore, type RunRecord } from './store/index';
@@ -101,7 +100,7 @@ app.post('/v1/sync', async (c) => {
   const parsed = validate(raw);
   if ('error' in parsed) return c.json({ error: parsed.error }, 400);
 
-  const { runId, run, schedule, from, to, seed } = parsed.body;
+  const { runId, run, schedule, to, seed } = parsed.body;
   const store = getStore();
 
   let existing: RunRecord | undefined;
@@ -129,34 +128,49 @@ app.post('/v1/sync', async (c) => {
     );
   }
 
-  const base = existing?.run ?? run;
-  const result = settle(base, schedule, from, to, seed);
+  // T-013 bug 2：客户端不落后时以客户端为准——直接存它带来的状态，不再用服务端那份 settle 覆盖。
+  // （服务端那份可能缺任务标记 acceptedAt/doneAt，重算回传会把客户端任务状态冲掉）
+  if (!existing || run.at >= existing.run.at) {
+    const record: RunRecord = {
+      userId: user.id,
+      runId,
+      revision: (existing?.revision ?? 0) + 1,
+      lastSyncAt: to,
+      updatedAt: Date.now(),
+      seed,
+      run,
+      schedule,
+    };
 
-  const record: RunRecord = {
-    userId: user.id,
-    runId,
-    revision: (existing?.revision ?? 0) + 1,
-    lastSyncAt: to,
-    updatedAt: Date.now(),
-    seed,
-    run: result.state,
-    schedule,
-  };
+    try {
+      await store.putRun(record);
+    } catch (err) {
+      return c.json({ error: 'store write failed', detail: String(err) }, 503);
+    }
 
-  try {
-    await store.putRun(record);
-  } catch (err) {
-    return c.json({ error: 'store write failed', detail: String(err) }, 503);
+    return c.json({
+      runId,
+      revision: record.revision,
+      accepted: [],
+      stoppedReason: null,
+      state: run,
+      serverTime: Date.now(),
+    });
   }
 
-  return c.json({
-    runId,
-    revision: record.revision,
-    accepted: result.executed,
-    stoppedReason: result.stoppedReason,
-    state: result.state,
-    serverTime: Date.now(),
-  });
+  // 防御性兜底：客户端落后本应在上面的 409 分支被拦下，这里只保底返回，不再 settle
+  const staleRun = existing?.run ?? run;
+  return c.json(
+    {
+      runId,
+      revision: existing?.revision ?? 0,
+      accepted: [],
+      stoppedReason: 'stale',
+      state: staleRun,
+      serverTime: Date.now(),
+    },
+    409,
+  );
 });
 
 app.post('/v1/choice', async (c) => {

@@ -13,6 +13,7 @@
  */
 import tasksJson from '../data/tasks.json';
 import { ACTION_MS, DAILY_SLOTS, DAY_MS } from './content';
+import { RAW_ATTRIBUTES, RAW_STORY } from './data';
 import { matchesCondition, type RawRequires } from './expr';
 import { applyFanAction } from './fans';
 import type { RunState, Stats } from './types';
@@ -417,9 +418,233 @@ const LABELS: Record<string, string> = {
   power: '实力粉',
 };
 
+/* ───────────── 表达式 DSL → 中文（T-013 bug 3） ───────────── */
+
+/** LABELS 之外、表达式里还会出现的变量名 */
+const EXTRA_LABELS: Record<string, string> = {
+  money: '资金',
+  friends: '朋友圈',
+  total: '四项属性总和',
+  stamina: '体力',
+  mood: '心情',
+  satiety: '饱腹',
+  height: '身高',
+  weight: '体重',
+  appearance: '样貌',
+  proportion: '身材比例',
+};
+
+/** attributes.json 的中文名（含 trait./neg./prof./fans. 前缀写法，裸字段名也收） */
+const ATTR_LABELS: Record<string, string> = (() => {
+  const GROUP: Record<string, string> = {
+    innate: 'innate',
+    trait: 'trait',
+    negative: 'neg',
+    proficient: 'prof',
+    fans: 'fans',
+  };
+  const map: Record<string, string> = {};
+  for (const attr of RAW_ATTRIBUTES) {
+    map[attr.key] = attr.name;
+    const prefix = GROUP[attr.category];
+    if (prefix) map[prefix + '.' + attr.key] = attr.name;
+  }
+  return map;
+})();
+
+/** 剧情事件 id → 标题（hasFlag("ev:xxx") 的中文名来源） */
+const EVENT_TITLES: Record<string, string> = Object.fromEntries(
+  RAW_STORY.map((story) => [story.id, story.title]),
+);
+
+function variableLabel(name: string): string | null {
+  return LABELS[name] ?? EXTRA_LABELS[name] ?? ATTR_LABELS[name] ?? null;
+}
+
+const COMPARE_TEXT: Record<string, string> = {
+  '>=': '≥',
+  '<=': '≤',
+  '>': '>',
+  '<': '<',
+  '==': '=',
+  '=': '=',
+  '!=': '≠',
+};
+
+interface Rendered {
+  text: string;
+  /** 变量叶子记住原名（friends 需要额外补「人」） */
+  varName?: string;
+}
+
+interface Tok {
+  kind: 'id' | 'num' | 'str' | 'op';
+  text: string;
+}
+
+function tokenize(src: string): Tok[] {
+  const out: Tok[] = [];
+  const re =
+    /\s*(>=|<=|==|!=|=|>|<|\+|-|\*|\/|&&|\|\||!|\(|\)|,|"[^"]*"|\d+(?:\.\d+)?|[A-Za-z_][A-Za-z0-9_.]*)/y;
+  let i = 0;
+  while (i < src.length) {
+    re.lastIndex = i;
+    const m = re.exec(src);
+    if (!m || m.index !== i || !m[1]) throw new Error('无法解析的字符');
+    i = re.lastIndex;
+    const text = m[1];
+    if (text.startsWith('"')) out.push({ kind: 'str', text: text.slice(1, -1) });
+    else if (/^\d/.test(text)) out.push({ kind: 'num', text });
+    else if (/^[A-Za-z_]/.test(text)) out.push({ kind: 'id', text });
+    else out.push({ kind: 'op', text });
+  }
+  return out;
+}
+
+function renderCall(fn: string, args: string[]): string {
+  const name = fn.toLowerCase();
+  if (name === 'hasflag') {
+    const raw = args[0] ?? '';
+    if (!raw) return '标记';
+    const id = raw.replace(/^ev:/, '');
+    const title = EVENT_TITLES[id];
+    return title ? '发生过「' + title + '」' : '触发过 ' + id;
+  }
+  if (name === 'sum') return '（' + args.join(' + ') + '）';
+  throw new Error('未知函数 ' + fn);
+}
+
+/** 递归下降解析器：只覆盖条件 DSL 用到的形态，遇到不认识的就抛错交给外层回退 */
+class ConditionParser {
+  private pos = 0;
+
+  constructor(private readonly toks: Tok[]) {}
+
+  parse(): string {
+    const rendered = this.parseOr();
+    if (this.pos !== this.toks.length) throw new Error('表达式有多余内容');
+    return rendered.text;
+  }
+
+  private peek(): Tok | undefined {
+    return this.toks[this.pos];
+  }
+
+  private next(): Tok {
+    const tok = this.toks[this.pos];
+    if (!tok) throw new Error('表达式提前结束');
+    this.pos += 1;
+    return tok;
+  }
+
+  private isOp(...texts: string[]): boolean {
+    const tok = this.peek();
+    return !!tok && tok.kind === 'op' && texts.includes(tok.text);
+  }
+
+  private isKw(...texts: string[]): boolean {
+    const tok = this.peek();
+    return !!tok && tok.kind === 'id' && texts.includes(tok.text);
+  }
+
+  private parseOr(): Rendered {
+    let left = this.parseAnd();
+    while (this.isOp('||') || this.isKw('or')) {
+      this.next();
+      left = { text: left.text + ' 或 ' + this.parseAnd().text };
+    }
+    return left;
+  }
+
+  private parseAnd(): Rendered {
+    let left = this.parseNot();
+    while (this.isOp('&&') || this.isKw('and')) {
+      this.next();
+      left = { text: left.text + ' 且 ' + this.parseNot().text };
+    }
+    return left;
+  }
+
+  private parseNot(): Rendered {
+    if (this.isKw('not') || this.isOp('!')) {
+      this.next();
+      return { text: '未' + this.parseNot().text };
+    }
+    return this.parseCompare();
+  }
+
+  private parseCompare(): Rendered {
+    const left = this.parseAtom();
+    if (this.isOp('>=', '<=', '==', '!=', '=', '>', '<')) {
+      const op = this.next().text;
+      const right = this.parseAtom();
+      const symbol = COMPARE_TEXT[op] ?? op;
+      const unit = left.varName === 'friends' ? ' 人' : '';
+      return { text: left.text + ' ' + symbol + ' ' + right.text + unit };
+    }
+    return left;
+  }
+
+  private parseAtom(): Rendered {
+    const tok = this.peek();
+    if (!tok) throw new Error('表达式提前结束');
+    if (tok.kind === 'num') {
+      this.next();
+      return { text: tok.text };
+    }
+    if (tok.kind === 'str') {
+      this.next();
+      return { text: tok.text };
+    }
+    if (tok.kind === 'op' && tok.text === '(') {
+      this.next();
+      const inner = this.parseOr();
+      const close = this.next();
+      if (close.text !== ')') throw new Error('括号没配对');
+      return { text: '（' + inner.text + '）' };
+    }
+    if (tok.kind === 'id') {
+      this.next();
+      if (this.isOp('(')) {
+        this.next();
+        const args: string[] = [];
+        if (!this.isOp(')')) {
+          args.push(this.parseAtom().text);
+          while (this.isOp(',')) {
+            this.next();
+            args.push(this.parseAtom().text);
+          }
+        }
+        const close = this.next();
+        if (close.text !== ')') throw new Error('函数括号没配对');
+        return { text: renderCall(tok.text, args) };
+      }
+      if (tok.text === 'true') return { text: '真' };
+      if (tok.text === 'false') return { text: '假' };
+      const label = variableLabel(tok.text);
+      if (!label) throw new Error('未知变量 ' + tok.text);
+      return { text: label, varName: tok.text };
+    }
+    throw new Error('无法解析的标记 ' + tok.text);
+  }
+}
+
+/** 表达式 → 中文；解析不了返回 null（界面回退原文，绝不抛错） */
+function translateConditionExpr(src: string): string | null {
+  try {
+    return new ConditionParser(tokenize(src)).parse();
+  } catch {
+    return null;
+  }
+}
+
 /** 把条件翻译成中文，给界面展示 */
 export function describeCondition(cond?: RawRequires | string): string {
-  if (typeof cond === 'string') return cond.trim() || '无';
+  if (typeof cond === 'string') {
+    const src = cond.trim();
+    if (!src) return '无';
+    return translateConditionExpr(src) ?? src;
+  }
   if (!cond || Object.keys(cond).length === 0) return '无';
   const c = cond as Record<string, Record<string, number> | number | string[] | undefined>;
   const parts: string[] = [];
