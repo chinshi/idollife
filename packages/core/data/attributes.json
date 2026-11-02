@@ -6,7 +6,7 @@
       "categoryName": "固有属性",
       "name": "身高",
       "key": "height",
-      "hidden": false,
+      "hidden": true,
       "linked": 1
     },
     {
@@ -14,7 +14,7 @@
       "categoryName": "固有属性",
       "name": "体重",
       "key": "weight",
-      "hidden": false,
+      "hidden": true,
       "linked": 1
     },
     {
@@ -22,7 +22,7 @@
       "categoryName": "固有属性",
       "name": "样貌",
       "key": "appearance",
-      "hidden": false,
+      "hidden": true,
       "linked": 1
     },
     {
@@ -30,7 +30,7 @@
       "categoryName": "固有属性",
       "name": "身材比例",
       "key": "proportion",
-      "hidden": false,
+      "hidden": true,
       "linked": 1
     },
     {
@@ -70,7 +70,7 @@
       "categoryName": "状态",
       "name": "体力",
       "key": "stamina",
-      "hidden": false,
+      "hidden": true,
       "linked": 1
     },
     {
@@ -78,7 +78,7 @@
       "categoryName": "状态",
       "name": "心情",
       "key": "mood",
-      "hidden": false,
+      "hidden": true,
       "linked": 1
     },
     {
@@ -86,7 +86,7 @@
       "categoryName": "状态",
       "name": "饱腹",
       "key": "satiety",
-      "hidden": false,
+      "hidden": true,
       "linked": 1
     },
     {
@@ -94,7 +94,7 @@
       "categoryName": "性格",
       "name": "体贴",
       "key": "kind",
-      "hidden": true,
+      "hidden": false,
       "linked": 2
     },
     {
@@ -102,7 +102,7 @@
       "categoryName": "性格",
       "name": "领导",
       "key": "lead",
-      "hidden": true,
+      "hidden": false,
       "linked": 2
     },
     {
@@ -110,7 +110,7 @@
       "categoryName": "性格",
       "name": "合作",
       "key": "coop",
-      "hidden": true,
+      "hidden": false,
       "linked": 2
     },
     {
@@ -118,7 +118,7 @@
       "categoryName": "性格",
       "name": "独立",
       "key": "independent",
-      "hidden": true,
+      "hidden": false,
       "linked": 2
     },
     {
@@ -126,7 +126,7 @@
       "categoryName": "性格",
       "name": "好强",
       "key": "ambitious",
-      "hidden": true,
+      "hidden": false,
       "linked": 2
     },
     {
@@ -134,7 +134,7 @@
       "categoryName": "性格",
       "name": "热情",
       "key": "passion",
-      "hidden": true,
+      "hidden": false,
       "linked": 2
     },
     {
@@ -142,7 +142,7 @@
       "categoryName": "负向",
       "name": "精神压力",
       "key": "stress",
-      "hidden": true,
+      "hidden": false,
       "linked": 2
     },
     {
@@ -150,7 +150,7 @@
       "categoryName": "负向",
       "name": "焦躁",
       "key": "restless",
-      "hidden": true,
+      "hidden": false,
       "linked": 2
     },
     {
@@ -158,7 +158,7 @@
       "categoryName": "负向",
       "name": "积劳",
       "key": "fatigue",
-      "hidden": true,
+      "hidden": false,
       "linked": 2
     },
     {
@@ -166,7 +166,7 @@
       "categoryName": "负向",
       "name": "情欲",
       "key": "desire",
-      "hidden": true,
+      "hidden": false,
       "linked": 2
     },
     {
@@ -174,7 +174,7 @@
       "categoryName": "负向",
       "name": "黑历史",
       "key": "scandal",
-      "hidden": true,
+      "hidden": false,
       "linked": 2
     },
     {
@@ -230,7 +230,7 @@
       "categoryName": "粉丝属性",
       "name": "舞台粉",
       "key": "stage",
-      "hidden": false,
+      "hidden": true,
       "linked": 1
     },
     {
@@ -238,7 +238,7 @@
       "categoryName": "粉丝属性",
       "name": "嘎起粉",
       "key": "gachi",
-      "hidden": false,
+      "hidden": true,
       "linked": 1
     },
     {
@@ -246,7 +246,7 @@
       "categoryName": "粉丝属性",
       "name": "音乐粉",
       "key": "music",
-      "hidden": false,
+      "hidden": true,
       "linked": 1
     },
     {
@@ -254,7 +254,7 @@
       "categoryName": "粉丝属性",
       "name": "现场粉",
       "key": "live",
-      "hidden": false,
+      "hidden": true,
       "linked": 1
     },
     {
@@ -262,7 +262,7 @@
       "categoryName": "粉丝属性",
       "name": "养成粉",
       "key": "growth",
-      "hidden": false,
+      "hidden": true,
       "linked": 1
     },
     {
@@ -270,7 +270,7 @@
       "categoryName": "粉丝属性",
       "name": "实力粉",
       "key": "power",
-      "hidden": false,
+      "hidden": true,
       "linked": 1
     }
   ]

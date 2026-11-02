@@ -2288,6 +2288,7 @@ body { overflow: hidden; }
 }
 .attr-item {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   padding: 4px 8px;
   border: 1px solid var(--line);
@@ -2296,6 +2297,44 @@ body { overflow: hidden; }
 }
 .attr-item .k { color: var(--muted); }
 .attr-item .v { font-weight: 600; }
+/* T-014：名称 + 数值一行，条形独占下一行（百分比宽度，窄屏不溢出） */
+.attr-row {
+  display: flex;
+  flex: 1 1 100%;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: baseline;
+}
+.attr-bar {
+  flex: 1 1 100%;
+  height: 6px;
+  margin-top: 4px;
+  border-radius: 3px;
+  background: #eceff5;
+  overflow: hidden;
+}
+.attr-bar.slim { height: 3px; }
+.attr-bar > i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  transition: width 0.2s;
+}
+.attr-bar.warn > i { background: #f0a35d; }
+.attr-bar.danger > i { background: #e0604e; }
+.attr-bar.cold > i { background: #6b7a99; }
+/* 分组标题后的灰色小标（仅占卜可见 / 主界面不显示） */
+.attr-badge { font-style: normal; font-size: 10px; font-weight: 400; color: var(--muted); }
+.attr-text { font-weight: 500; }
+/* T-014 粉丝构成雷达图 */
+.attr-radar-wrap h4 { justify-content: center; }
+.attr-radar { display: block; width: 100%; max-width: 240px; margin: 0 auto; }
+.attr-radar-grid { fill: none; stroke: var(--line); stroke-width: 1; }
+.attr-radar-axis { stroke: var(--line); stroke-width: 1; }
+.attr-radar-shape { fill: rgba(89, 166, 255, 0.22); stroke: #59a6ff; stroke-width: 1.5; }
+.attr-radar-label { font-size: 10px; fill: var(--muted); }
+.attr-radar-empty { text-align: center; padding: 10px 0; }
 /* 顶部体力条 */
 .vital { display: inline-flex; align-items: center; gap: 6px; margin-left: 4px; }
 .vital-label { font-size: 11px; color: var(--muted); }

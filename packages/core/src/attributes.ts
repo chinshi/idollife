@@ -83,6 +83,22 @@ export function attrValue(state: RunState, key: string): number {
   return 0;
 }
 
+/**
+ * 样貌（颜值）数值 → 区间文案（T-014，卡片定的文案，照抄）。
+ * 样貌是敏感项：界面只显示这段文案，任何地方都不显示数字。
+ * 越界按最近档兜底（<0 → 0–19 档；>100 → 90–100 档），非数字/NaN → '—'。
+ */
+export function appearanceLabel(v: number): string {
+  if (typeof v !== 'number' || !Number.isFinite(v)) return '—';
+  const n = Math.floor(v);
+  if (n < 20) return '不上镜';
+  if (n < 40) return '普通';
+  if (n < 60) return '耐看';
+  if (n < 80) return '上镜';
+  if (n < 90) return '很上镜';
+  return '镜头会追着你';
+}
+
 /** 按分类列出属性（含数值） */
 export function attributesByCategory(state: RunState): Array<{
   category: string;
