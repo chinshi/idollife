@@ -11,6 +11,8 @@ export default defineConfig({
   },
   server: {
     port: 5273,
+    // 本机（沙箱/跨盘）文件系统事件偶发丢失，改轮询监听，避免改了代码页面还是旧的
+    watch: { usePolling: true, interval: 400 },
     proxy: {
       '/api': {
         target: 'http://127.0.0.1:8787',

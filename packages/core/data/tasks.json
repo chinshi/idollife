@@ -15,7 +15,10 @@
       "times": 1,
       "content": "四项属性总和到 120，就有资格报名出道演出。过了，你才算真的进了这行。",
       "brief": "四项属性总和到 120 后报名出道",
-      "priority": 10
+      "priority": 10,
+      "category": "guide",
+      "guideGroup": "G2",
+      "autoAccept": true
     },
     {
       "id": "task-vocal-20",
@@ -31,7 +34,9 @@
       "content": "先把演唱练到 20。唱 K 便宜，就是费嗓子，别连着排三个时段。",
       "brief": "演唱练到 20",
       "priority": 20,
-      "deadlineDays": 3
+      "category": "guide",
+      "guideGroup": "G1",
+      "autoAccept": true
     },
     {
       "id": "task-dance-20",
@@ -47,7 +52,9 @@
       "content": "舞蹈到 20。录一遍回看，比闷头跳二十遍有用。",
       "brief": "舞蹈练到 20",
       "priority": 21,
-      "deadlineDays": 3
+      "category": "guide",
+      "guideGroup": "G1",
+      "autoAccept": true
     },
     {
       "id": "task-acting-20",
@@ -63,7 +70,9 @@
       "content": "演技到 20。自拍小短剧不花钱，还能顺手涨一点粉。",
       "brief": "演技练到 20",
       "priority": 22,
-      "deadlineDays": 3
+      "category": "guide",
+      "guideGroup": "G1",
+      "autoAccept": true
     },
     {
       "id": "task-talk-20",
@@ -79,7 +88,9 @@
       "content": "口才到 20。串场词说顺了，别人才会在散场时记住你。",
       "brief": "口才练到 20",
       "priority": 23,
-      "deadlineDays": 3
+      "category": "guide",
+      "guideGroup": "G1",
+      "autoAccept": true
     },
     {
       "id": "task-dance-30",
@@ -96,11 +107,13 @@
       "content": "把舞蹈练到 30，说明你已经不是新人了。剩下的靠上台。",
       "brief": "舞蹈练到 30",
       "priority": 30,
-      "deadlineDays": 5
+      "category": "guide",
+      "guideGroup": "G2",
+      "autoAccept": true
     },
     {
       "id": "task-first-show",
-      "type": "repeat",
+      "type": "once",
       "name": "站上舞台",
       "displayCondition": "total >= 60",
       "acceptCondition": "total >= 60",
@@ -108,12 +121,13 @@
       "rewards": {
         "money": 800
       },
-      "times": 5,
+      "times": 1,
       "content": "演出会把路人变成粉丝。舞台粉攒到 100，群里就会开始有人认你。",
       "brief": "舞台粉累计到 100",
       "priority": 31,
-      "deadlineDays": 1,
-      "reset": "daily"
+      "category": "guide",
+      "guideGroup": "G3",
+      "autoAccept": true
     },
     {
       "id": "task-show-10",
@@ -130,7 +144,9 @@
       "brief": "舞台粉累计到 400",
       "priority": 32,
       "deadlineDays": 3,
-      "reset": "daily"
+      "reset": "daily",
+      "category": "routine",
+      "autoAccept": false
     },
     {
       "id": "task-money-10000",
@@ -146,7 +162,9 @@
       "content": "房租每周都要交。手里有一万块，才敢排一次旅游。",
       "brief": "资金达到 10000",
       "priority": 40,
-      "deadlineDays": 7
+      "deadlineDays": 7,
+      "category": "routine",
+      "autoAccept": false
     },
     {
       "id": "task-money-50000",
@@ -161,7 +179,9 @@
       "times": 1,
       "content": "五万是个分水岭：够付一场 OM 的定金，也够撑过两个月的空窗。",
       "brief": "资金达到 50000",
-      "priority": 41
+      "priority": 41,
+      "category": "routine",
+      "autoAccept": false
     },
     {
       "id": "task-friend",
@@ -177,7 +197,9 @@
       "content": "去漫展、看演出、让朋友介绍——地下圈的团基本都是这么凑起来的。",
       "brief": "朋友圈至少有 1 个人",
       "priority": 50,
-      "deadlineDays": 3
+      "deadlineDays": 3,
+      "category": "routine",
+      "autoAccept": false
     },
     {
       "id": "task-party-5",
@@ -193,7 +215,9 @@
       "content": "一个人也能上台，但五个人的舞台才像一场演出。先把人认全。",
       "brief": "朋友圈有 5 个人",
       "priority": 51,
-      "deadlineDays": 5
+      "category": "guide",
+      "guideGroup": "G4",
+      "autoAccept": true
     },
     {
       "id": "task-debut-party",
@@ -208,7 +232,10 @@
       "times": 1,
       "content": "出道之后就能建组合。名字随便起，反正以后会改。",
       "brief": "创建第一个组合",
-      "priority": 52
+      "priority": 52,
+      "category": "guide",
+      "guideGroup": "G4",
+      "autoAccept": true
     },
     {
       "id": "task-first-cheki",
@@ -223,7 +250,10 @@
       "times": 1,
       "content": "特典会是地下偶像真正的收入来源。拍切、写名字、听她们说完。",
       "brief": "开一次特典会",
-      "priority": 53
+      "priority": 53,
+      "category": "guide",
+      "guideGroup": "G5",
+      "autoAccept": true
     },
     {
       "id": "task-manager-push",
@@ -238,7 +268,10 @@
       "times": 1,
       "content": "拼盘的台下全是别家的粉。抢不抢得到，看你在台上那十分钟。",
       "brief": "参加一场拼盘",
-      "priority": 54
+      "priority": 54,
+      "category": "guide",
+      "guideGroup": "G6",
+      "autoAccept": true
     },
     {
       "id": "task-first-om",
@@ -253,7 +286,10 @@
       "times": 1,
       "content": "OM 是「只有你们」的意思。没有别的团在前面，票得自己卖完。",
       "brief": "办一场 OM 舞台",
-      "priority": 55
+      "priority": 55,
+      "category": "guide",
+      "guideGroup": "G7",
+      "autoAccept": true
     },
     {
       "id": "task-total-200",
@@ -270,7 +306,9 @@
       "content": "不要求样样拔尖，但没有短板才接得住各种通告。",
       "brief": "四项属性总和到 200",
       "priority": 60,
-      "deadlineDays": 5
+      "category": "guide",
+      "guideGroup": "G3",
+      "autoAccept": true
     },
     {
       "id": "task-total-300",
@@ -287,7 +325,9 @@
       "content": "总和 300 是商演和 OM 的门槛。到了这个数，你才有资格挑活。",
       "brief": "四项属性总和到 300",
       "priority": 61,
-      "deadlineDays": 7
+      "category": "guide",
+      "guideGroup": "G6",
+      "autoAccept": true
     },
     {
       "id": "task-fans-300",
@@ -303,7 +343,9 @@
       "content": "三百个人的场子，站满的时候后排是看不清脸的。但你听得见。",
       "brief": "舞台粉到 300",
       "priority": 62,
-      "deadlineDays": 5
+      "category": "guide",
+      "guideGroup": "G5",
+      "autoAccept": true
     },
     {
       "id": "task-fans-1000",
@@ -319,37 +361,47 @@
       "content": "到一千人的时候，会开始有人自称「老粉」。别让她们失望。",
       "brief": "舞台粉到 1000",
       "priority": 63,
-      "deadlineDays": 7
+      "category": "guide",
+      "guideGroup": "G6",
+      "autoAccept": true
     },
     {
       "id": "task-burnout",
       "type": "once",
       "name": "学会休息",
-      "displayCondition": "total >= 80",
-      "acceptCondition": "total >= 80",
-      "completeCondition": "hasFlag(\"ev:burnout\")",
+      "displayCondition": "hasFlag(\"ev:burnout\")",
+      "acceptCondition": {},
+      "completeCondition": "mood >= 60",
       "rewards": {
-        "money": 300
+        "stats": {
+          "stamina": 25
+        }
       },
       "times": 1,
-      "content": "撑不住不是失败。愿意停下来的人，才跑得完两年。",
-      "brief": "经历一次撑不住",
-      "priority": 70
+      "content": "身体已经在报警了。别硬撑，把心情养回 60 以上，好好喘口气。",
+      "brief": "事件后：心情回到 60 以上",
+      "priority": 70,
+      "deadlineDays": 2,
+      "category": "timed",
+      "autoAccept": true
     },
     {
       "id": "task-fan-letter",
       "type": "once",
       "name": "第一封信",
-      "displayCondition": {},
-      "acceptCondition": "others >= 30",
-      "completeCondition": "hasFlag(\"ev:fan-letter\")",
+      "displayCondition": "hasFlag(\"ev:fan-letter\")",
+      "acceptCondition": {},
+      "completeCondition": "mood >= 55",
       "rewards": {
         "money": 300
       },
       "times": 1,
-      "content": "有人愿意花时间写下来，说明你在她那儿不是一个可有可无的名字。",
-      "brief": "收到第一封粉丝信",
-      "priority": 71
+      "content": "第一封粉丝来信在你包里放了好几天。找个心情不错的晚上，认真回掉它。",
+      "brief": "事件后：心情回到 55 以上再回信",
+      "priority": 71,
+      "deadlineDays": 3,
+      "category": "timed",
+      "autoAccept": true
     },
     {
       "id": "task-first-audition",
@@ -364,7 +416,10 @@
       "times": 1,
       "content": "第一次试镜不管成不成，去过的和没去过的，是两种人。",
       "brief": "去一次试镜",
-      "priority": 72
+      "priority": 72,
+      "category": "guide",
+      "guideGroup": "G1",
+      "autoAccept": true
     },
     {
       "id": "task-daily-repeat",
@@ -382,7 +437,155 @@
       "brief": "四项属性总和到 240",
       "priority": 80,
       "deadlineDays": 1,
-      "reset": "daily"
+      "reset": "daily",
+      "category": "routine",
+      "autoAccept": false
+    },
+    {
+      "id": "task-ev-insomnia",
+      "type": "once",
+      "name": "把觉补回来",
+      "displayCondition": "hasFlag(\"ev:insomnia\")",
+      "acceptCondition": {},
+      "completeCondition": "stamina >= 70",
+      "rewards": {
+        "stamina": 20
+      },
+      "times": 1,
+      "content": "连着几个晚上没睡好，白天练什么都不是那个味。先把体力养回 70，别的缓一缓。",
+      "brief": "事件后：体力回到 70 以上",
+      "priority": 60,
+      "deadlineDays": 2,
+      "category": "timed",
+      "autoAccept": true
+    },
+    {
+      "id": "task-ev-knee",
+      "type": "once",
+      "name": "膝盖的抗议",
+      "displayCondition": "hasFlag(\"ev:knee\")",
+      "acceptCondition": {},
+      "completeCondition": "stamina >= 60",
+      "rewards": {
+        "money": 300,
+        "stamina": 10
+      },
+      "times": 1,
+      "content": "下楼梯时膝盖响了那么一声，你听得清清楚楚。这几天少练点，把体力养回 60，省下的钱买副好护膝。",
+      "brief": "事件后：体力回到 60 以上",
+      "priority": 61,
+      "deadlineDays": 3,
+      "category": "timed",
+      "autoAccept": true
+    },
+    {
+      "id": "task-ev-fan-gift",
+      "type": "once",
+      "name": "心意要接住",
+      "displayCondition": "hasFlag(\"ev:fan-gift\")",
+      "acceptCondition": {},
+      "completeCondition": "mood >= 60",
+      "rewards": {
+        "fans": 50
+      },
+      "times": 1,
+      "content": "粉丝送来的礼物贵得让人不安。今天先把自己的心情理顺（60 以上），再去想怎么回应这份心意。",
+      "brief": "事件后：当天内心情回到 60 以上",
+      "priority": 62,
+      "deadlineDays": 1,
+      "category": "timed",
+      "autoAccept": true
+    },
+    {
+      "id": "task-ev-comment-war",
+      "type": "once",
+      "name": "用舞台说话",
+      "displayCondition": "hasFlag(\"ev:comment-war\")",
+      "acceptCondition": {},
+      "completeCondition": "fans.stage >= 300",
+      "rewards": {
+        "fans": 80
+      },
+      "times": 1,
+      "content": "评论区吵成一锅粥，解释是解释不清的。登上台，把舞台粉累计到 300，让实力替你闭嘴。",
+      "brief": "事件后：3 天内舞台粉累计到 300",
+      "priority": 63,
+      "deadlineDays": 3,
+      "category": "timed",
+      "autoAccept": true
+    },
+    {
+      "id": "task-ev-teammate-quit",
+      "type": "once",
+      "name": "毕业前最后一支舞",
+      "displayCondition": "hasFlag(\"ev:teammate-quit\")",
+      "acceptCondition": {},
+      "completeCondition": "dance >= 40",
+      "rewards": {
+        "money": 600,
+        "fans": 30
+      },
+      "times": 1,
+      "content": "她要走的话拦不住，但最后一支舞可以跳得漂亮。把舞蹈练到 40，别让告别演出留遗憾。",
+      "brief": "事件后：舞蹈练到 40",
+      "priority": 64,
+      "deadlineDays": 5,
+      "category": "timed",
+      "autoAccept": true
+    },
+    {
+      "id": "task-ev-venue-closing",
+      "type": "once",
+      "name": "告别那家场",
+      "displayCondition": "hasFlag(\"ev:venue-closing\")",
+      "acceptCondition": {},
+      "completeCondition": "fans.gachi >= 200",
+      "rewards": {
+        "fans": 120
+      },
+      "times": 1,
+      "content": "常去的那家 Live House 要关门了。最后一场，把嘎起粉累计到 200，让老地方热闹着散场。",
+      "brief": "事件后：嘎起粉累计到 200",
+      "priority": 65,
+      "deadlineDays": 5,
+      "category": "timed",
+      "autoAccept": true
+    },
+    {
+      "id": "task-ev-fan-birthday",
+      "type": "once",
+      "name": "生诞祭倒计时",
+      "displayCondition": "hasFlag(\"ev:fan-birthday\")",
+      "acceptCondition": {},
+      "completeCondition": "money >= 3000",
+      "rewards": {
+        "fans": 100
+      },
+      "times": 1,
+      "content": "大粉的生日就在这几天，粉丝群里已经在张罗。备出 3000 块的预算，别在应援上露怯。",
+      "brief": "事件后：备出 3000 资金",
+      "priority": 66,
+      "deadlineDays": 3,
+      "category": "timed",
+      "autoAccept": true
+    },
+    {
+      "id": "task-ev-old-video",
+      "type": "once",
+      "name": "旧视频风波",
+      "displayCondition": "hasFlag(\"ev:old-video\")",
+      "acceptCondition": {},
+      "completeCondition": "talk >= 35",
+      "rewards": {
+        "money": 500
+      },
+      "times": 1,
+      "content": "出道前的旧视频被人翻出来了，说什么的都有。练练口才（35 以上），下次直播大方把话接住。",
+      "brief": "事件后：口才练到 35",
+      "priority": 67,
+      "deadlineDays": 4,
+      "category": "timed",
+      "autoAccept": true
     }
   ]
 }

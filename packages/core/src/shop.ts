@@ -1,7 +1,8 @@
 import shopJson from '../data/shop.json';
 import { WEEK_MS } from './content';
+import { migrateEquipItem } from './items';
 import { hashSeed, mulberry32 } from './rng';
-import type { EquipItem, RunState, StatKey, Stats } from './types';
+import type { EquipItem, RunState, StatKey } from './types';
 
 export const SLOT_LABEL = '服装';
 const COMMON_PRICE = shopJson.shop.commonPrice;
@@ -71,11 +72,13 @@ export type BuyResult = 'ok' | 'poor' | 'not-found';
 export function buyItem(state: RunState, item: EquipItem): { state: RunState; result: BuyResult } {
   if (state.money < item.price) return { state, result: 'poor' };
 
+  // T-019：旧商店买到的装备按名称映射进新装备表（migrateEquipItem），映射不到保留 legacy
+  const entry = migrateEquipItem(item, state.inventory.length);
   return {
     state: {
       ...state,
       money: state.money - item.price,
-      inventory: [...state.inventory, item],
+      inventory: [...state.inventory, entry],
       log: [
         ...state.log,
         {
@@ -90,26 +93,4 @@ export function buyItem(state: RunState, item: EquipItem): { state: RunState; re
     },
     result: 'ok',
   };
-}
-
-export function equipItem(state: RunState, itemId: string): RunState {
-  const item = (state.inventory ?? []).find((i) => i.id === itemId);
-  if (!item) return state;
-  return {
-    ...state,
-    equipped: { ...state.equipped, [item.slot]: item.id },
-  };
-}
-
-/** 装备加成后的实际属性（演出评分用它） */
-export function effectiveStats(state: RunState): Stats {
-  const stats: Stats = { ...state.stats };
-  for (const slot of Object.keys(state.equipped) as (keyof typeof state.equipped)[]) {
-    const id = state.equipped[slot];
-    if (!id) continue;
-    const item = (state.inventory ?? []).find((i) => i.id === id);
-    if (!item) continue;
-    stats[item.affix.stat] = Math.min(100, stats[item.affix.stat] + item.affix.value);
-  }
-  return stats;
 }

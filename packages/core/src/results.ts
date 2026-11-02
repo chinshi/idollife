@@ -5,7 +5,7 @@
 import { RAW_RESULTS, type RawRequires, type RawResult } from './data';
 import { matchesCondition } from './events';
 import type { FanType } from './fans';
-import { effectiveStats } from './shop';
+import { effectiveStats } from './items';
 import { randInt } from './rng';
 import type { RunState, Stats } from './types';
 
@@ -72,7 +72,9 @@ export function showFanType(state: RunState): FanType {
 
   // 六类粉丝各有一个「吸引分」，取最高者
   const scores: Record<FanType, number> = {
-    stage: s.dance + (innate.height ?? 50) / 4 + (innate.proportion ?? 50) / 4,
+    // T-016c：身材比例已删除，身高的舞台加成保留（height 新档为 145–180cm，/4 ≈ 36–45，
+    // 与旧公式 height/4 + proportion/4 的总量级相当；老档 height 存的是 40–80 分值，加成偏小，重开即正常）
+    stage: s.dance + (innate.height ?? 160) / 4,
     music: s.vocal,
     growth: s.acting + (s.vocal + s.dance) / 4,
     gachi: (innate.appearance ?? 50) + (traits.kind ?? 0) / 2,

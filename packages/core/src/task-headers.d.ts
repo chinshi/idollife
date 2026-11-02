@@ -4,4 +4,4 @@ export const TASK_COLUMN_FIELDS: Map<string, string>;
 
 export function taskColumnField(
   header: unknown,
-): 'deadlineDays' | 'reset' | 'prerequisite' | null;
+): 'deadlineDays' | 'reset' | 'prerequisite' | 'category' | 'guideGroup' | 'autoAccept' | null;

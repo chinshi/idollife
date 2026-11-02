@@ -1,0 +1,93 @@
+{
+  "_说明": "成长阶段表：seq=顺序；condition=进入条件（表达式，空=无条件，只允许 seq=1 为空）；buttonText=晋级按钮文案；style=s1–s8 对应客户端样式类；themeColor 仅作参考；unlockText=解锁说明",
+  "stages": [
+    {
+      "seq": 1,
+      "id": "trainee",
+      "name": "新人练习生",
+      "title": "刚走进排练室",
+      "condition": {},
+      "buttonText": "晋级",
+      "style": "s1",
+      "themeColor": "8a9a8b",
+      "unlockText": "练歌、练舞、打工，先活下来。"
+    },
+    {
+      "seq": 2,
+      "id": "trainee-plus",
+      "name": "见习练习生",
+      "title": "开始被记住名字",
+      "condition": "total >= 60",
+      "buttonText": "晋级",
+      "style": "s2",
+      "themeColor": "5fa8a0",
+      "unlockText": "更多训练行动解锁，教练开始记住你。"
+    },
+    {
+      "seq": 3,
+      "id": "pre-debut",
+      "name": "出道候补",
+      "title": "差一步就上台",
+      "condition": "total >= 120",
+      "buttonText": "出道",
+      "style": "s3",
+      "themeColor": "e8a04c",
+      "unlockText": "可报名出道演出；经纪人的目光落到你身上。"
+    },
+    {
+      "seq": 4,
+      "id": "rookie-idol",
+      "name": "新晋地偶",
+      "title": "初次登台的夜晚",
+      "condition": "hasFlag(\"ev:debut\")",
+      "buttonText": "晋级",
+      "style": "s4",
+      "themeColor": "f2a0bd",
+      "unlockText": "组合、特典会、专场事件开启。"
+    },
+    {
+      "seq": 5,
+      "id": "regular",
+      "name": "场次常客",
+      "title": "Live House 的熟面孔",
+      "condition": "fansTotal >= 300",
+      "buttonText": "晋级",
+      "style": "s5",
+      "themeColor": "d4af37",
+      "unlockText": "常驻演出邀请，更多粉丝事件。"
+    },
+    {
+      "seq": 6,
+      "id": "pillar",
+      "name": "团内支柱",
+      "title": "有人举着你的名字",
+      "condition": "fansTotal >= 1000",
+      "buttonText": "办专场",
+      "style": "s6",
+      "themeColor": "9b6bd4",
+      "unlockText": "拼盘与外地演出，媒体开始找你。"
+    },
+    {
+      "seq": 7,
+      "id": "headliner",
+      "name": "专场主角",
+      "title": "One Man Live",
+      "condition": "fansTotal >= 3000",
+      "buttonText": "晋级",
+      "style": "s7",
+      "themeColor": "c9d1e8",
+      "unlockText": "专场（OM）事件链，场馆升级。"
+    },
+    {
+      "seq": 8,
+      "id": "legend",
+      "name": "地下传奇",
+      "title": "这个场景记得你",
+      "condition": "fansTotal >= 8000",
+      "buttonText": "",
+      "style": "s8",
+      "themeColor": "rainbow",
+      "unlockText": "终局结算 special。"
+    }
+  ]
+}

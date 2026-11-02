@@ -5,6 +5,17 @@ import type { RunState } from '../src/types';
 
 const T0 = 1767300000000;
 
+// T-017：task-dance-30 属于 G2 引导组，需要 G1 全部完成才可见。
+// 这里只补「G1 已完成」的标记（doneAt 早于本测试的 T0，避免影响已完成排序断言），
+// 用来继续验证状态机本身；本文件的测试意图与断言口径未改。
+const G1_DONE_FLAGS = Object.fromEntries(
+  TASKS.filter((t) => t.category === 'guide' && t.guideGroup === 'G1').flatMap((t) => [
+    [`task:${t.id}:acceptedAt`, T0 - 1],
+    [`task:${t.id}:doneAt`, T0 - 1],
+    [`task:${t.id}:count`, Math.max(1, t.times)],
+  ]),
+);
+
 function base(over: Partial<RunState> = {}): RunState {
   return {
     at: T0,
@@ -20,7 +31,7 @@ function base(over: Partial<RunState> = {}): RunState {
     friends: [],
     inventory: [],
     equipped: {},
-    flags: {},
+    flags: { ...G1_DONE_FLAGS },
     pendingEvent: null,
     eventQueue: [],
     log: [],
@@ -65,6 +76,7 @@ describe('任务状态机', () => {
 
   it('未领取的任务即使满足完成条件也不会自动完成', () => {
     const state = base({ stats: { vocal: 10, dance: 30, acting: 10, talk: 10 } });
-    expect(completedTasks(state).length).toBe(0);
+    // T-017：base 里预置了 G1 完成标记，这里只断言「本任务没有被自动完成」（原断言用整体 length=0）
+    expect(completedTasks(state).some((c) => c.task.id === danceTask.id)).toBe(false);
   });
 });

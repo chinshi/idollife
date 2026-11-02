@@ -39,12 +39,13 @@ function base(over: Partial<RunState> = {}): RunState {
   };
 }
 
-const repeatTask = TASKS.find((t) => t.id === 'task-first-show')!;
+// T-017 内容改版：task-first-show 已 once 化进引导链，repeat 语义改用 task-show-10 验证
+const repeatTask = TASKS.find((t) => t.id === 'task-show-10')!;
 
 describe('测试 B：repeat 任务', () => {
   it('完成后当日不可再领，下一游戏日重置，达 times 上限后永久完成', () => {
     const fans = createFans(0);
-    fans.byType.stage = 150;
+    fans.byType.stage = 450;
     let state = base({ fans });
 
     // 第一轮：领取 → 完成

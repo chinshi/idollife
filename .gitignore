@@ -16,9 +16,14 @@ content/~$*.xlsx
 # 旧的合并工作簿（已拆分为单表文件）
 content/content.xlsx
 
-# dsh 主会话 id（本机状态，不共享）
+# 沙箱内 vite/esbuild 需要 TEMP 指向工作区内目录（Access is denied 的绕法）
+.tmpdev/
+.tmpbuild/
+
+# dsh 主会话 id / 权限预设（本机状态，不共享）
 collab/.dsh-session
 collab/.dsh-permission
+
 # 派单用的临时 prompt（一次性，不共享）
 collab/.dispatch-*.md
 
@@ -30,3 +35,6 @@ content/_all-backup-*.xlsx
 
 # 需求原始素材压缩包（docs/ 下已是可读版本）
 docs/说明.zip
+
+# 一次性归档（临时脚本、旧备份，不共享）
+_archive/

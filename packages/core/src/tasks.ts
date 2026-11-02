@@ -15,10 +15,21 @@ import tasksJson from '../data/tasks.json';
 import { ACTION_MS, DAILY_SLOTS, DAY_MS } from './content';
 import { RAW_ATTRIBUTES, RAW_STORY } from './data';
 import { matchesCondition, type RawRequires } from './expr';
+import { ALIAS } from './expr-rules.js';
 import { applyFanAction } from './fans';
+import { taskProgress, type TaskProgress } from './task-progress';
 import type { RunState, Stats } from './types';
 
 export type TaskType = 'once' | 'repeat';
+
+/** 任务三类化（T-017）：引导 / 常规 / 限时 */
+export type TaskCategory = 'guide' | 'routine' | 'timed';
+
+export const TASK_CATEGORY_LABEL: Record<TaskCategory, string> = {
+  guide: '引导',
+  routine: '常规',
+  timed: '限时',
+};
 
 export type TaskStatus =
   | 'hidden'
@@ -58,6 +69,12 @@ export interface TaskDef {
   reset?: TaskReset;
   /** 前置任务 id 列表（T-007 C）；未全部 done 时本任务 hidden */
   prerequisite?: string[];
+  /** 任务分类（T-017）：引导 / 常规 / 限时；缺省按 routine 处理 */
+  category?: TaskCategory;
+  /** 引导组（T-017）：G1…G7，只有上一组全部完成才可见 */
+  guideGroup?: string;
+  /** 自动领取（T-017）：满足领取条件时由结算自动领取 */
+  autoAccept?: boolean;
 }
 
 export const TASKS: TaskDef[] = (tasksJson.tasks as TaskDef[]).slice().sort(
@@ -154,9 +171,30 @@ function prerequisitesDone(state: RunState, task: TaskDef, path: Set<string>): b
   return ok;
 }
 
+/** 引导组编号：G1 → 1；非 G<n> 形式返回 null（视作不参与组链） */
+function guideGroupNumber(group?: string): number | null {
+  const m = /^G(\d+)$/i.exec(String(group ?? '').trim());
+  return m ? Number(m[1]) : null;
+}
+
+/**
+ * T-017 引导组链：G(n) 组里的任务，要等 G(n-1) 组内全部任务完成（taskExhausted 口径）才可见。
+ * - 无 guideGroup / G1 → 常驻可见
+ * - 断组/跳号（找不到上一组）→ 不锁死，直接可见
+ */
+function guideUnlocked(state: RunState, task: TaskDef): boolean {
+  const n = guideGroupNumber(task.guideGroup);
+  if (n === null || n <= 1) return true;
+  const prev = TASKS.filter((t) => guideGroupNumber(t.guideGroup) === n - 1);
+  if (prev.length === 0) return true;
+  return prev.every((dep) => taskExhausted(state, dep));
+}
+
 function statusOf(state: RunState, task: TaskDef, path: Set<string>): TaskStatus {
   // C：前置任务没全部完成 → 不可见（不是 locked）
   if (!prerequisitesDone(state, task, path)) return 'hidden';
+  // T-017 引导组链：上一组没全部完成 → 不可见
+  if (!guideUnlocked(state, task)) return 'hidden';
   if (!matchesCondition(state, task.displayCondition as never)) return 'hidden';
   if (taskExhausted(state, task)) return 'done';
 
@@ -205,6 +243,21 @@ export function taskStatus(state: RunState, task: TaskDef): TaskStatus {
 }
 
 /**
+ * T-017 自动领取：把所有「autoAccept && 当前可领取」的任务依次走 acceptTask 路径。
+ * 与手动领取完全同一套逻辑（同样的日志「领取任务「X」。」），只是由结算触发。
+ */
+export function autoAcceptTasks(state: RunState, tasks: TaskDef[] = TASKS): RunState {
+  let next = state;
+  for (const task of tasks) {
+    if (!task.autoAccept) continue;
+    if (statusOf(next, task, new Set()) !== 'claimable') continue;
+    const accepted = acceptTask(next, task.id);
+    if (accepted.result === 'ok') next = accepted.state;
+  }
+  return next;
+}
+
+/**
  * 结算超时：把「这次超时还没记过」的任务写 `task:<id>:expiredDay` + `expiredCount +1` + 一条日志。
  * 纯函数（时间读 state.at）；没有 deadlineDays 的数据调用它等于什么都没做。
  *
@@ -229,7 +282,10 @@ export function expireTasks(state: RunState, tasks: TaskDef[] = TASKS): RunState
         {
           at: next.at,
           actionId: `task-expired:${task.id}`,
-          text: `通告「${task.name}」超时未完成。`,
+          text:
+            task.category === 'timed'
+              ? `限时委托「${task.name}」超时未完成。`
+              : `通告「${task.name}」超时未完成。`,
           staminaDelta: 0,
           statDelta: {},
           kind: 'action',
@@ -402,6 +458,56 @@ export function taskBadgeCount(state: RunState): number {
   return claimableTasks(state).length;
 }
 
+export interface TaskBriefEntry {
+  task: TaskDef;
+  status: TaskStatus;
+  /** 完成条件推导出的进度（复合条件为 null） */
+  progress: TaskProgress | null;
+  /** 限时任务的倒计时（无限期/未领取为 null） */
+  deadline: TaskDeadline | null;
+}
+
+export interface TaskBriefGroup {
+  category: TaskCategory;
+  tasks: TaskBriefEntry[];
+}
+
+/**
+ * T-017 简报数据：按分类分组返回「非隐藏」任务，带 status / progress / deadline。
+ * 排序：引导按组号（G1→Gn），同组内以及常规/限时按 priority。
+ */
+export function briefTasks(state: RunState): TaskBriefGroup[] {
+  const entries: TaskBriefEntry[] = [];
+  for (const task of TASKS) {
+    const status = statusOf(state, task, new Set());
+    if (status === 'hidden') continue;
+    entries.push({
+      task,
+      status,
+      progress: taskProgress(state, task),
+      deadline: taskDeadline(state, task),
+    });
+  }
+
+  const categoryOf = (task: TaskDef): TaskCategory => task.category ?? 'routine';
+  const order: TaskCategory[] = ['guide', 'routine', 'timed'];
+  return order
+    .map((category) => ({
+      category,
+      tasks: entries
+        .filter((entry) => categoryOf(entry.task) === category)
+        .sort((a, b) => {
+          if (category === 'guide') {
+            const ga = guideGroupNumber(a.task.guideGroup) ?? 999;
+            const gb = guideGroupNumber(b.task.guideGroup) ?? 999;
+            if (ga !== gb) return ga - gb;
+          }
+          return a.task.priority - b.task.priority;
+        }),
+    }))
+    .filter((group) => group.tasks.length > 0);
+}
+
 const LABELS: Record<string, string> = {
   vocal: '演唱',
   dance: '舞蹈',
@@ -431,7 +537,8 @@ const EXTRA_LABELS: Record<string, string> = {
   height: '身高',
   weight: '体重',
   appearance: '样貌',
-  proportion: '身材比例',
+  // T-018：六轴粉丝之和
+  fansTotal: '粉丝总数',
 };
 
 /** attributes.json 的中文名（含 trait./neg./prof./fans. 前缀写法，裸字段名也收） */
@@ -632,7 +739,11 @@ class ConditionParser {
 /** 表达式 → 中文；解析不了返回 null（界面回退原文，绝不抛错） */
 function translateConditionExpr(src: string): string | null {
   try {
-    return new ConditionParser(tokenize(src)).parse();
+    // 中文别名先折算成英文字段名（如「粉丝总数」→ fansTotal）。
+    // 注意不能直接用 normalizeExpr：它会把 hasFlag("ev:x") 变成 flag_x，丢掉事件标题翻译。
+    let prepared = src;
+    for (const [cn, en] of Object.entries(ALIAS)) prepared = prepared.split(cn).join(en);
+    return new ConditionParser(tokenize(prepared)).parse();
   } catch {
     return null;
   }

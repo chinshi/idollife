@@ -30,6 +30,7 @@ export const ALIAS = {
   饱腹: 'satiety',
   粉丝数: 'friends',
   好友数: 'friends',
+  粉丝总数: 'fansTotal',
   总属性: 'total',
 };
 
@@ -59,7 +60,19 @@ export const GROUP_PREFIXES = ['innate', 'trait', 'neg', 'prof'];
  * mood / satiety 按 D-013 第 2 条**裸名接入**（不要加 state. 之类前缀），
  * 取值与缺省 70 在 expr.ts 的 buildExprData 里；校验器与编译器共用本文件，自动同源。
  */
-const FIXED_NAMES = ['self', 'others', 'fit', 'stamina', 'money', 'friends', 'total', 'mood', 'satiety'];
+const FIXED_NAMES = [
+  'self',
+  'others',
+  'fit',
+  'stamina',
+  'money',
+  'friends',
+  'total',
+  'mood',
+  'satiety',
+  // T-018：六轴粉丝之和（与客户端 totalFans 同口径）
+  'fansTotal',
+];
 
 /** 粉丝类型（表达式里写 fans.xxx） */
 const FAN_TYPES = ['stage', 'gachi', 'music', 'live', 'growth', 'power'];

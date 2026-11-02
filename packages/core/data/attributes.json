@@ -26,14 +26,6 @@
       "linked": 1
     },
     {
-      "category": "innate",
-      "categoryName": "固有属性",
-      "name": "身材比例",
-      "key": "proportion",
-      "hidden": true,
-      "linked": 1
-    },
-    {
       "category": "visible",
       "categoryName": "显性属性",
       "name": "演唱",

@@ -1,0 +1,1146 @@
+{
+  "_说明": "装备表：slot=四槽（hair/outfit/shoes/accessory）；requirement=装备要求表达式；bonus=显性加成（四维）；hidden=隐形加成（只显示隐形文案，不显示数值）",
+  "equipments": [
+    {
+      "id": "eq-plain-practice",
+      "slot": "outfit",
+      "name": "素色练习服",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "dance": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "排练室里人手一件的百搭款。",
+      "source": "",
+      "price": 800
+    },
+    {
+      "id": "eq-old-hoodie",
+      "slot": "outfit",
+      "name": "旧卫衣",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "dance": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "起球了，但挡风。",
+      "source": "",
+      "price": 800
+    },
+    {
+      "id": "eq-black-base",
+      "slot": "outfit",
+      "name": "黑色打底衣",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "dance": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "显瘦，百搭，舞台事故率最低的一件。",
+      "source": "",
+      "price": 800
+    },
+    {
+      "id": "eq-white-shirt",
+      "slot": "outfit",
+      "name": "白衬衫",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "acting": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "领口要解开一颗扣子才像样。",
+      "source": "",
+      "price": 800
+    },
+    {
+      "id": "eq-linen-dress",
+      "slot": "outfit",
+      "name": "棉麻长裙",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "acting": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "文艺挂标配，转圈的时候很好看。",
+      "source": "",
+      "price": 800
+    },
+    {
+      "id": "eq-suit-dress",
+      "slot": "outfit",
+      "name": "成熟西装裙",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "acting": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "装大人利器。",
+      "source": "",
+      "price": 800
+    },
+    {
+      "id": "eq-knit-cardigan",
+      "slot": "outfit",
+      "name": "针织开衫",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "vocal": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "温柔感是织出来的。",
+      "source": "",
+      "price": 800
+    },
+    {
+      "id": "eq-hooded-tops",
+      "slot": "outfit",
+      "name": "连帽衫",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "vocal": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "帽子一戴，谁都不爱。",
+      "source": "",
+      "price": 800
+    },
+    {
+      "id": "eq-sequin-vest",
+      "slot": "outfit",
+      "name": "亮片背心",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "vocal": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "灯光一打，你就是舞台本身。",
+      "source": "",
+      "price": 800
+    },
+    {
+      "id": "eq-loose-tee",
+      "slot": "outfit",
+      "name": "宽松 T 恤",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "talk": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "oversize 的松弛感。",
+      "source": "",
+      "price": 800
+    },
+    {
+      "id": "eq-jk-uniform",
+      "slot": "outfit",
+      "name": "JK 制服",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "talk": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "格裙要配过膝袜，这是基本法。",
+      "source": "",
+      "price": 800
+    },
+    {
+      "id": "eq-imo-suspender",
+      "slot": "outfit",
+      "name": "妹系吊带裙",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "talk": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "营业浓度超标预警。",
+      "source": "",
+      "price": 800
+    },
+    {
+      "id": "eq-shirt-vest",
+      "slot": "outfit",
+      "name": "衬衫加背心",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "talk": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "知性风的安全牌。",
+      "source": "",
+      "price": 800
+    },
+    {
+      "id": "eq-first-costume",
+      "slot": "outfit",
+      "name": "打歌服·初版",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "dance >= 15",
+      "bonus": {
+        "dance": 3
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "第一套打歌服，尺码稍微大了一点。",
+      "source": "",
+      "price": 2000
+    },
+    {
+      "id": "eq-rock-jacket",
+      "slot": "outfit",
+      "name": "摇滚夹克",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "vocal >= 15",
+      "bonus": {
+        "vocal": 3
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "铆钉是它的态度。",
+      "source": "",
+      "price": 2000
+    },
+    {
+      "id": "eq-white-grad-dress",
+      "slot": "outfit",
+      "name": "白裙·毕业场",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "vocal >= 18",
+      "bonus": {
+        "vocal": 3
+      },
+      "hidden": {
+        "others": 2
+      },
+      "hiddenText": "穿过它的人都毕业了。轮到你时，希望是笑着走的。",
+      "text": "毕业公演的定番。",
+      "source": "",
+      "price": 2000
+    },
+    {
+      "id": "eq-ancient-dress",
+      "slot": "outfit",
+      "name": "古风长裙",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "acting >= 15",
+      "bonus": {
+        "acting": 3
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "水袖一甩，故事感就来了。",
+      "source": "",
+      "price": 2000
+    },
+    {
+      "id": "eq-jiro-dress",
+      "slot": "outfit",
+      "name": "地雷系连衣裙",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "acting >= 15",
+      "bonus": {
+        "acting": 3
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "蝴蝶结要不对称才对味。",
+      "source": "",
+      "price": 2000
+    },
+    {
+      "id": "eq-yandere-dress",
+      "slot": "outfit",
+      "name": "病娇系黑裙",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "acting >= 18",
+      "bonus": {
+        "acting": 3
+      },
+      "hidden": {
+        "others": 2
+      },
+      "hiddenText": "台下总有人为这套尖叫。",
+      "text": "黑色蕾丝与红线的搭配学。",
+      "source": "",
+      "price": 2000
+    },
+    {
+      "id": "eq-lolita-set",
+      "slot": "outfit",
+      "name": "Lolita 套装",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "talk >= 15",
+      "bonus": {
+        "talk": 3
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "裙撑别忘记带。",
+      "source": "",
+      "price": 2000
+    },
+    {
+      "id": "eq-navy-uniform",
+      "slot": "outfit",
+      "name": "制服·海军风",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "acting >= 12",
+      "bonus": {
+        "acting": 2,
+        "talk": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "领巾的系法有三种，你都会了。",
+      "source": "",
+      "price": 1800
+    },
+    {
+      "id": "eq-yukata",
+      "slot": "outfit",
+      "name": "私服·夏日浴衣",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "talk >= 12",
+      "bonus": {
+        "talk": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "花火大会的定番，木屐踩得咔哒响。",
+      "source": "",
+      "price": 1500
+    },
+    {
+      "id": "eq-grad-gown",
+      "slot": "outfit",
+      "name": "白色毕业礼服",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "vocal >= 20",
+      "bonus": {
+        "vocal": 2,
+        "acting": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "散场后别急着脱，多穿一会儿。",
+      "source": "",
+      "price": 2200
+    },
+    {
+      "id": "eq-stage-kimono",
+      "slot": "outfit",
+      "name": "舞台和服·浴衣",
+      "rarity": "rare",
+      "icon": "",
+      "requirement": "vocal >= 30",
+      "bonus": {
+        "vocal": 4,
+        "talk": 2
+      },
+      "hidden": {
+        "self": 2
+      },
+      "hiddenText": "穿上它的那一刻，腰背会自己挺直。",
+      "text": "改良剪裁，动作幅度再大也不怕走光。",
+      "source": "",
+      "price": 5000
+    },
+    {
+      "id": "eq-qipao",
+      "slot": "outfit",
+      "name": "中华风改良旗袍",
+      "rarity": "rare",
+      "icon": "",
+      "requirement": "acting >= 30",
+      "bonus": {
+        "acting": 4,
+        "talk": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "盘扣是手工缝的，价格也是。",
+      "source": "",
+      "price": 5200
+    },
+    {
+      "id": "eq-stage-hospital",
+      "slot": "outfit",
+      "name": "舞台病号服",
+      "rarity": "rare",
+      "icon": "",
+      "requirement": "acting >= 35",
+      "bonus": {
+        "acting": 5
+      },
+      "hidden": {
+        "scandal": 2,
+        "others": 2
+      },
+      "hiddenText": "有人为你心疼，有人只觉得酷。",
+      "text": "行为艺术。谢幕时全场安静了三秒。",
+      "source": "",
+      "price": 4800
+    },
+    {
+      "id": "eq-costume-v2",
+      "slot": "outfit",
+      "name": "打歌服·二代",
+      "rarity": "rare",
+      "icon": "",
+      "requirement": "dance >= 30",
+      "bonus": {
+        "dance": 4,
+        "talk": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "这次尺码刚好。",
+      "source": "",
+      "price": 5600
+    },
+    {
+      "id": "eq-starry-costume",
+      "slot": "outfit",
+      "name": "演出服·星空主题",
+      "rarity": "rare",
+      "icon": "",
+      "requirement": "dance >= 32",
+      "bonus": {
+        "dance": 4,
+        "vocal": 2
+      },
+      "hidden": {
+        "fit": 2
+      },
+      "hiddenText": "灯光暗下去的瞬间，只有衣服上的星星和你一起亮着。",
+      "text": "设计师说灵感来自凌晨四点的排练室。",
+      "source": "",
+      "price": 5800
+    },
+    {
+      "id": "eq-leather-jacket",
+      "slot": "outfit",
+      "name": "机车皮夹克",
+      "rarity": "rare",
+      "icon": "",
+      "requirement": "vocal >= 35",
+      "bonus": {
+        "vocal": 4
+      },
+      "hidden": {
+        "self": 3
+      },
+      "hiddenText": "穿上它，感觉什么都不怕了——其实是错觉，但错觉也够用。",
+      "text": "拉链要只拉一半。",
+      "source": "",
+      "price": 5500
+    },
+    {
+      "id": "eq-wedding-dress",
+      "slot": "outfit",
+      "name": "婚纱·终场限定",
+      "rarity": "legendary",
+      "icon": "",
+      "requirement": "total >= 250",
+      "bonus": {
+        "vocal": 2,
+        "dance": 2,
+        "acting": 2,
+        "talk": 2
+      },
+      "hidden": {
+        "others": 4,
+        "self": 3
+      },
+      "hiddenText": "最后一支歌的保留曲目。有人哭，也有人笑着起哄。",
+      "text": "终场演出才会拿出来的大杀器。",
+      "source": "",
+      "price": 15000
+    },
+    {
+      "id": "eq-canvas-shoes",
+      "slot": "shoes",
+      "name": "帆布鞋",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "dance": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "洗到发白才好看。",
+      "source": "",
+      "price": 800
+    },
+    {
+      "id": "eq-knee-socks",
+      "slot": "shoes",
+      "name": "白色及膝袜",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "talk": 1
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "多买两双，勾丝是宿命。",
+      "source": "",
+      "price": 300
+    },
+    {
+      "id": "eq-black-over-knee",
+      "slot": "shoes",
+      "name": "过膝黑袜",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "dance": 1,
+        "talk": 1
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "视觉腿长 +5cm 的魔法。",
+      "source": "",
+      "price": 350
+    },
+    {
+      "id": "eq-stage-socks",
+      "slot": "shoes",
+      "name": "防滑舞台袜",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "dance": 1
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "排练室地板杀手。",
+      "source": "",
+      "price": 200
+    },
+    {
+      "id": "eq-martin-boots",
+      "slot": "shoes",
+      "name": "舞台用马丁靴",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "dance >= 15",
+      "bonus": {
+        "dance": 3
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "八孔，磨脚，但帅。创可贴已备好。",
+      "source": "",
+      "price": 2000
+    },
+    {
+      "id": "eq-mary-jane",
+      "slot": "shoes",
+      "name": "玛丽珍鞋",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "acting >= 14",
+      "bonus": {
+        "acting": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "一脚蹬的优雅。",
+      "source": "",
+      "price": 1600
+    },
+    {
+      "id": "eq-platform-shoes",
+      "slot": "shoes",
+      "name": "厚底松糕鞋",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "talk >= 14",
+      "bonus": {
+        "talk": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "矮子乐。摔过一次之后你学会了走稳。",
+      "source": "",
+      "price": 1400
+    },
+    {
+      "id": "eq-ballet-flats",
+      "slot": "shoes",
+      "name": "芭蕾软底鞋",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "dance >= 18",
+      "bonus": {
+        "dance": 2,
+        "vocal": 1
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "像没穿鞋，但每一步都有数。",
+      "source": "",
+      "price": 1500
+    },
+    {
+      "id": "eq-fishnet",
+      "slot": "shoes",
+      "name": "渔网袜",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "acting >= 16",
+      "bonus": {
+        "dance": 1,
+        "acting": 2
+      },
+      "hidden": {
+        "others": 2
+      },
+      "hiddenText": "有人觉得酷，有人看不懂——都行。",
+      "text": "舞台效果一流，日常穿着需要勇气。",
+      "source": "",
+      "price": 600
+    },
+    {
+      "id": "eq-strapped-boots",
+      "slot": "shoes",
+      "name": "绑带长靴",
+      "rarity": "rare",
+      "icon": "",
+      "requirement": "dance >= 30",
+      "bonus": {
+        "dance": 4
+      },
+      "hidden": {
+        "self": 2
+      },
+      "hiddenText": "系带要留最后一格，走起来才有那个劲儿。",
+      "text": "穿上要五分钟，脱下要三分钟。",
+      "source": "",
+      "price": 4800
+    },
+    {
+      "id": "eq-custom-boots",
+      "slot": "shoes",
+      "name": "定制打歌靴",
+      "rarity": "legendary",
+      "icon": "",
+      "requirement": "dance >= 45 && hasFlag(\"ev:debut\")",
+      "bonus": {
+        "dance": 5,
+        "vocal": 2
+      },
+      "hidden": {
+        "fit": 3
+      },
+      "hiddenText": "鞋楦是按你的脚型做的。落地无声，起跳有风。",
+      "text": "师傅量了三次脚型才开工。",
+      "source": "",
+      "price": 12000
+    },
+    {
+      "id": "eq-hair-straight",
+      "slot": "hair",
+      "name": "黑长直·原生态",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "vocal": 1
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "洗完吹干要四十分钟，认了。",
+      "source": "",
+      "price": 500
+    },
+    {
+      "id": "eq-hair-ponytail",
+      "slot": "hair",
+      "name": "高马尾",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "dance": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "跳起来的时候甩得像鞭子。",
+      "source": "",
+      "price": 500
+    },
+    {
+      "id": "eq-hair-twin",
+      "slot": "hair",
+      "name": "双马尾",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "talk": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "甜度拉满的物理外挂。",
+      "source": "",
+      "price": 500
+    },
+    {
+      "id": "eq-hair-bun",
+      "slot": "hair",
+      "name": "丸子头",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "dance": 1,
+        "vocal": 1
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "练舞刚需。",
+      "source": "",
+      "price": 500
+    },
+    {
+      "id": "eq-hair-hime",
+      "slot": "hair",
+      "name": "公主切",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "acting >= 12",
+      "bonus": {
+        "acting": 2
+      },
+      "hidden": {
+        "others": 2
+      },
+      "hiddenText": "刘海剪下去那一刻，镜子里换了个人。",
+      "text": "tony 老师的封刀之作。",
+      "source": "",
+      "price": 1200
+    },
+    {
+      "id": "eq-hair-perm",
+      "slot": "hair",
+      "name": "羊毛卷",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "vocal >= 12",
+      "bonus": {
+        "vocal": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "头顶三个卷发棒同时开工。",
+      "source": "",
+      "price": 1300
+    },
+    {
+      "id": "eq-hair-braid",
+      "slot": "hair",
+      "name": "编发·三股",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "acting >= 14",
+      "bonus": {
+        "acting": 2,
+        "talk": 1
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "编一次要二十分钟，能撑一整天。",
+      "source": "",
+      "price": 900
+    },
+    {
+      "id": "eq-hair-silver",
+      "slot": "hair",
+      "name": "银灰短发",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "acting >= 18",
+      "bonus": {
+        "acting": 3
+      },
+      "hidden": {
+        "self": 2
+      },
+      "hiddenText": "tony 说这个颜色显白，他说对了。",
+      "text": "漂了三次才到的颜色。",
+      "source": "",
+      "price": 2000
+    },
+    {
+      "id": "eq-hair-wavy",
+      "slot": "hair",
+      "name": "大波浪·御姐风",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "talk >= 16",
+      "bonus": {
+        "talk": 2,
+        "vocal": 1
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "风一吹就要拨头发，动作要练到肌肉记忆。",
+      "source": "",
+      "price": 1800
+    },
+    {
+      "id": "eq-hair-blue-streak",
+      "slot": "hair",
+      "name": "挑染·海盐蓝",
+      "rarity": "rare",
+      "icon": "",
+      "requirement": "dance >= 25",
+      "bonus": {
+        "dance": 3,
+        "talk": 2
+      },
+      "hidden": {
+        "others": 2
+      },
+      "hiddenText": "灯一打，全场目光先落在你头顶。",
+      "text": "只挑了三撮，藏得深，炸得响。",
+      "source": "",
+      "price": 3500
+    },
+    {
+      "id": "eq-hair-wet-look",
+      "slot": "hair",
+      "name": "湿发造型·舞台限定",
+      "rarity": "rare",
+      "icon": "",
+      "requirement": "vocal >= 30",
+      "bonus": {
+        "vocal": 3,
+        "acting": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "发胶用量约等于半瓶。",
+      "source": "",
+      "price": 3200
+    },
+    {
+      "id": "eq-hair-white-wig",
+      "slot": "hair",
+      "name": "白色长直·假发",
+      "rarity": "legendary",
+      "icon": "",
+      "requirement": "vocal >= 40",
+      "bonus": {
+        "vocal": 4,
+        "acting": 3
+      },
+      "hidden": {
+        "self": 3,
+        "others": 2
+      },
+      "hiddenText": "戴上它的那晚，你说不清自己是谁——但台下的目光是真的。",
+      "text": "造型师的镇箱之宝。",
+      "source": "",
+      "price": 10000
+    },
+    {
+      "id": "eq-cheer-band",
+      "slot": "accessory",
+      "name": "应援手环",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "talk": 1
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "粉丝塞给你的，颜色和你的应援色一样。",
+      "source": "",
+      "price": 0
+    },
+    {
+      "id": "eq-cat-ears",
+      "slot": "accessory",
+      "name": "猫耳发箍",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "talk": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "营业神器。",
+      "source": "",
+      "price": 400
+    },
+    {
+      "id": "eq-cross-necklace",
+      "slot": "accessory",
+      "name": "十字架项链",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "vocal": 1
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "细链条，舞台闪光灯下刚刚好。",
+      "source": "",
+      "price": 500
+    },
+    {
+      "id": "eq-rhinestone-sticker",
+      "slot": "accessory",
+      "name": "舞台亮片贴",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "dance >= 10",
+      "bonus": {
+        "dance": 1,
+        "vocal": 1
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "贴在颧骨上，灯光下会发光。",
+      "source": "",
+      "price": 300
+    },
+    {
+      "id": "eq-velvet-choker",
+      "slot": "accessory",
+      "name": "choker·黑丝绒",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "acting >= 14",
+      "bonus": {
+        "acting": 2
+      },
+      "hidden": {
+        "others": 2
+      },
+      "hiddenText": "脖子伸直一点，气场就出来了。",
+      "text": "低调但致命的一件。",
+      "source": "",
+      "price": 800
+    },
+    {
+      "id": "eq-star-earrings",
+      "slot": "accessory",
+      "name": "星星耳坠",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "vocal >= 12",
+      "bonus": {
+        "vocal": 1,
+        "talk": 1
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "转到一半会晃，台下喜欢看它晃。",
+      "source": "",
+      "price": 900
+    },
+    {
+      "id": "eq-lace-gloves",
+      "slot": "accessory",
+      "name": "蕾丝手套",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "acting >= 14",
+      "bonus": {
+        "acting": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "指尖那截蕾丝是重点。",
+      "source": "",
+      "price": 700
+    },
+    {
+      "id": "eq-pain-tape",
+      "slot": "accessory",
+      "name": "绷带装饰·痛痛贴",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "dance >= 12",
+      "bonus": {
+        "dance": 1,
+        "talk": 1
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "地偶的经典美学，痛并快乐着。",
+      "source": "",
+      "price": 200
+    },
+    {
+      "id": "eq-pearl-clip",
+      "slot": "accessory",
+      "name": "珍珠发夹",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": "vocal >= 10",
+      "bonus": {
+        "vocal": 1,
+        "acting": 1
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "别在耳边，温柔一刀。",
+      "source": "",
+      "price": 600
+    },
+    {
+      "id": "eq-gray-star-lens",
+      "slot": "accessory",
+      "name": "美瞳·灰星星",
+      "rarity": "rare",
+      "icon": "",
+      "requirement": "talk >= 28",
+      "bonus": {
+        "talk": 3
+      },
+      "hidden": {
+        "others": 3
+      },
+      "hiddenText": "近距离特典会的时候，有人盯着你的眼睛看了十秒。",
+      "text": "直径 14.2mm，刚刚好不像假的。",
+      "source": "",
+      "price": 1800
+    },
+    {
+      "id": "eq-eyepatch",
+      "slot": "accessory",
+      "name": "装饰义眼罩",
+      "rarity": "rare",
+      "icon": "",
+      "requirement": "acting >= 32",
+      "bonus": {
+        "acting": 4
+      },
+      "hidden": {
+        "others": 2,
+        "scandal": 2
+      },
+      "hiddenText": "一半是神秘，一半是话题。",
+      "text": "戴上的瞬间，人设就立住了一半。",
+      "source": "",
+      "price": 2200
+    },
+    {
+      "id": "eq-badge-v1",
+      "slot": "accessory",
+      "name": "团徽·初代",
+      "rarity": "rare",
+      "icon": "",
+      "requirement": "hasFlag(\"ev:party-first\")",
+      "bonus": {
+        "talk": 2,
+        "dance": 2
+      },
+      "hidden": {},
+      "hiddenText": "",
+      "text": "只发过一批，后来进团的人都羡慕。",
+      "source": "",
+      "price": 0
+    },
+    {
+      "id": "eq-crown",
+      "slot": "accessory",
+      "name": "冠冕头饰",
+      "rarity": "legendary",
+      "icon": "",
+      "requirement": "total >= 200",
+      "bonus": {
+        "vocal": 3,
+        "dance": 3,
+        "acting": 2
+      },
+      "hidden": {
+        "self": 3
+      },
+      "hiddenText": "返场的时候戴上它，全场喊你女王。其实是塑料的，没人看得出来。",
+      "text": "灯光下，塑料也能发光。",
+      "source": "",
+      "price": 8000
+    },
+    {
+      "id": "eq-fan-necklace",
+      "slot": "accessory",
+      "name": "粉丝送的项链",
+      "rarity": "legendary",
+      "icon": "",
+      "requirement": "hasFlag(\"ev:fan-gift\")",
+      "bonus": {
+        "talk": 3,
+        "vocal": 2
+      },
+      "hidden": {
+        "others": 4
+      },
+      "hiddenText": "每次戴上，都想起送它的那个人。",
+      "text": "你从来不敢算它值多少钱。",
+      "source": "",
+      "price": 0
+    }
+  ]
+}

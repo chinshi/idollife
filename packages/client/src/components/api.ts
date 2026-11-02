@@ -87,9 +87,14 @@ export interface AppApi {
   doKick: (memberId: string) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   doBuy: (item: any) => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  doEquip: (item: any) => void;
+  // T-019：道具/背包
+  doUseItem: (invId: string) => void;
+  doEquipBag: (invId: string) => void;
+  doUnequipBag: (slot: 'hair' | 'outfit' | 'shoes' | 'accessory') => void;
+  doBuyConsumable: (itemId: string) => void;
   doDebut: () => void;
+  /** T-018：晋级到下一成长阶段（seq4 时内部走出道演出） */
+  doAdvanceStage: () => void;
   doSwitchParty: (id: string) => void;
   openPartyModal: () => void;
   doDivine: () => void;
@@ -109,4 +114,7 @@ export interface AppApi {
   dayLabel: (at: number, now: number) => string;
   biasLabel: (bias: Bias) => string;
   weekdayName: (day: number) => string;
+
+  /** T-016：属性面板点偶像名 → 打开改名对话框 */
+  onRenameIdol: () => void;
 }

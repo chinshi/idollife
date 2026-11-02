@@ -163,6 +163,30 @@ if (tasks) {
   if (prereqCycle) {
     errors.push(`tasks.prerequisite 成环：${prereqCycle.join(' → ')}`);
   }
+
+  // T-017：任务三类化校验（分类必填；引导必须有组、且不带时限；限时必须有时限）
+  const TASK_CATEGORIES = ['guide', 'routine', 'timed'];
+  for (const task of tasks.tasks ?? []) {
+    if (!TASK_CATEGORIES.includes(task.category)) {
+      errors.push(
+        `tasks.${task.id}.category: 必须是 ${TASK_CATEGORIES.join('/')}（当前：${task.category === undefined ? '空' : String(task.category)}）`,
+      );
+      continue;
+    }
+    if (task.category === 'guide') {
+      if (typeof task.guideGroup !== 'string' || !/^G\d+$/.test(task.guideGroup)) {
+        errors.push(
+          `tasks.${task.id}: 引导任务必须有「组」（G1…G7），当前：${task.guideGroup === undefined ? '空' : String(task.guideGroup)}`,
+        );
+      }
+      if (typeof task.deadlineDays === 'number' && task.deadlineDays > 0) {
+        errors.push(`tasks.${task.id}: 引导任务不得同时带「时限(天)」`);
+      }
+    }
+    if (task.category === 'timed' && !(typeof task.deadlineDays === 'number' && task.deadlineDays > 0)) {
+      errors.push(`tasks.${task.id}: 限时任务必须有「时限(天)」`);
+    }
+  }
 }
 
 // ── requires 表达式静态校验（T-005）─────────────────────────────────────
@@ -421,6 +445,116 @@ if (endings) {
   uniqueIds(endings.endings ?? [], 'endings');
   for (const e of endings.endings ?? []) {
     need(typeof e.title === 'string' && e.title.length <= 8, `endings.${e.id}: title 建议 4 字以内`);
+  }
+}
+
+// ── 成长阶段表（T-018）────────────────────────────────────────────────
+const stages = await load('stages.json');
+if (stages) {
+  const list = stages.stages ?? [];
+  need(Array.isArray(list) && list.length > 0, 'stages.json: stages 必须是非空数组');
+  uniqueIds(list, 'stages');
+  list.forEach((s, i) => {
+    // seq 必须从 1 连续递增
+    need(s.seq === i + 1, `stages.${s.id}: seq 必须从 1 连续递增（第 ${i + 1} 行实际 seq=${s.seq}）`);
+    need(typeof s.name === 'string' && s.name, `stages.${s.id}: 缺少阶段名`);
+    need(typeof s.title === 'string' && s.title, `stages.${s.id}: 缺少称号`);
+    need(typeof s.style === 'string' && /^s[1-8]$/.test(s.style), `stages.${s.id}: 样式必须是 s1–s8（当前：${s.style || '空'}）`);
+    // 进入条件：空只允许 seq=1；字符串表达式要能编译
+    const cond = s.condition;
+    const isEmpty =
+      cond === undefined ||
+      cond === null ||
+      (typeof cond === 'object' && Object.keys(cond).length === 0);
+    if (isEmpty) {
+      need(s.seq === 1, `stages.${s.id}: 进入条件为空的只允许 seq=1`);
+    } else if (typeof cond === 'string') {
+      for (const problem of expressionProblems(cond)) {
+        errors.push(`stages.${s.id}.condition: ${cond} → ${problem}`);
+      }
+    }
+  });
+}
+
+// ── 道具表（T-019）────────────────────────────────────────────────
+const RARITIES = ['common', 'uncommon', 'rare', 'legendary'];
+const ITEM_TYPES = ['food', 'medicine'];
+const EQUIP_SLOTS = ['hair', 'outfit', 'shoes', 'accessory'];
+const ITEM_EFFECT_KEYS = [
+  'stamina', 'mood', 'satiety', 'weight', 'appearance', // 显性
+  'stress', 'restless', 'fatigue', 'desire', 'scandal', // 负面
+  'self', 'others', 'fit', // 隐藏
+];
+const EQUIP_BONUS_KEYS = ['vocal', 'dance', 'acting', 'talk'];
+const EQUIP_HIDDEN_KEYS = ['self', 'others', 'fit', 'desire', 'scandal'];
+const itemIds = new Set();
+
+const items = await load('items.json');
+if (items) {
+  need(Array.isArray(items.items) && items.items.length > 0, 'items.json: items 必须是非空数组');
+  for (const item of items.items ?? []) {
+    if (typeof item.id !== 'string' || !item.id) {
+      errors.push('items: 存在空 id');
+      continue;
+    }
+    if (itemIds.has(item.id)) errors.push(`items.${item.id}: id 重复`);
+    itemIds.add(item.id);
+    need(ITEM_TYPES.includes(item.type), `items.${item.id}: 类型必须是 food/medicine（当前：${item.type}）`);
+    need(RARITIES.includes(item.rarity), `items.${item.id}: 稀有度必须是 ${RARITIES.join('/')}`);
+    need(typeof item.name === 'string' && item.name, `items.${item.id}: 缺少名称`);
+    need(typeof item.price === 'number' && item.price >= 0, `items.${item.id}: 参考价必须是非负数字`);
+    for (const field of ['effects', 'negative', 'hidden']) {
+      const obj = item[field];
+      if (obj === undefined) continue;
+      if (typeof obj !== 'object' || obj === null || Array.isArray(obj)) {
+        errors.push(`items.${item.id}.${field}: 必须是 JSON 对象`);
+        continue;
+      }
+      for (const key of Object.keys(obj)) {
+        if (!ITEM_EFFECT_KEYS.includes(key)) errors.push(`items.${item.id}.${field}: 未知效果键 ${key}`);
+        if (typeof obj[key] !== 'number' || !Number.isFinite(obj[key])) {
+          errors.push(`items.${item.id}.${field}.${key}: 数值必须是数字`);
+        }
+      }
+    }
+  }
+}
+
+const equipments = await load('equipments.json');
+if (equipments) {
+  need(Array.isArray(equipments.equipments) && equipments.equipments.length > 0, 'equipments.json: equipments 必须是非空数组');
+  for (const eq of equipments.equipments ?? []) {
+    if (typeof eq.id !== 'string' || !eq.id) {
+      errors.push('equipments: 存在空 id');
+      continue;
+    }
+    if (itemIds.has(eq.id)) errors.push(`equipments.${eq.id}: id 与 items 冲突`);
+    itemIds.add(eq.id);
+    need(RARITIES.includes(eq.rarity), `equipments.${eq.id}: 稀有度必须是 ${RARITIES.join('/')}`);
+    need(EQUIP_SLOTS.includes(eq.slot), `equipments.${eq.id}: 槽位必须是 ${EQUIP_SLOTS.join('/')}`);
+    need(typeof eq.name === 'string' && eq.name, `equipments.${eq.id}: 缺少名称`);
+    need(typeof eq.price === 'number' && eq.price >= 0, `equipments.${eq.id}: 参考价必须是非负数字`);
+    // 显性加成只允许四维；隐形加成只允许隐藏属性域
+    if (eq.bonus !== undefined) {
+      if (typeof eq.bonus !== 'object' || eq.bonus === null) errors.push(`equipments.${eq.id}.bonus: 必须是 JSON 对象`);
+      else
+        for (const key of Object.keys(eq.bonus)) {
+          if (!EQUIP_BONUS_KEYS.includes(key)) errors.push(`equipments.${eq.id}.bonus: 未知属性键 ${key}`);
+        }
+    }
+    if (eq.hidden !== undefined) {
+      if (typeof eq.hidden !== 'object' || eq.hidden === null) errors.push(`equipments.${eq.id}.hidden: 必须是 JSON 对象`);
+      else
+        for (const key of Object.keys(eq.hidden)) {
+          if (!EQUIP_HIDDEN_KEYS.includes(key)) errors.push(`equipments.${eq.id}.hidden: 未知隐藏键 ${key}`);
+        }
+    }
+    // 装备要求表达式必须可编译
+    if (typeof eq.requirement === 'string' && eq.requirement.trim()) {
+      for (const problem of expressionProblems(eq.requirement)) {
+        errors.push(`equipments.${eq.id}.requirement: ${eq.requirement} → ${problem}`);
+      }
+    }
   }
 }
 

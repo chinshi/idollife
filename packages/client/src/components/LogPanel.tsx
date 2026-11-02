@@ -58,7 +58,8 @@ export function LogPanel({
                   )}
                   <li>
                     <span className="log-text">{l.text}</span>
-                    {l.axesChanged && <em className="tag hidden-tag">隐藏属性变动</em>}
+                    {/* T-016c：隐藏属性任何地方都不显示，「隐藏属性变动」标签已删——
+                        数值不可见时这个提示没有信息量，还占一整行空间 */}
                   </li>
                 </Fragment>
               );

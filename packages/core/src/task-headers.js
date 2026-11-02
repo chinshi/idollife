@@ -10,7 +10,7 @@
  * 纯 JS（无依赖），导入脚本（scripts/content-import.mjs）与测试共用同一份。
  */
 
-/** 表头别名 → 字段名（中文优先；T-009：时限单位是「游戏日」） */
+/** 表头别名 → 字段名（中文优先；T-009：时限单位是「游戏日」；T-017：任务三类化三列） */
 const ALIASES = [
   ['时限(天)', 'deadlineDays'],
   ['时限（天）', 'deadlineDays'],
@@ -19,14 +19,20 @@ const ALIASES = [
   ['reset', 'reset'],
   ['前置任务', 'prerequisite'],
   ['prerequisite', 'prerequisite'],
+  ['分类', 'category'],
+  ['category', 'category'],
+  ['组', 'guideGroup'],
+  ['guidegroup', 'guideGroup'],
+  ['自动领取', 'autoAccept'],
+  ['autoaccept', 'autoAccept'],
 ];
 
 export const TASK_COLUMN_FIELDS = new Map(ALIASES);
 
 /**
- * 把表头单元格文本映射成字段名；不是这三个可选列则返回 null。
+ * 把表头单元格文本映射成字段名；不是可选列则返回 null。
  * @param {unknown} header 表头单元格的值
- * @returns {'deadlineDays' | 'reset' | 'prerequisite' | null}
+ * @returns {'deadlineDays' | 'reset' | 'prerequisite' | 'category' | 'guideGroup' | 'autoAccept' | null}
  */
 export function taskColumnField(header) {
   const name = String(header ?? '').trim();

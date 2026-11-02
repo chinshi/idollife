@@ -1,11 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { createFans } from '@idollife/core';
+import { EQUIPS, createFans, effectiveStats } from '@idollife/core';
 import type { RunState, ScheduleItem } from '@idollife/core';
 import {
   LEGACY_SAVE_KEY,
   SAVE_BAK_KEY,
   SAVE_KEY,
   loadSave,
+  normalizeRun,
   writeSave,
   type SaveV1,
   type SaveV2,
@@ -116,7 +117,8 @@ describe('测试 C：存档 v1→v2 迁移与写档备份', () => {
     expect(loaded?.run.money).toBe(v1.run.money);
     expect(loaded?.run.mood).toBe(v1.run.mood);
     expect(loaded?.run.satiety).toBe(v1.run.satiety);
-    expect(loaded?.run.flags).toEqual(v1.run.flags);
+    // T-018：读档迁移会按推导补写 stage:reached（样本已出道 → seq4），其余 flags 原样保留
+    expect(loaded?.run.flags).toEqual({ ...v1.run.flags, 'stage:reached': 4 });
     expect(loaded?.run.log).toEqual(v1.run.log);
     expect(loaded?.schedule).toEqual(v1.schedule);
 
@@ -135,5 +137,48 @@ describe('测试 C：存档 v1→v2 迁移与写档备份', () => {
     expect(writeSave(second)).toBe(true);
     expect(localStorage.getItem(SAVE_BAK_KEY)).toBe(JSON.stringify(loaded));
     expect(loadSave()).toEqual(second);
+  });
+
+  it('T-016：偶像名写档后可读回；空名读档归一为 undefined', () => {
+    const base = sampleRun();
+    const named: SaveV2 = {
+      version: 2,
+      runId: 'run-name',
+      revision: 1,
+      updatedAt: 1,
+      seed: 'seed-name',
+      run: { ...base, name: ' 小春 ' },
+      schedule: [],
+    };
+    expect(writeSave(named)).toBe(true);
+    expect(loadSave()?.run.name).toBe('小春');
+
+    const blank: SaveV2 = { ...named, run: { ...base, name: '   ' } };
+    expect(writeSave(blank)).toBe(true);
+    expect(loadSave()?.run.name).toBeUndefined();
+  });
+
+  it('T-019：旧 shop 装备读档迁移（按名称映射新表；映射不到保留 legacy，不丢装备）', () => {
+    const known = EQUIPS.find((e) => e.name === '素色练习服');
+    expect(known).toBeTruthy();
+    const oldInventory: unknown[] = [
+      // 旧 shop 的 EquipItem（T-019 之前的结构）
+      { id: 'w0-c0', name: '素色练习服', slot: 'outfit', rarity: 'common', price: 800, affix: { stat: 'dance', value: 2 } },
+      { id: 'w0-c9', name: '一件不存在的旧衣服', slot: 'outfit', rarity: 'rare', price: 900, affix: { stat: 'vocal', value: 4 } },
+    ];
+    const oldRun = {
+      ...sampleRun(),
+      inventory: oldInventory,
+      equipped: { outfit: 'w0-c9' },
+    } as unknown as RunState;
+
+    const norm = normalizeRun(oldRun);
+    expect(norm.inventory).toHaveLength(2);
+    expect(norm.inventory[0]).toMatchObject({ id: 'w0-c0', itemId: known!.id, count: 1 });
+    expect(norm.inventory[0]!.legacy).toBeUndefined();
+    expect(norm.inventory[1]!.legacy?.name).toBe('一件不存在的旧衣服');
+    expect(norm.equipped.outfit).toBe('w0-c9');
+    // 旧装备不丢：映射不到的那件仍能装备，legacy.affix 由 effectiveStats 兜底
+    expect(effectiveStats(norm).vocal).toBe(sampleRun().stats.vocal + 4);
   });
 });

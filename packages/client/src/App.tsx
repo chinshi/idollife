@@ -16,20 +16,17 @@ import {
   applyShow,
   biasLabel,
   buyItem,
-  canDebut,
-  DEBUT_THRESHOLD,
   RECRUIT_COOLDOWN_DAYS,
   cooldownLeftDays,
   TASKS,
-  taskStatus,
   acceptTask,
-  activeTasks,
+  autoAcceptTasks,
+  advanceStage,
   claimTaskReward,
-  describeCondition,
-  describeRewards,
-  completedTasks,
-  claimableTasks,
+  syncStageReached,
   taskBadgeCount,
+  briefTasks,
+  TASK_CATEGORY_LABEL,
   CHANNELS,
   meetFriend,
   inviteFriend,
@@ -47,6 +44,13 @@ import {
   equipItem,
   getShop,
   getStoryEvent,
+  // T-019：道具系统
+  ITEMS_MAP,
+  addConsumable,
+  equipDefOf,
+  describeCondition,
+  useItem,
+  unequipItem,
   judgeEnding,
   memberStats,
   performShow,
@@ -61,6 +65,7 @@ import type {
   RunState,
   ScheduleItem,
   SettleResult,
+  TaskBriefEntry,
 } from '@idollife/core';
 import { clearSave, createSave, loadSave, normalizeRun, writeSave } from './state/save';
 import { AuthForm } from './components/AuthForm';
@@ -105,10 +110,10 @@ const initialRun: RunState = {
   mood: 70,
   satiety: 70,
   innate: {
-    height: 40 + Math.round(Math.random() * 40),
+    // T-016c：身高直接存厘米（145–180）；体重存公斤（40–80）；样貌对齐文案区间（50–100）
+    height: 145 + Math.round(Math.random() * 35),
     weight: 40 + Math.round(Math.random() * 40),
-    appearance: 40 + Math.round(Math.random() * 40),
-    proportion: 40 + Math.round(Math.random() * 40),
+    appearance: 50 + Math.round(Math.random() * 50),
   },
   traits: { kind: 0, lead: 0, coop: 0, independent: 0, ambitious: 0, passion: 0 },
   negatives: { stress: 0, restless: 0, fatigue: 0, desire: 0, scandal: 0 },
@@ -191,7 +196,9 @@ function AppInner() {
   const [checking, setChecking] = useState(true);
 
   const [runId, setRunId] = useState(boot?.runId ?? createSave(initialRun, 'run-demo').runId);
-  const [run, setRun] = useState<RunState>(boot?.run ?? initialRun);
+  // T-017：进入游戏（读档 / 新档）时先补跑一次自动领取，让引导任务从第一眼就是「进行中」。
+  // 放在 useState 的惰性初始化里 = 首次渲染前完成，不需要等第一次行动结算。
+  const [run, setRun] = useState<RunState>(() => autoAcceptTasks(boot?.run ?? initialRun));
   const [schedule, setSchedule] = useState<ScheduleItem[]>(boot?.schedule ?? []);
   const [revision, setRevision] = useState<number>(boot?.revision ?? 0);
   const [seed] = useState(boot?.seed ?? 'run-demo');
@@ -206,6 +213,9 @@ function AppInner() {
   const [showDivination, setShowDivination] = useState(false);
   const [reading, setReading] = useState<{ self: string; others: string; fit: string } | null>(null);
   const [showPartyModal, setShowPartyModal] = useState(false);
+  // T-016：偶像名（开局起名 / 面板点击改名）
+  const [nameModalOpen, setNameModalOpen] = useState(false);
+  const [nameDraft, setNameDraft] = useState('');
   const [planBackup, setPlanBackup] = useState<ScheduleItem[] | null>(null);
   const previewRef = useRef<HTMLDivElement | null>(null);
   const logRef = useRef<HTMLDivElement>(null);
@@ -283,7 +293,7 @@ function AppInner() {
     Math.max(boot?.run?.at ?? T0, bootClock),
   );
 
-  const runRef = useRef<RunState>(boot?.run ?? initialRun);
+  const runRef = useRef<RunState>(run);
   const scheduleRef = useRef<ScheduleItem[]>(boot?.schedule ?? []);
   const batchRef = useRef<{ from: number; prevRun: RunState; prevSchedule: ScheduleItem[] } | null>(null);
   const timelineRef = useRef<HTMLDivElement | null>(null);
@@ -345,10 +355,16 @@ function AppInner() {
       const latest = await fetchLatestRun(token);
       if (cancelled || !latest) return;
 
-      const localEmpty = run.log.length === 0 && schedule.length === 0 && run.at === T0;
+      // T-017：开局初始化会写入「领取任务」日志，这里判定「本地还是空档」时忽略这类日志，
+      // 避免新档因此不再从云端恢复。
+      const localEmpty =
+        run.log.filter((l) => !l.actionId.startsWith('task-accept:')).length === 0 &&
+        schedule.length === 0 &&
+        run.at === T0;
       if (localEmpty || latest.revision > revision) {
         setRunId(latest.runId);
-        setRun(normalizeRun(latest.run));
+        // 云端恢复后同样补跑一次自动领取（与进入游戏口径一致）
+        setRun(autoAcceptTasks(normalizeRun(latest.run)));
         setSchedule(latest.schedule);
         setRevision(latest.revision);
         setNotice('已从云端恢复进度。');
@@ -407,6 +423,18 @@ function AppInner() {
   useEffect(() => {
     runRef.current = run;
   }, [run]);
+
+  // T-016：还没起名的档，进入游戏后弹一次起名框。
+  // 稍等 800ms，让云端恢复先落定——云端有名字时这里就不会再弹。
+  useEffect(() => {
+    if (run.name) return;
+    const t = window.setTimeout(() => {
+      if (runRef.current.name) return;
+      setNameDraft('');
+      setNameModalOpen(true);
+    }, 800);
+    return () => window.clearTimeout(t);
+  }, [run.name]);
 
   useEffect(() => {
     gameNowRef.current = gameNow;
@@ -548,6 +576,88 @@ function AppInner() {
 
 
   const pending = useMemo(() => schedule.filter((s) => !s.done), [schedule]);
+
+  // T-017：任务简报数据（三类分区；引导只取当前组，常规/限时只取进行中 / 可领奖）
+  const briefGroups = useMemo(() => {
+    return briefTasks(run)
+      .map((group) => {
+        let entries = group.tasks;
+        if (group.category === 'guide') {
+          const current = group.tasks.find((e) => e.status !== 'done');
+          const groupNo = current?.task.guideGroup;
+          entries = group.tasks.filter((e) => e.status !== 'done' && e.task.guideGroup === groupNo);
+        } else {
+          entries = group.tasks.filter((e) => e.status === 'active' || e.status === 'completable');
+        }
+        entries = [...entries].sort(
+          (a, b) => (a.status === 'completable' ? 0 : 1) - (b.status === 'completable' ? 0 : 1),
+        );
+        return {
+          category: group.category,
+          label: TASK_CATEGORY_LABEL[group.category],
+          tasks: entries,
+        };
+      })
+      .filter((group) => group.tasks.length > 0);
+  }, [run]);
+
+  const briefSections = useMemo(() => {
+    let budget = 6;
+    return briefGroups
+      .map((group) => {
+        const take = group.tasks.slice(0, Math.max(0, budget));
+        budget -= take.length;
+        return { ...group, tasks: take };
+      })
+      .filter((group) => group.tasks.length > 0);
+  }, [briefGroups]);
+  const briefOverflow =
+    briefGroups.reduce((n, g) => n + g.tasks.length, 0) -
+    briefSections.reduce((n, g) => n + g.tasks.length, 0);
+
+  const renderBrief = (entry: TaskBriefEntry) => {
+    const { task, status, progress, deadline } = entry;
+    const text = progress
+      ? `${task.name}（${progress.current}/${progress.target}）`
+      : task.brief;
+    const timeText = deadline
+      ? status === 'expired'
+        ? '已错过'
+        : deadline.due
+          ? '期限已到'
+          : task.category === 'timed'
+            ? deadline.urgent
+              ? `剩 ${deadline.remainingSlots} 次`
+              : `剩 ${deadline.remainingDays} 天`
+            : ''
+      : '';
+    const done = status === 'completable';
+    return (
+      <li
+        key={task.id}
+        className={[
+          'brief-item',
+          task.category === 'guide' ? 'guide' : '',
+          task.category === 'timed' ? 'timed' : '',
+          done ? 'completable' : '',
+        ]
+          .filter(Boolean)
+          .join(' ')}
+        role="button"
+        tabIndex={0}
+        onClick={() => setMainTab('task')}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') setMainTab('task');
+        }}
+      >
+        <span className={done ? 'brief-check' : 'dot'}>{done ? '✓' : ''}</span>
+        <span className="brief-text">{text}</span>
+        {timeText ? (
+          <span className={'brief-time' + (deadline?.urgent ? ' urgent' : '')}>{timeText}</span>
+        ) : null}
+      </li>
+    );
+  };
 
   const nextItem =
     pending.length > 0
@@ -1042,6 +1152,49 @@ function AppInner() {
     setConfirmAction('restart');
   }
 
+  /** T-016：起名 / 改名。规则：trim、1–12 字；空 = 跳过（默认「未命名」） */
+  function applyIdolName(raw: string) {
+    const trimmed = String(raw ?? '').trim().slice(0, 12);
+    const next: RunState = { ...runRef.current, name: trimmed || '未命名' };
+    runRef.current = next;
+    setRun(next);
+    setNameModalOpen(false);
+    setNameDraft('');
+    // 立即写一次存档，否则刷新页面会再弹一次起名框
+    const ok = writeSave({
+      version: 2,
+      runId,
+      revision,
+      updatedAt: Date.now(),
+      seed,
+      run: next,
+      schedule: scheduleRef.current,
+    });
+    if (ok) setSavedAt(Date.now());
+    void pushWholeState(next);
+    setNotice(trimmed ? `偶像名已设为「${trimmed}」。` : '已使用默认名「未命名」。');
+  }
+
+  function openRenameIdol() {
+    const cur = runRef.current.name ?? '';
+    // 「未命名」是默认占位，改名时不回填到输入框里
+    setNameDraft(cur && cur !== '未命名' ? cur : '');
+    setNameModalOpen(true);
+  }
+
+  /**
+   * 关闭起名框：已起名 = 取消（不动名字，避免误点 X 把名字清成「未命名」）；
+   * 未起名 = 等同于「跳过」，落到默认名。
+   */
+  function cancelNameModal() {
+    if (runRef.current.name) {
+      setNameModalOpen(false);
+      setNameDraft('');
+      return;
+    }
+    applyIdolName('');
+  }
+
   function doRestart() {
     setConfirmAction(null);
 
@@ -1262,10 +1415,27 @@ function AppInner() {
   }
 
   function doDebut() {
-    const next = debut(run);
+    // T-018：出道成功后把推导出的阶段（seq4 rookie-idol）补进 stage:reached
+    const next = syncStageReached(debut(run));
     setRun(next);
-    setNotice('出道了！现在可以组建组合。');
+    setNotice(next === run ? '还没达到出道条件。' : '出道了！现在可以组建组合。');
     void pushWholeState(next);
+  }
+
+  /** T-018：晋级（下一阶段是 seq4 时走出道演出流程） */
+  function doAdvanceStage() {
+    const result = advanceStage(run);
+    if (result.result === 'debut-required') {
+      doDebut();
+      return;
+    }
+    if (result.result === 'ok') {
+      setRun(result.state);
+      setNotice(result.notice);
+      void pushWholeState(result.state);
+      return;
+    }
+    setNotice(result.notice);
   }
 
   function doBuy(item: EquipItem) {
@@ -1279,10 +1449,68 @@ function AppInner() {
     void pushWholeState(state);
   }
 
-  function doEquip(item: EquipItem) {
-    const next = equipItem(run, item.id);
+  function doEquipBag(invId: string) {
+    const outcome = equipItem(run, invId);
+    if (outcome.result === 'requirement') {
+      const entry = run.inventory.find((e) => e.id === invId);
+      const def = entry ? equipDefOf(entry) : null;
+      setNotice(`装备要求未满足：${def ? describeCondition(def.requirement) : '条件不足'}。`);
+      return;
+    }
+    if (outcome.result !== 'ok') {
+      setNotice(outcome.notice);
+      return;
+    }
+    setRun(outcome.state);
+    setNotice(outcome.notice);
+    void pushWholeState(outcome.state);
+  }
+
+  function doUnequipBag(slot: 'hair' | 'outfit' | 'shoes' | 'accessory') {
+    const { state, notice } = unequipItem(run, slot);
+    setRun(state);
+    setNotice(notice);
+    void pushWholeState(state);
+  }
+
+  /** T-019：使用消耗品（隐藏效果写进 axes/负向，但日志与 notice 只列显性部分） */
+  function doUseItem(invId: string) {
+    const outcome = useItem(run, invId);
+    if (outcome.result !== 'ok') {
+      setNotice(outcome.notice);
+      return;
+    }
+    setRun(outcome.state);
+    setNotice(outcome.notice);
+    void pushWholeState(outcome.state);
+  }
+
+  /** T-019：便利店买消耗品（common/uncommon，按参考价；rare/legendary 不上架） */
+  function doBuyConsumable(itemId: string) {
+    const def = ITEMS_MAP[itemId];
+    if (!def) return;
+    if (run.money < def.price) {
+      setNotice('钱不够。');
+      return;
+    }
+    let next = addConsumable(run, itemId);
+    next = {
+      ...next,
+      money: next.money - def.price,
+      log: [
+        ...next.log,
+        {
+          at: next.at,
+          actionId: 'buy-consume',
+          text: `在便利店买了「${def.name}」。`,
+          staminaDelta: 0,
+          statDelta: {},
+          kind: 'action',
+        },
+      ],
+    };
     setRun(next);
-    setNotice(`换上了「${item.name}」。`);
+    setNotice(`买下了「${def.name}」。`);
     void pushWholeState(next);
   }
 
@@ -1402,8 +1630,12 @@ function AppInner() {
     doInvite,
     doKick,
     doBuy,
-    doEquip,
+    doUseItem,
+    doEquipBag,
+    doUnequipBag,
+    doBuyConsumable,
     doDebut,
+    doAdvanceStage,
     doSwitchParty,
     openPartyModal,
     doDivine,
@@ -1419,6 +1651,8 @@ function AppInner() {
     dayLabel,
     biasLabel,
     weekdayName,
+    // T-016：属性面板点偶像名改名
+    onRenameIdol: openRenameIdol,
   };
 
   const modalCtx = {
@@ -1544,19 +1778,18 @@ function AppInner() {
         <div className="bar-right">
           <div className="brief-head">任务简报</div>
           <ul className="brief-list">
-            {activeTasks(run)
-              .slice(0, 6)
-              .map(({ task }) => (
-                <li key={task.id}>
-                  <span className="dot" />
-                  <span className="brief-text">{task.brief}</span>
-                </li>
-              ))}
-            {activeTasks(run).length === 0 && (
+            {briefSections.length === 0 ? (
               <li>
                 <span className="brief-text">暂无进行中的任务</span>
               </li>
-            )}
+            ) : null}
+            {briefSections.map((section) => (
+              <Fragment key={section.category}>
+                <li className="brief-sep">{section.label}</li>
+                {section.tasks.map((entry) => renderBrief(entry))}
+              </Fragment>
+            ))}
+            {briefOverflow > 0 ? <li className="brief-more">+{briefOverflow}</li> : null}
           </ul>
         </div>      </header>
 
@@ -1675,6 +1908,35 @@ function AppInner() {
         <SidePanel api={api} />
       </main>
 
+
+      {/* T-016：开局起名 / 改名（可跳过，默认「未命名」） */}
+      {nameModalOpen && (
+        <Modal
+          title={run.name ? '修改偶像名' : '给偶像起个名字'}
+          onClose={cancelNameModal}
+        >
+          <div className="name-form">
+            <input
+              className="name-input"
+              value={nameDraft}
+              maxLength={12}
+              autoFocus
+              placeholder="1–12 个字；跳过就用「未命名」"
+              onChange={(e) => setNameDraft(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') applyIdolName(nameDraft);
+              }}
+            />
+            <p className="muted small">名字只影响显示，不影响任何数值。之后在「属性」面板点名字可以改。</p>
+            <div className="name-actions">
+              <button className="primary" onClick={() => applyIdolName(nameDraft)}>
+                {run.name ? '保存' : '开始'}
+              </button>
+              <button onClick={cancelNameModal}>{run.name ? '取消' : '跳过'}</button>
+            </div>
+          </div>
+        </Modal>
+      )}
 
       <Modals ctx={modalCtx} />
     </div>

@@ -149,9 +149,11 @@ describe('B. 重置周期 reset', () => {
     expect(taskStatus(base({ at: T0 + 5 * DAY_MS, flags: slackFlags }), slack)).toBe('done');
   });
 
-  it('B3. 现有 3 条 repeat 任务缺省行为不变（等价 D-011 daily）', () => {
+  it('B3. 现有 2 条 repeat 任务缺省行为不变（等价 D-011 daily）', () => {
+    // T-017 内容改版：task-first-show 引导链内 once 化，repeat 只剩 show-10 / daily-repeat
     const repeats = TASKS.filter((t) => t.type === 'repeat');
-    expect(repeats.length).toBe(3);
+    expect(repeats.length).toBe(2);
+    expect(repeats.map((t) => t.id).sort()).toEqual(['task-daily-repeat', 'task-show-10']);
 
     const flagsFor = (id: string) => ({
       [`task:${id}:acceptedAt`]: T0,

@@ -16,3 +16,5 @@ export * from './results';
 export * from './friends';
 export * from './tasks';
 export * from './task-progress';
+export * from './stages';
+export * from './items';

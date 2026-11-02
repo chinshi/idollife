@@ -54,6 +54,8 @@ export function buildExprData(state: RunState): Record<string, unknown> {
     satiety: state.satiety ?? 70,
     friends: (state.friends ?? []).length,
     total: STAT_KEYS.reduce((sum, k) => sum + state.stats[k], 0),
+    // T-018：六类粉丝之和（与客户端 totalFans 同口径）
+    fansTotal: Object.values(state.fans.byType).reduce((sum, v) => sum + (Number(v) || 0), 0),
     flags: state.flags,
   };
   for (const key of declaredFlagKeys) data[key] = false;

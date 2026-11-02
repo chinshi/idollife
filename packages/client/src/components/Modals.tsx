@@ -8,6 +8,29 @@ import { Modal } from './Modal';
 /** 弹窗需要的上下文：AppApi + 弹窗专用的临时状态 */
 export type ModalCtx = AppApi & Record<string, any>;
 
+/**
+ * 占卜读数 → 隐性倾向描述（T-016c 用户口径：占卜是唯一看隐藏属性的入口，
+ * 但要文案包装、不给数值）。底层 divinationReading 只给 high/mid/low 档位，这里翻成人话。
+ */
+const AXIS_HINTS: Record<string, Record<'high' | 'mid' | 'low', string>> = {
+  self: {
+    high: '主见很强，舞台上有自己的主场气场',
+    mid: '有自己的主意，也听得进别人的声音',
+    low: '容易跟着别人的节奏走',
+  },
+  others: {
+    high: '很在意别人怎么看你',
+    mid: '偶尔会留意别人的眼光',
+    low: '不太在乎外界眼光',
+  },
+  fit: {
+    high: '镜头缘很好，观众容易记住你',
+    mid: '观众缘平平，还需要打磨',
+    low: '还没找到和观众相处的感觉',
+  },
+};
+const AXIS_HINT_LABEL: Record<string, string> = { self: '自我倾向', others: '他人倾向', fit: '适配倾向' };
+
 export function Modals({ ctx }: { ctx: ModalCtx }) {
   const { doKick, removeItem, activeEventId, setActiveEventId, choose, runId, run, phase, ending, showActions, showDivination, reading, showPartyModal, partyName, confirmAction, showStops, showInvite, kickTarget, forceLogin, showDebug, debugText, setRunId, setRun, setSchedule, setRevision, setNotice, setSyncStatus, setPhase, setEnding, setShowDivination, setShowPartyModal, setPartyName, setConfirmAction, setShowStops, setShowInvite, setKickTarget, setForceLogin, setShowDebug, doStop, doRestart, doInvite, doDivine, savePlan, cancelPlan, addAction, toggleStop, previewRef, dayLabel, biasLabel, party, pending, confirmCreateParty, decide, clearSave, createSave, initialRun, divinationCost } = ctx;
 
@@ -220,9 +243,15 @@ export function Modals({ ctx }: { ctx: ModalCtx }) {
         <Modal title="占卜" onClose={() => setShowDivination(false)}>
           {reading ? (
             <div className="reading">
-              <p>自我：{reading.self}</p>
-              <p>他人：{reading.others}</p>
-              <p>适配：{reading.fit}</p>
+              {(['self', 'others', 'fit'] as const).map((k) => {
+                const tier = (reading as Record<string, string>)[k];
+                const hint = tier && AXIS_HINTS[k] ? AXIS_HINTS[k][tier as 'high' | 'mid' | 'low'] : undefined;
+                return (
+                  <p key={k}>
+                    {AXIS_HINT_LABEL[k]}：{hint ?? '卦象不明'}
+                  </p>
+                );
+              })}
             </div>
           ) : (
             <p className="muted">还没占过。占卜能看到你现在的状态倾向。</p>

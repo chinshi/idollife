@@ -1,32 +1,78 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   ATTRIBUTES,
   STAMINA_MAX,
   STAT_LABEL,
   appearanceLabel,
   attrValue,
+  currentStage,
   effectiveStats,
+  stageBadgeClass,
   type AttributeDef,
 } from '@idollife/core';
 import type { AppApi } from './api';
 import { FanRadar } from './FanRadar';
 
 /**
- * 属性面板（T-014 改版）
+ * 属性面板（T-016c 口径，T-016d 修订）
  *
- * - 显隐性全部读数据里的 `hidden` / `linked` 标志，不再硬编码打码
- *   - `linked === 0` 的整组不渲染（目前只有熟练度三项）
- *   - `linked === 2` 标「仅占卜可见」，`hidden === true` 标「主界面不显示」，都只是灰色小标
- * - 分组顺序显式写死，不依赖数据行序
- * - 样貌只显示 appearanceLabel 的文案，不显示数字
- * - 粉丝构成用六轴雷达图（FanRadar），不占用下面的属性列表
+ * - 顺序：偶像名 → 固有属性 → 状态（进度条）→ 成长属性（纯数字）→ 资源
+ * - `linked === 0`（熟练度）与 `linked === 2`（性格/负向/三轴，仅占卜可见）一律不渲染，
+ *   面板里看不到任何数值——唯一入口是占卜的文案描述（用户 2026-11-02：任何地方不外显）
+ * - `hidden === true` 只显示灰色小标「主界面不显示」，面板内数值照常（固有/状态/粉丝）
+ * - 样貌只显示 appearanceLabel 的文案，不显示数字；身高/体重带单位
+ * - 成长属性没有上限，不用进度条，直接显示数字
+ * - 粉丝构成雷达图悬浮在「资源 · 粉丝」行上方显示（T-016d）：浮层 portal 到 body 用 fixed
+ *   定位，不受侧栏 `overflow: hidden` 裁切，宽度固定 264px 且贴窗口下沿翻转，不挤压面板布局
+ *
+ * `embedded`：嵌入侧栏「属性」页签时传 true —— 侧栏已有页签标题，这里不再渲染大标题，
+ * 其余内容与主面板完全一致，单一实现不分叉（辅系统显示永远跟随本组件的改动）。
  */
-const GROUP_ORDER = ['visible', 'status', 'innate', 'trait', 'negative', 'hidden'] as const;
+const GROUP_ORDER = ['innate', 'status', 'visible'] as const;
+
+/** 界面叫法与配置表不同：配置表沿用「显性属性」，界面按用户口径叫「成长属性」（T-016） */
+const GROUP_DISPLAY_NAME: Record<string, string> = { visible: '成长属性' };
+
+/** 固有属性的单位显示（T-016c：身高 cm、体重 kg） */
+const INNATE_UNIT: Record<string, string> = { height: 'cm', weight: 'kg' };
 
 const thousands = (n: number) => Math.round(n).toLocaleString('zh-CN');
 
-export function StatsPanel({ api }: { api: AppApi }) {
+/** 状态类三项共用的色调规则（<15 红、<30 橙、其余常态），体力/心情/饱腹一致 */
+const statusTone = (value: number) => (value < 15 ? 'danger' : value < 30 ? 'warn' : '');
+
+export function StatsPanel({ api, embedded = false }: { api: AppApi; embedded?: boolean }) {
   const { run, totalFans } = api;
+  // T-018：当前成长阶段（名字下方徽章）
+  const stage = currentStage(run);
+
+  // 粉丝浮层：portal 到 body，位置按宿主行的视口矩形算（侧栏有 overflow:hidden，绝对定位会被裁）
+  const fanHostRef = useRef<HTMLDivElement | null>(null);
+  const [fanRect, setFanRect] = useState<{ top: number; bottom: number; right: number } | null>(null);
+  const hideTimer = useRef<number | null>(null);
+
+  const openFan = () => {
+    if (hideTimer.current !== null) {
+      window.clearTimeout(hideTimer.current);
+      hideTimer.current = null;
+    }
+    const el = fanHostRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    setFanRect({ top: r.top, bottom: r.bottom, right: r.right });
+  };
+  // 延迟收起：鼠标从宿主移进浮层那一小段不闪断
+  const closeFanSoon = () => {
+    if (hideTimer.current !== null) window.clearTimeout(hideTimer.current);
+    hideTimer.current = window.setTimeout(() => setFanRect(null), 140);
+  };
+  useEffect(
+    () => () => {
+      if (hideTimer.current !== null) window.clearTimeout(hideTimer.current);
+    },
+    [],
+  );
 
   const groups = new Map<string, { name: string; items: AttributeDef[] }>();
   for (const a of ATTRIBUTES) {
@@ -37,8 +83,30 @@ export function StatsPanel({ api }: { api: AppApi }) {
 
   return (
     <>
-      <div className="mod-head">
-        <h2>属性</h2>
+      {embedded ? null : (
+        <div className="mod-head">
+          <h2>属性</h2>
+        </div>
+      )}
+
+      {/* 偶像名，点击可改；未起名时弱化显示「未命名」 */}
+      <div className="attr-idol">
+        <span className="attr-idol-label">偶像名</span>
+        <button
+          type="button"
+          className={run.name ? 'attr-idol-name' : 'attr-idol-name unnamed'}
+          onClick={() => api.onRenameIdol()}
+          title="点击修改偶像名"
+        >
+          {run.name || '未命名'}
+        </button>
+      </div>
+
+      {/* T-018：阶段徽章（名字下方一行，「阶段名 · 称号」，样式按 s1–s8 递进） */}
+      <div className={stageBadgeClass(stage)}>
+        <span className="stage-name">{stage.name}</span>
+        <span className="stage-sep">·</span>
+        <span className="stage-title">{stage.title}</span>
       </div>
 
       <div className="attr-groups">
@@ -46,79 +114,60 @@ export function StatsPanel({ api }: { api: AppApi }) {
           const group = groups.get(category);
           if (!group) return null;
 
-          // linked === 0：整组不渲染（目前只有熟练度三项）
-          const items = group.items.filter((a) => a.linked !== 0);
+          // linked === 0（熟练度）不渲染；linked === 2（仅占卜可见）也不渲染，占卜是唯一入口
+          const items = group.items.filter((a) => a.linked === 1);
           if (items.length === 0) return null;
 
-          const divineOnly = items.some((a) => a.linked === 2);
           const hiddenMain = items.some((a) => a.hidden);
           const isStatus = category === 'status';
-          const isStat = category === 'visible';
-          const isSlim = category === 'trait' || category === 'negative' || category === 'hidden';
 
           return (
-            <Fragment key={category}>
-              <section className="attr-group">
-                <h4>
-                  {group.name}
-                  {divineOnly ? <em className="attr-badge">仅占卜可见</em> : null}
-                  {hiddenMain ? <em className="attr-badge">主界面不显示</em> : null}
-                </h4>
-                <div className="attr-list">
-                  {items.map((a) => {
-                    const value = attrValue(run, a.key);
-                    const max = a.key === 'stamina' ? STAMINA_MAX : 100;
-                    const showBar = isStat || isStatus || isSlim;
-                    const percent = Math.max(0, Math.min(100, (value / max) * 100));
-                    const tone = isStatus
-                      ? value < 15
-                        ? 'danger'
-                        : value < 30
-                          ? 'warn'
-                          : ''
-                      : category === 'negative'
-                        ? 'cold'
-                        : '';
-                    return (
-                      <div key={a.key} className={isStatus ? 'attr-item attr-vital' : 'attr-item'}>
-                        <div className="attr-row">
-                          <span className="k">{a.name}</span>
-                          {a.key === 'appearance' ? (
-                            <span className="v attr-text">{appearanceLabel(value)}</span>
-                          ) : isStatus ? (
-                            <span className="v">
-                              {value}
-                              <em>/{max}</em>
-                            </span>
-                          ) : (
-                            <span className="v">{value}</span>
-                          )}
-                        </div>
-                        {showBar ? (
-                          <span
-                            className={['attr-bar', isStat || isStatus ? '' : 'slim', tone]
-                              .filter(Boolean)
-                              .join(' ')}
-                          >
-                            <i style={{ width: percent + '%' }} />
+            <section key={category} className="attr-group">
+              <h4>
+                {GROUP_DISPLAY_NAME[category] ?? group.name}
+                {hiddenMain ? <em className="attr-badge">主界面不显示</em> : null}
+              </h4>
+              <div className="attr-list">
+                {items.map((a) => {
+                  const value = attrValue(run, a.key);
+                  const max = a.key === 'stamina' ? STAMINA_MAX : 100;
+                  // 只有状态组有进度条；成长属性无上限不配条，固有属性是固定值也不配条
+                  const showBar = isStatus;
+                  const percent = Math.max(0, Math.min(100, (value / max) * 100));
+                  const tone = isStatus ? statusTone(value) : '';
+                  const unit = INNATE_UNIT[a.key];
+                  return (
+                    <div key={a.key} className={isStatus ? 'attr-item attr-vital' : 'attr-item'}>
+                      <div className="attr-row">
+                        <span className="k">{a.name}</span>
+                        {a.key === 'appearance' ? (
+                          <span className="v attr-text">{appearanceLabel(value)}</span>
+                        ) : isStatus ? (
+                          <span className="v">
+                            {value}
+                            <em>/{max}</em>
                           </span>
-                        ) : null}
+                        ) : (
+                          <span className="v">
+                            {value}
+                            {unit ? <em className="attr-unit">{unit}</em> : null}
+                          </span>
+                        )}
                       </div>
-                    );
-                  })}
-                </div>
-              </section>
-
-              {category === 'visible' ? (
-                <section className="attr-group attr-radar-wrap">
-                  <h4>
-                    粉丝构成
-                    <em className="attr-badge">主界面不显示</em>
-                  </h4>
-                  <FanRadar run={run} />
-                </section>
-              ) : null}
-            </Fragment>
+                      {showBar ? (
+                        <span
+                          className={['attr-bar', isStatus ? '' : 'slim', tone]
+                            .filter(Boolean)
+                            .join(' ')}
+                        >
+                          <i style={{ width: percent + '%' }} />
+                        </span>
+                      ) : null}
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
           );
         })}
 
@@ -131,7 +180,13 @@ export function StatsPanel({ api }: { api: AppApi }) {
                 <span className="v">¥{thousands(run.money)}</span>
               </div>
             </div>
-            <div className="attr-item">
+            {/* 粉丝构成雷达：悬浮在这行上方显示（T-016d 浮层版），不常驻占位 */}
+            <div
+              className="attr-item fan-host"
+              ref={fanHostRef}
+              onMouseEnter={openFan}
+              onMouseLeave={closeFanSoon}
+            >
               <div className="attr-row">
                 <span className="k">粉丝</span>
                 <span className="v">{thousands(totalFans(run))}</span>
@@ -140,6 +195,32 @@ export function StatsPanel({ api }: { api: AppApi }) {
           </div>
         </section>
       </div>
+
+      {/* 浮层本体：portal 到 body，fixed 定位；上方放不下且下方更宽裕时翻到下方 */}
+      {fanRect
+        ? (() => {
+            const EST_H = 300; // 浮层大致高度（雷达 240 + 标题 + 内边距）
+            const spaceAbove = fanRect.top;
+            const spaceBelow = window.innerHeight - fanRect.bottom;
+            const below = spaceAbove < EST_H + 16 && spaceBelow > spaceAbove;
+            return createPortal(
+              <div
+                className={below ? 'fan-pop below' : 'fan-pop'}
+                style={{
+                  // 向上展开时保证不顶出视口上沿（宁可与宿主重叠，也不能看不见）
+                  top: below ? fanRect.bottom + 8 : Math.max(EST_H + 8, fanRect.top - 8),
+                  right: Math.max(8, window.innerWidth - fanRect.right),
+                }}
+                onMouseEnter={openFan}
+                onMouseLeave={closeFanSoon}
+              >
+                <div className="fan-pop-head">粉丝构成</div>
+                <FanRadar run={run} />
+              </div>,
+              document.body,
+            );
+          })()
+        : null}
 
       <p className="muted small eff">
         实际属性：

@@ -50,7 +50,15 @@ describe('settle', () => {
     expect(r.state.at).toBe(T0 + 30 * MIN);
     expect(r.state.stats.vocal).toBeGreaterThan(10);
     expect(r.state.stats.dance).toBeGreaterThan(10);
-    expect(r.state.log.filter((l) => l.kind === 'action')).toHaveLength(3);
+    // 只数行动日志；任务自动领取/超时也会写 kind:'action' 的日志（T-017），不属于行动
+    expect(
+      r.state.log.filter(
+        (l) =>
+          l.kind === 'action' &&
+          !l.actionId.startsWith('task-accept:') &&
+          !l.actionId.startsWith('task-expired:'),
+      ),
+    ).toHaveLength(3);
   });
 
   it('体力不足时停下，不执行后面的行动', () => {

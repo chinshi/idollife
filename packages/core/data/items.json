@@ -1,0 +1,1524 @@
+{
+  "_说明": "消耗品表（食物/药品）：effects=显性效果，negative=负面效果，hidden=隐藏效果（只应用不展示，文案里隐晦表达）；price=参考价",
+  "items": [
+    {
+      "id": "food-bubble-tea",
+      "type": "food",
+      "name": "珍珠奶茶",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "mood": 12,
+        "satiety": 5
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "三分糖，去冰。这是原则问题。",
+      "source": "",
+      "price": 15
+    },
+    {
+      "id": "food-taro-bobo",
+      "type": "food",
+      "name": "芋泥波波奶茶",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "mood": 12,
+        "satiety": 6
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "芋泥要捣得够碎，波波要煮得够糯。",
+      "source": "",
+      "price": 16
+    },
+    {
+      "id": "food-mango-pomelo",
+      "type": "food",
+      "name": "杨枝甘露",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "mood": 18
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "芒果和西柚的比例，是这家店的商业机密。",
+      "source": "",
+      "price": 25
+    },
+    {
+      "id": "food-coconut-latte",
+      "type": "food",
+      "name": "生椰拿铁",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "mood": 10,
+        "stamina": 5
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "下午三点的续命水。",
+      "source": "",
+      "price": 18
+    },
+    {
+      "id": "food-iced-americano",
+      "type": "food",
+      "name": "冰美式",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "stamina": 8
+      },
+      "negative": {
+        "mood": 2
+      },
+      "hidden": {},
+      "text": "苦。但清醒。",
+      "source": "",
+      "price": 12
+    },
+    {
+      "id": "food-oat-latte",
+      "type": "food",
+      "name": "燕麦拿铁",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "mood": 12,
+        "stamina": 8
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "燕麦的谷物香盖过了咖啡的苦。",
+      "source": "",
+      "price": 22
+    },
+    {
+      "id": "food-matcha-latte",
+      "type": "food",
+      "name": "抹茶拿铁",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "mood": 10
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "抹茶控的无底洞。",
+      "source": "",
+      "price": 18
+    },
+    {
+      "id": "food-triple-milk-tea",
+      "type": "food",
+      "name": "三兄弟奶茶",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "mood": 16,
+        "satiety": 8
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "珍珠、仙草、布丁。选择困难症的答案：全都要。",
+      "source": "",
+      "price": 20
+    },
+    {
+      "id": "food-lemon-tea",
+      "type": "food",
+      "name": "柠檬茶",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "mood": 8
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "打季柠檬，锤到出汁。",
+      "source": "",
+      "price": 10
+    },
+    {
+      "id": "food-watermelon-juice",
+      "type": "food",
+      "name": "鲜榨西瓜汁",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "mood": 8,
+        "satiety": 5
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "夏天的命是西瓜给的。",
+      "source": "",
+      "price": 12
+    },
+    {
+      "id": "food-osmanthus-latte",
+      "type": "food",
+      "name": "桂花酒酿奶茶",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "mood": 15
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "秋天的第一杯，闻着就有桂花园。",
+      "source": "",
+      "price": 24
+    },
+    {
+      "id": "food-grape-cheese",
+      "type": "food",
+      "name": "多肉葡萄",
+      "rarity": "rare",
+      "icon": "",
+      "effects": {
+        "mood": 25
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "排队四十分钟。值。",
+      "source": "",
+      "price": 32
+    },
+    {
+      "id": "food-egg-tart",
+      "type": "food",
+      "name": "蛋挞",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "mood": 10,
+        "satiety": 5
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "刚出炉的那口酥皮会掉渣，记得用手接住。",
+      "source": "",
+      "price": 8
+    },
+    {
+      "id": "food-dirty-bun",
+      "type": "food",
+      "name": "脏脏包",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "mood": 12,
+        "satiety": 8
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "吃完手指都是巧克力粉，别摸白裤子。",
+      "source": "",
+      "price": 12
+    },
+    {
+      "id": "food-cheese-tart",
+      "type": "food",
+      "name": "半熟芝士",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "mood": 15
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "切开会流心，像慢半拍的心动。",
+      "source": "",
+      "price": 22
+    },
+    {
+      "id": "food-cream-puff",
+      "type": "food",
+      "name": "泡芙",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "mood": 10
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "奶油从中间挤出来才算合格。",
+      "source": "",
+      "price": 10
+    },
+    {
+      "id": "food-tiramisu",
+      "type": "food",
+      "name": "提拉米苏",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "mood": 16
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "「带我走」。今天谁都别想带我走，我要吃完它。",
+      "source": "",
+      "price": 26
+    },
+    {
+      "id": "food-snow-mochi",
+      "type": "food",
+      "name": "雪媚娘",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "mood": 10
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "冰皮裹着奶油和一整颗草莓。",
+      "source": "",
+      "price": 10
+    },
+    {
+      "id": "food-matsong-beibei",
+      "type": "food",
+      "name": "肉松小贝",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "mood": 14,
+        "satiety": 10
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "海苔肉松加沙拉酱，罪恶但快乐。",
+      "source": "",
+      "price": 15
+    },
+    {
+      "id": "food-mochi",
+      "type": "food",
+      "name": "麻薯",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "mood": 8,
+        "satiety": 5
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "糯叽叽星人狂喜。",
+      "source": "",
+      "price": 6
+    },
+    {
+      "id": "food-tanghulu",
+      "type": "food",
+      "name": "糖葫芦",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "mood": 12
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "咬下去那声脆响，是北方的冬天。",
+      "source": "",
+      "price": 8
+    },
+    {
+      "id": "food-milk-pudding",
+      "type": "food",
+      "name": "双皮奶",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "mood": 10,
+        "satiety": 6
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "水牛奶做的才正宗。",
+      "source": "",
+      "price": 12
+    },
+    {
+      "id": "food-yolk-cake",
+      "type": "food",
+      "name": "蛋黄酥",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "mood": 12,
+        "satiety": 10
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "一层酥一层豆沙一颗咸蛋黄。",
+      "source": "",
+      "price": 12
+    },
+    {
+      "id": "food-strawberry-cake",
+      "type": "food",
+      "name": "草莓蛋糕",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "mood": 18
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "草莓要切半立在奶油上，仪式感。",
+      "source": "",
+      "price": 32
+    },
+    {
+      "id": "food-ice-cream",
+      "type": "food",
+      "name": "冰淇淋",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "mood": 12,
+        "stamina": 3
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "第二个半价的时候，一个人也要买两支。",
+      "source": "",
+      "price": 8
+    },
+    {
+      "id": "food-souffle",
+      "type": "food",
+      "name": "舒芙蕾",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "mood": 16
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "等它出炉的十五分钟，比演出前还紧张。",
+      "source": "",
+      "price": 30
+    },
+    {
+      "id": "food-yangmei-tangyuan",
+      "type": "food",
+      "name": "杨梅冰汤圆",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "mood": 15,
+        "stamina": 5
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "冰镇杨梅配糯汤圆，一秒入夏。",
+      "source": "",
+      "price": 18
+    },
+    {
+      "id": "food-chestnut-cake",
+      "type": "food",
+      "name": "栗子蛋糕",
+      "rarity": "rare",
+      "icon": "",
+      "effects": {
+        "mood": 22
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "秋天限定的温柔。",
+      "source": "",
+      "price": 36
+    },
+    {
+      "id": "food-mc-spicy",
+      "type": "food",
+      "name": "麦辣鸡腿堡套餐",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "satiety": 30,
+        "mood": 10,
+        "stamina": 8
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "加冰可乐，谢谢。",
+      "source": "",
+      "price": 35
+    },
+    {
+      "id": "food-crazy-thursday",
+      "type": "food",
+      "name": "疯狂星期四",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "satiety": 25,
+        "mood": 15
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "V 我 50，谢谢。",
+      "source": "",
+      "price": 40
+    },
+    {
+      "id": "food-luosi-noodle",
+      "type": "food",
+      "name": "螺蛳粉",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "satiety": 28,
+        "mood": 18
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "闻着上头，吃着更上头。吃完记得开窗。",
+      "source": "",
+      "price": 22
+    },
+    {
+      "id": "food-malatang",
+      "type": "food",
+      "name": "麻辣烫",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "satiety": 25,
+        "mood": 10
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "夹了一整碗娃娃菜和午餐肉。",
+      "source": "",
+      "price": 20
+    },
+    {
+      "id": "food-oden",
+      "type": "food",
+      "name": "关东煮",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "satiety": 20,
+        "mood": 8,
+        "stamina": 5
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "萝卜要煮到透明。",
+      "source": "",
+      "price": 15
+    },
+    {
+      "id": "food-jianbing",
+      "type": "food",
+      "name": "煎饼果子",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "satiety": 22,
+        "stamina": 8
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "加两个蛋，薄脆要双份。",
+      "source": "",
+      "price": 10
+    },
+    {
+      "id": "food-roujiamo",
+      "type": "food",
+      "name": "肉夹馍",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "satiety": 22
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "白吉馍要现打的。",
+      "source": "",
+      "price": 12
+    },
+    {
+      "id": "food-liangpi",
+      "type": "food",
+      "name": "凉皮",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "satiety": 18,
+        "mood": 5
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "多放辣子多放醋。",
+      "source": "",
+      "price": 10
+    },
+    {
+      "id": "food-fried-skewer",
+      "type": "food",
+      "name": "炸串",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "satiety": 15,
+        "mood": 12
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "下班路上的快乐。",
+      "source": "",
+      "price": 12
+    },
+    {
+      "id": "food-bbq",
+      "type": "food",
+      "name": "深夜烧烤",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "satiety": 25,
+        "mood": 20
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "烤茄子是本体，串是配角。",
+      "source": "",
+      "price": 45
+    },
+    {
+      "id": "food-crayfish",
+      "type": "food",
+      "name": "小龙虾",
+      "rarity": "rare",
+      "icon": "",
+      "effects": {
+        "satiety": 20,
+        "mood": 28
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "剥壳两小时，吃肉五分钟，快乐一整天。",
+      "source": "",
+      "price": 88
+    },
+    {
+      "id": "food-hotpot",
+      "type": "food",
+      "name": "火锅",
+      "rarity": "rare",
+      "icon": "",
+      "effects": {
+        "satiety": 35,
+        "mood": 30
+      },
+      "negative": {
+        "stamina": 5
+      },
+      "hidden": {},
+      "text": "毛肚七上八下，鸭肠提三下。撑到扶墙。",
+      "source": "",
+      "price": 120
+    },
+    {
+      "id": "food-suancaoyu",
+      "type": "food",
+      "name": "酸菜鱼",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "satiety": 30,
+        "mood": 12
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "汤要酸得冒鼻涕才够味。",
+      "source": "",
+      "price": 60
+    },
+    {
+      "id": "food-kao-lengmian",
+      "type": "food",
+      "name": "烤冷面",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "satiety": 18,
+        "mood": 10
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "铁板滋啦一声，灵魂就到了。",
+      "source": "",
+      "price": 10
+    },
+    {
+      "id": "food-stinky-tofu",
+      "type": "food",
+      "name": "臭豆腐",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "satiety": 12,
+        "mood": 10
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "爱的人排队，不爱的人绕道。",
+      "source": "",
+      "price": 12
+    },
+    {
+      "id": "food-takoyaki",
+      "type": "food",
+      "name": "章鱼小丸子",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "satiety": 15,
+        "mood": 10
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "木鱼花在上面跳舞。",
+      "source": "",
+      "price": 12
+    },
+    {
+      "id": "food-egg-pancake",
+      "type": "food",
+      "name": "鸡蛋灌饼",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "satiety": 20
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "早八人的救命早餐。",
+      "source": "",
+      "price": 8
+    },
+    {
+      "id": "food-huangmenji",
+      "type": "food",
+      "name": "黄焖鸡米饭",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "satiety": 30,
+        "stamina": 10
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "三碗米饭免费续。",
+      "source": "",
+      "price": 22
+    },
+    {
+      "id": "food-lanzhou-noodle",
+      "type": "food",
+      "name": "兰州拉面",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "satiety": 28,
+        "stamina": 10
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "一清二白三红四绿五黄。",
+      "source": "",
+      "price": 18
+    },
+    {
+      "id": "food-malaxiangguo",
+      "type": "food",
+      "name": "麻辣香锅",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "satiety": 32,
+        "mood": 15
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "微辣是最后的倔强。",
+      "source": "",
+      "price": 40
+    },
+    {
+      "id": "food-sushi-box",
+      "type": "food",
+      "name": "寿司拼盒",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "satiety": 25,
+        "mood": 10
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "三文鱼要肥的。",
+      "source": "",
+      "price": 48
+    },
+    {
+      "id": "food-fried-chicken",
+      "type": "food",
+      "name": "韩式炸鸡配啤酒",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "satiety": 28,
+        "mood": 20
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "追剧标配。未成年人请换可乐。",
+      "source": "",
+      "price": 55
+    },
+    {
+      "id": "food-rice-ball",
+      "type": "food",
+      "name": "饭团",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "satiety": 15,
+        "stamina": 5
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "加热一分钟，握在手里正好暖。",
+      "source": "",
+      "price": 8
+    },
+    {
+      "id": "food-sandwich",
+      "type": "food",
+      "name": "三明治",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "satiety": 18
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "金枪鱼玉米的，永远的神。",
+      "source": "",
+      "price": 12
+    },
+    {
+      "id": "food-salad",
+      "type": "food",
+      "name": "沙拉轻食盒",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "satiety": 15,
+        "mood": 3
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "吃草的快乐你不懂——其实是鸡胸肉在撑场面。",
+      "source": "",
+      "price": 20
+    },
+    {
+      "id": "food-yogurt",
+      "type": "food",
+      "name": "酸奶",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "satiety": 10,
+        "mood": 6
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "加了燕麦脆，口感就高级了。",
+      "source": "",
+      "price": 8
+    },
+    {
+      "id": "food-nuts",
+      "type": "food",
+      "name": "坚果混合装",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "satiety": 10,
+        "stamina": 8
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "每日坚果，跟风买的。",
+      "source": "",
+      "price": 10
+    },
+    {
+      "id": "food-energy-bar",
+      "type": "food",
+      "name": "能量棒",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "stamina": 12,
+        "satiety": 8
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "赶场路上塞一根。",
+      "source": "",
+      "price": 8
+    },
+    {
+      "id": "food-fruit-box",
+      "type": "food",
+      "name": "鲜切水果盒",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "satiety": 10,
+        "mood": 8
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "西瓜中间那一勺最甜。",
+      "source": "",
+      "price": 15
+    },
+    {
+      "id": "food-cherries",
+      "type": "food",
+      "name": "车厘子（当季）",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "mood": 20,
+        "satiety": 10
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "实现车厘子自由的第 N 次尝试。",
+      "source": "",
+      "price": 45
+    },
+    {
+      "id": "food-bento",
+      "type": "food",
+      "name": "轻食便当",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "satiety": 25,
+        "stamina": 8
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "便利店十元档的顶配。",
+      "source": "",
+      "price": 18
+    },
+    {
+      "id": "food-birthday-cake",
+      "type": "food",
+      "name": "生日蛋糕",
+      "rarity": "legendary",
+      "icon": "",
+      "effects": {
+        "mood": 50,
+        "satiety": 20
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "队友们凑钱买的。蜡烛插上去的那一刻，你差点哭出来。",
+      "source": "",
+      "price": 200
+    },
+    {
+      "id": "food-moms-food",
+      "type": "food",
+      "name": "妈妈寄来的家乡菜",
+      "rarity": "legendary",
+      "icon": "",
+      "effects": {
+        "mood": 45,
+        "satiety": 40,
+        "stamina": 20
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "泡沫箱里塞了冰袋，到你手上还是凉的。加热时整个排练室都是家的味道。",
+      "source": "",
+      "price": 0
+    },
+    {
+      "id": "food-celebration",
+      "type": "food",
+      "name": "庆功宴",
+      "rarity": "legendary",
+      "icon": "",
+      "effects": {
+        "mood": 40,
+        "satiety": 35,
+        "stamina": 15
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "全桌人举着杯子喊你的名字。这一晚，所有的累都值了。",
+      "source": "",
+      "price": 300
+    },
+    {
+      "id": "med-throat-candy",
+      "type": "medicine",
+      "name": "润喉糖",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "stamina": 8
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "含着练完最后一段。",
+      "source": "",
+      "price": 8
+    },
+    {
+      "id": "med-jinsangzi",
+      "type": "medicine",
+      "name": "金嗓子喉片",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "stamina": 10
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "包装土，效果硬。",
+      "source": "",
+      "price": 10
+    },
+    {
+      "id": "med-throat-spray",
+      "type": "medicine",
+      "name": "润喉喷雾",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "stamina": 15
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "喷完那一下清凉感直冲天灵盖。",
+      "source": "",
+      "price": 30
+    },
+    {
+      "id": "med-steam-eyemask",
+      "type": "medicine",
+      "name": "蒸汽眼罩",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "mood": 12,
+        "stamina": 8
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "四十度的黑暗，刚刚好。",
+      "source": "",
+      "price": 15
+    },
+    {
+      "id": "med-melatonin",
+      "type": "medicine",
+      "name": "褪黑素软糖",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "mood": 15,
+        "stamina": 15
+      },
+      "negative": {
+        "restless": 3
+      },
+      "hidden": {},
+      "text": "睡前一颗。梦里没有排练表。",
+      "source": "",
+      "price": 25
+    },
+    {
+      "id": "med-vitc",
+      "type": "medicine",
+      "name": "维生素 C 泡腾片",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "stamina": 10
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "橘子味，气泡在杯子里开演唱会。",
+      "source": "",
+      "price": 12
+    },
+    {
+      "id": "med-multivit",
+      "type": "medicine",
+      "name": "复合维生素",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "stamina": 12
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "一瓶补全所有，营养界的敷衍美学。",
+      "source": "",
+      "price": 30
+    },
+    {
+      "id": "med-ibuprofen",
+      "type": "medicine",
+      "name": "布洛芬",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "stamina": 25
+      },
+      "negative": {
+        "fatigue": 5
+      },
+      "hidden": {},
+      "text": "止痛但不治病。你知道的，但今天必须撑过去。",
+      "source": "",
+      "price": 18
+    },
+    {
+      "id": "med-yunnan-spray",
+      "type": "medicine",
+      "name": "云南白药喷雾",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "stamina": 20
+      },
+      "negative": {
+        "stress": 3
+      },
+      "hidden": {},
+      "text": "喷的时候疼得龇牙，喷完就能继续跳。",
+      "source": "",
+      "price": 25
+    },
+    {
+      "id": "med-knee-brace",
+      "type": "medicine",
+      "name": "医用护膝",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "stamina": 15
+      },
+      "negative": {
+        "fatigue": 8
+      },
+      "hidden": {},
+      "text": "戴上它，膝盖的响声被布料捂住了。",
+      "source": "",
+      "price": 35
+    },
+    {
+      "id": "med-energy-drink",
+      "type": "medicine",
+      "name": "功能饮料",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "stamina": 20
+      },
+      "negative": {
+        "restless": 8
+      },
+      "hidden": {},
+      "text": "心跳得像刚跑完八百米。手别抖，握住话筒。",
+      "source": "",
+      "price": 8
+    },
+    {
+      "id": "med-espresso-double",
+      "type": "medicine",
+      "name": "浓缩黑咖啡（双份）",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "stamina": 15,
+        "mood": 5
+      },
+      "negative": {
+        "restless": 5
+      },
+      "hidden": {},
+      "text": "两 shot。舌头麻了，脑子醒了。",
+      "source": "",
+      "price": 15
+    },
+    {
+      "id": "med-electrolyte",
+      "type": "medicine",
+      "name": "电解质水",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "stamina": 12
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "汗水流走的东西，补回来。",
+      "source": "",
+      "price": 6
+    },
+    {
+      "id": "med-sleep-spray",
+      "type": "medicine",
+      "name": "助眠喷雾",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "mood": 12,
+        "stamina": 10
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "薰衣草味，像把一整个花田喷在枕头上。",
+      "source": "",
+      "price": 35
+    },
+    {
+      "id": "med-anshen",
+      "type": "medicine",
+      "name": "安神口服液",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "mood": 15,
+        "stamina": 10
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "玻璃瓶一支一支的，喝出一种仪式感。",
+      "source": "",
+      "price": 20
+    },
+    {
+      "id": "med-sleeping-pills",
+      "type": "medicine",
+      "name": "处方安眠药",
+      "rarity": "rare",
+      "icon": "",
+      "effects": {
+        "stamina": 35,
+        "mood": 10
+      },
+      "negative": {
+        "fatigue": 12,
+        "desire": 5
+      },
+      "hidden": {
+        "self": 3
+      },
+      "text": "梦里什么都没有，连焦虑也没有。你有点开始期待每晚那片空白。",
+      "source": "",
+      "price": 60
+    },
+    {
+      "id": "med-anti-anxiety",
+      "type": "medicine",
+      "name": "抗焦虑药",
+      "rarity": "rare",
+      "icon": "",
+      "effects": {
+        "mood": 40
+      },
+      "negative": {
+        "stamina": 10,
+        "fatigue": 8
+      },
+      "hidden": {
+        "fit": 3
+      },
+      "text": "上台前手不抖了。只是好像，也没那么想上台了。",
+      "source": "",
+      "price": 80
+    },
+    {
+      "id": "med-antidepressant",
+      "type": "medicine",
+      "name": "抗抑郁药",
+      "rarity": "rare",
+      "icon": "",
+      "effects": {
+        "mood": 45,
+        "stamina": 15
+      },
+      "negative": {
+        "desire": 8
+      },
+      "hidden": {
+        "self": 2
+      },
+      "text": "情绪被磨平的日子，掌声听起来很远，但至少不疼了。",
+      "source": "",
+      "price": 90
+    },
+    {
+      "id": "med-strong-painkiller",
+      "type": "medicine",
+      "name": "强效止痛片",
+      "rarity": "rare",
+      "icon": "",
+      "effects": {
+        "stamina": 40
+      },
+      "negative": {
+        "fatigue": 15,
+        "scandal": 3
+      },
+      "hidden": {
+        "self": 2
+      },
+      "text": "疼痛是身体的信号。你学会了关掉信号。",
+      "source": "",
+      "price": 50
+    },
+    {
+      "id": "med-stimulant",
+      "type": "medicine",
+      "name": "来路不明的兴奋剂",
+      "rarity": "rare",
+      "icon": "",
+      "effects": {
+        "stamina": 55,
+        "mood": 10
+      },
+      "negative": {
+        "restless": 15,
+        "stress": 12
+      },
+      "hidden": {
+        "desire": 4
+      },
+      "text": "心跳快得像要见喜欢的人。一整晚都是。",
+      "source": "",
+      "price": 120
+    },
+    {
+      "id": "med-sedative",
+      "type": "medicine",
+      "name": "镇静剂",
+      "rarity": "rare",
+      "icon": "",
+      "effects": {
+        "stamina": 20
+      },
+      "negative": {
+        "mood": 10,
+        "stress": 12
+      },
+      "hidden": {
+        "others": 2
+      },
+      "text": "世界安静了，你也安静了。散场时有人问你没事吧，你说没事。",
+      "source": "",
+      "price": 70
+    },
+    {
+      "id": "med-hormone",
+      "type": "medicine",
+      "name": "激素调理药",
+      "rarity": "rare",
+      "icon": "",
+      "effects": {
+        "appearance": 6
+      },
+      "negative": {
+        "fatigue": 10,
+        "stress": 8
+      },
+      "hidden": {
+        "scandal": 3
+      },
+      "text": "皮肤确实变好了。只是药盒上的说明，你从来不敢细看。",
+      "source": "",
+      "price": 150
+    },
+    {
+      "id": "med-diet-pill",
+      "type": "medicine",
+      "name": "网红减肥药",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "weight": -2
+      },
+      "negative": {
+        "stamina": 15,
+        "restless": 8
+      },
+      "hidden": {
+        "desire": 3
+      },
+      "text": "体重秤的数字变小了。胃在半夜里叫，你假装听不见。",
+      "source": "",
+      "price": 80
+    },
+    {
+      "id": "med-whitening",
+      "type": "medicine",
+      "name": "美白丸",
+      "rarity": "uncommon",
+      "icon": "",
+      "effects": {
+        "appearance": 3
+      },
+      "negative": {
+        "fatigue": 5
+      },
+      "hidden": {
+        "others": 2
+      },
+      "text": "白了半个色号。镜子里的人看起来精神多了。",
+      "source": "",
+      "price": 60
+    },
+    {
+      "id": "med-collagen",
+      "type": "medicine",
+      "name": "胶原蛋白肽",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "appearance": 2,
+        "mood": 5
+      },
+      "negative": {},
+      "hidden": {},
+      "text": "早 C 晚 A 不如睡前一杯肽。",
+      "source": "",
+      "price": 40
+    },
+    {
+      "id": "med-anti-shampoo",
+      "type": "medicine",
+      "name": "防脱洗发水",
+      "rarity": "common",
+      "icon": "",
+      "effects": {
+        "mood": 8
+      },
+      "negative": {},
+      "hidden": {
+        "self": 2
+      },
+      "text": "熬夜女孩的最后一道防线。泡沫冲掉时数了数，今天只掉了五根。",
+      "source": "",
+      "price": 45
+    },
+    {
+      "id": "med-medspa",
+      "type": "medicine",
+      "name": "水光针",
+      "rarity": "rare",
+      "icon": "",
+      "effects": {
+        "appearance": 8
+      },
+      "negative": {
+        "stamina": 10,
+        "stress": 10
+      },
+      "hidden": {
+        "others": 2,
+        "scandal": 2
+      },
+      "text": "针眼藏在刘海下面，第二天上妆特别服帖。",
+      "source": "",
+      "price": 300
+    },
+    {
+      "id": "med-private-doctor",
+      "type": "medicine",
+      "name": "私人医生调理套餐",
+      "rarity": "legendary",
+      "icon": "",
+      "effects": {
+        "stamina": 50,
+        "mood": 30
+      },
+      "negative": {},
+      "hidden": {
+        "others": 4
+      },
+      "text": "他只说了一句「别再这么熬了」。你听出了别的意思，比如有人在乎你。",
+      "source": "",
+      "price": 500
+    },
+    {
+      "id": "med-overseas-pill",
+      "type": "medicine",
+      "name": "海外代购小药丸",
+      "rarity": "legendary",
+      "icon": "",
+      "effects": {
+        "stamina": 60,
+        "mood": 35
+      },
+      "negative": {
+        "scandal": 10,
+        "desire": 12
+      },
+      "hidden": {
+        "desire": 5,
+        "scandal": 3
+      },
+      "text": "瓶子上的字你不认识，但效果立竿见影。你没想过要是被人看见怎么办。",
+      "source": "",
+      "price": 260
+    },
+    {
+      "id": "med-tcm",
+      "type": "medicine",
+      "name": "老中医调理方",
+      "rarity": "legendary",
+      "icon": "",
+      "effects": {
+        "stamina": 40,
+        "mood": 25,
+        "fatigue": -20
+      },
+      "negative": {},
+      "hidden": {
+        "self": 2
+      },
+      "text": "苦得舌头发麻。但那天夜里，你真的睡着了。",
+      "source": "",
+      "price": 180
+    }
+  ]
+}

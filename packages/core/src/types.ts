@@ -30,6 +30,25 @@ export interface EquipItem {
   affix: { stat: StatKey; value: number };
 }
 
+/** 道具稀有度（T-019；颜色在客户端 CSS，core 只给 key） */
+export type Rarity = 'common' | 'uncommon' | 'rare' | 'legendary';
+
+/** 装备槽位（T-019 四槽） */
+export type EquipSlot = 'hair' | 'outfit' | 'shoes' | 'accessory';
+
+/**
+ * 背包条目（T-019）：消耗品按 itemId 堆叠（count 1–99）；装备每件一条（count 恒 1）。
+ * itemId 指向 items.json / equipments.json；旧 shop 装备迁移失败时 itemId 为 ''，用 legacy 原样渲染。
+ */
+export interface InventoryEntry {
+  /** 背包内实例 id（装备槽记录它） */
+  id: string;
+  itemId: string;
+  count: number;
+  /** 旧 shop 装备兜底（新表里找不到同名时保留原始 affix，不丢装备） */
+  legacy?: EquipItem;
+}
+
 export interface Member {
   id: string;
   name: string;
@@ -81,13 +100,15 @@ export interface RunState {
   startedAt: number;
   /** 游戏内时间：排程耗尽即静止 */
   at: number;
+  /** 偶像名；老档缺省，缺省时界面上按「未命名」处理（T-016） */
+  name?: string;
   stamina: number;
   /** 资金；可以为负（负债） */
   money: number;
   stats: Stats;
   axes: Axes;
   fans: Fans;
-  /** 固有属性：身高/体重/样貌/身材比例 */
+  /** 固有属性：身高(cm)/体重(kg)/样貌（T-016c 删除身材比例） */
   innate?: Record<string, number>;
   /** 心情 0-100 */
   mood?: number;
@@ -107,10 +128,10 @@ export interface RunState {
   activePartyId: string | null;
   /** 朋友圈：认识但还没加入组合的人 */
   friends: Friend[];
-  /** 背包里的装备 */
-  inventory: EquipItem[];
-  /** 已装备的槽位 → 物品 id */
-  equipped: { outfit?: string };
+  /** 背包（消耗品堆叠 + 装备实例，T-019） */
+  inventory: InventoryEntry[];
+  /** 已装备的槽位 → 背包条目 id（T-019 四槽） */
+  equipped: { hair?: string; outfit?: string; shoes?: string; accessory?: string };
   flags: Record<string, boolean | number>;
   /** 重点事件（会暂停时间），不为空时不能继续推进 */
   pendingEvent: string | null;

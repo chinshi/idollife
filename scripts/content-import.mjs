@@ -445,6 +445,10 @@ const counts = {};
   const deadlineCol = taskHeader.get('deadlineDays');
   const resetCol = taskHeader.get('reset');
   const prerequisiteCol = taskHeader.get('prerequisite');
+  // T-017：任务三类化三列（分类 / 组 / 自动领取），与上面同一套按表头定位
+  const categoryCol = taskHeader.get('category');
+  const guideGroupCol = taskHeader.get('guideGroup');
+  const autoAcceptCol = taskHeader.get('autoAccept');
 
   const tasks = rowsOf(wb, 'tasks').map((r) => {
     const x = {
@@ -484,6 +488,18 @@ const counts = {};
       const pre = parseIdList(cell(r, prerequisiteCol), `tasks.${x.id}.prerequisite`);
       if (pre && pre.length > 0) x.prerequisite = pre;
     }
+    if (categoryCol) {
+      const category = str(cell(r, categoryCol)).toLowerCase();
+      if (category) x.category = category;
+    }
+    if (guideGroupCol) {
+      const group = str(cell(r, guideGroupCol)).toUpperCase();
+      if (group) x.guideGroup = group;
+    }
+    if (autoAcceptCol) {
+      const raw = cell(r, autoAcceptCol);
+      if (str(raw) !== '') x.autoAccept = bool(raw);
+    }
     return x;
   });
 
@@ -495,7 +511,28 @@ const counts = {};
   counts.tasks = tasks.length;
 }
 
-// 12) 朋友圈渠道表
+// 12) 成长阶段表（T-018）
+{
+  const stages = rowsOf(wb, 'stages').map((r) => ({
+    seq: num(cell(r, 1)) ?? 0,
+    id: str(cell(r, 2)),
+    name: str(cell(r, 3)),
+    title: str(cell(r, 4)),
+    condition: parseCond(cell(r, 5), 'stages.' + str(cell(r, 2)) + '.condition'),
+    buttonText: str(cell(r, 6)),
+    style: str(cell(r, 7)),
+    themeColor: str(cell(r, 8)),
+    unlockText: str(cell(r, 9)),
+  }));
+  await writeJson('stages.json', {
+    _说明:
+      '成长阶段表：seq=顺序；condition=进入条件（表达式，空=无条件，只允许 seq=1 为空）；buttonText=晋级按钮文案；style=s1–s8 对应客户端样式类；themeColor 仅作参考；unlockText=解锁说明',
+    stages,
+  });
+  counts.stages = stages.length;
+}
+
+// 13) 朋友圈渠道表
 {
   const channels = rowsOf(wb, 'channels').map((r) => ({
     id: str(cell(r, 1)),
@@ -531,6 +568,53 @@ const counts = {};
     pools,
   });
   counts.pools = pools.length;
+}
+
+// 16) 消耗品表（T-019）
+{
+  const items = rowsOf(wb, 'items').map((r) => ({
+    id: str(cell(r, 1)),
+    type: str(cell(r, 2)),
+    name: str(cell(r, 3)),
+    rarity: str(cell(r, 4)),
+    icon: str(cell(r, 5)),
+    effects: parseJsonObject(cell(r, 6), 'items.' + str(cell(r, 1)) + '.effects') ?? {},
+    negative: parseJsonObject(cell(r, 7), 'items.' + str(cell(r, 1)) + '.negative') ?? {},
+    hidden: parseJsonObject(cell(r, 8), 'items.' + str(cell(r, 1)) + '.hidden') ?? {},
+    text: str(cell(r, 9)),
+    source: str(cell(r, 10)),
+    price: num(cell(r, 11)) ?? 0,
+  }));
+  await writeJson('items.json', {
+    _说明:
+      '消耗品表（食物/药品）：effects=显性效果，negative=负面效果，hidden=隐藏效果（只应用不展示，文案里隐晦表达）；price=参考价',
+    items,
+  });
+  counts.items = items.length;
+}
+
+// 17) 装备表（T-019）
+{
+  const equipments = rowsOf(wb, 'equipments').map((r) => ({
+    id: str(cell(r, 1)),
+    slot: str(cell(r, 2)),
+    name: str(cell(r, 3)),
+    rarity: str(cell(r, 4)),
+    icon: str(cell(r, 5)),
+    requirement: parseCond(cell(r, 6), 'equipments.' + str(cell(r, 1)) + '.requirement'),
+    bonus: parseJsonObject(cell(r, 7), 'equipments.' + str(cell(r, 1)) + '.bonus') ?? {},
+    hidden: parseJsonObject(cell(r, 8), 'equipments.' + str(cell(r, 1)) + '.hidden') ?? {},
+    hiddenText: str(cell(r, 9)),
+    text: str(cell(r, 10)),
+    source: str(cell(r, 11)),
+    price: num(cell(r, 12)) ?? 0,
+  }));
+  await writeJson('equipments.json', {
+    _说明:
+      '装备表：slot=四槽（hair/outfit/shoes/accessory）；requirement=装备要求表达式；bonus=显性加成（四维）；hidden=隐形加成（只显示隐形文案，不显示数值）',
+    equipments,
+  });
+  counts.equipments = equipments.length;
 }
 
 console.log('\n导入行数：');

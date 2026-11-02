@@ -1,22 +1,25 @@
 import {
   DAILY_SLOTS,
-  DAY_MS,
+  TASK_CATEGORY_LABEL,
   TASKS,
   activeTasks,
   completedTasks,
   describeCondition,
   describeRewards,
-  expiredDay,
   expiredTimes,
   taskDeadline,
   taskProgress,
   taskStatus,
   type RunState,
+  type TaskCategory,
   type TaskDef,
 } from '@idollife/core';
 import { Fragment } from 'react';
 
 export type TaskTab = 'all' | 'accept' | 'active' | 'done';
+
+/** T-017：任务面板按三类分节 */
+const CATEGORY_ORDER: TaskCategory[] = ['guide', 'routine', 'timed'];
 
 export function TaskPanel({
   run,
@@ -35,6 +38,7 @@ export function TaskPanel({
 }) {
   const renderTask = (task: TaskDef) => {
     const status = taskStatus(run, task);
+    const category: TaskCategory = task.category ?? 'routine';
     const label =
       status === 'claimable'
         ? '可领取'
@@ -83,6 +87,7 @@ export function TaskPanel({
         key={task.id}
         className={[
           'task',
+          'cat-' + category,
           status === 'claimable' || status === 'completable' ? 'claimable' : '',
           status === 'done' ? 'done' : '',
         ]
@@ -90,7 +95,10 @@ export function TaskPanel({
           .join(' ')}
       >
         <div className="task-top">
-          <span className="task-name">{task.name}</span>
+          <span className="task-name">
+            {status === 'completable' ? <em className="task-check">✓</em> : null}
+            {task.name}
+          </span>
           <span className={`task-state ${status}`}>{label}</span>
           {deadline ? (
             <span
@@ -197,56 +205,39 @@ export function TaskPanel({
         <ul className="task-list">{list.map(renderTask)}</ul>
       );
   } else {
-    // T-011：「已错过」分区标题带当天错过数（expiredDay === 今天 的条数；N=0 只写「已错过」）
-    const today = Math.floor(run.at / DAY_MS);
-    const missedToday = TASKS.filter((task) => expiredDay(run, task.id) === today).length;
-    const sections: Array<{ key: string; title: string; list: TaskDef[] }> = [
-      {
-        key: 'completable',
-        title: '可领奖',
-        list: TASKS.filter((task) => taskStatus(run, task) === 'completable'),
-      },
-      {
-        key: 'claimable',
-        title: '可领取',
-        list: TASKS.filter((task) => taskStatus(run, task) === 'claimable'),
-      },
-      {
-        key: 'active',
-        title: '进行中',
-        list: TASKS.filter((task) => taskStatus(run, task) === 'active'),
-      },
-      {
-        key: 'locked',
-        title: '可见',
-        list: TASKS.filter((task) => taskStatus(run, task) === 'locked'),
-      },
-      {
-        key: 'expired',
-        title: missedToday > 0 ? `已错过 · 今日 ${missedToday} 单` : '已错过',
-        list: TASKS.filter((task) => taskStatus(run, task) === 'expired'),
-      },
-      {
-        key: 'done',
-        title: '已完成',
-        list: completedTasks(run).map((x) => x.task),
-      },
-    ];
-
+    // T-017：按三类分节（引导 / 常规 / 限时）；可领奖（completable）置顶；已完成单独一节
+    const sections = CATEGORY_ORDER.map((category) => {
+      const list = TASKS.filter((task) => (task.category ?? 'routine') === category)
+        .map((task) => ({ task, status: taskStatus(run, task) }))
+        .filter(({ status }) => status !== 'hidden' && status !== 'done')
+        .sort((a, b) => {
+          const ca = a.status === 'completable' ? 0 : 1;
+          const cb = b.status === 'completable' ? 0 : 1;
+          if (ca !== cb) return ca - cb;
+          return a.task.priority - b.task.priority;
+        })
+        .map(({ task }) => task);
+      return { key: category, title: TASK_CATEGORY_LABEL[category], list };
+    });
+    const doneList = completedTasks(run).map((x) => x.task);
     const visibleSections = sections.filter((s) => s.list.length > 0);
-    body =
-      visibleSections.length === 0 ? (
-        <p className="muted small">暂时没有任务。</p>
-      ) : (
-        <>
-          {visibleSections.map((sec) => (
-            <Fragment key={sec.key}>
-              <div className="task-sep">{sec.title}</div>
-              <ul className="task-list">{sec.list.map(renderTask)}</ul>
-            </Fragment>
-          ))}
-        </>
-      );
+    body = (
+      <>
+        {visibleSections.length === 0 ? <p className="muted small">暂时没有任务。</p> : null}
+        {visibleSections.map((sec) => (
+          <Fragment key={sec.key}>
+            <div className={'task-sep cat-' + sec.key}>{sec.title}</div>
+            <ul className="task-list">{sec.list.map(renderTask)}</ul>
+          </Fragment>
+        ))}
+        {doneList.length > 0 ? (
+          <>
+            <div className="task-sep cat-done">已完成</div>
+            <ul className="task-list">{doneList.map(renderTask)}</ul>
+          </>
+        ) : null}
+      </>
+    );
   }
 
   return (

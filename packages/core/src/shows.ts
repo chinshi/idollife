@@ -1,6 +1,6 @@
 import { applyFanAction, createFans, type FanType, type Fans } from './fans';
 import { hashSeed, mulberry32 } from './rng';
-import { effectiveStats } from './shop';
+import { effectiveStats } from './items';
 import type { RunState } from './types';
 
 export type ShowGrade = 'S' | 'A' | 'B' | 'C';

@@ -5,7 +5,8 @@ import { createFans } from './fans';
 import { applyFanAction } from './fans';
 import { ROUTINE_TEMPLATES, findStoryEvent } from './events';
 import { hashSeed, mulberry32, randInt } from './rng';
-import { expireTasks } from './tasks';
+import { expireTasks, autoAcceptTasks } from './tasks';
+import { syncStageReached } from './stages';
 import type { RunState, ScheduleItem, SettleResult, Stats, StopReason } from './types';
 
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
@@ -40,7 +41,7 @@ export function settle(
 ): SettleResult {
   const routineChance = opts.routineChance ?? ROUTINE_CHANCE;
   const storyEvents = opts.storyEvents ?? true;
-  const state: RunState = {
+  let state: RunState = {
     ...run,
     money: typeof run.money === 'number' ? run.money : 0,
     stats: { ...run.stats },
@@ -210,13 +211,17 @@ export function settle(
       }
     }
 
+    // T-017：本行动结算完后，自动领取「刚好可领」的引导/限时任务。
+    // 放在每条行动之后而不是结算末尾——这样「一次算完」与「分多次算」的 acceptedAt 一致，
+    // 保持 D-010 的结算确定性（T-002 的确定性测试覆盖这点）。
+    state = autoAcceptTasks(state);
+
     // 玩家在这一条上打了「到此为止」
     if (item.stopAfter) {
       stoppedReason = 'stopped';
       break;
     }
   }
-
   // 跨周扣房租
   const origin = state.startedAt ?? run.at;
   const weeks = Math.floor((state.at - origin) / WEEK_MS) - Math.floor((run.at - origin) / WEEK_MS);
@@ -238,5 +243,7 @@ export function settle(
   }
 
   // T-007 A：时间推进后统一结算任务超时（写冷却日 + 日志；无 deadlineDays 时不做任何事）
-  return { state: expireTasks(state), executed, stoppedReason };
+  // T-017 的自动领取在每条行动后已经跑过（见循环内），这里只收尾超时。
+  // T-018：事件驱动阶段（如出道）落 flag 后，把推导出的更高阶段补进 stage:reached。
+  return { state: syncStageReached(expireTasks(state)), executed, stoppedReason };
 }

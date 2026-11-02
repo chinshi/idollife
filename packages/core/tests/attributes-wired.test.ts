@@ -13,7 +13,7 @@ const base = (over: Partial<RunState> = {}): RunState =>
     stats: { vocal: 10, dance: 10, acting: 10, talk: 10 },
     axes: { self: 50, others: 50, fit: 50 },
     mood: 70, satiety: 70,
-    innate: { height: 60, weight: 60, appearance: 60, proportion: 60 },
+    innate: { height: 160, weight: 60, appearance: 60 },
     traits: { kind: 0, lead: 0, coop: 0, independent: 0, ambitious: 0, passion: 0 },
     negatives: { stress: 0, restless: 0, fatigue: 0, desire: 0, scandal: 0 },
     proficiency: { stage_prof: 0, song_prof: 0, choreo_prof: 0 },

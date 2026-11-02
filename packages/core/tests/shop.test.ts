@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { buyItem, effectiveStats, equipItem, getShop, weekOf } from '../src/shop';
+import { buyItem, getShop, weekOf } from '../src/shop';
+import { EQUIPS, effectiveStats, equipItem } from '../src/items';
 import { createFans } from '../src/fans';
 import { WEEK_MS } from '../src/content';
 import type { RunState } from '../src/types';
@@ -57,10 +58,17 @@ describe('商店与装备', () => {
 
   it('装备后 effectiveStats 生效', () => {
     const item = getShop(base(), 's1').find((i) => i.rarity === 'rare')!;
-    const bought = buyItem(base(), item).state;
-    const equipped = equipItem(bought, item.id);
+    // T-019：装备要求按新表口径校验，先给足属性
+    const rich = base({ stats: { vocal: 80, dance: 80, acting: 80, talk: 80 } });
+    const bought = buyItem(rich, item).state;
+    const outcome = equipItem(bought, item.id);
+    expect(outcome.result).toBe('ok');
 
-    const eff = effectiveStats(equipped);
-    expect(eff[item.affix.stat]).toBe(10 + item.affix.value);
+    // T-019：旧商店装备按名称映射到新装备表，显性加成以新表为准
+    const def = EQUIPS.find((e) => e.name === item.name)!;
+    const eff = effectiveStats(outcome.state);
+    for (const [key, value] of Object.entries(def.bonus)) {
+      expect(eff[key as keyof typeof eff]).toBe(80 + value);
+    }
   });
 });
