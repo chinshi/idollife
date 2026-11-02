@@ -15,3 +15,18 @@ dist/
 content/~$*.xlsx
 # 旧的合并工作簿（已拆分为单表文件）
 content/content.xlsx
+
+# dsh 主会话 id（本机状态，不共享）
+collab/.dsh-session
+collab/.dsh-permission
+# 派单用的临时 prompt（一次性，不共享）
+collab/.dispatch-*.md
+
+# 内容表本地备份：改表前的快照，体积大且只对本机有意义
+content/_all-backup-*.xlsx
+
+# 项目本地记忆与工作区状态
+.workbuddy/
+
+# 需求原始素材压缩包（docs/ 下已是可读版本）
+docs/说明.zip
