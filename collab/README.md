@@ -107,6 +107,7 @@ node scripts/dsh.mjs permission set danger-full-access    # 设为完全权限�
 2. **回执必写**：完成后状态改 `review`，回执区四项填全（实现说明 / 改动文件清单 / 自测结果命令+输出摘要 / 未决问题）。**这是策划验收的唯一依据**。
 3. **一次一任务**：不并行、不顺手修别的任务范围外的问题。
 4. **不 commit**：由策划验收后统一提交，commit 信息带任务号。
+4b. **不 push（2026-11-02 用户明确）**：`git push` 只能由用户触发。策划可以整理本地 commit，但**推到远端前必须先问用户**，用户说「推/上线/部署」才能 push。每轮派单都要把这条贴给 dsh。
 5. **改语义先问**：若实现中发现设计语义需要改（含既有测试断言冲突），列入回执区未决问题，**不得静默修改断言或需求**。
 6. **测试口径**：dsh 沙箱通常无法启动 vitest（`spawn EPERM`），可用等价方式跑并在回执注明；最终以策划在普通终端 `pnpm test` + `pnpm check:data` + 三包 `tsc --noEmit` 为准。
 7. **遵守 core 铁律**：`packages/core` 禁 `Date.now()` / `Math.random()` / DOM / localStorage。
