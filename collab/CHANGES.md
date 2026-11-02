@@ -11,6 +11,10 @@
 
 ## 记录
 
+- `2026-11-02 20:08` ｜ 来源：策划派单 T-014 ｜ 属性面板改版：删掉 `HIDDEN_CATEGORIES` 硬编码打码，改读 `hidden`/`linked`（`linked=0` 整组隐藏、`linked=2`/`hidden` 只加灰色小标）、分组顺序显式写死、成长/状态/性格/负向/三轴加百分比条、样貌只显示 `appearanceLabel` 文案（新增 core 导出 + 5 条测试）、底部实际属性改中文；新增纯 SVG 六轴粉丝雷达图 `FanRadar`（0 粉丝空态、max 归一化）；资源千分位 ｜ `packages/core/src/attributes.ts`、`packages/core/tests/attributes-appearance.test.ts`、`packages/client/src/components/{StatsPanel,FanRadar}.tsx`、`packages/client/src/styles.css`、`collab/T-014-属性面板改版.md`
+
+- `2026-11-02 19:55` ｜ 来源：策划派单 T-013 ｜ 线上三 bug：① App 时钟锚点改 `let` + 空档 heal 后重设锚点 + `stuckRef` 连续 3 tick 丢弃卡死行程 + TimeAxis「结算中…」；② `doAccept`/`doReward` 补 `pushWholeState`，`/v1/sync` 改为客户端不落后时以客户端为准（不再 settle）；③ `describeCondition` 支持表达式 DSL→中文（变量/比较/逻辑/`hasFlag` 查事件标题/`sum`），新增 `describe-condition` 6 条测试 ｜ `packages/client/src/{App.tsx,components/TimeAxis.tsx}`、`packages/server/src/app.ts`、`packages/core/src/tasks.ts`、`packages/core/tests/describe-condition.test.ts`、`collab/T-013-线上三个BUG修复.md`
+
 - `2026-11-02 16:36` ｜ 来源：用户直派 + 策划派单 T-012 ｜ 部署上线：四项前置检查（`pnpm test` / `pnpm build` / `pnpm install --frozen-lockfile` / `server build:vercel`）全过，工作区改动分两个 commit 提交（1 仓库卫生 + 1 本轮全部功能），随后 `push origin main` 触发 Vercel 自动构建 ｜ `.gitignore`、`packages/**`、`content/**`、`scripts/**`、`docs/**`、`README.md`、`pnpm-lock.yaml`、`collab/**`
 
 - `2026-11-02 16:31` ｜ 来源：策划派单 T-011 ｜ 失败可见化：`expired` 当天由 `hidden` 改为可见不可操作（「已错过 / 明日起重新可领」，中性灰 `.missed`）；`expireTasks()` 加同日幂等守卫（防每行动刷一条超时日志）+ `expiredCount` 累计计数与 `expiredTimes()`；顺带修 T-007「上次领取的 expiredDay 污染本次判定、第二次起永不判超时」的真 bug（守卫改 `expired >= gameDay(acceptedAt)`）；面板三处文案统一「已错过」、分区标题带「今日 N 单」、`.task-req` 显示「错过 N 次」 ｜ `packages/core/src/tasks.ts`、`packages/client/src/components/TaskPanel.tsx`、`packages/client/src/styles.css`、`packages/core/tests/tasks-expire-visible.test.ts`（新增 7 条）、`packages/core/tests/tasks-s04.test.ts`（A3 语义变更）、`docs/25-模块命名与任务系统.md`、`collab/T-011-失败可见化.md`
