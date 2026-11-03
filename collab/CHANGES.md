@@ -11,6 +11,42 @@
 
 ## 记录
 
+- `2026-11-04 00:36` ｜ 来源：T-033-r3 返工 ｜ 报名列表区分 open/announced/full：新增 cardState/firstOpenSlotIndex，默认选中第一个空位，d≤7 卡加已宣发徽标/降透明/按钮禁用，满场显示本场已满；已参与卡按 slotName 显示主位；新增 client 2 测试；3 张真实 ShowPanel 渲染截图 ｜ `packages/client/src/components/{ShowPanel.tsx,show-card.ts}`、`packages/client/src/styles.css`、`packages/client/tests/show-card.test.ts`、`collab/T-033-演出去城市维度与演出级别.md`
+
+- `2026-11-04 00:34` ｜ 来源：T-033-r2 返工 ｜ 页头容量文案抽 showHeaderText（超一线周中/不限顺位），已参与卡片补类型/级别徽标并兜底普通，新增 client 2 条测试；截图改为真实 ShowPanel + scheduleWeek 渲染 ｜ `packages/client/src/components/{ShowPanel.tsx,show-header.ts}`、`packages/client/tests/show-header.test.ts`、`collab/T-033-演出去城市维度与演出级别.md`
+
+- `2026-11-04 00:29` ｜ 来源：用户直派 T-033 ｜ 演出去城市维度 + 级别 tier：RawShow/Booking 改 tier，新增 CITIES/cityDef/showVisibleIn/TIER_LABEL；scheduleWeek 按 cities 场次+级别权重抽取（festival 仅节日周）；ShowPanel 级别徽标+页头容量；server 无改动；core +7 测试 ｜ `packages/core/src/{data.ts,shows.ts,types.ts}`、`packages/core/tests/shows.test.ts`、`packages/client/src/{App.tsx,components/ShowPanel.tsx,styles.css}`、`collab/T-033-演出去城市维度与演出级别.md`
+
+- `2026-11-04 00:14` ｜ 来源：T-032-r2 返工 ｜ NPC 0.85 档至少留 1 空位（单顺位单独处理）、taken 文案改「NPC 已占」且不可报、canBook 加 dayUsedSlots/day-full、入口删内联槽位检查、entryFee 改逐项达标才给提成；核心 +4 测试 ｜ `packages/core/src/shows.ts`、`packages/core/tests/shows.test.ts`、`packages/client/src/{App.tsx,components/ShowPanel.tsx}`、`collab/T-032-演出系统报名制.md`
+
+- `2026-11-04 00:05` ｜ 来源：用户直派 T-032 ｜ 演出报名制 P0+P1：shows 导入与 5 项校验；core 新增 scheduleWeek/npcOccupied/checkBooking/entryFee/canCancel/canBook/settleShow 与 city/bookings；settle 支持 show 项；client 新增「演出」菜单/三 tab/报名取消/城市切换，安排行程隐藏 performance 并删除 addShow，槽位跨度统一 slots；core +10 测试 ｜ `scripts/{content-import.mjs,validate-data.mjs}`、`packages/core/src/{data.ts,types.ts,shows.ts,settle.ts}`、`packages/core/tests/shows.test.ts`、`packages/core/data/shows.json`、`packages/client/src/{App.tsx,state/save.ts,components/{ShowPanel.tsx,Modals.tsx,PlanPanel.tsx},styles.css}`、`collab/T-032-演出系统报名制.md`
+
+- `2026-11-03 22:54` ｜ 来源：T-031-r3 微修 ｜ preflight 的 times 文案按 ACTION_META 的 timesScope/times 派生（不再写死「每局 1 次」）；advance 拦截分支加 setLastStop('') 清掉残留停止标签；core +1 测试 ｜ `packages/core/src/preflight.ts`、`packages/core/tests/preflight.test.ts`、`packages/client/src/App.tsx`、`collab/T-031-推进前可行性判定.md`
+
+- `2026-11-03 22:52` ｜ 来源：T-031-r2 返工 ｜ lastStop 只放短标签（stamina/money 显示 STOP_TEXT 新文案），长句只走 notice；preflight 三条文案改为可执行路径；PlanPanel 标题行右侧新增 `.plan-blocked` 常驻提示（只读 pending[0]，O(1)） ｜ `packages/core/src/preflight.ts`、`packages/client/src/{App.tsx,components/{TimeAxis.tsx,PlanPanel.tsx},styles.css}`、`collab/T-031-推进前可行性判定.md`
+
+- `2026-11-03 22:48` ｜ 来源：用户直派 T-031 ｜ 推进前可行性：core 新增 preflightAction（次数→体力→钱，复用 remainingTimes/previewAction）并让 settle 同源调用；client advance 在任何副作用前拦截并同帧提示，endBatch/TimeAxis 的 stamina/money 文案改用 preflight 文本；新增 core 5 测试 ｜ `packages/core/src/{preflight.ts,settle.ts,index.ts}`、`packages/core/tests/preflight.test.ts`、`packages/client/src/{App.tsx,components/TimeAxis.tsx}`、`collab/T-031-推进前可行性判定.md`
+
+- `2026-11-03 22:38` ｜ 来源：T-030 返工 ｜ 修天级框高度塌陷（`.mod-main` 改 flex column）、执行中判定改 `[startAt,endAt)`、PlanPanel 改 useMemo+DayCell memo（不再逐帧重建）、初始定位跟随数据晚到且玩家滚过后不重置、天框 96→144px、清理旧 `.plan-row/.plan-preview/.plan-list/.plan-day` 死样式 ｜ `packages/client/src/{styles.css,components/PlanPanel.tsx}`、`collab/T-030-行程主模块横向天级框.md`
+
+- `2026-11-03 22:33` ｜ 来源：用户直派 T-030 ｜ 行程主模块改横向天级框：core 抽 buildDaySlots（弹窗与主界面共用）；PlanPanel 支持前天起滚、past/today/future 三态、执行中强调、末尾「＋点击安排行程」、纵向滚轮转横向；弹窗改用同一槽位函数；core +3 测试 ｜ `packages/core/src/plan.ts`、`packages/core/tests/plan.test.ts`、`packages/client/src/components/{PlanPanel.tsx,Modals.tsx}`、`packages/client/src/styles.css`、`collab/T-030-行程主模块横向天级框.md`
+
+- `2026-11-03 22:22` ｜ 来源：T-029 返工 ｜ P0：`/v1/clock/event` 支持新档自动建档（body 加必填 seed）、老档无 clock 用 createClock 兜底；P1：outbox 队尾 sync 合并 + 60 上限只淘汰最旧 sync（clockEvent 永不丢）、新增纯队列函数与 2 条 client 测试；`measureElapsed()` 在 runStartTs 未初始化时保守返回 0；server 测试 +2 共 18 ｜ `packages/server/src/app.ts`、`packages/server/tests/clock-api.test.ts`、`packages/client/src/{App.tsx,api/sync.ts,state/{outbox.ts,outbox-queue.ts}}`、`packages/client/tests/outbox.test.ts`、`collab/T-029-启停本地优先与事件式时钟上传.md`
+
+- `2026-11-03 22:16` ｜ 来源：用户直派 T-029 ｜ 启停本地优先 + 时钟事件异步上传：core 加 elapsedBudget；server 新增 /v1/clock/event（幂等/乱序/时长上界/stop 权威）与 session lost_pause 对账，appliedEvents 存 clock jsonb 不加列；client 新增持久化串行 outbox（start/stop/sync 同队列），advance/doStop/倍速本地立即生效，运行期不反向校准，读路径 flushWithTimeout+localClock 对账；新增 server 5 + core 2 测试 ｜ `packages/core/src/clock.ts`、`packages/core/tests/clock.test.ts`、`packages/server/src/app.ts`、`packages/server/src/store/{types.ts,supabase.ts}`、`packages/server/tests/clock-api.test.ts`、`packages/client/src/{App.tsx,api/sync.ts,state/outbox.ts}`、`collab/T-029-启停本地优先与事件式时钟上传.md`
+
+- `2026-11-03 21:42` ｜ 来源：用户直派 T-028 ｜ 时间尺度系数 TIME_SCALE=20 + 推进公式单点收敛：core 新增 gameAdvance/clockTarget，catchUp 三处锚点回推改 `/ (speed*timeScale)`；server 水位线改 `clockTarget + gameAdvance(3000, speed)`（sync/choice）；client tick 用 gameAdvance、TimeAxis 倒计时换真实秒、倍速 localStorage 读回+白名单；新增 core 3 + server 1 测试 ｜ `packages/core/src/{content.ts,clock.ts}`、`packages/core/tests/clock.test.ts`、`packages/server/src/app.ts`、`packages/server/tests/clock-api.test.ts`、`packages/client/src/{App.tsx,components/TimeAxis.tsx}`、`collab/T-028-时间尺度系数与公式收敛.md`
+
+- `2026-11-03 21:28` ｜ 来源：T-027 复审收尾 ｜ 周目纪元收敛为 core 唯一来源：客户端 `T0` 改为 `const T0 = START_AT`，client/server 测试及 core 测试的 `Date.UTC(2026,…)` 字面量全部改为导入 `START_AT`（grep 全仓只剩 core 一处） ｜ `packages/client/src/App.tsx`、`packages/client/tests/save-migration.test.ts`、`packages/server/tests/clock-api.test.ts`、`packages/core/tests/*.test.ts`、`collab/T-027-右列加宽与行程弹窗改版.md`
+
+- `2026-11-03 21:27` ｜ 来源：T-027 修正意见 ｜ 左列行动列表过滤 `SHOW_ACTION_ID`（演出只能走 `addShow` 专用入口：周末/占满 3 槽/fixed/周次数校验），performance 分类保留；补 DOM 断言（9 格 3 列、今日 2 locked 无 ⊗、空槽「动作3」、四分类 card/slot 命中、删第 2 槽后 placeAction 补回且 DOM 顺序正确） ｜ `packages/client/src/components/Modals.tsx`、`collab/T-027-右列加宽与行程弹窗改版.md`
+
+- `2026-11-03 21:23` ｜ 来源：策划派单 T-027 ｜ 右列 200→400（bar/shell 逐断点成对：>1400 200/1fr/400、≤1400 176/1fr/320、≤980 右列 300，anim 176）；core 新增 `placeAction`（先补空洞后追加）+6 单测；安排行程弹窗改槽位制：动作1/2/3、当天已执行/执行中入槽灰显不可删、四类配色、3×3 九天 ｜ `packages/core/src/{plan.ts,index.ts}`、`packages/core/tests/plan.test.ts`、`packages/client/src/{App.tsx,components/{Modals.tsx,ActionCard.tsx,api.ts},styles.css}`、`collab/T-027-右列加宽与行程弹窗改版.md`
+
+- `2026-11-03 21:05` ｜ 来源：T-026 修正意见（3 处）｜ 乐观启动 ok 分支不再无条件套服务端快照：本地 at 超前后保留本地 run/schedule，只校正 clock（gameAt=max(server, local)）与 revision；start 在途期间上报只入队（`startPending`），ok 后 flush、失败清空队列；「云端时钟读取失败」文案改为「进度暂未校验」、taken_over 不再置 offline；修复 gap heal 测试注释换行 ｜ `packages/client/src/App.tsx`、`packages/server/tests/clock-api.test.ts`、`collab/T-026-启停可用性修复.md`
+
+- `2026-11-03 21:02` ｜ 来源：T-026 启停可用性（P0）｜ core：`catchUp` 仅在「exhausted 且排程全 done」才 idle，有未完成项保持 running（空档不降级）+3 单测；server：auth token→user 5 分钟缓存、start 改 dryRun 一次性 putRun（2→1 次）+2 测试；client：`advance()` 乐观启动（点击即 running，失败回滚）、自然结束先上报再 pauseClock 收尾、开屏同步态 + 失败重试一次 + 只读重试横幅 ｜ `packages/core/src/clock.ts`、`packages/core/tests/clock.test.ts`、`packages/server/src/{auth.ts,app.ts,clock-service.ts}`、`packages/server/tests/clock-api.test.ts`、`packages/client/src/App.tsx`、`collab/T-026-启停可用性修复.md`
+
 - `2026-11-03 19:40` ｜ 来源：T-025 终验前收尾 ｜ 移除客户端本地时钟残留（T-024「本地 paused」双真相）：`packages/client/src/state/clock.ts` 归档到 `_archive/state-clock-t024.ts`，删除已无被测对象的 `packages/client/tests/clock.test.ts`（client 用例 8 → 4，仅剩 save-migration）；不改 App.tsx、不 commit / 不 push ｜ `_archive/state-clock-t024.ts`、`packages/client/tests/clock.test.ts`（删除）、`collab/T-025-时钟权威迁移与服务端启停校验.md`
 
 - `2026-11-03 19:32` ｜ 来源：T-025 验收意见（2 必改 + 1 建议）｜ `/v1/sync` 加「跨空档前移」白名单（executed=[] 且 to===未完成项 startAt 时按客户端 at 接受，避免来回 mismatch）；`/v1/choice` 水位线改 `Math.max(gameAt, run.at)` 防倒流；client 校准类错误清空上报队列；catchUp 的 speed 加 `Math.max(1, …)` 兜底并合并重复 time 分支；server 测试 +2（gap heal / choice 水位线），共 8 条 ｜ `packages/server/src/app.ts`、`packages/core/src/clock.ts`、`packages/client/src/App.tsx`、`packages/server/tests/clock-api.test.ts`、`collab/T-025-时钟权威迁移与服务端启停校验.md`
