@@ -626,6 +626,116 @@ const counts = {};
   counts.equipments = equipments.length;
 }
 
+// 18) 演出表（T-032 / T-033 去城市维度）
+{
+  const LEVELS = ['normal', 'large', 'sino', 'festival', 'birthday', 'graduate', 'debut'];
+  const TYPES = ['circuit', 'one-man', 'comic', 'business', 'shoot'];
+
+  /** 顺位名派生：n=1 主位；n>=2 开场 / 中坚 / 次压轴 / 压轴 */
+  const slotLabel = (i, n) => {
+    if (n <= 1) return '主位';
+    if (i === 1) return '开场';
+    if (i === n) return '压轴';
+    if (i === n - 1) return '次压轴';
+    return '中坚';
+  };
+
+  const shows = [];
+  for (const r of rowsOf(wb, 'shows')) {
+    const showId = str(cell(r, 1));
+    if (!showId) continue;
+    const type = str(cell(r, 3));
+    const tier = str(cell(r, 4));
+    const n = Math.max(1, num(cell(r, 5)) ?? 1);
+    const ls = (c) => num(cell(r, c)) ?? 0;
+    const first = {
+      baseFee: ls(10), ticketBase: ls(12), goodsBase: ls(14), statGain: ls(16), fanGain: ls(18),
+      reqFame: ls(20), vocal: ls(22), dance: ls(23), acting: ls(24), talk: ls(25),
+    };
+    const lastV = {
+      baseFee: ls(11), ticketBase: ls(13), goodsBase: ls(15), statGain: ls(17), fanGain: ls(19),
+      reqFame: ls(21), vocal: ls(26), dance: ls(27), acting: ls(28), talk: ls(29),
+    };
+    const at = (a, b, t) => Math.round(a + (b - a) * t);
+
+    for (let i = 1; i <= n; i += 1) {
+      const t = n <= 1 ? 0 : (i - 1) / (n - 1);
+      const stats = {
+        vocal: at(first.vocal, lastV.vocal, t),
+        dance: at(first.dance, lastV.dance, t),
+        acting: at(first.acting, lastV.acting, t),
+        talk: at(first.talk, lastV.talk, t),
+      };
+      shows.push({
+        showId,
+        name: str(cell(r, 2)),
+        type,
+        tier,
+        slotCount: n,
+        weight: ls(9),
+        slot: i,
+        slotName: slotLabel(i, n),
+        weekday: str(cell(r, 6)),
+        slots: num(cell(r, 7)) ?? 1,
+        baseFee: at(first.baseFee, lastV.baseFee, t),
+        ticketBase: at(first.ticketBase, lastV.ticketBase, t),
+        goodsBase: at(first.goodsBase, lastV.goodsBase, t),
+        statGain: at(first.statGain, lastV.statGain, t),
+        fanGain: at(first.fanGain, lastV.fanGain, t),
+        reqFame: at(first.reqFame, lastV.reqFame, t),
+        reqStats: {
+          ...(stats.vocal ? { vocal: stats.vocal } : {}),
+          ...(stats.dance ? { dance: stats.dance } : {}),
+          ...(stats.acting ? { acting: stats.acting } : {}),
+          ...(stats.talk ? { talk: stats.talk } : {}),
+        },
+        reqParty: num(cell(r, 30)) ?? 0,
+        reqFans: num(cell(r, 31)) ?? 0,
+        audience: {
+          stage: num(cell(r, 32)) ?? 0,
+          gachi: num(cell(r, 33)) ?? 0,
+          music: num(cell(r, 34)) ?? 0,
+          live: num(cell(r, 35)) ?? 0,
+          growth: num(cell(r, 36)) ?? 0,
+          power: num(cell(r, 37)) ?? 0,
+        },
+        songs: parseIdList(cell(r, 38), 'shows.' + showId + '.songs') ?? [],
+        gift: str(cell(r, 39)),
+        visibleCond: parseCond(cell(r, 8), 'shows.' + showId + '.visibleCond'),
+        npcWeight: Math.round((1 + 0.2 * (i - 1)) * 10) / 10,
+        festival: str(cell(r, 40)) || 'none',
+      });
+    }
+    if (!LEVELS.includes(tier)) throw new Error(`shows.${showId}: 未知演出级别 ${tier}`);
+    if (!TYPES.includes(type)) throw new Error(`shows.${showId}: 未知演出类型 ${type}`);
+  }
+  await writeJson('shows.json', {
+    _说明:
+      '演出表（T-033）：xlsx 一场一行，导入时按「首顺位→末顺位」线性插值展开成一顺位一行；主键 showId+slot；tier 演出级别；slotCount 顺位数；不再有城市维度（城市过滤见 cities.json）',
+    shows,
+  });
+  counts.shows = shows.length;
+
+  // 城市表
+  const cities = rowsOf(wb, 'cities').map((r) => ({
+    tier: num(cell(r, 1)) ?? 3,
+    name: str(cell(r, 2)),
+    weekend: num(cell(r, 3)) ?? 0,
+    midMin: num(cell(r, 4)) ?? 0,
+    midMax: num(cell(r, 5)) ?? 0,
+    maxSlots: num(cell(r, 6)) ?? 99,
+    types: str(cell(r, 7)).split(',').map((s) => s.trim()).filter(Boolean),
+    levels: str(cell(r, 8)).split(',').map((s) => s.trim()).filter(Boolean),
+    weeklyCost: num(cell(r, 9)) ?? 0,
+    note: str(cell(r, 10)),
+  }));
+  await writeJson('cities.json', {
+    _说明: '城市可见性（T-033）：不再按城市配置演出，而是按「顺位上限 + 类型白名单 + 级别白名单」过滤同一份演出池；周末/周中场次也在这里',
+    cities,
+  });
+  counts.cities = cities.length;
+}
+
 console.log('\n导入行数：');
 for (const [k, v] of Object.entries(counts)) console.log(`  ${k} = ${v}`);
 console.log('✓ 已从 content/all.xlsx 全量导入，接着跑 pnpm check:data 校验');

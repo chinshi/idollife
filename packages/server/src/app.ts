@@ -3,7 +3,10 @@ import { cors } from 'hono/cors';
 import {
   ALLOWED_SPEEDS,
   RUN_END_AT,
+  clockTarget,
   createClock,
+  elapsedBudget,
+  gameAdvance,
   markDone,
   settle,
   type ClockState,
@@ -59,6 +62,13 @@ function sameSnapshot(a: RunState, b: RunState): boolean {
     a.pendingEvent === b.pendingEvent &&
     a.log.length === b.log.length
   );
+}
+
+/** 允许客户端比服务端「快」多少真实毫秒（起播往返约 1.2s，留 3s；按真实时间定义） */
+const REAL_TOLERANCE_MS = 3000;
+
+function allowedGameAt(clock: ClockState, now: number): number {
+  return clockTarget(clock, now) + gameAdvance(REAL_TOLERANCE_MS, clock.speed);
 }
 
 /** 时钟相关的响应体（客户端统一解析） */
@@ -147,7 +157,8 @@ export function createApp(options: { getUser?: GetUser } = {}) {
     }
 
     const now = Date.now();
-    const loaded = await loadAndCatchUp(body.runId, now, body.schedule);
+    // T-026：dryRun 只算不写；下面 saveClock 一次 putRun 落「排程 + 时钟」
+    const loaded = await loadAndCatchUp(body.runId, now, body.schedule, true);
     if (!loaded) return c.json({ error: 'not found' }, 404);
     if (loaded.rec.userId && loaded.rec.userId !== user.id) return c.json({ error: 'forbidden' }, 403);
 
@@ -218,18 +229,54 @@ export function createApp(options: { getUser?: GetUser } = {}) {
     const user = await getUser(c);
     if (!user) return c.json({ error: 'unauthorized' }, 401);
 
-    const body = (await c.req.json().catch(() => null)) as Partial<ClockPauseBody> | null;
+    const body = (await c.req.json().catch(() => null)) as
+      | (Partial<ClockPauseBody> & { localClock?: ClockState })
+      | null;
     if (!body?.runId || typeof body.runId !== 'string') return c.json({ error: 'runId required' }, 400);
     if (typeof body.sessionId !== 'string' || !body.sessionId) {
       return c.json({ error: 'sessionId required' }, 400);
     }
 
     const now = Date.now();
+    const store = getStore();
+    const raw = await store.getRun(body.runId);
+    if (!raw) return c.json({ error: 'not found' }, 404);
+    if (raw.userId && raw.userId !== user.id) return c.json({ error: 'forbidden' }, 403);
     const loaded = await loadAndCatchUp(body.runId, now);
     if (!loaded) return c.json({ error: 'not found' }, 404);
-    if (loaded.rec.userId && loaded.rec.userId !== user.id) return c.json({ error: 'forbidden' }, 403);
 
     let rec = loaded.rec;
+
+    // T-029：丢失暂停兜底 —— 本地记得自己按了暂停，但服务端仍是 running
+    const local = body.localClock;
+    if (
+      local &&
+      local.status === 'paused' &&
+      rec.clock.status === 'running' &&
+      local.gameAt < clockTarget(rec.clock, now)
+    ) {
+      const rawClock = raw.clock ?? createClock(raw.run.at);
+      const from = rawClock.gameAt;
+      const to = Math.max(from, local.gameAt);
+      const replay = settle(raw.run, raw.schedule, from, to, raw.seed, { endAt: RUN_END_AT });
+      const settledSchedule = markDone(raw.schedule, replay.executed);
+      const clock: ClockState = {
+        ...rec.clock,
+        status: 'paused',
+        gameAt: replay.state.at,
+        wallAnchor: 0,
+        sessionId: body.sessionId,
+        updatedAt: now,
+      };
+      const next = await saveClock(
+        { ...raw, clock: rawClock },
+        clock,
+        { run: replay.state, schedule: settledSchedule, lastSyncAt: replay.state.at },
+        now,
+      );
+      return c.json(snapshot(next, { offline: loaded.offline, holder: true, accepted: [], reconciled: 'lost_pause' }));
+    }
+
     const holder = rec.clock.sessionId === body.sessionId || rec.clock.sessionId === null;
     if (holder && rec.clock.sessionId === null) {
       // 无持有者时顺手写入，避免每次都要靠失败的 sync 才发现被接管
@@ -237,6 +284,131 @@ export function createApp(options: { getUser?: GetUser } = {}) {
       rec = await saveClock(rec, clock, {}, now);
     }
     return c.json(snapshot(rec, { offline: loaded.offline, holder, accepted: [] }));
+  });
+
+  // ---------- T-029 时钟事件（本地优先，后台串行上传） ----------
+
+  interface ClockEventBody {
+    runId: string;
+    sessionId: string;
+    eventId: string;
+    type: 'start' | 'stop';
+    speed: number;
+    at: number;
+    run: RunState;
+    schedule: ScheduleItem[];
+    seed: string;
+    runStartAt: number;
+    elapsedMs: number;
+    clientTs: number;
+  }
+
+  app.post('/v1/clock/event', async (c) => {
+    const user = await getUser(c);
+    if (!user) return c.json({ error: 'unauthorized' }, 401);
+
+    const body = (await c.req.json().catch(() => null)) as Partial<ClockEventBody> | null;
+    if (!body?.runId || typeof body.runId !== 'string') return c.json({ error: 'runId required' }, 400);
+    if (typeof body.sessionId !== 'string' || !body.sessionId) {
+      return c.json({ error: 'sessionId required' }, 400);
+    }
+    if (typeof body.eventId !== 'string' || !body.eventId) return c.json({ error: 'eventId required' }, 400);
+    if (body.type !== 'start' && body.type !== 'stop') return c.json({ error: 'bad type' }, 400);
+    if (!body.run || typeof body.run.at !== 'number') return c.json({ error: 'run required' }, 400);
+    if (!Array.isArray(body.schedule)) return c.json({ error: 'schedule must be array' }, 400);
+    if (typeof body.seed !== 'string' || !body.seed) return c.json({ error: 'seed required' }, 400);
+    if (typeof body.at !== 'number' || typeof body.runStartAt !== 'number') {
+      return c.json({ error: 'at/runStartAt required' }, 400);
+    }
+    if (typeof body.elapsedMs !== 'number' || typeof body.clientTs !== 'number') {
+      return c.json({ error: 'elapsedMs/clientTs required' }, 400);
+    }
+
+    const now = Date.now();
+    const store = getStore();
+    // T-029：事件按本地快照结算，不用 catchUp 到 now 覆盖（stop 权威性）
+    let rec = await store.getRun(body.runId);
+    if (!rec) {
+      // 新档第一条事件：与 /v1/sync 同构建档（否则 outbox 永远卡在 404）
+      rec = {
+        userId: user.id,
+        runId: body.runId,
+        revision: 0,
+        lastSyncAt: body.at,
+        updatedAt: now,
+        seed: body.seed,
+        run: body.run,
+        schedule: body.schedule,
+        clock: createClock(body.at, { sessionId: body.sessionId }),
+      };
+      await store.putRun(rec);
+    }
+    if (rec.userId && rec.userId !== user.id) return c.json({ error: 'forbidden' }, 403);
+    // 老档 / file store 可能没有 clock 字段，统一兜底
+    const clock = rec.clock ?? createClock(rec.run.at);
+    if (!rec.clock) rec = { ...rec, clock };
+    const appliedEvents = rec.appliedEvents ?? [];
+    const lastEventTs = rec.lastEventTs;
+    if (clock.sessionId && clock.sessionId !== body.sessionId) {
+      return c.json({ error: 'taken_over', reason: 'taken_over', ...snapshot(rec) }, 409);
+    }
+    if (appliedEvents.includes(body.eventId)) {
+      return c.json(snapshot(rec, { duplicate: true, accepted: [] }));
+    }
+    if (typeof lastEventTs === 'number' && body.clientTs < lastEventTs) {
+      return c.json(snapshot(rec, { dropped: 'out_of_order', accepted: [] }));
+    }
+
+    const speed = body.type === 'start' ? (body.speed ?? 1) : clock.speed;
+    if (!ALLOWED_SPEEDS.includes(speed as (typeof ALLOWED_SPEEDS)[number])) {
+      return c.json({ error: 'bad_speed', reason: 'bad_speed' }, 400);
+    }
+
+    const budget = elapsedBudget(body.elapsedMs, speed);
+    const target = Math.min(body.at, body.runStartAt + budget);
+    let adjusted = body.at > target;
+    const from = clock.gameAt;
+
+    const replay = settle(rec.run, body.schedule, from, Math.max(from, target), rec.seed, {
+      endAt: RUN_END_AT,
+    });
+    const replaySchedule = markDone(body.schedule, replay.executed);
+    let runState = replay.state;
+    if (!sameSnapshot(replay.state, body.run)) {
+      // 与服务端重放不一致：以重放为准（事件不报错，只标记 adjusted）
+      adjusted = true;
+      runState = replay.state;
+    }
+
+    const nextClock: ClockState = {
+      ...clock,
+      status: body.type === 'start' ? 'running' : 'paused',
+      gameAt: runState.at,
+      wallAnchor: body.type === 'start' ? now : 0,
+      speed,
+      sessionId: body.sessionId,
+      updatedAt: now,
+    };
+    const next: RunRecord = {
+      ...rec,
+      run: runState,
+      schedule: replaySchedule,
+      clock: nextClock,
+      revision: rec.revision + 1,
+      lastSyncAt: runState.at,
+      updatedAt: now,
+      appliedEvents: [...appliedEvents, body.eventId].slice(-20),
+      lastEventTs: body.clientTs,
+    };
+    await store.putRun(next);
+    return c.json(
+      snapshot(next, {
+        accepted: replay.executed,
+        stoppedReason: replay.stoppedReason,
+        adjusted,
+        duplicate: false,
+      }),
+    );
   });
 
   // ---------- 结算上报 ----------
@@ -307,11 +479,8 @@ export function createApp(options: { getUser?: GetUser } = {}) {
       return c.json({ error: 'stale', reason: 'stale', ...snapshot(rec) }, 409);
     }
 
-    // 水位线：最多允许 gameAt + 真实流逝 × 倍速 + 1 游戏秒容差
-    const allowed =
-      clock.status === 'running'
-        ? clock.gameAt + Math.max(0, now - clock.wallAnchor) * clock.speed + 1000
-        : clock.gameAt + 1000;
+    // 水位线：clockTarget + 真实时间容差（T-028 单点公式；不再用裸的 +1000）
+    const allowed = allowedGameAt(clock, now);
     if (body.to > allowed) {
       return c.json({ error: 'too_fast', reason: 'too_fast', ...snapshot(rec) }, 409);
     }
@@ -387,7 +556,7 @@ export function createApp(options: { getUser?: GetUser } = {}) {
     if (!user) return c.json({ error: 'unauthorized' }, 401);
 
     const body = (await c.req.json().catch(() => null)) as
-      | { runId?: string; run?: RunState; sessionId?: string }
+      | { runId?: string; run?: RunState; sessionId?: string; schedule?: ScheduleItem[] }
       | null;
     if (!body?.runId || !body.run) return c.json({ error: 'runId and run required' }, 400);
 
@@ -415,8 +584,8 @@ export function createApp(options: { getUser?: GetUser } = {}) {
     const rec = loaded.rec;
     if (rec.userId && rec.userId !== user.id) return c.json({ error: 'forbidden' }, 403);
 
-    // 抉择不推进时间：run.at 不应超过权威水位线（1 游戏秒容差）
-    if (body.run.at > rec.clock.gameAt + 1000) {
+    // 抉择不推进时间：水位线用同一真实时间容差（T-028）
+    if (body.run.at > allowedGameAt(rec.clock, now)) {
       return c.json({ error: 'too_fast', reason: 'too_fast', ...snapshot(rec) }, 409);
     }
 
@@ -429,6 +598,7 @@ export function createApp(options: { getUser?: GetUser } = {}) {
     const next: RunRecord = {
       ...rec,
       run: body.run,
+      schedule: Array.isArray(body.schedule) ? body.schedule : rec.schedule,
       clock,
       revision: rec.revision + 1,
       lastSyncAt: body.run.at,

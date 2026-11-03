@@ -7,8 +7,40 @@
  *
  * 纯函数：不读 Date.now() / Math.random() / DOM / localStorage。
  */
+import { TIME_SCALE } from './content';
 import { settle } from './settle';
 import type { RunState, ScheduleItem, StopReason } from './types';
+
+/** 真实流逝 elapsedMs 在给定倍速下推进多少游戏毫秒（D-017，唯一公式来源） */
+export function gameAdvance(
+  elapsedMs: number,
+  speed: number,
+  timeScale: number = TIME_SCALE,
+): number {
+  return Math.max(0, elapsedMs) * Math.max(1, speed) * Math.max(1, timeScale);
+}
+
+/** running 时钟在 nowWall 时刻的目标游戏时间；非 running 直接返回 gameAt */
+export function clockTarget(
+  clock: ClockState,
+  nowWall: number,
+  timeScale: number = TIME_SCALE,
+): number {
+  const elapsed = clock.status === 'running' ? Math.max(0, nowWall - clock.wallAnchor) : 0;
+  return clock.gameAt + gameAdvance(elapsed, clock.speed, timeScale);
+}
+
+/**
+ * 用「本次运行时长」校验一段推进是否合法（T-029）：
+ * 不受网络延迟影响，返回 gameAdvance + 半秒容差。
+ */
+export function elapsedBudget(
+  elapsedMs: number,
+  speed: number,
+  timeScale: number = TIME_SCALE,
+): number {
+  return gameAdvance(elapsedMs, speed, timeScale) + 500;
+}
 
 export type ClockStatus = 'idle' | 'running' | 'paused';
 
@@ -54,6 +86,8 @@ export interface CatchUpOptions {
   endAt?: number;
   /** 单次最多结算的行动条数，默认 200（防病态排程死循环） */
   maxSteps?: number;
+  /** 时间尺度系数；默认 content 的 TIME_SCALE（测试/非默认档位可覆盖） */
+  timeScale?: number;
 }
 
 export interface CatchUpResult {
@@ -93,10 +127,11 @@ export function catchUp(
     };
   }
 
-  // 2) 目标游戏时间（时钟回拨时 elapsed 取 0；speed 兜底防脏数据除零）
+  // 2) 目标游戏时间（时钟回拨时 elapsed 取 0；speed/timeScale 兜底防脏数据除零）
   const speed = Math.max(1, clock.speed);
-  const elapsed = Math.max(0, nowWall - clock.wallAnchor);
-  const target = clock.gameAt + elapsed * speed;
+  const timeScale = Math.max(1, opts.timeScale ?? TIME_SCALE);
+  const rate = speed * timeScale;
+  const target = clockTarget(clock, nowWall, timeScale);
   const maxSteps = opts.maxSteps ?? 200;
 
   // 3) 结算（settle 只跑完整行动；时间落在行动中间会 stoppedReason='time'）
@@ -112,13 +147,18 @@ export function catchUp(
   if (result.stoppedReason === 'time') {
     // 时间用完但排程还有（含「首条行动还没结束」）：保持 running，把未消费的零头留在锚点里
     status = 'running';
-    wallAnchor = nowWall - (target - gameAt) / speed;
+    wallAnchor = nowWall - (target - gameAt) / rate;
   } else if (result.executed.length >= maxSteps) {
     // 5) 达到单次结算上限：视为还没算完，下次继续
     status = 'running';
-    wallAnchor = nowWall - Math.max(0, target - gameAt) / speed;
+    wallAnchor = nowWall - Math.max(0, target - gameAt) / rate;
+  } else if (result.stoppedReason === 'exhausted' && nextSchedule.some((s) => !s.done)) {
+    // T-026：exhausted 不等于「跑完了」——排程还有未完成项（空档 / 时间不够一条）时必须保持 running，
+    // 否则一次读路径就会把 status 打成 idle 并落库，刷新页面回到「待执行」。
+    status = 'running';
+    wallAnchor = nowWall - Math.max(0, target - gameAt) / rate;
   } else {
-    // event / stamina / money / stopped / ending / exhausted
+    // 真跑完（exhausted 且全 done）/ event / stamina / money / stopped / ending
     status = 'idle';
     wallAnchor = 0;
   }

@@ -2,10 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { buyItem, getShop, weekOf } from '../src/shop';
 import { EQUIPS, effectiveStats, equipItem } from '../src/items';
 import { createFans } from '../src/fans';
-import { WEEK_MS } from '../src/content';
+import { START_AT, WEEK_MS } from '../src/content';
 import type { RunState } from '../src/types';
 
-const T0 = Date.UTC(2026, 0, 1, 9, 0, 0);
+const T0 = START_AT;
 
 function base(overrides: Partial<RunState> = {}): RunState {
   return {

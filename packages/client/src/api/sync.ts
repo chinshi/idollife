@@ -90,6 +90,59 @@ export interface ClockResponse {
   offline: OfflineSummary | null;
   serverTime: number;
   holder?: boolean;
+  reconciled?: string;
+}
+
+/** T-029 本地优先的时钟事件（后台串行上传） */
+export interface ClockEventBody {
+  runId: string;
+  sessionId: string;
+  eventId: string;
+  type: 'start' | 'stop';
+  speed: number;
+  at: number;
+  run: RunState;
+  schedule: ScheduleItem[];
+  seed: string;
+  runStartAt: number;
+  elapsedMs: number;
+  clientTs: number;
+}
+
+export interface ClockEventResponse {
+  runId: string;
+  revision: number;
+  clock: ClockState;
+  state: RunState;
+  schedule: ScheduleItem[];
+  serverTime: number;
+  accepted?: string[];
+  stoppedReason?: string | null;
+  adjusted?: boolean;
+  duplicate?: boolean;
+  dropped?: string;
+}
+
+export type ClockEventOutcome =
+  | { kind: 'ok'; data: ClockEventResponse }
+  | { kind: 'taken_over'; data: ClockEventResponse }
+  | { kind: 'unauthorized' }
+  | { kind: 'error'; status: number };
+
+/** 上传一条时钟事件；409 taken_over 单独返回 */
+export async function sendClockEvent(
+  body: ClockEventBody,
+  token: string | null,
+): Promise<ClockEventOutcome> {
+  const res = await post('/v1/clock/event', body, token);
+  if (!res) return { kind: 'error', status: 0 };
+  if (res.status === 401) return { kind: 'unauthorized' };
+  if (res.status === 409) {
+    const data = (await res.json().catch(() => ({}))) as ClockEventResponse;
+    return { kind: 'taken_over', data };
+  }
+  if (!res.ok) return { kind: 'error', status: res.status };
+  return { kind: 'ok', data: (await res.json()) as ClockEventResponse };
 }
 
 export type ClockOutcome =
@@ -143,13 +196,14 @@ export function pauseClock(
   return clockCall('/v1/clock/pause', { runId, sessionId }, token);
 }
 
-/** 打开页面时确认持有者身份 */
+/** 打开页面时确认持有者身份（T-029 可带本地 clock 做丢失暂停对账） */
 export function fetchClockSession(
   runId: string,
   sessionId: string,
   token: string | null,
+  localClock?: ClockState | null,
 ): Promise<ClockOutcome> {
-  return clockCall('/v1/clock/session', { runId, sessionId }, token);
+  return clockCall('/v1/clock/session', { runId, sessionId, localClock }, token);
 }
 
 export async function ping(): Promise<boolean> {
@@ -195,8 +249,9 @@ export async function pushChoice(
   run: SyncRequest['run'],
   sessionId: string,
   token: string | null,
+  schedule?: SyncRequest['schedule'],
 ): Promise<{ revision: number; clock?: ClockState; state?: RunState } | null> {
-  const res = await post('/v1/choice', { runId, run, sessionId }, token);
+  const res = await post('/v1/choice', { runId, run, sessionId, schedule }, token);
   if (!res || !res.ok) return null;
   return (await res.json()) as { revision: number; clock?: ClockState; state?: RunState };
 }

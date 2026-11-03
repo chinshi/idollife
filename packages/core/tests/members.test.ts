@@ -1,3 +1,4 @@
+import { START_AT } from '../src/content';
 import { describe, expect, it, test } from 'vitest';
 import {
   activeParty,
@@ -11,7 +12,7 @@ import {
 import { createFans } from '../src/fans';
 import type { RunState } from '../src/types';
 
-const T0 = Date.UTC(2026, 0, 1, 9, 0, 0);
+const T0 = START_AT;
 
 function base(overrides: Partial<RunState> = {}): RunState {
   return {

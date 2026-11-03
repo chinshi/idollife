@@ -125,7 +125,7 @@ export function ActionCard({
       <button
         ref={hostRef}
         type="button"
-        className="action-card"
+        className={`action-card cat-${action.category ?? 'growth'}`}
         onClick={onAdd}
         disabled={left <= 0}
         onMouseEnter={openTip}

@@ -1,10 +1,11 @@
+import { START_AT } from '../src/content';
 import { describe, expect, it } from 'vitest';
 import { ENDINGS, judgeEnding } from '../src/endings';
 import { createFans } from '../src/fans';
 import { settle } from '../src/settle';
 import type { RunState } from '../src/types';
 
-const T0 = Date.UTC(2026, 0, 1, 9, 0, 0);
+const T0 = START_AT;
 
 function run(overrides: Partial<RunState> = {}): RunState {
   return {

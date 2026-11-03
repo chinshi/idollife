@@ -1,0 +1,66 @@
+/**
+ * 推进前可行性判定（T-031）。
+ *
+ * 与 settle.ts 里「行动前」的三条检查同源：次数 → 体力 → 钱。
+ * 纯函数：不读 Date.now / Math.random / DOM / localStorage。
+ */
+import { ACTION_META, remainingTimes } from './content';
+import { previewAction } from './results';
+import type { RunState } from './types';
+
+export type PreflightReason = 'ok' | 'stamina' | 'money' | 'times';
+
+export interface PreflightResult {
+  ok: boolean;
+  reason: PreflightReason;
+  /** 给玩家看的一句话（ok 时为空串） */
+  text: string;
+  /** 需要多少 / 现在多少（ok 时为 undefined；次数用尽时 need=0） */
+  need?: number;
+  have?: number;
+}
+
+/** 判这一条现在能不能跑：次数 → 体力 → 钱（顺序与 settle 一致） */
+export function preflightAction(state: RunState, actionId: string): PreflightResult {
+  const left = remainingTimes(state, actionId);
+  if (left <= 0) {
+    const meta = ACTION_META[actionId];
+    const scope = meta?.timesScope ?? 'run';
+    const times = meta?.times ?? 0;
+    const word = { day: '今天', week: '本周', run: '本局' }[scope] ?? '本局';
+    const unit = { day: '天', week: '周', run: '局' }[scope] ?? '局';
+    return {
+      ok: false,
+      reason: 'times',
+      need: 0,
+      have: 0,
+      text: `这条${word}的次数用完了（每${unit} ${times} 次）。删掉它，后面的行程才能接着跑。`,
+    };
+  }
+
+  const preview = previewAction(state, actionId);
+  if (!preview) return { ok: true, reason: 'ok', text: '' };
+
+  if (preview.stamina < 0 && state.stamina + preview.stamina < 0) {
+    const need = -preview.stamina;
+    return {
+      ok: false,
+      reason: 'stamina',
+      need,
+      have: state.stamina,
+      text: `体力不够：这条要 ${need} 点，你现在 ${state.stamina}。在安排行程里删掉它，或先把它换成恢复。`,
+    };
+  }
+  if (preview.money < 0 && state.money + preview.money < 0) {
+    const need = -preview.money;
+    return {
+      ok: false,
+      reason: 'money',
+      need,
+      have: state.money,
+      text: `钱不够：这条要 ¥${need}，你现在 ¥${state.money}。在安排行程里删掉它，或先换成赚钱。`,
+    };
+  }
+
+  return { ok: true, reason: 'ok', text: '' };
+}

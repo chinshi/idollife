@@ -558,6 +558,110 @@ if (equipments) {
   }
 }
 
+// T-032/T-033 演出表校验
+const SHOW_TIERS = ['normal', 'large', 'sino', 'festival', 'birthday', 'graduate', 'debut'];
+const SHOW_TYPES = ['circuit', 'one-man', 'comic', 'business', 'shoot'];
+const showsData = await load('shows.json');
+if (showsData) {
+  need(Array.isArray(showsData.shows) && showsData.shows.length > 0, 'shows.json: shows 必须是非空数组');
+  const shows = showsData.shows ?? [];
+  const keys = new Set();
+  const byShow = new Map();
+  const FAN_KEYS = ['stage', 'gachi', 'music', 'live', 'growth', 'power'];
+  for (const s of shows) {
+    need(typeof s.showId === 'string' && s.showId, 'shows: 缺少 showId');
+    need(typeof s.name === 'string' && s.name, `shows.${s.showId}: 缺少 name`);
+    need(SHOW_TYPES.includes(s.type), `shows.${s.showId}: 未知 type ${s.type}`);
+    need(SHOW_TIERS.includes(s.tier), `shows.${s.showId}: 未知 tier ${s.tier}`);
+    need(['sat', 'sun', 'midweek'].includes(s.weekday), `shows.${s.showId}.${s.slot}: weekday 非法`);
+    need(!('cityTier' in s), `shows.${s.showId}: 演出不再带 cityTier（城市过滤见 cities 表）`);
+    need(Number(s.slotCount) >= 1, `shows.${s.showId}: slotCount 必须 ≥ 1`);
+    need(Number(s.weight) > 0, `shows.${s.showId}: weight 必须 > 0（刷新权重）`);
+    const key = `${s.showId}:${s.slot}`;
+    need(!keys.has(key), `shows: 主键重复 → ${key}`);
+    keys.add(key);
+    const list = byShow.get(s.showId) ?? [];
+    list.push(s);
+    byShow.set(s.showId, list);
+    const sum = FAN_KEYS.reduce((n, k) => n + (Number(s.audience?.[k]) || 0), 0);
+    need(Math.abs(sum - 1) <= 1e-6, `shows.${s.showId}.${s.slot}: 六类粉丝权重和必须为 1（当前 ${sum}）`);
+  }
+  for (const [showId, list] of byShow) {
+    if (list[0]?.type !== 'circuit') {
+      need(list.length === 1, `shows.${showId}: ${list[0]?.type} 只能有 1 个顺位`);
+    }    need(
+      list.every((s) => s.tier === list[0]?.tier && s.slotCount === list[0]?.slotCount),
+      `shows.${showId}: 同场演出各顺位的 tier / slotCount 必须一致`,
+    );
+    need(
+      list.length === list[0]?.slotCount,
+      `shows.${showId}: 展开行数 ${list.length} ≠ slotCount ${list[0]?.slotCount}（首末插值漏了顺位）`,
+    );
+    const slots = list.map((s) => s.slot).sort((a, b) => a - b);
+    slots.forEach((slot, i) => need(slot === i + 1, `shows.${showId}: slot 必须从 1 连续（缺 ${i + 1}）`));
+    const ordered = [...list].sort((a, b) => a.slot - b.slot);
+    for (let i = 1; i < ordered.length; i += 1) {
+      need(
+        ordered[i].reqFame >= ordered[i - 1].reqFame,
+        `shows.${showId}: 顺位越靠后 reqFame 不得下降（slot ${ordered[i].slot}）`,
+      );
+    }
+  }
+
+  // 同级别的刷新权重必须一致（抽取按级别加权，不一致会让概率失控）
+  const tierWeight = new Map();
+  for (const [, list] of byShow) {
+    const d = list[0];
+    const w = Number(d.weight);
+    if (!tierWeight.has(d.tier)) tierWeight.set(d.tier, w);
+    else need(tierWeight.get(d.tier) === w, `shows.${d.showId}: 级别 ${d.tier} 的 weight 与其他演出不一致`);
+  }
+
+  // 城市可见性：每个城市必须能刷满它自己的周末场次，且只引用合法的类型/级别
+  const citiesData = await load('cities.json');
+  need(!!citiesData, 'cities.json 缺失（T-033 城市可见性表）');
+  const cities = citiesData?.cities ?? [];
+  need(cities.length > 0, 'cities.json: cities 必须是非空数组');
+  const tiers = new Set();
+  const occByTier = new Map();
+  for (const c of cities) {
+    need([0, 1, 2, 3].includes(c.tier), `cities.${c.name}: tier 必须是 0..3`);
+    need(!tiers.has(c.tier), `cities: tier 重复 → ${c.tier}`);
+    tiers.add(c.tier);
+    need(Array.isArray(c.types) && c.types.length > 0, `cities.${c.name}: types 不能为空`);
+    need(Array.isArray(c.levels) && c.levels.length > 0, `cities.${c.name}: levels 不能为空`);
+    for (const t of c.types) need(SHOW_TYPES.includes(t), `cities.${c.name}: 未知类型 ${t}`);
+    for (const l of c.levels) need(SHOW_TIERS.includes(l), `cities.${c.name}: 未知级别 ${l}`);
+    need(c.midMax >= c.midMin, `cities.${c.name}: 周中场次上限不得小于下限`);
+    const visible = [...byShow.values()].filter((list) => {
+      const d = list[0];
+      return c.types.includes(d.type) && c.levels.includes(d.tier) && d.slotCount <= c.maxSlots;
+    });
+    occByTier.set(c.tier, visible);
+    const weekendPool = visible.filter((l) => l[0].weekday !== 'midweek');
+    need(
+      weekendPool.length >= c.weekend,
+      `cities.${c.name}: 可见周末场次只有 ${weekendPool.length} 场，不够每周 ${c.weekend} 场（池子太小）`,
+    );
+    const midPool = visible.filter((l) => l[0].weekday === 'midweek');
+    need(
+      midPool.length >= c.midMax,
+      `cities.${c.name}: 可见周中场次只有 ${midPool.length} 场，不够每周 ${c.midMax} 场`,
+    );
+  }
+  // 城市从严：高等级城市的可见池必须是低等级的超集（否则升城市反而看不到旧演出）
+  const sorted = [...cities].sort((a, b) => b.tier - a.tier); // 索引越大 = 城市越大
+  for (let i = 1; i < sorted.length; i += 1) {
+    const small = sorted[i - 1];
+    const big = sorted[i];
+    const smallPool = new Set(occByTier.get(small.tier).map((l) => l[0].showId));
+    const bigPool = new Set(occByTier.get(big.tier).map((l) => l[0].showId));
+    for (const id of smallPool) {
+      need(bigPool.has(id), `cities.${big.name}: 缺少 ${small.name} 可见的 ${id}（城市越大池子必须越大）`);
+    }
+  }
+}
+
 // 枚举字段必须同时有「字段名 + 中文名」
 for (const a of actions?.actions ?? []) {
   need(typeof a.categoryName === 'string' && a.categoryName, `actions.${a.id}: 缺少 categoryName（分类中文名）`);

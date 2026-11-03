@@ -25,6 +25,8 @@ export async function loadAndCatchUp(
   runId: string,
   now: number,
   scheduleOverride?: import('@idollife/core').ScheduleItem[],
+  /** T-026：只算不写（start 用，避免「补算写一次 + 时钟再写一次」两次 putRun） */
+  dryRun = false,
 ): Promise<LoadedRun | null> {
   const store = getStore();
   const found = await store.getRun(runId);
@@ -58,6 +60,21 @@ export async function loadAndCatchUp(
       lastSyncAt: result.state.at,
       updatedAt: now,
     };
+    if (dryRun) {
+      return {
+        // revision 留给调用方最后一次写库时 +1
+        rec: { ...next, revision: rec.revision },
+        offline:
+          result.advanced > 0 || result.executed.length > 0
+            ? {
+                from: rec.clock.gameAt,
+                to: result.state.at,
+                executed: result.executed,
+                stoppedReason: result.stoppedReason,
+              }
+            : null,
+      };
+    }
     await store.putRun(next);
     return {
       rec: next,

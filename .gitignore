@@ -25,7 +25,7 @@ collab/.dsh-session
 collab/.dsh-permission
 
 # 派单用的临时 prompt（一次性，不共享）
-collab/.dispatch-*.md
+collab/.dispatch-*
 
 # 内容表本地备份：改表前的快照，体积大且只对本机有意义
 content/_all-backup-*.xlsx

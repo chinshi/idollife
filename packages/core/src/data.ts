@@ -8,8 +8,55 @@ import attributesJson from '../data/attributes.json';
 import balanceJson from '../data/balance.json';
 import eventsJson from '../data/events.json';
 import poolsJson from '../data/pools.json';
+import showsJson from '../data/shows.json';
+import citiesJson from '../data/cities.json';
 
 export const BALANCE = balanceJson.balance;
+
+/** 城市配置（T-033） */
+export interface RawCity {
+  tier: number;
+  name: string;
+  weekend: number;
+  midMin: number;
+  midMax: number;
+  maxSlots: number;
+  types: string[];
+  levels: string[];
+  weeklyCost: number;
+  note: string;
+}
+export const CITIES = citiesJson.cities as RawCity[];
+
+/** 演出表原始行（T-033：一顺位一行；不再有 cityTier） */
+export interface RawShow {
+  showId: string;
+  name: string;
+  type: string;
+  tier: string;
+  slotCount: number;
+  weight: number;
+  slot: number;
+  slotName: string;
+  weekday: string;
+  slots: number;
+  baseFee: number;
+  ticketBase: number;
+  goodsBase: number;
+  statGain: number;
+  fanGain: number;
+  reqFame: number;
+  reqStats: Partial<Record<'vocal' | 'dance' | 'acting' | 'talk', number>>;
+  reqParty: number;
+  reqFans: number;
+  audience: Record<string, number>;
+  songs: string[];
+  gift: string;
+  visibleCond: RawRequires | string;
+  npcWeight: number;
+  festival: string;
+}
+export const RAW_SHOWS = showsJson.shows as RawShow[];
 
 export interface RawAction {
   id: string;

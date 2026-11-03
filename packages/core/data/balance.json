@@ -13,6 +13,7 @@
     "npcBaseRatio": 0.9,
     "runDays": 730,
     "divinationBase": 100,
-    "partyMax": 10
+    "partyMax": 10,
+    "timeScale": 20
   }
 }

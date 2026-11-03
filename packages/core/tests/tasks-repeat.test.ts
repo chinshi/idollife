@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DAY_MS } from '../src/content';
+import { START_AT, DAY_MS } from '../src/content';
 import { createFans } from '../src/fans';
 import {
   TASKS,
@@ -12,7 +12,7 @@ import {
 } from '../src/tasks';
 import type { RunState } from '../src/types';
 
-const T0 = Date.UTC(2026, 0, 1, 9, 0, 0);
+const T0 = START_AT;
 
 function base(over: Partial<RunState> = {}): RunState {
   return {

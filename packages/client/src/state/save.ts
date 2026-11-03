@@ -182,6 +182,9 @@ export function normalizeRun(run: RunState): RunState {
     proficiency: run.proficiency ?? { stage_prof: 0, song_prof: 0, choreo_prof: 0 },
     fans: run.fans ?? EMPTY_FANS,
     debuted: run.debuted ?? false,
+    // T-032：老档缺省三线 / 无报名
+    city: run.city ?? 3,
+    bookings: Array.isArray(run.bookings) ? run.bookings : [],
     parties: run.parties ?? [],
     friends: (run.friends ?? []).map((f) => ({
       ...f,

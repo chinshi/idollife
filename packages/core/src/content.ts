@@ -10,6 +10,12 @@ export const ACTION_MINUTES = BALANCE.actionMinutes;
 /** 一个行动对应的游戏毫秒（= actionMinutes 分钟 × 60s）；倒计时按它换算剩余行动次数 */
 export const ACTION_MS = ACTION_MINUTES * MIN;
 
+/**
+ * 时间尺度系数（D-017）：1 真实毫秒推进多少游戏毫秒。
+ * 倍速 speed 乘在它之上，两者正交；旧 balance.json 没有该字段时回落 20。
+ */
+export const TIME_SCALE = Math.max(1, Number(BALANCE.timeScale ?? 20));
+
 /** 每天的行动位 */
 export const DAILY_SLOTS = BALANCE.dailySlots;
 export const SHOW_SLOTS = BALANCE.showSlots;

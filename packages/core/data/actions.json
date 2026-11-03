@@ -12,7 +12,7 @@
       "affectedStats": [
         "vocal"
       ],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "dance-otaku",
@@ -25,7 +25,7 @@
       "affectedStats": [
         "dance"
       ],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "acting-short",
@@ -39,7 +39,7 @@
         "acting",
         "talk"
       ],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "talk-selftalk",
@@ -52,7 +52,7 @@
       "affectedStats": [
         "talk"
       ],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "vocal-street",
@@ -66,7 +66,7 @@
         "vocal",
         "talk"
       ],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "dance-class",
@@ -80,7 +80,7 @@
         "dance",
         "acting"
       ],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "acting-workshop",
@@ -94,7 +94,7 @@
         "acting",
         "talk"
       ],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "talk-host",
@@ -108,7 +108,7 @@
         "talk",
         "acting"
       ],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "vocal-coach",
@@ -121,7 +121,7 @@
       "affectedStats": [
         "vocal"
       ],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "dance-intensive",
@@ -134,7 +134,7 @@
       "affectedStats": [
         "dance"
       ],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "acting-coach",
@@ -147,7 +147,7 @@
       "affectedStats": [
         "acting"
       ],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "talk-speech",
@@ -160,7 +160,7 @@
       "affectedStats": [
         "talk"
       ],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "rest-sleep",
@@ -171,7 +171,7 @@
       "times": 0,
       "timesScope": "run",
       "affectedStats": [],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "food-saizeriya",
@@ -182,7 +182,7 @@
       "times": 0,
       "timesScope": "run",
       "affectedStats": [],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "food-sushiro",
@@ -193,7 +193,7 @@
       "times": 0,
       "timesScope": "run",
       "affectedStats": [],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "food-nice",
@@ -204,7 +204,7 @@
       "times": 0,
       "timesScope": "run",
       "affectedStats": [],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "recover-bath",
@@ -215,7 +215,7 @@
       "times": 0,
       "timesScope": "run",
       "affectedStats": [],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "fun-park",
@@ -226,7 +226,7 @@
       "times": 0,
       "timesScope": "run",
       "affectedStats": [],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "fun-trip",
@@ -237,7 +237,7 @@
       "times": 0,
       "timesScope": "run",
       "affectedStats": [],
-      "durationMinutes": 3
+      "durationMinutes": 30
     },
     {
       "id": "hospital",
@@ -248,7 +248,7 @@
       "times": 0,
       "timesScope": "run",
       "affectedStats": [],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "sick-bed",
@@ -259,7 +259,7 @@
       "times": 0,
       "timesScope": "run",
       "affectedStats": [],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "work-part-time",
@@ -270,7 +270,7 @@
       "times": 0,
       "timesScope": "run",
       "affectedStats": [],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "work-tea",
@@ -281,7 +281,7 @@
       "times": 0,
       "timesScope": "run",
       "affectedStats": [],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "work-maid",
@@ -292,7 +292,7 @@
       "times": 0,
       "timesScope": "run",
       "affectedStats": [],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "work-flyer",
@@ -303,7 +303,7 @@
       "times": 0,
       "timesScope": "run",
       "affectedStats": [],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "work-tutor",
@@ -314,7 +314,7 @@
       "times": 0,
       "timesScope": "run",
       "affectedStats": [],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "work-photo",
@@ -325,7 +325,7 @@
       "times": 0,
       "timesScope": "run",
       "affectedStats": [],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "work-stage-hand",
@@ -336,7 +336,7 @@
       "times": 0,
       "timesScope": "run",
       "affectedStats": [],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "work-stream",
@@ -347,7 +347,7 @@
       "times": 0,
       "timesScope": "run",
       "affectedStats": [],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "show",
@@ -363,7 +363,7 @@
         "acting",
         "talk"
       ],
-      "durationMinutes": 3
+      "durationMinutes": 30
     },
     {
       "id": "street-live",
@@ -376,7 +376,7 @@
       "affectedStats": [
         "vocal"
       ],
-      "durationMinutes": 1
+      "durationMinutes": 10
     },
     {
       "id": "comic-stage",
@@ -389,7 +389,7 @@
       "affectedStats": [
         "dance"
       ],
-      "durationMinutes": 3
+      "durationMinutes": 30
     },
     {
       "id": "commercial",
@@ -402,7 +402,7 @@
       "affectedStats": [
         "vocal"
       ],
-      "durationMinutes": 3
+      "durationMinutes": 30
     },
     {
       "id": "one-man",
@@ -416,7 +416,7 @@
         "vocal",
         "dance"
       ],
-      "durationMinutes": 3
+      "durationMinutes": 30
     },
     {
       "id": "cheki",
@@ -429,7 +429,7 @@
       "affectedStats": [
         "talk"
       ],
-      "durationMinutes": 1
+      "durationMinutes": 10
     }
   ]
 }

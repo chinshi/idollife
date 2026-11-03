@@ -1,3 +1,4 @@
+import { START_AT } from '../src/content';
 import { describe, expect, it } from 'vitest';
 import { matchesCondition } from '../src/expr';
 import { createFans } from '../src/fans';
@@ -9,7 +10,7 @@ import type { RunState } from '../src/types';
  * 白名单在 expr-rules.js 的 FIXED_NAMES 里（与校验器同源），取值与缺省 70 在 expr.ts 的 toData 里。
  */
 
-const T0 = Date.UTC(2026, 0, 1, 9, 0, 0);
+const T0 = START_AT;
 
 function mk(over: Partial<RunState> = {}): RunState {
   return {

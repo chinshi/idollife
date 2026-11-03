@@ -21,8 +21,8 @@ interface Row {
   seed: string;
   state: RunRecord['run'];
   schedule: RunRecord['schedule'];
-  /** T-025：clock jsonb；加列前的旧记录可能为 undefined */
-  clock?: ClockState | null;
+  /** T-025：clock jsonb；加列前的旧记录可能为 undefined。T-029 的 appliedEvents/lastEventTs 存在同一 jsonb 里 */
+  clock?: (ClockState & { appliedEvents?: string[]; lastEventTs?: number }) | null;
 }
 
 function toRecord(row: Row): RunRecord {
@@ -37,6 +37,8 @@ function toRecord(row: Row): RunRecord {
     schedule: row.schedule,
     // 旧记录无 clock → 默认 idle（不抛错、不要求数据迁移）
     clock: row.clock ?? createClock(row.state.at),
+    appliedEvents: row.clock?.appliedEvents,
+    lastEventTs: row.clock?.lastEventTs,
   };
 }
 
@@ -67,7 +69,8 @@ export class SupabaseStore implements Store {
       seed: rec.seed,
       state: rec.run,
       schedule: rec.schedule,
-      clock: rec.clock,
+      // T-029：不新增列，把幂等键/事件时间塞进同一 clock jsonb
+      clock: { ...rec.clock, appliedEvents: rec.appliedEvents ?? [], lastEventTs: rec.lastEventTs ?? 0 },
     };
     const { error } = await this.client.from(TABLE).upsert(row, { onConflict: 'run_id' });
     if (error) throw new Error(`supabase putRun: ${error.message}`);

@@ -1,3 +1,4 @@
+import { START_AT } from '../src/content';
 import { describe, expect, it } from 'vitest';
 import { taskProgress } from '../src/task-progress';
 import { createFans } from '../src/fans';
@@ -10,7 +11,7 @@ import type { RunState } from '../src/types';
  * P1～P7：只认「变量 >= 数字」「变量 > 数字」两种形态，复合条件一律 null；
  * 当前值来自 expr.ts 的 buildExprData（mood/satiety 缺省 70 也生效）。
  */
-const T0 = Date.UTC(2026, 0, 1, 9, 0, 0);
+const T0 = START_AT;
 
 function base(over: Partial<RunState> = {}): RunState {
   return {

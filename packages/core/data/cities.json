@@ -1,0 +1,90 @@
+{
+  "_说明": "城市可见性（T-033）：不再按城市配置演出，而是按「顺位上限 + 类型白名单 + 级别白名单」过滤同一份演出池；周末/周中场次也在这里",
+  "cities": [
+    {
+      "tier": 3,
+      "name": "三线",
+      "weekend": 1,
+      "midMin": 0,
+      "midMax": 0,
+      "maxSlots": 7,
+      "types": [
+        "circuit",
+        "shoot"
+      ],
+      "levels": [
+        "normal"
+      ],
+      "weeklyCost": 0,
+      "note": "小场子，只有拼盘和拍摄"
+    },
+    {
+      "tier": 2,
+      "name": "二线",
+      "weekend": 2,
+      "midMin": 0,
+      "midMax": 0,
+      "maxSlots": 10,
+      "types": [
+        "circuit",
+        "shoot",
+        "business"
+      ],
+      "levels": [
+        "normal",
+        "large"
+      ],
+      "weeklyCost": 0,
+      "note": "加了商务"
+    },
+    {
+      "tier": 1,
+      "name": "一线",
+      "weekend": 4,
+      "midMin": 0,
+      "midMax": 0,
+      "maxSlots": 15,
+      "types": [
+        "circuit",
+        "shoot",
+        "business",
+        "comic"
+      ],
+      "levels": [
+        "normal",
+        "large",
+        "festival",
+        "graduate",
+        "debut"
+      ],
+      "weeklyCost": 0,
+      "note": "加漫展嘉宾与各类 SP"
+    },
+    {
+      "tier": 0,
+      "name": "超一线",
+      "weekend": 4,
+      "midMin": 1,
+      "midMax": 2,
+      "maxSlots": 99,
+      "types": [
+        "circuit",
+        "shoot",
+        "business",
+        "comic",
+        "one-man"
+      ],
+      "levels": [
+        "normal",
+        "large",
+        "sino",
+        "festival",
+        "birthday",
+        "graduate",
+        "debut"
+      ],
+      "weeklyCost": 0,
+      "note": "全开，周中另有夜场"
+    }
+  ]
+}

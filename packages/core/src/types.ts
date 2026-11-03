@@ -101,7 +101,7 @@ export interface LogEntry {
   statDelta: Partial<Stats>;
   /** 隐藏属性（三轴）是否发生变化：只记录有无，不记录数值 */
   axesChanged?: boolean;
-  kind?: 'action' | 'routine' | 'choice';
+  kind?: 'action' | 'routine' | 'choice' | 'show';
 }
 
 /** 单局状态 */
@@ -134,6 +134,10 @@ export interface RunState {
   proficiency?: Record<string, number>;
   /** 是否已出道（出道后才能组组合） */
   debuted: boolean;
+  /** 当前城市（T-032：3 三线 / 2 二线 / 1 一线 / 0 超一线；老档缺省 3） */
+  city?: 0 | 1 | 2 | 3;
+  /** 演出报名（T-032；老档缺省 []） */
+  bookings?: Booking[];
   /** 拥有 / 加入的组合 */
   parties: Party[];
   /** 当前操作的组合 id；没有组合时为 null */
@@ -172,10 +176,30 @@ export interface ScheduleItem {
   done?: boolean;
   /** 强制固定行程（系统安排，比如周末演出），不能删 */
   fixed?: boolean;
+  /** T-032：演出项 */
+  kind?: 'show';
+  bookingId?: string;
+  /** T-032：占槽数（演出用自身 slots；普通行动缺省 1） */
+  slots?: number;
+}
+
+/** T-032 演出报名 */
+export interface Booking {
+  id: string;
+  occurrenceId: string;
+  showId: string;
+  name: string;
+  type: 'circuit' | 'one-man' | 'comic' | 'business' | 'shoot';
+  tier: 'normal' | 'large' | 'sino' | 'festival' | 'birthday' | 'graduate' | 'debut';
+  slot: number;
+  startAt: number;
+  fee: number;
+  status: 'booked' | 'announced' | 'done' | 'cancelled';
+  result?: { ticket: number; goods: number; stat: number; fans: number; score: number };
 }
 
 /** 行动分类（界面按这个分组） */
-export type ActionCategory = 'growth' | 'recover' | 'work';
+export type ActionCategory = 'growth' | 'recover' | 'work' | 'performance';
 
 export interface ActionDef {
   id: string;

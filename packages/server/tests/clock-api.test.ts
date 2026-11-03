@@ -2,13 +2,13 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { createClock, type RunState, type ScheduleItem } from '@idollife/core';
+import { START_AT, createClock, type RunState, type ScheduleItem } from '@idollife/core';
 
 /**
  * T-025 服务端时钟接口最小测试（内存/文件 store + 假登录）。
  * 用 createApp({ getUser }) 注入用户，避免依赖 Supabase。
  */
-const T0 = Date.UTC(2026, 0, 1, 9, 0, 0);
+const T0 = START_AT;
 const MIN = 60_000;
 const USER_ID = 'user-test';
 
@@ -173,14 +173,267 @@ describe('T-025 服务端时钟接口', () => {
     expect(body.clock?.gameAt).toBe(T0);
   });
 
+  it('start 后立刻 session：下一条在 5 分钟后仍返回 running', async () => {
+    const rec = record('run-start-session', {
+      schedule: [
+        {
+          id: 'later',
+          actionId: 'vocal-karaoke',
+          startAt: T0 + 5 * MIN,
+          endAt: T0 + 15 * MIN,
+        },
+      ],
+    });
+    await store.putRun(rec as never);
+
+    const started = await request('/api/v1/clock/start', {
+      runId: 'run-start-session',
+      sessionId: 'A',
+      schedule: rec.schedule,
+    });
+    expect(started.status).toBe(200);
+
+    const ses = await request('/api/v1/clock/session', {
+      runId: 'run-start-session',
+      sessionId: 'A',
+    });
+    expect(ses.status).toBe(200);
+    expect((ses.json.clock as { status: string }).status).toBe('running');
+  });
+
+  it('start 只写一次库（putRun 调用次数 = 1）', async () => {
+    const rec = record('run-put-count');
+    await store.putRun(rec as never);
+
+    const original = store.putRun.bind(store);
+    let puts = 0;
+    (store as unknown as { putRun: typeof store.putRun }).putRun = async (r) => {
+      puts += 1;
+      return original(r);
+    };
+    try {
+      const res = await request('/api/v1/clock/start', {
+        runId: 'run-put-count',
+        sessionId: 'A',
+        schedule: rec.schedule,
+      });
+      expect(res.status).toBe(200);
+      expect(puts).toBe(1);
+    } finally {
+      (store as unknown as { putRun: typeof store.putRun }).putRun = original;
+    }
+  });
+
+  it('T-028：8 倍速起播后 1.2 真实秒上报不得 too_fast', async () => {
+    const rec = record('run-tolerance');
+    await store.putRun(rec as never);
+
+    const started = await request('/api/v1/clock/start', {
+      runId: 'run-tolerance',
+      sessionId: 'A',
+      speed: 8,
+      schedule: rec.schedule,
+    });
+    expect(started.status).toBe(200);
+
+    // 客户端跑 1.2 真实秒（8×20 系数）→ 192000 游戏毫秒；旧容差只有 +1000，必被 too_fast
+    const to = T0 + 1200 * 8 * 20;
+    const res = await request('/api/v1/sync', {
+      runId: 'run-tolerance',
+      sessionId: 'A',
+      run: { ...rec.run, at: to },
+      schedule: rec.schedule,
+      to,
+      seed: 'seed-test',
+    });
+    expect(res.status).not.toBe(0);
+    expect(res.json.error).not.toBe('too_fast');
+  });
+
+  it('T-029 stop 权威性：at 前进 60 游戏秒、请求晚到，落库 gameAt 必须等于上报 at', async () => {
+    const gapEnd = T0 + 60_000;
+    const rec = record('run-ev-stop', {
+      schedule: [
+        { id: 'e1', actionId: 'vocal-karaoke', startAt: T0, endAt: gapEnd },
+      ],
+      clock: { ...createClock(T0), status: 'running', wallAnchor: Date.now() - 8000, speed: 1, sessionId: 'A' },
+    });
+    await store.putRun(rec as never);
+
+    const res = await request('/api/v1/clock/event', {
+      runId: 'run-ev-stop',
+      sessionId: 'A',
+      eventId: 'ev-stop-1',
+      type: 'stop',
+      speed: 1,
+      at: gapEnd,
+      run: { ...rec.run, at: gapEnd },
+      schedule: rec.schedule,
+      seed: 'seed-test',
+      runStartAt: T0,
+      elapsedMs: 3000,
+      clientTs: 1000,
+    });
+    expect(res.status).toBe(200);
+    expect((res.json.clock as { gameAt: number }).gameAt).toBe(gapEnd);
+    expect((res.json.clock as { status: string }).status).toBe('paused');
+  });
+
+  it('T-029 幂等：同一 eventId 连发两次 → duplicate:true 且 revision 不变', async () => {
+    const rec = record('run-ev-idem', {
+      clock: { ...createClock(T0), status: 'idle', sessionId: 'A' },
+    });
+    await store.putRun(rec as never);
+
+    const body = {
+      runId: 'run-ev-idem',
+      sessionId: 'A',
+      eventId: 'ev-idem-1',
+      type: 'start' as const,
+      speed: 1,
+      at: T0,
+      run: rec.run,
+      schedule: rec.schedule,
+      seed: 'seed-test',
+      runStartAt: T0,
+      elapsedMs: 0,
+      clientTs: 1000,
+    };
+    const first = await request('/api/v1/clock/event', body);
+    const second = await request('/api/v1/clock/event', body);
+    expect(first.status).toBe(200);
+    expect(second.status).toBe(200);
+    expect(second.json.duplicate).toBe(true);
+    expect(second.json.revision).toBe(first.json.revision);
+  });
+
+  it('T-029 时长上界：at 超预算 → adjusted:true 且夹到上界，不是 409', async () => {
+    const rec = record('run-ev-cap', {
+      clock: { ...createClock(T0), status: 'running', wallAnchor: Date.now(), speed: 1, sessionId: 'A' },
+    });
+    await store.putRun(rec as never);
+
+    const res = await request('/api/v1/clock/event', {
+      runId: 'run-ev-cap',
+      sessionId: 'A',
+      eventId: 'ev-cap-1',
+      type: 'stop',
+      speed: 1,
+      at: T0 + 999_999,
+      run: { ...rec.run, at: T0 + 999_999 },
+      schedule: rec.schedule,
+      seed: 'seed-test',
+      runStartAt: T0,
+      elapsedMs: 1000,
+      clientTs: 1000,
+    });
+    expect(res.status).toBe(200);
+    expect(res.json.adjusted).toBe(true);
+    const gameAt = (res.json.clock as { gameAt: number }).gameAt;
+    expect(gameAt).toBeLessThanOrEqual(T0 + 1000 * 20 + 500);
+  });
+
+  it('T-029 丢失暂停兜底：session 带本地 paused → 返回 paused 且 gameAt===本地值', async () => {
+    const pausedAt = T0 + 60_000;
+    const rec = record('run-ev-lost', {
+      schedule: [
+        { id: 'l1', actionId: 'vocal-karaoke', startAt: T0, endAt: pausedAt },
+        { id: 'l2', actionId: 'vocal-karaoke', startAt: pausedAt, endAt: pausedAt + 10 * MIN },
+      ],
+      clock: { ...createClock(T0), status: 'running', wallAnchor: Date.now() - 5000, speed: 1, sessionId: 'A' },
+    });
+    await store.putRun(rec as never);
+
+    const res = await request('/api/v1/clock/session', {
+      runId: 'run-ev-lost',
+      sessionId: 'A',
+      localClock: { ...createClock(pausedAt), status: 'paused', gameAt: pausedAt },
+    });
+    expect(res.status).toBe(200);
+    expect((res.json.clock as { status: string }).status).toBe('paused');
+    expect((res.json.clock as { gameAt: number }).gameAt).toBe(pausedAt);
+    expect(res.json.reconciled).toBe('lost_pause');
+  });
+
+  it('T-029 乱序丢弃：clientTs 小于 lastEventTs 的 start → dropped:out_of_order，clock 不变', async () => {
+    const rec = record('run-ev-order', {
+      clock: { ...createClock(T0), status: 'paused', speed: 1, sessionId: 'A' },
+      lastEventTs: 5000,
+    });
+    await store.putRun(rec as never);
+
+    const res = await request('/api/v1/clock/event', {
+      runId: 'run-ev-order',
+      sessionId: 'A',
+      eventId: 'ev-order-old',
+      type: 'start',
+      speed: 1,
+      at: T0,
+      run: rec.run,
+      schedule: rec.schedule,
+      seed: 'seed-test',
+      runStartAt: T0,
+      elapsedMs: 0,
+      clientTs: 1000,
+    });
+    expect(res.status).toBe(200);
+    expect(res.json.dropped).toBe('out_of_order');
+    expect((res.json.clock as { status: string }).status).toBe('paused');
+  });
+
+  it('T-029 新档：服务端无记录时 start 事件自动建档', async () => {
+    const run = baseRun();
+    const schedule = [scheduleItem()];
+    const res = await request('/api/v1/clock/event', {
+      runId: 'run-ev-new',
+      sessionId: 'A',
+      eventId: 'ev-new-1',
+      type: 'start',
+      speed: 1,
+      at: T0,
+      run,
+      schedule,
+      seed: 'seed-test',
+      runStartAt: T0,
+      elapsedMs: 0,
+      clientTs: 1000,
+    });
+    expect(res.status).toBe(200);
+    const saved = await store.getRun('run-ev-new');
+    expect(saved).toBeTruthy();
+    expect(saved!.clock.status).toBe('running');
+    expect(saved!.revision).toBe(1);
+  });
+
+  it('T-029 旧记录无 clock 时 event 不抛错', async () => {
+    const old = record('run-ev-old');
+    await store.putRun({ ...old, clock: undefined } as never);
+    const res = await request('/api/v1/clock/event', {
+      runId: 'run-ev-old',
+      sessionId: 'A',
+      eventId: 'ev-old-1',
+      type: 'stop',
+      speed: 1,
+      at: T0,
+      run: old.run,
+      schedule: old.schedule,
+      seed: 'seed-test',
+      runStartAt: T0,
+      elapsedMs: 0,
+      clientTs: 1000,
+    });
+    expect(res.status).toBe(200);
+    expect((res.json.clock as { status: string }).status).toBe('paused');
+  });
+
   it('gap heal：executed=[] 且 to 等于某条未完成项的 startAt → 200 接受，不是 mismatch', async () => {
     // 客户端把 at 前移到下一条行动开始（不执行）；replay 会停在 clock.gameAt
-    const gapStart = T0 + 10 * MIN;
+    const gapStart = T0 + 30_000;
     const rec = record('run-gap', {
       schedule: [
         { id: 'g1', actionId: 'vocal-karaoke', startAt: gapStart, endAt: gapStart + 10 * MIN },
       ],
-      clock: { ...createClock(T0), status: 'running', wallAnchor: Date.now() - 10 * MIN, speed: 1, sessionId: 'A' },
+      clock: { ...createClock(T0), status: 'running', wallAnchor: Date.now() - 1000, speed: 1, sessionId: 'A' },
     });
     await store.putRun(rec as never);
 

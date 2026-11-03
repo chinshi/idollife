@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
-  ACTIONS, ACTION_LIST, ACTION_MS, CATEGORY_LABEL, DAILY_SLOTS, DAY_MS, SHOW_ACTION_ID, getStoryEvent, availableChoices, remainingTimes, canShowAction, cooldownLeftDays, type ActionCategory,
+  ACTIONS, ACTION_LIST, ACTION_MS, CATEGORY_LABEL, DAILY_SLOTS, DAY_MS, SHOW_ACTION_ID, SHOW_DURATION_MS, buildDaySlots, getStoryEvent, availableChoices, remainingTimes, canShowAction, cooldownLeftDays, type ActionCategory, type ScheduleItem,
 } from '@idollife/core';
 import type { AppApi } from './api';
 import { ActionCard } from './ActionCard';
@@ -34,7 +34,7 @@ const AXIS_HINTS: Record<string, Record<'high' | 'mid' | 'low', string>> = {
 const AXIS_HINT_LABEL: Record<string, string> = { self: '自我倾向', others: '他人倾向', fit: '适配倾向' };
 
 export function Modals({ ctx }: { ctx: ModalCtx }) {
-  const { doKick, removeItem, activeEventId, setActiveEventId, choose, runId, run, phase, ending, showActions, showDivination, reading, showPartyModal, partyName, confirmAction, showStops, showInvite, kickTarget, forceLogin, showDebug, debugText, setRunId, commitRun, setSchedule, setRevision, setNotice, setSyncStatus, setPhase, setEnding, setShowDivination, setShowPartyModal, setPartyName, setConfirmAction, setShowStops, setShowInvite, setKickTarget, setForceLogin, setShowDebug, doStop, doRestart, doInvite, doDivine, savePlan, cancelPlan, clearPlan, addAction, toggleStop, dayLabel, biasLabel, party, pending, confirmCreateParty, decide, clearSave, createSave, initialRun, divinationCost, t0, weekdayName } = ctx;
+  const { doKick, removeItem, activeEventId, setActiveEventId, choose, runId, run, phase, ending, showActions, showDivination, reading, showPartyModal, partyName, confirmAction, showStops, showInvite, kickTarget, forceLogin, showDebug, debugText, setRunId, commitRun, setSchedule, setRevision, setNotice, setSyncStatus, setPhase, setEnding, setShowDivination, setShowPartyModal, setPartyName, setConfirmAction, setShowStops, setShowInvite, setKickTarget, setForceLogin, setShowDebug, doStop, doRestart, doInvite, doDivine, savePlan, cancelPlan, clearPlan, addAction, toggleStop, dayLabel, biasLabel, party, schedule, pending, confirmCreateParty, decide, clearSave, createSave, initialRun, divinationCost, t0, weekdayName } = ctx;
 
   /** T-023：安排行程的分类折叠（纯 UI，不持久化；每次打开弹窗重置为全展开） */
   const [collapsedCats, setCollapsedCats] = useState<Record<string, boolean>>({});
@@ -172,44 +172,31 @@ export function Modals({ ctx }: { ctx: ModalCtx }) {
       )}
       {showActions &&
         (() => {
-          // T-021：每天 3 个行动位；从「当前游戏日」起找第一个还有空位的可排日，连续 8 天（每行 4 个、两行）
-          const byDay = new Map<number, typeof pending>();
-          for (const s of pending) {
-            const d = Math.floor((s.startAt - t0) / DAY_MS);
+          // T-027：槽位制 —— 从「今天」开始，9 天（3×3）；排程里 done/执行中的项也显示在真实槽位
+          const dayOf = (at: number) => Math.floor((at - t0) / DAY_MS);
+          const spanOf = (s: ScheduleItem) => Math.max(1, s.slots ?? 1);
+          const byDay = new Map<number, ScheduleItem[]>();
+          for (const s of schedule) {
+            const d = dayOf(s.startAt);
             const list = byDay.get(d) ?? [];
             list.push(s);
             byDay.set(d, list);
           }
-          const usedSlots = (d: number) =>
-            (byDay.get(d) ?? []).reduce(
-              (n, s) =>
-                n +
-                Math.max(
-                  1,
-                  Math.ceil(
-                    ((ACTIONS[s.actionId]?.durationMs ?? ACTION_MS) as number) / ACTION_MS,
-                  ),
-                ),
-              0,
-            );
 
-          const currentDay = Math.floor((run.at - t0) / DAY_MS);
-          let startDay = currentDay;
-          for (let i = 0; i < 30; i += 1) {
-            const d = currentDay + i;
-            if (usedSlots(d) < DAILY_SLOTS) {
-              startDay = d;
-              break;
-            }
-          }
-          const days = Array.from({ length: 8 }, (_, i) => startDay + i);
+          const currentDay = dayOf(run.at);
+          const lastUsedDay = schedule.reduce((m, s) => Math.max(m, dayOf(s.startAt)), currentDay);
+          const dayCount = Math.max(9, Math.ceil((lastUsedDay - currentDay + 1) / 3) * 3);
+          const days = Array.from({ length: dayCount }, (_, i) => currentDay + i);
+
           return (
             <Modal title="安排行程" wide dismissOnMask={false} onClose={cancelPlan}>
               <div className="plan">
                 <div className="plan-actions">
-                  {(['growth', 'recover', 'work'] as ActionCategory[]).map((cat) => {
+                  {(['growth', 'recover', 'work', 'performance'] as ActionCategory[]).map((cat) => {
                     const list = ACTION_LIST.filter(
-                      (a) => a.category === cat && canShowAction(run, a.id),
+                      (a) =>
+                        a.category !== 'performance' && // T-032：演出统一走「演出」菜单报名
+                        canShowAction(run, a.id),
                     );
                     if (list.length === 0) return null;
                     const collapsed = !!collapsedCats[cat];
@@ -253,40 +240,64 @@ export function Modals({ ctx }: { ctx: ModalCtx }) {
 
                   <div className="date-grid">
                     {days.map((day) => {
-                      const items = byDay.get(day) ?? [];
-                      const used = items.reduce(
-                        (n, s) => n + Math.max(1, Math.ceil(((ACTIONS[s.actionId]?.durationMs ?? ACTION_MS) as number) / ACTION_MS)),
-                        0,
-                      );
-                      const empty = Math.max(0, DAILY_SLOTS - used);
+                      const dayStart = t0 + day * DAY_MS;
+                      const items = [...(byDay.get(day) ?? [])].sort((a, b) => a.startAt - b.startAt);
+                      const slots = buildDaySlots(items, dayStart, DAILY_SLOTS, ACTION_MS, spanOf);
                       return (
                         <div className="date-cell" key={day}>
                           <div className="date-head">
                             第 {Math.floor(day / 7) + 1} 周 {weekdayName(day)}
                           </div>
                           <div className="date-slots">
-                            {items.map((s) => (
-                              <div className="date-slot" key={s.id}>
-                                <span className="nm">
-                                  {ACTIONS[s.actionId]?.name ??
-                                    (s.actionId === SHOW_ACTION_ID ? '演出' : s.actionId)}
-                                </span>
-                                <button className="del" title="删除这一条" onClick={() => removeItem(s.id)}>
-                                  ⊗
-                                </button>
-                              </div>
-                            ))}
-                            {Array.from({ length: empty }).map((_, i) => (
-                              <div className="date-slot empty" key={`e${i}`}>
-                                空
-                              </div>
-                            ))}
+                            {slots.map(({ item: s, covered, index: i }) => {
+                              if (!s) {
+                                if (covered) return null; // 被上一条跨槽占用
+                                return (
+                                  <div className="date-slot empty" key={`e${i}`} style={{ flexGrow: 1 }}>
+                                    动作{i + 1}
+                                  </div>
+                                );
+                              }
+                              const cat =
+                                s.actionId === SHOW_ACTION_ID
+                                  ? 'performance'
+                                  : (ACTIONS[s.actionId]?.category ?? 'growth');
+                              const executing = !s.done && s.startAt <= run.at && run.at < s.endAt;
+                              const finished = !!s.done;
+                              const locked = finished || executing || !!s.fixed;
+                              const sp = Math.min(DAILY_SLOTS - i, spanOf(s));
+                              return (
+                                <div
+                                  className={`date-slot cat-${cat}${locked ? ' locked' : ''}`}
+                                  key={s.id}
+                                  style={{ flexGrow: sp }}
+                                >
+                                  <span className="nm">
+                                    {ACTIONS[s.actionId]?.name ??
+                                      (s.actionId === SHOW_ACTION_ID ? '演出' : s.actionId)}
+                                  </span>
+                                  {finished ? <span className="slot-tag">已完成</span> : null}
+                                  {executing ? <span className="slot-tag">执行中</span> : null}
+                                  {locked ? null : (
+                                    <button
+                                      className="del"
+                                      title="删除这一条"
+                                      onClick={() => removeItem(s.id)}
+                                    >
+                                      ⊗
+                                    </button>
+                                  )}
+                                </div>
+                              );
+                            })}
                           </div>
                         </div>
                       );
                     })}
                   </div>
-                  <p className="muted small plan-grid-hint">点左侧行动 → 按时间顺序填入下一个空槽；⊗ 单独删除。</p>
+                  <p className="muted small plan-grid-hint">
+                    点左侧行动 → 自动补到最早的空槽；执行中/已完成不可删，⊗ 单独删除待执行项。
+                  </p>
                 </div>
               </div>
 

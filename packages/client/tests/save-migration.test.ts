@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { EQUIPS, createFans, effectiveStats } from '@idollife/core';
+import { EQUIPS, START_AT, createFans, effectiveStats } from '@idollife/core';
 import type { RunState, ScheduleItem } from '@idollife/core';
 import {
   LEGACY_SAVE_KEY,
@@ -13,7 +13,7 @@ import {
 } from '../src/state/save';
 
 const MIN = 60_000;
-const T0 = Date.UTC(2026, 0, 1, 9, 0, 0);
+const T0 = START_AT;
 
 class MemoryStorage {
   private data = new Map<string, string>();

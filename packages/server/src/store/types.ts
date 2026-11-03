@@ -12,6 +12,10 @@ export interface RunRecord {
   schedule: ScheduleItem[];
   /** T-025：服务端持有的时钟状态（旧记录缺省，读取处补 createClock(run.at)） */
   clock: ClockState;
+  /** T-029：最近处理过的时钟事件 id（幂等，最多 20 个） */
+  appliedEvents?: string[];
+  /** T-029：最近一次事件的本机墙钟，用于乱序过滤 */
+  lastEventTs?: number;
 }
 
 export interface Store {

@@ -2,12 +2,12 @@ import { describe, expect, it } from 'vitest';
 import { settle } from '../src/settle';
 import { divine, divinationCost, divinationReading, tierText } from '../src/divination';
 import { createFans } from '../src/fans';
-import { DAY_MS, SHOW_ACTION_ID, SHOW_DURATION_MS } from '../src/content';
+import { START_AT, DAY_MS, SHOW_ACTION_ID, SHOW_DURATION_MS } from '../src/content';
 import { previewAction } from '../src/results';
 import type { RunState, ScheduleItem } from '../src/types';
 
 const MIN = 60_000;
-const T0 = Date.UTC(2026, 0, 1, 9, 0, 0);
+const T0 = START_AT;
 
 function base(overrides: Partial<RunState> = {}): RunState {
   return {

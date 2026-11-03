@@ -1,5 +1,7 @@
-import { ACTIONS, RENT_PER_WEEK, clampStamina, remainingTimes, WEEK_MS } from './content';
+import { ACTIONS, RENT_PER_WEEK, clampStamina, WEEK_MS } from './content';
 import { previewAction, resolveAction, showFanType } from './results';
+import { preflightAction } from './preflight';
+import { settleShow } from './shows';
 import { BALANCE } from './data';
 import { createFans } from './fans';
 import { applyFanAction } from './fans';
@@ -79,6 +81,13 @@ export function settle(
       break;
     }
 
+    if (item.kind === 'show') {
+      const booking = (state.bookings ?? []).find((b) => b.id === item.bookingId);
+      state = booking ? settleShow(state, item, booking) : { ...state, at: item.endAt };
+      executed.push(item.id);
+      continue;
+    }
+
     const action = ACTIONS[item.actionId];
     if (!action) continue;
 
@@ -86,23 +95,22 @@ export function settle(
     // 这样同一条排程无论一次算完还是拆成多次算，单条行动的随机序列都不变。
     const rng = mulberry32(hashSeed(`${seed}:action:${item.id}`));
 
-    // 次数限制（0 = 无限制）
-    if (remainingTimes(state, item.actionId) <= 0) {
-      stoppedReason = 'stopped';
+    // 次数/体力/钱：与入口 preflightAction 同源（T-031）
+    const pf = preflightAction(state, item.actionId);
+    if (!pf.ok) {
+      stoppedReason =
+        pf.reason === 'times'
+          ? 'stopped'
+          : pf.reason === 'stamina'
+            ? 'stamina'
+            : pf.reason === 'money'
+              ? 'money'
+              : null;
       break;
     }
 
     const preview = previewAction(state, item.actionId);
     if (!preview) continue;
-
-    if (preview.stamina < 0 && state.stamina + preview.stamina < 0) {
-      stoppedReason = 'stamina';
-      break;
-    }
-    if (preview.money < 0 && state.money + preview.money < 0) {
-      stoppedReason = 'money';
-      break;
-    }
 
     // 按条件匹配结果表：数值与文案都可能和预览不同
     const resolved = resolveAction(state, item.actionId, rng);

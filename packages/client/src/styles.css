@@ -575,21 +575,8 @@ button.primary small { color: #fff; opacity: 0.8; }
   overflow: auto;
   padding-right: 6px;
 }
-.plan-preview {
-  border-left: 1px solid var(--line);
-  padding-left: 12px;
-  min-width: 0;
-  max-height: 58vh;
-  overflow: auto;
-}
-.plan-preview-head { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
-.plan-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
-.plan-list li { display: flex; align-items: center; gap: 6px; font-size: 12.5px; }
-.plan-day { color: var(--accent); font-size: 11px; white-space: nowrap; }
-.plan-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 @media (max-width: 560px) {
   .plan { grid-template-columns: 1fr; }
-  .plan-preview { border-left: none; border-top: 1px solid var(--line); padding-left: 0; padding-top: 10px; }
 }
 .modal.wide { width: min(920px, 96vw); }
 
@@ -606,8 +593,8 @@ button.primary small { color: #fff; opacity: 0.8; }
   gap: 2px;
 }
 .plan .actions button small { font-size: 11px; opacity: 0.75; }
-.plan-actions::-webkit-scrollbar, .plan-preview::-webkit-scrollbar { width: 6px; }
-.plan-actions::-webkit-scrollbar-thumb, .plan-preview::-webkit-scrollbar-thumb { background: #ccd4e3; border-radius: 3px; }
+.plan-actions::-webkit-scrollbar { width: 6px; }
+.plan-actions::-webkit-scrollbar-thumb { background: #ccd4e3; border-radius: 3px; }
 
 
 /* ===== 时间轴：按时间映射位置（不再滚动/不再位移） ===== */
@@ -781,8 +768,7 @@ button.primary small { color: #fff; opacity: 0.8; }
   min-height: 0;
   overflow: hidden;
 }
-.plan-actions,
-.plan-preview {
+.plan-actions {
   height: 100%;
   max-height: none;
   min-height: 0;
@@ -1089,7 +1075,7 @@ body { overflow: hidden; }
 .mod-todo { flex: 0 0 auto; max-height: 180px; overflow: auto; }
 .mod-todo.major { border-color: #f0a25a; box-shadow: 0 0 0 2px rgba(249, 124, 18, 0.12); }
 
-.mod-main { padding: 10px; overflow: auto; }
+.mod-main { padding: 10px; overflow: auto; display: flex; flex-direction: column; }
 .mod-main > .row { margin-top: 8px; }
 
 .mod-log { min-height: 0; }
@@ -2611,6 +2597,19 @@ body { overflow: hidden; }
   --rarity-uncommon: #4caf50;
   --rarity-rare: #3f8cff;
   --rarity-legendary: #d4af37;
+  /* T-027：行动分类配色 */
+  --cat-growth: #2f9e6e;
+  --cat-growth-bg: #eaf7f0;
+  --cat-growth-bd: #bfe5d3;
+  --cat-recover: #3b82c4;
+  --cat-recover-bg: #eaf3fc;
+  --cat-recover-bd: #c3ddf3;
+  --cat-work: #c9721a;
+  --cat-work-bg: #fdf2e4;
+  --cat-work-bd: #f2d3ae;
+  --cat-performance: #7c5cd6;
+  --cat-performance-bg: #f2eefc;
+  --cat-performance-bd: #d6c8f5;
 }
 .bag-grid {
   display: grid;
@@ -2713,17 +2712,17 @@ body { overflow: hidden; }
   .bag-cell.rar-legendary { animation: none; }
 }
 
-/* ===== T-024 顶栏与主区同列宽（grid 200 / 1fr / 200） ===== */
+/* ===== T-024 顶栏与主区同列宽（grid 200 / 1fr / 400，T-027 右列加宽） ===== */
 .bar {
   display: grid;
-  grid-template-columns: 200px minmax(0, 1fr) 200px;
+  grid-template-columns: 200px minmax(0, 1fr) 400px;
   gap: 12px;
   padding: 10px 14px 6px;
   align-items: stretch;
 }
 .bar > .bar-left { min-width: 0; }
 .bar > .bar-center { display: flex; gap: 12px; min-width: 0; align-items: stretch; }
-.bar-center > .tl-anim { flex: 0 0 200px; min-width: 0; }
+.bar-center > .tl-anim { flex: 0 0 176px; min-width: 0; }
 .bar-center > .tl-status { flex: 0 0 200px; min-width: 0; }
 .bar-center > .tl-holder { flex: 1 1 auto; min-width: 0; display: flex; }
 .tl-holder > .mod-timeline { flex: 1 1 auto; width: 100%; box-sizing: border-box; }
@@ -2737,7 +2736,7 @@ body { overflow: hidden; }
 }
 .bar > .bar-right .brief-list { width: 100%; min-width: 0; }
 .bar > .bar-right .brief-list li { min-width: 0; }
-.shell { grid-template-columns: 200px minmax(0, 1fr) 200px; }
+.shell { grid-template-columns: 200px minmax(0, 1fr) 400px; }
 
 /* 左：角色动画预留位 */
 .tl-anim,
@@ -2895,7 +2894,7 @@ body { overflow: hidden; }
 .action-tip .eff-dim { color: #9aa; font-size: 10px; }
 .action-tip .eff-axis { color: #c9b06a; font-size: 10px; }
 
-/* 日期网格（T-024：2 列 × 4 行撑满弹窗高度） */
+/* 日期网格（T-027：3 列 × 3 行槽位制） */
 .plan { display: flex; gap: 12px; align-items: stretch; }
 .plan-actions {
   width: 300px;
@@ -2922,7 +2921,7 @@ body { overflow: hidden; }
 }
 .date-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-auto-rows: 1fr;
   gap: 8px;
   flex: 1 1 auto;
@@ -2938,7 +2937,7 @@ body { overflow: hidden; }
   flex-direction: column;
 }
 .date-head { font-size: 10px; color: var(--muted); margin-bottom: 4px; white-space: nowrap; }
-.date-slots { display: flex; flex: 1 1 auto; flex-direction: column; justify-content: space-between; gap: 4px; }
+.date-slots { display: flex; flex: 1 1 auto; flex-direction: column; gap: 4px; min-height: 0; }
 .date-slot {
   display: flex;
   align-items: center;
@@ -2949,29 +2948,46 @@ body { overflow: hidden; }
   border-radius: 5px;
   padding: 1px 6px;
   background: #f8fafc;
-  min-height: 20px;
+  min-height: 0;
+  flex: 1 0 0;
+  overflow: hidden;
 }
+.date-slot .nm { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .date-slot.empty { color: #c3c9d4; border-style: dashed; background: transparent; }
 .date-slot .del { border: none; background: transparent; color: #e67e22; cursor: pointer; font-size: 11px; padding: 0 2px; }
-.plan-grid-hint { margin-top: 6px; }
-.plan-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 8px 10px;
-  background: #fff;
+.slot-tag {
+  flex: 0 0 auto;
+  font-size: 9px;
+  color: #8a8f99;
+  border: 1px solid #dfe3ea;
+  border-radius: 3px;
+  padding: 0 3px;
 }
-.plan-row .plan-name { font-weight: 600; font-size: 13px; }
-.plan-row .plan-when { font-size: 11px; color: var(--muted); }
+
+/* T-027：行动分类配色（CSS 变量统一） */
+.action-card.cat-growth { background: var(--cat-growth-bg); border-left: 3px solid var(--cat-growth); border-color: var(--cat-growth-bd); }
+.action-card.cat-recover { background: var(--cat-recover-bg); border-left: 3px solid var(--cat-recover); border-color: var(--cat-recover-bd); }
+.action-card.cat-work { background: var(--cat-work-bg); border-left: 3px solid var(--cat-work); border-color: var(--cat-work-bd); }
+.action-card.cat-performance { background: var(--cat-performance-bg); border-left: 3px solid var(--cat-performance); border-color: var(--cat-performance-bd); }
+.action-card.cat-growth .action-card-name { color: var(--cat-growth); }
+.action-card.cat-recover .action-card-name { color: var(--cat-recover); }
+.action-card.cat-work .action-card-name { color: var(--cat-work); }
+.action-card.cat-performance .action-card-name { color: var(--cat-performance); }
+
+.date-slot.cat-growth { background: var(--cat-growth-bg); border-color: var(--cat-growth-bd); border-left: 3px solid var(--cat-growth); color: var(--cat-growth); }
+.date-slot.cat-recover { background: var(--cat-recover-bg); border-color: var(--cat-recover-bd); border-left: 3px solid var(--cat-recover); color: var(--cat-recover); }
+.date-slot.cat-work { background: var(--cat-work-bg); border-color: var(--cat-work-bd); border-left: 3px solid var(--cat-work); color: var(--cat-work); }
+.date-slot.cat-performance { background: var(--cat-performance-bg); border-color: var(--cat-performance-bd); border-left: 3px solid var(--cat-performance); color: var(--cat-performance); }
+.date-slot.locked { filter: saturate(0.35); color: #8a8f99; }
+.date-slot.locked .nm { color: #8a8f99; }
+.plan-grid-hint { margin-top: 6px; }
 .modal.wide { width: min(980px, 94vw); }
 
 @media (max-width: 1400px) {
-  .bar { grid-template-columns: 168px minmax(0, 1fr) 168px; }
-  .shell { grid-template-columns: 168px minmax(0, 1fr) 168px; }
-  .bar-center > .tl-anim { flex-basis: 176px; }
-  .bar-center > .tl-status { flex-basis: 176px; }
+  .bar { grid-template-columns: 176px minmax(0, 1fr) 320px; }
+  .shell { grid-template-columns: 176px minmax(0, 1fr) 320px; }
+  .bar-center > .tl-anim { flex-basis: 160px; }
+  .bar-center > .tl-status { flex-basis: 160px; }
 }
 @media (max-width: 1180px) {
   /* T-024：bar 与 shell 的 gap 必须成对改，否则中间组会错位 */
@@ -2979,12 +2995,12 @@ body { overflow: hidden; }
   .shell { gap: 8px; }
 }
 @media (max-width: 980px) {
-  .bar { overflow-x: auto; gap: 8px; grid-template-columns: 160px 1080px 180px; }
+  .bar { overflow-x: auto; gap: 8px; grid-template-columns: 160px 1080px 300px; }
   .bar > .bar-center { grid-column: auto; }
   .shell { grid-template-columns: 148px minmax(0, 1fr); }
   .plan { flex-direction: column; }
   .plan-actions { width: auto; max-height: 220px; height: auto; }
-  .date-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .date-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 /* T-023 标题卡（176px，三行：品牌+chip / 时钟 / 邮箱+按钮） */
@@ -3176,3 +3192,167 @@ body { overflow: hidden; }
   color: #8a5a12;
   background: #fff;
 }
+
+/* T-030：行程主模块 —— 横向天级框 */
+.plan-head { gap: 10px; }
+.plan-open-btn {
+  margin-left: auto;
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 8px;
+  border: 1px solid #f0b27a;
+  background: #fff7ef;
+  color: #c9721a;
+  cursor: pointer;
+}
+.plan-head.has-block .plan-open-btn { margin-left: 8px; }
+.plan-blocked {
+  margin-left: auto;
+  font-size: 12px;
+  color: #c0392b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.plan-strip {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px 2px 8px;
+  position: relative;
+}
+.plan-strip .date-cell.plan-day {
+  flex: 0 0 144px;
+  width: 144px;
+  min-height: 0;
+  box-sizing: border-box;
+}
+.plan-day-head { display: flex; align-items: center; gap: 4px; flex-wrap: nowrap; overflow: hidden; }
+.plan-day-head > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.day-badge {
+  flex: 0 0 auto;
+  font-size: 9px;
+  padding: 0 3px;
+  border-radius: 3px;
+  border: 1px solid #dfe3ea;
+  color: #8a8f99;
+  background: #fff;
+  white-space: nowrap;
+}
+.day-badge.today {
+  color: var(--accent);
+  border-color: #f0b27a;
+  background: #fff3e6;
+  font-weight: 700;
+}
+.day-check { flex: 0 0 auto; color: #2f9e6e; font-size: 10px; font-weight: 700; }
+.plan-day.past {
+  background: #f7f8fa;
+  opacity: 0.75;
+  border-color: #eef0f4;
+}
+.plan-day.today {
+  border-color: var(--accent);
+  background: #fff8ef;
+}
+.plan-day.future { background: #fff; }
+.plan-day .date-slot.executing {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.plan-add-cell {
+  flex: 0 0 144px;
+  width: 144px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px dashed #c3c9d4;
+  background: #fafbfd;
+  color: #8a8f99;
+  font-size: 11px;
+  cursor: pointer;
+  min-height: 0;
+}
+.plan-add-cell:hover { border-color: var(--accent); color: var(--accent); background: #fff8ef; }
+.plan-add-cell .add-plus { font-size: 26px; line-height: 1; }
+
+/* T-032 演出（报名制） */
+.show-gate { padding: 18px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+.show-city-switch { display: flex; gap: 4px; }
+.show-city-switch button, .show-tabs .seg-item {
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 5px;
+  border: 1px solid var(--line);
+  background: #fff;
+  cursor: pointer;
+}
+.show-city-switch button.active, .show-tabs .seg-item.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: #fff7ef;
+}
+.show-tabs { margin-left: auto; }
+.show-list { flex: 1 1 auto; overflow: auto; display: flex; flex-direction: column; gap: 8px; padding: 8px; }
+.show-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.show-card.announced { opacity: 0.62; }
+.show-badge.status-announced { border-color: #f0b27a; color: #c9721a; background: #fff3e6; }
+.show-badge.status-full { border-color: #dfe3ea; color: #8a8f99; background: #f5f6f8; }
+.show-title { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.show-badge { font-size: 10px; border: 1px solid #dfe3ea; border-radius: 4px; padding: 0 4px; color: #6b7280; }
+.show-badge.tier-normal { background: #f7f8fa; color: #6b7280; border-color: #dfe3ea; }
+.show-badge.tier-large { border-color: #c3ddf3; color: #3b82c4; background: #eaf3fc; }
+.show-badge.tier-sino { border-color: #bfe5d3; color: #2f9e6e; background: #eaf7f0; }
+.show-badge.tier-festival { border-color: #f2d3ae; color: #c9721a; background: #fdf2e4; }
+.show-badge.tier-birthday { border-color: #f0b27a; color: #c9721a; background: #fff3e6; }
+.show-badge.tier-graduate { border-color: #d6c8f5; color: #7c5cd6; background: #f2eefc; }
+.show-badge.tier-debut { border-color: var(--accent); color: var(--accent); background: #fff7ef; }
+.show-lineup { display: flex; gap: 4px; flex-wrap: wrap; }
+.show-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  font-size: 11px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 3px 7px;
+  background: #fafbfd;
+  cursor: pointer;
+}
+.show-slot.active { border-color: var(--accent); background: #fff7ef; }
+.show-slot.taken { opacity: 0.6; }
+.show-slot em { font-style: normal; color: var(--muted); font-size: 10px; }
+.show-req { display: flex; gap: 8px; flex-wrap: wrap; font-size: 11px; color: #4b5563; }
+.show-fee { font-size: 12px; color: #c9721a; font-weight: 600; }
+.show-result { font-size: 11px; color: #2f9e6e; }
+.show-calendar { flex: 1 1 auto; overflow: auto; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; padding: 8px; }
+.show-cal-day {
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 3px 5px;
+  font-size: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: #fff;
+}
+.show-cal-day.booked { border-color: var(--accent); background: #fff7ef; }
+.show-cal-day.open { background: #f8fafc; }
+.show-cal-day em { font-style: normal; color: var(--muted); font-size: 9px; overflow: hidden; text-overflow: ellipsis; }

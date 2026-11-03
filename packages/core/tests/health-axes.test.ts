@@ -1,3 +1,4 @@
+import { START_AT } from '../src/content';
 import { describe, expect, it } from 'vitest';
 import { ACTION_RESULTS } from '../src/results';
 import { settle } from '../src/settle';
@@ -9,7 +10,7 @@ import type { RunState, ScheduleItem } from '../src/types';
  * 全用固定 seed 与固定状态；只断言 health / axes（其余字段随机区间不参与断言）。
  */
 const MIN = 60_000;
-const T0 = Date.UTC(2026, 0, 1, 9, 0, 0);
+const T0 = START_AT;
 
 function base(over: Partial<RunState> = {}): RunState {
   return {

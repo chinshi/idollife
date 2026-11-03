@@ -12,7 +12,7 @@ export type SyncStatus = 'local' | 'syncing' | 'synced' | 'offline' | 'expired';
 export type SysTab = 'shop' | 'bag';
 export type BagTab = 'equip' | 'consume' | 'other';
 export type LogTab = 'all' | 'event' | 'stat';
-export type MainTab = 'task' | 'stats' | 'plan' | 'party' | 'friends' | 'shop' | 'divine' | 'bag';
+export type MainTab = 'task' | 'stats' | 'plan' | 'show' | 'party' | 'friends' | 'shop' | 'divine' | 'bag';
 export type TaskTab = 'all' | 'accept' | 'active' | 'done';
 
 export interface AuthUserLike {
@@ -27,6 +27,8 @@ export interface AppApi {
   seed: string;
   removeItem: (id: string) => void;
   party: Party | null;
+  /** T-027：完整排程（含 done / 执行中），安排行程弹窗需要 */
+  schedule: ScheduleItem[];
   pending: ScheduleItem[];
   visibleItems: ScheduleItem[];
   pastItems: ScheduleItem[];
@@ -80,7 +82,10 @@ export interface AppApi {
   advance: () => void;
   stopCurrent: () => void;
   openPlan: () => void;
-  addShow: () => void;
+  /** T-032 演出报名 */
+  bookShow: (occ: import('@idollife/core').ShowOccurrence, slot: import('@idollife/core').ShowSlotDef) => void;
+  cancelBooking: (bookingId: string) => void;
+  setCity: (city: 0 | 1 | 2 | 3) => void;
   doAccept: (id: string) => void;
   doReward: (id: string) => void;
   doMeet: (channelId: string) => void;
