@@ -11,6 +11,26 @@
 
 ## 记录
 
+- `2026-11-03 02:22` ｜ 来源：T-023 验收意见 2/4 ｜ 标题卡改 3 行（brand+chip / 11px 时钟 / 邮箱+三个按钮），不再压 9px；简报拆成「任务名可省略 + 进度完整」，`.bar-right` 改纵向列并让 brief-list 可收缩，分类头不被压；headless 复测 titleThreeRows/11px/briefNameTruncated/progressVisible 均通过 ｜ `packages/client/src/{App.tsx,styles.css}`、`collab/T-023-顶部五块并列与行动卡交互.md`
+
+- `2026-11-03 02:14` ｜ 来源：用户直派 T-023 ｜ 顶部压成一行 5 块（标题卡/角色动画/时间轴/状态/任务简报）：删 `.bar-top`+`.tl-row` 两层包装、`.bar` 改 flex 5 块等高 + 三档响应式（≤980 横向滚动不堆叠）；角色动画/状态去标题并统一 `bar-card` 白卡外观；行动卡压到 30px 单行（覆盖全局按钮的垂直 flex）；行动悬浮框改左侧优先、不足翻右侧、实测高度 clamp、侧边箭头跟随卡片中心；安排行程分类头改可折叠横条、每次打开默认全展开；用 headless Chrome + 同 class/styles.css harness 实测 oneRow/等高/无交叠 ｜ `packages/client/src/{App.tsx,components/{TimelineStatus,ActionCard,Modals}.tsx,styles.css}`、`collab/T-023-顶部五块并列与行动卡交互.md`
+
+- `2026-11-03 02:10` ｜ 来源：T-022 验收意见 0 ｜ 移除 `RunState.equipped` 上的 `@deprecated accessory?` 中转键（类型严格 7 槽）；`items.test.ts` 的 category 索引改为 `slotOf()` 映射到具体槽位（饰品→accessory1），断言语义不变；`save-migration.test.ts` 旧键断言改走 Record 取值 ｜ `packages/core/src/types.ts`、`packages/core/tests/items.test.ts`、`packages/client/tests/save-migration.test.ts`、`collab/T-022-装备槽位改版服装发型发色饰品x4.md`
+
+- `2026-11-03 02:02` ｜ 来源：用户直派 T-022（程序侧）｜ 装备槽位改版落地：`EquipSlot` 7 槽（服装/发型/发色/饰品×4）+ 新增 `EquipCategory`；`EQUIP_SLOT_LABEL` 扩 8 键（含 accessory 兜底）；`equipItem(state, invId, targetSlot?)` 支持饰品 4 槽（填空槽/指定槽/满则替换 accessory1 + 同件去重）；`unequipItem` 7 槽；`effectiveStats` 遍历 7 槽；旧档迁移（shoes 按映射还原 stats/axes/negatives 后删除、accessory→accessory1、7 槽归一、幂等）；BagGrid 装备区 7 格（上排 3 + 下排饰品 4，空槽选装，复用 T-019 tooltip）；新增 4 条 core + 1 条客户端迁移测试 ｜ `packages/core/src/{types,items}.ts`、`packages/client/src/{state/save.ts,components/{BagGrid,api}.tsx,App.tsx,styles.css}`、`packages/core/tests/items.test.ts`、`packages/client/tests/save-migration.test.ts`、`collab/T-022-装备槽位改版服装发型发色饰品x4.md`
+
+- `2026-11-03 02:05` ｜ 来源：用户直派 T-022（策划内容侧）｜ 装备槽位改版为 服装1+发型1+发色1+饰品×4：equipments 删除鞋袜 11 件、新增发色 12 件（自然黑/亚麻棕/蜂蜜茶/深栗色/奶奶灰/雾霾蓝/薰衣草紫/樱花粉/薄荷绿/玫瑰金/白金/渐变挑染，含显性/隐形加成与隐晦文案），总量 67→68；`scripts/validate-data.mjs` 槽位白名单改 hair/haircolor/outfit/accessory；`packages/core/tests/items.test.ts` 规模断言按新口径适配（68 + 槽位分布 + haircolor 标签）｜ `content/all.xlsx`、`packages/core/data/equipments.json`、`scripts/validate-data.mjs`、`packages/core/tests/items.test.ts`、`collab/T-022-*.md`（代码侧由 dsh 实现中）
+
+
+- `2026-11-03 02:00` ｜ 来源：用户直派 T-021 ｜ 时间轴三栏（左角色动画占位/右状态栏：资金+体力心情饱腹健康+异常标签「无所事事」）、阶段徽章与晋级按钮同行、行动卡紧凑化+hover 三层悬浮框（消耗/显性/隐形轴）、安排行程改 4×2 日期网格（清空全部、遮罩不关）、行程页签单行、core 消费 health/axes（clamp+5 单测）。策划侧另落地：attributes+健康、results+健康列/隐藏轴列、导入映射改、高级课数值梯度修正（回报 5~6→7~9、付出-34→-28、负面清零） ｜ `packages/core/src/{types,data,results,settle,attributes,content}.ts`、`packages/client/src/*`、新增 `StageAdvanceButton/TimelineStatus/ActionCard.tsx`、`content/all.xlsx`、`scripts/content-import.mjs`、`collab/T-021-*.md`
+
+
+- `2026-11-03 01:37` ｜ 来源：策划派单 T-021 ｜ 时间轴三栏（左角色动画占位 200 / 中时间轴 / 右状态栏 200：资金+体力/心情/饱腹/健康+异常标签占位，列宽与主系统 200/1fr/200 对齐）；属性面板顶部阶段徽章+晋级按钮同行（抽出 `StageAdvanceButton`）；安排行程改紧凑行动卡 + 悬浮框三层（消耗/显性变化/隐形轴，无轴不渲染）+ 日期网格 4×2（每天 3 槽、⊗ 单删、橙色清空全部）+ 遮罩不关闭（`Modal.dismissOnMask`）；主系统行程改单行；core 新增 `health` 与 `effects.axes` 结算（clamp）+ `previewAction` 扩展 + `actionTier`；新增 5 条 health/axes 单测 ｜ `packages/core/src/{types,data,results,settle,attributes,content}.ts`、`packages/core/tests/health-axes.test.ts`、`packages/client/src/{App.tsx,state/save.ts,components/{StageAdvanceButton,TimelineStatus,ActionCard,Modals,Modal,PlanPanel,StatsPanel,SidePanel}.tsx,styles.css}`、`collab/T-021-时间轴三栏与行程日期网格.md`
+
+- `2026-11-03 00:20` ｜ 来源：用户直派（策划执行）｜ 废弃「上班摸鱼」设定，定位改为沉浸式地偶养成；番茄钟文档债清理；「不能有美术」反需求解除（D-015）｜ `docs/01`、`docs/02`、`docs/08`（整章重写，文件名改 `08-沉浸体验与节奏`）、`docs/12`（文件名改 `12-时间系统`）、`docs/04`、`docs/06`、`docs/09`、`docs/13`、`docs/14`、`docs/15`、`docs/16`（新增 D-015）、`README.md`。代码与配置表零改动（打工类行动属玩法内容，保留）
+
+- `2026-11-02 23:55` ｜ 来源：策划派单 T-020（P0 竞态）｜ 状态提交统一走 `commitRun(next)`（先同步 `runRef.current` 再 setRun），修复「handler 产出新状态后被时钟 tick 用旧底稿覆盖」——组合创建后消失等；`App.tsx` 共 27 处调用点全部替换、删除各处手写 runRef 同步；handler 底稿统一改取 `runRef.current`；`Modals.tsx` 的「再来一次」同源修复 ｜ `packages/client/src/App.tsx`、`packages/client/src/components/Modals.tsx`、`collab/T-020-状态提交竞态修复组合消失.md`
+
 - `2026-11-02 22:20` ｜ 来源：策划派单 T-019 ｜ 道具系统：items(92)/equipments(67) 导入 + check:data 键域/枚举/表达式校验；core 新增 `items.ts`（InventoryEntry 堆叠背包、useItem 显性/负面/隐藏分流、四槽 equip/unequip + 装备要求、effectiveStats、旧装备按名称迁移）；客户端新增 `BagGrid` 格子背包（稀有度边框/首字 icon/×N/E 标/portal 三段式 tooltip，隐藏属性数值不外显）供 BagPanel 与侧栏共用；商店新增便利店（common/uncommon 消耗品）；读档迁移旧装备；新增 11 条 core 测试 + 1 条客户端迁移测试 ｜ `scripts/{content-import,validate-data}.mjs`、`packages/core/data/{items,equipments}.json`、`packages/core/src/{types,items,shop,results,shows,index}.ts`、`packages/client/src/{App.tsx,state/save.ts,components/{BagGrid,BagPanel,SidePanel,ShopPanel,api}.ts(x),styles.css}`、`packages/core/tests/{items,shop}.test.ts`、`packages/client/tests/save-migration.test.ts`、`collab/T-019-道具系统格子背包与消耗品装备.md`
 
 - `2026-11-02 22:18` ｜ 来源：策划派单 T-018（验收五点）｜ 晋级按钮文案改取 `currentStage().buttonText`（删 seq4「出道」兜底，配合新版 stages 数据）；seq3→4 的 tooltip 条件行改「报名条件：四项属性总和 ≥ 120」；s8 `rainbow` 主题色回落 `#d4af37` ｜ `packages/client/src/components/SidePanel.tsx`、`collab/T-018-成长阶段体系与晋级交互.md`
