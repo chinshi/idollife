@@ -11,6 +11,16 @@
 
 ## 记录
 
+- `2026-11-03 19:40` ｜ 来源：T-025 终验前收尾 ｜ 移除客户端本地时钟残留（T-024「本地 paused」双真相）：`packages/client/src/state/clock.ts` 归档到 `_archive/state-clock-t024.ts`，删除已无被测对象的 `packages/client/tests/clock.test.ts`（client 用例 8 → 4，仅剩 save-migration）；不改 App.tsx、不 commit / 不 push ｜ `_archive/state-clock-t024.ts`、`packages/client/tests/clock.test.ts`（删除）、`collab/T-025-时钟权威迁移与服务端启停校验.md`
+
+- `2026-11-03 19:32` ｜ 来源：T-025 验收意见（2 必改 + 1 建议）｜ `/v1/sync` 加「跨空档前移」白名单（executed=[] 且 to===未完成项 startAt 时按客户端 at 接受，避免来回 mismatch）；`/v1/choice` 水位线改 `Math.max(gameAt, run.at)` 防倒流；client 校准类错误清空上报队列；catchUp 的 speed 加 `Math.max(1, …)` 兜底并合并重复 time 分支；server 测试 +2（gap heal / choice 水位线），共 8 条 ｜ `packages/server/src/app.ts`、`packages/core/src/clock.ts`、`packages/client/src/App.tsx`、`packages/server/tests/clock-api.test.ts`、`collab/T-025-时钟权威迁移与服务端启停校验.md`
+
+- `2026-11-03 19:15` ｜ 来源：用户直派 T-025（P0 时钟权威迁移·一期）｜ core 新增 `clock.ts`（ClockState/catchUp/markDone + 8 单测）；server 新增 `clock-service` 与 `/v1/clock/start|pause|session`，`RunRecord.clock` 持久化（Supabase clock 可选列，旧记录默认 idle），`/v1/sync` 改水位线 + 服务端重放比对（too_fast/taken_over/mismatch/stale），`/v1/choice` 防时间越权，新增 server vitest 6 条；client 删本地补时/bootClock，启停/倍速全走接口、每条行动完成即上报（失败队列）、暂停语义改「停在这里」、被接管只读横幅；docs 09/11/12 同步 ｜ `packages/core/src/{clock.ts,content.ts,index.ts}`、`packages/core/tests/clock.test.ts`、`packages/server/src/{app.ts,clock-service.ts,store/{types.ts,supabase.ts}}`、`packages/server/tests/clock-api.test.ts`、`packages/server/package.json`、`packages/client/src/{App.tsx,api/sync.ts,components/TimeAxis.tsx,state/clock.ts,styles.css}`、`docs/{09,11,12}-*.md`、`collab/T-025-时钟权威迁移与服务端启停校验.md`
+
+- `2026-11-03 11:52` ｜ 来源：T-024 验收意见（必改）｜ 修复 981–1180px 顶栏与主区错位：`≤1180` 媒体查询里 `.bar` 与 `.shell` 的 `gap` 成对设为 8（此前只改 bar）；逐断点复核并回执列对照表（>1400 / 1181–1400 / 981–1180 完全一致，≤980 按卡面滚动模式不对齐），headless 复测 1408/1350/1184/1084/984 对齐全 true ｜ `packages/client/src/styles.css`、`collab/T-024-顶栏对齐与停止持久化与行程弹窗.md`
+
+- `2026-11-03 11:44` ｜ 来源：用户直派 T-024 ｜ ①顶栏 `.bar` 改 grid `200/1fr/200`（与 `.shell` 同参数），中间三块包进 `.bar-center`、TimeAxis 根节点改名 `tl-holder`；≤1400 顶栏与主区同步收窄到 168；②手动停止写 `clock.paused:true`（新增 `state/clock.ts`），bootResume 尊重暂停 + 提示，推进/事件续跑清暂停、重开清 clock，paused 时不补离线时间；③安排行程分类头显式 `flex-direction:row` 压到 26px，日期网格改 2 列×4 行撑满、两栏左右填满；新增 4 条 clock 单测；headless 实测顶栏/主区列 rect 完全一致（1424 与 1350） ｜ `packages/client/src/{App.tsx,components/TimeAxis.tsx,state/clock.ts,styles.css}`、`packages/client/tests/clock.test.ts`、`collab/T-024-顶栏对齐与停止持久化与行程弹窗.md`
+
 - `2026-11-03 02:22` ｜ 来源：T-023 验收意见 2/4 ｜ 标题卡改 3 行（brand+chip / 11px 时钟 / 邮箱+三个按钮），不再压 9px；简报拆成「任务名可省略 + 进度完整」，`.bar-right` 改纵向列并让 brief-list 可收缩，分类头不被压；headless 复测 titleThreeRows/11px/briefNameTruncated/progressVisible 均通过 ｜ `packages/client/src/{App.tsx,styles.css}`、`collab/T-023-顶部五块并列与行动卡交互.md`
 
 - `2026-11-03 02:14` ｜ 来源：用户直派 T-023 ｜ 顶部压成一行 5 块（标题卡/角色动画/时间轴/状态/任务简报）：删 `.bar-top`+`.tl-row` 两层包装、`.bar` 改 flex 5 块等高 + 三档响应式（≤980 横向滚动不堆叠）；角色动画/状态去标题并统一 `bar-card` 白卡外观；行动卡压到 30px 单行（覆盖全局按钮的垂直 flex）；行动悬浮框改左侧优先、不足翻右侧、实测高度 clamp、侧边箭头跟随卡片中心；安排行程分类头改可折叠横条、每次打开默认全展开；用 headless Chrome + 同 class/styles.css harness 实测 oneRow/等高/无交叠 ｜ `packages/client/src/{App.tsx,components/{TimelineStatus,ActionCard,Modals}.tsx,styles.css}`、`collab/T-023-顶部五块并列与行动卡交互.md`
