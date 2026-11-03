@@ -1,4 +1,5 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { createClock, type ClockState } from '@idollife/core';
 import type { RunRecord, Store } from './types.js';
 
 /**
@@ -20,6 +21,8 @@ interface Row {
   seed: string;
   state: RunRecord['run'];
   schedule: RunRecord['schedule'];
+  /** T-025：clock jsonb；加列前的旧记录可能为 undefined */
+  clock?: ClockState | null;
 }
 
 function toRecord(row: Row): RunRecord {
@@ -32,6 +35,8 @@ function toRecord(row: Row): RunRecord {
     seed: row.seed,
     run: row.state,
     schedule: row.schedule,
+    // 旧记录无 clock → 默认 idle（不抛错、不要求数据迁移）
+    clock: row.clock ?? createClock(row.state.at),
   };
 }
 
@@ -62,6 +67,7 @@ export class SupabaseStore implements Store {
       seed: rec.seed,
       state: rec.run,
       schedule: rec.schedule,
+      clock: rec.clock,
     };
     const { error } = await this.client.from(TABLE).upsert(row, { onConflict: 'run_id' });
     if (error) throw new Error(`supabase putRun: ${error.message}`);

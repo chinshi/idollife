@@ -44,6 +44,9 @@ import {
   equipItem,
   getShop,
   getStoryEvent,
+  // T-025：时钟
+  ALLOWED_SPEEDS,
+  createClock,
   // T-019：道具系统
   ITEMS_MAP,
   addConsumable,
@@ -60,6 +63,7 @@ import {
 } from '@idollife/core';
 import type {
   ActionCategory,
+  ClockState,
   Ending,
   EquipItem,
   EquipSlot,
@@ -85,7 +89,17 @@ import { DivinePanel } from './components/DivinePanel';
 import type { AppApi } from './components/api';
 import { SidePanel } from './components/SidePanel';
 import { Modals } from './components/Modals';
-import { syncRun, fetchLatestRun, pushChoice } from './api/sync';
+import {
+  syncRun,
+  fetchLatestRun,
+  pushChoice,
+  startClock,
+  pauseClock,
+  fetchClockSession,
+  type SyncResponse,
+  type ClockResponse,
+  type OfflineSummary,
+} from './api/sync';
 import {
   getAccessToken,
   getSessionUser,
@@ -255,46 +269,29 @@ function AppInner() {
   const [forceLogin, setForceLogin] = useState(false);
   const [running, setRunning] = useState(false);
   const [speed, setSpeed] = useState(1);
-  const clockKey = 'idollife:clock:v2';
+  /** T-025：服务端时钟（权威）；null 表示尚未从服务端拿到 */
+  const [clock, setClock] = useState<ClockState | null>(null);
+  const clockRef = useRef<ClockState | null>(null);
+  const [readonlyBanner, setReadonlyBanner] = useState(false);
 
-  /**
-   * 读取本地记录的「行动时钟」：
-   * 存的是 { 游戏时间, 墙上时间 }，用墙上时间差把离线期间的时间补回来。
-   */
-  const bootClockRef = useRef<number>(-1);
-  if (bootClockRef.current < 0) bootClockRef.current = (() => {
+  // T-025：sessionId（关标签页失效）；后到者接管靠它识别旧端
+  const sessionId = useMemo(() => {
+    const KEY = 'idollife:session-id';
     try {
-      const raw = localStorage.getItem(clockKey);
-      if (!raw) return 0;
-      const data = JSON.parse(raw) as { t?: number; w?: number; speed?: number };
-      const t = Number(data.t ?? 0);
-      const w = Number(data.w ?? 0);
-      if (!Number.isFinite(t) || t <= 0) return 0;
-
-      const speed = Number(data.speed ?? 1) || 1;
-      const offline = w > 0 ? Math.max(0, Date.now() - w) : 0;
-      const capped = Math.min(offline, 6 * 3600 * 1000); // 最多补 6 小时，防止离谱跳变
-      let next = Math.round(t + capped * speed);
-
-      // 不超过最后一条行程的结束时间（避免离线补出天文数字）
-      try {
-        const saved = loadSave();
-        const maxEnd = (saved?.schedule ?? []).reduce((m, s) => Math.max(m, s.endAt), 0);
-        if (maxEnd > 0) next = Math.min(next, maxEnd);
-      } catch {
-        /* 忽略 */
-      }
-
-      return next;
+      const cached = sessionStorage.getItem(KEY);
+      if (cached) return cached;
+      const id =
+        typeof crypto !== 'undefined' && 'randomUUID' in crypto
+          ? crypto.randomUUID()
+          : `sess-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+      sessionStorage.setItem(KEY, id);
+      return id;
     } catch {
-      return 0;
+      return `sess-${Date.now().toString(36)}`;
     }
-  })();
-  const bootClock = bootClockRef.current;
+  }, []);
 
-  const [gameNow, setGameNow] = useState<number>(
-    Math.max(boot?.run?.at ?? T0, bootClock),
-  );
+  const [gameNow, setGameNow] = useState<number>(boot?.run?.at ?? T0);
 
   const runRef = useRef<RunState>(run);
 
@@ -309,12 +306,43 @@ function AppInner() {
     runRef.current = next;
     setRun(next);
   }
+
+  /** T-025：服务端时钟快照（唯一权威） */
+  function commitClock(next: ClockState | null) {
+    clockRef.current = next;
+    setClock(next);
+  }
+
+  /** 以服务端权威状态校准本地（run / schedule / clock） */
+  function applyAuthoritative(
+    nextRunRaw: RunState,
+    nextSchedule: ScheduleItem[],
+    nextClock?: ClockState | null,
+    nextRevision?: number,
+  ) {
+    const nextRun = normalizeRun(nextRunRaw);
+    const fixed = repairChain(nextSchedule, nextRun.at);
+    commitRun(nextRun);
+    scheduleRef.current = fixed;
+    setSchedule(fixed);
+    setGameNow(nextRun.at);
+    if (nextClock) commitClock(nextClock);
+    if (nextRevision !== undefined) setRevision(nextRevision);
+  }
+
+  function offlineText(offline: OfflineSummary): string {
+    const stop = offline.stoppedReason ? `（停在：${STOP_TEXT[offline.stoppedReason] ?? offline.stoppedReason}）` : '';
+    return `你不在的这段时间，行程又走了 ${offline.executed.length} 条。${stop}`;
+  }
   const scheduleRef = useRef<ScheduleItem[]>(boot?.schedule ?? []);
   const batchRef = useRef<{ from: number; prevRun: RunState; prevSchedule: ScheduleItem[] } | null>(null);
   const timelineRef = useRef<HTMLDivElement | null>(null);
   const [boxH, setBoxH] = useState(0);
-  const gameNowRef = useRef<number>(Math.max(boot?.run?.at ?? T0, bootClock));
+  const gameNowRef = useRef<number>(boot?.run?.at ?? T0);
   const resumeAfterEvent = useRef(false);
+  /** T-025：fire-and-forget 上报失败队列（下次成功时合并补报） */
+  const pendingReports = useRef<Array<{ run: RunState; schedule: ScheduleItem[]; to: number }>>([]);
+  const reporting = useRef(false);
   /** T-013 bug 1：同一条行程连续结算不了几次就丢弃，防止时间轴被永久冻住 */
   const stuckRef = useRef<{ id: string; n: number }>({ id: '', n: 0 });
   const dbgLines = useRef<string[]>([]);
@@ -368,22 +396,62 @@ function AppInner() {
     void (async () => {
       const token = await getAccessToken();
       const latest = await fetchLatestRun(token);
-      if (cancelled || !latest) return;
+      if (cancelled) return;
 
-      // T-017：开局初始化会写入「领取任务」日志，这里判定「本地还是空档」时忽略这类日志，
-      // 避免新档因此不再从云端恢复。
-      const localEmpty =
-        run.log.filter((l) => !l.actionId.startsWith('task-accept:')).length === 0 &&
-        schedule.length === 0 &&
-        run.at === T0;
-      if (localEmpty || latest.revision > revision) {
-        setRunId(latest.runId);
-        // 云端恢复后同样补跑一次自动领取（与进入游戏口径一致）。
-        // T-020：云端恢复可能发生在时钟已启动之后，必须同步 runRef，否则下一 tick 会用旧底稿覆盖。
-        commitRun(autoAcceptTasks(normalizeRun(latest.run)));
-        setSchedule(latest.schedule);
-        setRevision(latest.revision);
-        setNotice('已从云端恢复进度。');
+      let effectiveRunId = runId;
+      if (latest) {
+        // T-017：开局初始化会写入「领取任务」日志，这里判定「本地还是空档」时忽略这类日志，
+        // 避免新档因此不再从云端恢复。
+        const localEmpty =
+          run.log.filter((l) => !l.actionId.startsWith('task-accept:')).length === 0 &&
+          schedule.length === 0 &&
+          run.at === T0;
+        if (localEmpty || latest.revision > revision) {
+          setRunId(latest.runId);
+          effectiveRunId = latest.runId;
+          // 云端恢复后同样补跑一次自动领取（与进入游戏口径一致）。
+          // T-020：云端恢复可能发生在时钟已启动之后，必须同步 runRef，否则下一 tick 会用旧底稿覆盖。
+          commitRun(autoAcceptTasks(normalizeRun(latest.run)));
+          scheduleRef.current = latest.schedule;
+          setSchedule(latest.schedule);
+          setRevision(latest.revision);
+          commitClock(latest.clock ?? createClock(latest.run.at));
+          setNotice('已从云端恢复进度。');
+          if (latest.offline) setNotice(offlineText(latest.offline));
+        }
+      } else {
+        // 新档：先确保服务端有记录（choice 创建，clock 默认 idle）
+        await pushChoice(runId, autoAcceptTasks(normalizeRun(runRef.current)), sessionId, token);
+      }
+
+      // T-025：以服务端 clock 为准决定开屏是否自动播放 / 只读
+      const ses = await fetchClockSession(effectiveRunId, sessionId, token);
+      if (cancelled) return;
+      if (ses.kind === 'ok') {
+        applyAuthoritative(
+          ses.data.state,
+          ses.data.schedule,
+          ses.data.clock,
+          ses.data.revision,
+        );
+        setSpeed(ses.data.clock.speed);
+        if (ses.data.offline) setNotice(offlineText(ses.data.offline));
+        if (!ses.data.holder) {
+          setReadonlyBanner(true);
+          setRunning(false);
+          return;
+        }
+        if (ses.data.clock.status === 'running') {
+          setRunning(true);
+        } else {
+          setNotice(
+            ses.data.clock.status === 'paused'
+              ? '上次停在这里，点「继续」接着走。'
+              : '上次停了，点「开始推进」继续。',
+          );
+        }
+      } else if (ses.kind === 'taken_over') {
+        setReadonlyBanner(true);
       }
     })();
 
@@ -418,23 +486,7 @@ function AppInner() {
     return () => window.clearInterval(id);
   }, [user]);
   // 记住「当前时钟位置」，刷新后从那里继续，而不是回到行动开始
-  useEffect(() => {
-    const id = window.setInterval(() => {
-      try {
-        localStorage.setItem(
-          clockKey,
-          JSON.stringify({
-            t: Math.round(gameNowRef.current),
-            w: Date.now(),
-            speed,
-          }),
-        );
-      } catch {
-        /* 忽略 */
-      }
-    }, 1000);
-    return () => window.clearInterval(id);
-  }, [clockKey, speed]);
+  // T-025：本地时钟不再写入（服务端 clock 是唯一权威），整段已移除。
 
   useEffect(() => {
     runRef.current = run;
@@ -514,6 +566,8 @@ function AppInner() {
         commitRun(result.state);
         setSchedule(nextSched);
         dbg('执行 ' + result.executed.join(',') + ' → at=' + String(result.state.at));
+        // T-025：每完成一批行动立即上报（不阻塞 tick；失败自动排队）
+        void reportProgress(result.state, nextSched, result.state.at);
       }
 
       const stillPending = scheduleRef.current.some((s) => !s.done);
@@ -871,84 +925,100 @@ function AppInner() {
 
   const party = activeParty(run);
 
-  async function pushSync(
-    prevRun: RunState,
-    prevSchedule: ScheduleItem[],
-    from: number,
-    to: number,
-    local: SettleResult,
-  ) {
-    const token = await getAccessToken();
-    if (!token) {
-      setSyncStatus('expired');
-      setForceLogin(true);
-      return;
-    }
+  /**
+   * T-025：结算上报（fire-and-forget）。
+   * 每完成一条行动由 tick 调一次；endBatch 再补一次收尾。失败进内存队列，下次成功时合并补报。
+   */
+  async function reportProgress(nextRun: RunState, nextSchedule: ScheduleItem[], to: number) {
+    pendingReports.current.push({ run: nextRun, schedule: nextSchedule, to });
+    if (reporting.current) return;
+    reporting.current = true;
+    try {
+      const token = await getAccessToken();
+      if (!token) {
+        setSyncStatus('expired');
+        return;
+      }
+      setSyncStatus('syncing');
 
-    setSyncStatus('syncing');
-    const outcome = await syncRun(
-      { runId, run: prevRun, schedule: prevSchedule, from, to, seed },
-      token,
-    );
-
-    if (outcome.kind === 'unauthorized') {
-      // token 过期：先刷新再重试一次，避免频繁被踢回登录
-      const fresh = await refreshAccessToken();
-      if (fresh) {
-        const retry = await syncRun(
-          { runId, run: prevRun, schedule: prevSchedule, from, to, seed },
-          fresh,
+      while (pendingReports.current.length > 0) {
+        const item = pendingReports.current[0]!;
+        const outcome = await syncRun(
+          { runId, sessionId, run: item.run, schedule: item.schedule, to: item.to, seed },
+          token,
         );
-        if (retry.kind !== 'unauthorized') {
-          setSyncStatus(retry.kind === 'error' ? 'offline' : 'synced');
+
+        if (outcome.kind === 'ok') {
+          pendingReports.current.shift();
+          setRevision(outcome.data.revision);
+          if (outcome.data.clock) commitClock(outcome.data.clock);
+          if (outcome.data.schedule) {
+            scheduleRef.current = outcome.data.schedule;
+            setSchedule(outcome.data.schedule);
+          }
+          if (outcome.data.offline) setNotice(offlineText(outcome.data.offline));
+          continue;
+        }
+
+        if (outcome.kind === 'mismatch' || outcome.kind === 'too_fast' || outcome.kind === 'stale') {
+          // 校准类错误：队列里后续几项都基于旧状态，直接全部丢弃，避免连发被拒/连续刷校准提示
+          pendingReports.current.length = 0;
+          applyAuthoritative(
+            outcome.data.state,
+            outcome.data.schedule ?? scheduleRef.current,
+            outcome.data.clock,
+            outcome.data.revision,
+          );
+          setNotice('已按云端进度校准。');
+          setSyncStatus('synced');
+          continue;
+        }
+
+        if (outcome.kind === 'taken_over') {
+          pendingReports.current = [];
+          applyAuthoritative(
+            outcome.data.state,
+            outcome.data.schedule ?? scheduleRef.current,
+            outcome.data.clock,
+            outcome.data.revision,
+          );
+          setRunning(false);
+          setReadonlyBanner(true);
+          setSyncStatus('offline');
           return;
         }
+
+        if (outcome.kind === 'unauthorized') {
+          const fresh = await refreshAccessToken();
+          if (fresh) continue;
+          setSyncStatus('expired');
+          setForceLogin(true);
+          return;
+        }
+
+        // error：保留队列，下次成功时补报
+        setSyncStatus('offline');
+        return;
       }
-      setSyncStatus('expired');
-      setForceLogin(true);
-      return;
-    }
-    if (outcome.kind === 'error') {
-      setSyncStatus('offline');
-      return;
-    }
 
-    if (outcome.kind === 'stale') {
-      // 服务器校验失败：以服务器为准，校准本地时钟与排程时间
-      const serverRun = normalizeRun(outcome.data.state);
-      const fixedSchedule = repairChain(scheduleRef.current, serverRun.at);
-
-      scheduleRef.current = fixedSchedule;
-      commitRun(serverRun);
-      setSchedule(fixedSchedule);
-      setGameNow(serverRun.at);
-      setRevision(outcome.data.revision);
-      setRunning(false);
-      batchRef.current = null;
-      setSnapshot(null);
-      setNotice('服务器校验没过，已按云端的进度校准时间，可以重新推进。');
       setSyncStatus('synced');
-      dbg('校准 at=' + String(serverRun.at));
-      return;
+    } finally {
+      reporting.current = false;
     }
-
-    const res = outcome.data;
-    setRevision(res.revision);
-    if (!sameState(res.state, local.state)) {
-      commitRun(normalizeRun(res.state));
-      setNotice('服务器已校准进度（以服务器为准）。');
-    }
-    setSyncStatus('synced');
   }
 
+  /** 事件抉择等「不推进时间」的状态提交（仍带 sessionId） */
   async function pushWholeState(next: RunState, overrideRunId?: string) {
     const token = await getAccessToken();
     if (!token) {
       setForceLogin(true);
       return;
     }
-    const res = await pushChoice(overrideRunId ?? runId, next, token);
-    if (res) setRevision(res.revision);
+    const res = await pushChoice(overrideRunId ?? runId, next, sessionId, token);
+    if (res) {
+      setRevision(res.revision);
+      if (res.clock) commitClock(res.clock);
+    }
   }
 
   function requireLogin(): boolean {
@@ -975,7 +1045,6 @@ function AppInner() {
     setShowActions(false);
     setNotice('行程已保存。');
   }
-
   function cancelPlan() {
     if (planBackup) setSchedule(planBackup);
     setPlanBackup(null);
@@ -1101,12 +1170,14 @@ function AppInner() {
     setLastStop(String(result.stoppedReason ?? 'exhausted'));
     dbg('批次结束 reason=' + String(result.stoppedReason) + ' at=' + String(result.state.at) + ' 体力=' + String(result.state.stamina) + ' 钱=' + String(result.state.money));
     if (result.stoppedReason === 'event') resumeAfterEvent.current = true;
-    void pushSync(batch.prevRun, batch.prevSchedule, batch.from, result.state.at, result);
+    // T-025：收尾补报一次（通常无新增，幂等）
+    void reportProgress(result.state, scheduleRef.current, result.state.at);
     setSnapshot(null);
     batchRef.current = null;
   }
 
-  function advance() {
+  /** T-025：开始/继续推进必须由服务端授予（后到者直接接管） */
+  async function advance() {
     if (!requireLogin()) return;
     if (running) return;
     if (scheduleRef.current.filter((s) => !s.done).length === 0) {
@@ -1114,39 +1185,71 @@ function AppInner() {
       dbg('推进失败：没有待执行条目');
       return;
     }
-    if (runRef.current.pendingEvent) {
-      setNotice('先处理重点事件，时间已暂停。');
-      setActiveEventId(runRef.current.pendingEvent);
+
+    const token = await getAccessToken();
+    if (!token) {
+      setForceLogin(true);
+      return;
+    }
+    setSyncStatus('syncing');
+    const res = await startClock(runId, sessionId, speed, token, scheduleRef.current);
+
+    if (res.kind === 'ok') {
+      const { clock: nextClock, state, schedule: nextSchedule, revision: nextRevision } = res.data;
+      applyAuthoritative(state, nextSchedule, nextClock, nextRevision);
+      setSpeed(nextClock.speed);
+      setReadonlyBanner(false);
+      setGameNow(runRef.current.at);
+      setSnapshot({ run: runRef.current, schedule: scheduleRef.current });
+      batchRef.current = {
+        from: runRef.current.at,
+        prevRun: runRef.current,
+        prevSchedule: scheduleRef.current,
+      };
+      setRunning(true);
+      setSyncStatus('synced');
+      if (res.data.offline) setNotice(offlineText(res.data.offline));
+      dbg('服务端授予推进权 at=' + String(runRef.current.at) + ' speed=' + nextClock.speed);
       return;
     }
 
-    const repaired = repairChain(scheduleRef.current, runRef.current.at);
-    if (repaired !== scheduleRef.current) {
-      dbg('修复重叠行程');
-      setSchedule(repaired);
+    if (res.kind === 'no_schedule' || res.kind === 'pending_event') {
+      applyAuthoritative(
+        res.data.state,
+        res.data.schedule ?? scheduleRef.current,
+        res.data.clock,
+        res.data.revision,
+      );
+      setRunning(false);
+      setNotice(
+        res.kind === 'pending_event'
+          ? '先处理重点事件，时间已暂停。'
+          : '没有待执行的行程，先点「安排行程」加几条。',
+      );
+      if (res.kind === 'pending_event' && res.data.state.pendingEvent) {
+        setActiveEventId(res.data.state.pendingEvent);
+      }
+      return;
     }
 
-    const staleAtStart = repaired.filter((s) => !s.done && s.startAt < runRef.current.at);
-    const usable = repaired.filter((s) => !staleAtStart.includes(s));
-    if (staleAtStart.length > 0) {
-      dbg('开始前清理过期行程 ' + String(staleAtStart.length) + ' 条');
-      setSchedule(usable);
+    if (res.kind === 'taken_over') {
+      applyAuthoritative(res.data.state, res.data.schedule ?? scheduleRef.current, res.data.clock, res.data.revision);
+      setRunning(false);
+      setReadonlyBanner(true);
+      setNotice('另一台设备接手了这局。');
+      return;
     }
 
-    const firstPending = usable.filter((s) => !s.done).sort((a, b) => a.startAt - b.startAt)[0];
-    let baseRun = runRef.current;
-    if (firstPending && firstPending.startAt > baseRun.at) {
-      const skipped = Math.round((firstPending.startAt - baseRun.at) / 1000);
-      dbg('跳过空档 ' + String(skipped) + 's');
-      baseRun = { ...baseRun, at: firstPending.startAt };
-      commitRun(baseRun);
+    if (res.kind === 'unauthorized') {
+      setForceLogin(true);
+      return;
     }
-
-    setSnapshot({ run: baseRun, schedule: usable });
-    batchRef.current = { from: baseRun.at, prevRun: baseRun, prevSchedule: usable };
-    setGameNow(Math.max(baseRun.at, gameNowRef.current));
-    setRunning(true);
-    dbg('开始推进 pending=' + String(usable.filter((s) => !s.done).length) + ' at=' + String(baseRun.at));
+    if (res.kind === 'error') {
+      setSyncStatus('offline');
+      setNotice('推进失败：服务端连不上，稍后再试。');
+      return;
+    }
+    setNotice('这个倍速不被服务端接受。');
   }
 
   advanceRef.current = advance;
@@ -1156,24 +1259,49 @@ function AppInner() {
     setConfirmAction('stop');
   }
 
-  function doStop() {
+  /** T-025：暂停 = 服务端冻结锚点，停在这里（不作废当前行动） */
+  async function doStop() {
     setConfirmAction(null);
-    dbg('手动停止（只作废当前行动）');
-    setRunning(false);
-    batchRef.current = null;
-    setSnapshot(null);
-    resumeAfterEvent.current = false;
-    // 当前行动还没结算，run.at 就停在它的开始时间，无需回滚
-    setGameNow(runRef.current.at);
-    try {
-      localStorage.setItem(
-        'idollife:clock:v2',
-        JSON.stringify({ t: Math.round(runRef.current.at), w: Date.now(), speed }),
-      );
-    } catch {
-      /* 忽略 */
+    const token = await getAccessToken();
+    if (!token) {
+      setForceLogin(true);
+      return;
     }
-    setNotice('已停止：当前这条行动作废，其余行程保留。');
+    dbg('请求服务端暂停');
+    const res = await pauseClock(runId, sessionId, token);
+
+    if (res.kind === 'ok') {
+      applyAuthoritative(
+        res.data.state,
+        res.data.schedule ?? scheduleRef.current,
+        res.data.clock,
+        res.data.revision,
+      );
+      setRunning(false);
+      batchRef.current = null;
+      setSnapshot(null);
+      resumeAfterEvent.current = false;
+      setGameNow(runRef.current.at);
+      setSpeed(res.data.clock.speed);
+      setNotice('已暂停：停在这里，回来接着走。');
+      setSyncStatus('synced');
+      if (res.data.offline) setNotice(offlineText(res.data.offline));
+      return;
+    }
+
+    if (res.kind === 'taken_over') {
+      applyAuthoritative(res.data.state, res.data.schedule ?? scheduleRef.current, res.data.clock, res.data.revision);
+      setRunning(false);
+      setReadonlyBanner(true);
+      setNotice('另一台设备接手了这局。');
+      return;
+    }
+
+    if (res.kind === 'unauthorized') {
+      setForceLogin(true);
+      return;
+    }
+    setNotice('暂停同步失败，请稍后再试。');
   }
 
   /** 仅测试用：清空本地存档，从头新建一局并覆盖云端 */
@@ -1228,6 +1356,8 @@ function AppInner() {
 
     const fresh = createSave(initialRun, 'run-demo');
     clearSave();
+    // T-025：新档时钟回到 idle（本地不再持有权威，只重置显示态）
+    commitClock(createClock(initialRun.at));
     dbg('重新开始（测试）');
     setRunning(false);
     batchRef.current = null;
@@ -1423,16 +1553,9 @@ function AppInner() {
     setNotice('演出安排在周末，占满当天 3 个行动位。');
   }
 
-  // 刷新后：如果还有待执行行程，自动续跑（离线设计，读档即继续）
-  const bootResumeRef = useRef(false);
-  useEffect(() => {
-    if (bootResumeRef.current) return;
-    if (!user) return;
-    if (!schedule.some((s) => !s.done)) return;
-    bootResumeRef.current = true;
-    const t = window.setTimeout(() => advanceRef.current(), 400);
-    return () => window.clearTimeout(t);
-  }, [user, schedule]);
+  // T-025：开屏是否自动播放由服务端 clock 决定（见上面的云端恢复 + clock/session 流程）；
+  // 客户端不再用本地 paused 判断，也不再本地补离线时间。
+
   function doDivine() {
     const { state, result, cost } = divine(runRef.current);
     if (result === 'poor') {
@@ -1562,11 +1685,53 @@ function AppInner() {
     if (wasMajor && resumeAfterEvent.current && rest.length > 0) {
       resumeAfterEvent.current = false;
       setSnapshot(null);
-      batchRef.current = { from: next.at, prevRun: next, prevSchedule: scheduleRef.current };
-      setGameNow(next.at);
-      setRunning(true);
       dbg('事件处理完，自动续跑 ' + String(rest.length) + ' 个');
+      // 继续推进必须重新向服务端申请（clock 在事件后是 idle）
+      void advanceRef.current();
     }
+  }
+
+  /** T-025：改倍速 = 先 pause 再 start(speed)（服务端会重算锚点） */
+  async function changeSpeed(next: number) {
+    if (!ALLOWED_SPEEDS.includes(next as (typeof ALLOWED_SPEEDS)[number])) return;
+    if (!running) {
+      setSpeed(next);
+      return;
+    }
+    const token = await getAccessToken();
+    if (!token) {
+      setForceLogin(true);
+      return;
+    }
+    const paused = await pauseClock(runId, sessionId, token);
+    if (paused.kind !== 'ok') {
+      setNotice(paused.kind === 'taken_over' ? '另一台设备接手了这局。' : '切换倍速失败，请稍后再试。');
+      if (paused.kind === 'taken_over') {
+        applyAuthoritative(paused.data.state, paused.data.schedule ?? scheduleRef.current, paused.data.clock, paused.data.revision);
+        setRunning(false);
+        setReadonlyBanner(true);
+      }
+      return;
+    }
+    setRunning(false);
+    applyAuthoritative(paused.data.state, paused.data.schedule ?? scheduleRef.current, paused.data.clock, paused.data.revision);
+    const started = await startClock(runId, sessionId, next, token, scheduleRef.current);
+    if (started.kind === 'ok') {
+      applyAuthoritative(started.data.state, started.data.schedule, started.data.clock, started.data.revision);
+      setSpeed(started.data.clock.speed);
+      batchRef.current = { from: runRef.current.at, prevRun: runRef.current, prevSchedule: scheduleRef.current };
+      setSnapshot({ run: runRef.current, schedule: scheduleRef.current });
+      setGameNow(runRef.current.at);
+      setRunning(true);
+      setNotice(`倍速已切到 ${next}×。`);
+    } else {
+      setNotice('切换倍速后未能继续推进。');
+    }
+  }
+
+  async function continueHere() {
+    setReadonlyBanner(false);
+    await advance();
   }
 
   function decide(d: 'stay' | 'backstage' | 'leave') {
@@ -1755,6 +1920,17 @@ function AppInner() {
   return (
     <div className="app">
       <CrashBanner msg={crash} onClose={() => setCrash(null)} />
+      {readonlyBanner ? (
+        <div className="crash-banner readonly-banner">
+          <div className="crash-text">
+            <strong>只读模式：</strong>
+            <span>另一台设备接手了这局。</span>
+          </div>
+          <button className="icon-btn" onClick={() => void continueHere()}>
+            在此设备继续
+          </button>
+        </div>
+      ) : null}
       <header className="bar">
         {/* T-023：一行 5 块并列 —— 标题卡 / 角色动画 / 时间轴 / 状态 / 任务简报 */}
         <div className="bar-left bar-card">
@@ -1793,35 +1969,38 @@ function AppInner() {
           </div>
         </div>
 
-        {/* 角色动画占位（无标题，白卡外观由 .bar-card 统一） */}
-        <aside className="mod tl-anim bar-card">
-          <div className="tl-anim-hold">动画预留位</div>
-        </aside>
+        {/* T-024：中间三块（角色动画 / 时间轴 / 状态）包进 .bar-center，顶栏与主区同列宽 */}
+        <div className="bar-center">
+          {/* 角色动画占位（无标题，白卡外观由 .bar-card 统一） */}
+          <aside className="mod tl-anim bar-card">
+            <div className="tl-anim-hold">动画预留位</div>
+          </aside>
 
-        <TimeAxis
-          pastItems={pastItems}
-          futureItems={futureItems}
-          nextItem={nextItem}
-          running={running}
-          remainMs={remainMs}
-          pct={currentPct}
-          dayBreakLabels={dayBreakLabels}
-          actionNo={actionNo}
-          speed={speed}
-          setSpeed={setSpeed}
-          pendingCount={pending.length}
-          todayIndex={todayIndex}
-          weekdayName={weekdayName}
-          lastStop={lastStop}
-          stopText={STOP_TEXT}
-          onAdvance={advance}
-          onStop={stopCurrent}
-          onArrange={openPlan}
-          onHistory={() => setMainTab('plan')}
-          onOpenStops={() => setShowStops(true)}
-        />
+          <TimeAxis
+            pastItems={pastItems}
+            futureItems={futureItems}
+            nextItem={nextItem}
+            running={running}
+            remainMs={remainMs}
+            pct={currentPct}
+            dayBreakLabels={dayBreakLabels}
+            actionNo={actionNo}
+            speed={speed}
+            setSpeed={changeSpeed}
+            pendingCount={pending.length}
+            todayIndex={todayIndex}
+            weekdayName={weekdayName}
+            lastStop={lastStop}
+            stopText={STOP_TEXT}
+            onAdvance={advance}
+            onStop={stopCurrent}
+            onArrange={openPlan}
+            onHistory={() => setMainTab('plan')}
+            onOpenStops={() => setShowStops(true)}
+          />
 
-        <TimelineStatus run={run} />
+          <TimelineStatus run={run} />
+        </div>
 
         <div className="bar-right bar-card">
           <div className="brief-head">任务简报</div>

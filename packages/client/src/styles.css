@@ -403,8 +403,7 @@ button.primary small { color: #fff; opacity: 0.8; }
   .cols { grid-template-columns: 1fr; }
   .col-side { position: static; max-height: none; order: -1; }
 }
-.crash-banner {
-  display: flex;
+.crash-banner {  display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
@@ -2714,20 +2713,21 @@ body { overflow: hidden; }
   .bag-cell.rar-legendary { animation: none; }
 }
 
-/* ===== T-023 顶部一行 5 块并列 ===== */
+/* ===== T-024 顶栏与主区同列宽（grid 200 / 1fr / 200） ===== */
 .bar {
-  display: flex;
-  align-items: stretch;
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr) 200px;
   gap: 12px;
   padding: 10px 14px 6px;
+  align-items: stretch;
 }
-.bar > .bar-left { flex: 0 0 176px; min-width: 0; }
-.bar > .tl-anim { flex: 0 0 200px; }
-.bar > .bar-center { flex: 1 1 auto; min-width: 0; display: flex; }
-.bar > .bar-center > .mod-timeline { flex: 1 1 auto; width: 100%; box-sizing: border-box; }
-.bar > .tl-status { flex: 0 0 200px; }
+.bar > .bar-left { min-width: 0; }
+.bar > .bar-center { display: flex; gap: 12px; min-width: 0; align-items: stretch; }
+.bar-center > .tl-anim { flex: 0 0 200px; min-width: 0; }
+.bar-center > .tl-status { flex: 0 0 200px; min-width: 0; }
+.bar-center > .tl-holder { flex: 1 1 auto; min-width: 0; display: flex; }
+.tl-holder > .mod-timeline { flex: 1 1 auto; width: 100%; box-sizing: border-box; }
 .bar > .bar-right {
-  flex: 0 0 240px;
   min-width: 0;
   display: flex;
   flex-direction: column;
@@ -2895,11 +2895,12 @@ body { overflow: hidden; }
 .action-tip .eff-dim { color: #9aa; font-size: 10px; }
 .action-tip .eff-axis { color: #c9b06a; font-size: 10px; }
 
-/* 日期网格 */
-.plan { display: flex; gap: 12px; align-items: flex-start; }
+/* 日期网格（T-024：2 列 × 4 行撑满弹窗高度） */
+.plan { display: flex; gap: 12px; align-items: stretch; }
 .plan-actions {
   width: 300px;
-  max-height: 470px;
+  height: 100%;
+  max-height: none;
   overflow: auto;
   display: flex;
   flex-direction: column;
@@ -2908,7 +2909,7 @@ body { overflow: hidden; }
 }
 
 .plan-actions .actions { display: flex; flex-direction: column; gap: 6px; }
-.plan-grid-wrap { flex: 1 1 auto; min-width: 0; }
+.plan-grid-wrap { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; min-height: 0; }
 .plan-grid-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 12px; }
 .clear-plan {
   color: #e67e22;
@@ -2919,18 +2920,25 @@ body { overflow: hidden; }
   font-size: 11px;
   cursor: pointer;
 }
-.date-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.date-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-height: 0;
+}
 .date-cell {
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 6px;
   background: #fff;
-  min-height: 104px;
+  min-height: 0;
   display: flex;
   flex-direction: column;
 }
 .date-head { font-size: 10px; color: var(--muted); margin-bottom: 4px; white-space: nowrap; }
-.date-slots { display: flex; flex-direction: column; gap: 4px; }
+.date-slots { display: flex; flex: 1 1 auto; flex-direction: column; justify-content: space-between; gap: 4px; }
 .date-slot {
   display: flex;
   align-items: center;
@@ -2960,25 +2968,22 @@ body { overflow: hidden; }
 .modal.wide { width: min(980px, 94vw); }
 
 @media (max-width: 1400px) {
-  .bar > .bar-left { flex-basis: 150px; }
-  .bar > .tl-anim { flex-basis: 176px; }
-  .bar > .tl-status { flex-basis: 176px; }
-  .bar > .bar-right { flex-basis: 216px; }
+  .bar { grid-template-columns: 168px minmax(0, 1fr) 168px; }
+  .shell { grid-template-columns: 168px minmax(0, 1fr) 168px; }
+  .bar-center > .tl-anim { flex-basis: 176px; }
+  .bar-center > .tl-status { flex-basis: 176px; }
 }
 @media (max-width: 1180px) {
+  /* T-024：bar 与 shell 的 gap 必须成对改，否则中间组会错位 */
   .bar { gap: 8px; }
-  .bar > .bar-right { flex-basis: 180px; }
+  .shell { gap: 8px; }
 }
 @media (max-width: 980px) {
-  .bar { overflow-x: auto; gap: 8px; }
-  .bar > .bar-left { flex: 0 0 160px; }
-  .bar > .tl-anim { flex: 0 0 160px; display: flex; }
-  .bar > .bar-center { flex: 0 0 420px; }
-  .bar > .tl-status { flex: 0 0 160px; display: flex; }
-  .bar > .bar-right { flex: 0 0 180px; }
+  .bar { overflow-x: auto; gap: 8px; grid-template-columns: 160px 1080px 180px; }
+  .bar > .bar-center { grid-column: auto; }
   .shell { grid-template-columns: 148px minmax(0, 1fr); }
   .plan { flex-direction: column; }
-  .plan-actions { width: auto; max-height: 220px; }
+  .plan-actions { width: auto; max-height: 220px; height: auto; }
   .date-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
@@ -3033,27 +3038,37 @@ body { overflow: hidden; }
   box-sizing: border-box;
 }
 
-/* T-023 分类折叠头 */
+/* T-023 分类折叠头（T-024：显式 row，避免继承全局 button 的 column） */
 .action-group + .action-group { margin-top: 10px; }
 .action-group-head {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 6px;
   width: 100%;
-  margin: 0 0 6px;
-  padding: 6px 8px;
+  margin: 0 0 4px;
+  padding: 4px 8px;
   border: none;
   border-radius: 6px;
   background: #f5f7fb;
   color: #22252b;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 700;
+  line-height: 18px;
   text-align: left;
   cursor: pointer;
 }
 .action-group-head:hover { background: #e9edf6; }
-.group-caret { width: 12px; font-size: 11px; color: #6b7280; }
+.group-caret { flex: 0 0 12px; width: 12px; text-align: center; font-size: 11px; color: #6b7280; }
+.group-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .group-count {
+  flex: 0 0 auto;
   margin-left: auto;
   padding: 0 6px;
   border-radius: 8px;
@@ -3146,3 +3161,18 @@ body { overflow: hidden; }
 .equip-choice.rar-uncommon { border-color: var(--rarity-uncommon); }
 .equip-choice.rar-rare { border-color: var(--rarity-rare); }
 .equip-choice.rar-legendary { border-color: var(--rarity-legendary); }
+
+/* T-025：被其他设备接管时的只读横幅 */
+.readonly-banner {
+  background: #fff7ef;
+  border-color: #f0b27a;
+  color: #8a5a12;
+}
+.readonly-banner .icon-btn {
+  border: 1px solid #f0b27a;
+  border-radius: 6px;
+  padding: 2px 10px;
+  font-size: 12px;
+  color: #8a5a12;
+  background: #fff;
+}

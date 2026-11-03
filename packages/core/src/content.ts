@@ -23,6 +23,11 @@ export const WEEK_MS = 7 * DAY_MS;
 /** 一周目长度 */
 export const RUN_LENGTH_MS = BALANCE.runDays * DAY_MS;
 
+/** 周目起点（与客户端 T0 同值；服务端 catchUp 需要绝对结束点） */
+export const START_AT = Date.UTC(2026, 0, 1, 9, 0, 0);
+/** 周目结束点（绝对游戏时间）：START_AT + RUN_LENGTH_MS */
+export const RUN_END_AT = START_AT + RUN_LENGTH_MS;
+
 /** 每周房租（结算时自动扣） */
 export const RENT_PER_WEEK = BALANCE.rentPerWeek;
 

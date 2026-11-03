@@ -1,4 +1,4 @@
-import { ACTIONS, SHOW_ACTION_ID, type ScheduleItem } from '@idollife/core';
+import { ACTIONS, ALLOWED_SPEEDS, SHOW_ACTION_ID, type ScheduleItem } from '@idollife/core';
 
 export interface TimeAxisProps {
   pastItems: ScheduleItem[];
@@ -48,7 +48,7 @@ export function TimeAxis(props: TimeAxisProps) {
   } = props;
 
   return (
-    <div className="bar-center">
+    <div className="tl-holder">
       <section className="mod mod-timeline">
         <div className="tlx">
           {!running && lastStop && stopText[lastStop] && (
@@ -138,7 +138,7 @@ export function TimeAxis(props: TimeAxisProps) {
           <div className="tools-left">
             <button onClick={onOpenStops}>设置暂停时间点</button>
             <div className="speed-row">
-              {[1, 10, 60].map((v) => (
+              {ALLOWED_SPEEDS.map((v) => (
                 <button
                   key={v}
                   className={speed === v ? 'mini-tab active' : 'mini-tab'}

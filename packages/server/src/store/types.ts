@@ -1,4 +1,4 @@
-import type { RunState, ScheduleItem } from '@idollife/core';
+import type { ClockState, RunState, ScheduleItem } from '@idollife/core';
 
 export interface RunRecord {
   /** 归属用户；未登录时为 null */
@@ -10,6 +10,8 @@ export interface RunRecord {
   seed: string;
   run: RunState;
   schedule: ScheduleItem[];
+  /** T-025：服务端持有的时钟状态（旧记录缺省，读取处补 createClock(run.at)） */
+  clock: ClockState;
 }
 
 export interface Store {
