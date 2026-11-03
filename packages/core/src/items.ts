@@ -10,7 +10,15 @@ import equipsJson from '../data/equipments.json';
 import itemsJson from '../data/items.json';
 import { STAMINA_MAX } from './content';
 import { matchesCondition, type RawRequires } from './expr';
-import type { EquipItem, EquipSlot, InventoryEntry, Rarity, RunState, Stats } from './types';
+import type {
+  EquipCategory,
+  EquipItem,
+  EquipSlot,
+  InventoryEntry,
+  Rarity,
+  RunState,
+  Stats,
+} from './types';
 
 export const RARITY_LABEL: Record<Rarity, string> = {
   common: '普通',
@@ -27,12 +35,53 @@ export const RARITY_COLOR_KEY: Record<Rarity, string> = {
   legendary: 'legendary',
 };
 
-export const EQUIP_SLOT_LABEL: Record<EquipSlot, string> = {
-  hair: '发型',
+/**
+ * 槽位/类别中文名（T-022）。
+ * 键同时覆盖「角色槽位」（7 个）与「装备类别」（accessory 兜底）：
+ * - 库存背包里的装备展示用类别（`EquipDef.slot` 是 category）；
+ * - 装备面板的状态展示用具体槽位（accessory1..4）。
+ */
+export const EQUIP_SLOT_LABEL: Record<string, string> = {
   outfit: '服装',
-  shoes: '鞋袜',
+  hair: '发型',
+  haircolor: '发色',
+  accessory1: '饰品一',
+  accessory2: '饰品二',
+  accessory3: '饰品三',
+  accessory4: '饰品四',
   accessory: '饰品',
 };
+
+/** 7 个角色槽位（展示/遍历用；不含类别兜底） */
+export const EQUIP_SLOTS: EquipSlot[] = [
+  'outfit',
+  'hair',
+  'haircolor',
+  'accessory1',
+  'accessory2',
+  'accessory3',
+  'accessory4',
+];
+
+/** 饰品可用的 4 个通用槽 */
+export const ACCESSORY_SLOTS: EquipSlot[] = [
+  'accessory1',
+  'accessory2',
+  'accessory3',
+  'accessory4',
+];
+
+/** 单槽类别 → 角色槽位（饰品不在内） */
+const SINGLE_SLOT: Record<Exclude<EquipCategory, 'accessory'>, EquipSlot> = {
+  outfit: 'outfit',
+  hair: 'hair',
+  haircolor: 'haircolor',
+};
+
+/** 哪个角色槽位允许放某类装备（饰品 4 槽通用） */
+export function slotsForCategory(category: EquipCategory): EquipSlot[] {
+  return category === 'accessory' ? ACCESSORY_SLOTS : [SINGLE_SLOT[category]];
+}
 
 export interface ConsumeDef {
   id: string;
@@ -53,7 +102,8 @@ export interface ConsumeDef {
 
 export interface EquipDef {
   id: string;
-  slot: EquipSlot;
+  /** 配置表的 slot 语义是「类别」（EquipCategory），不是角色槽位（EquipSlot） */
+  slot: EquipCategory;
   name: string;
   rarity: Rarity;
   icon: string;
@@ -326,8 +376,28 @@ function unequipSlot(state: RunState, slot: EquipSlot): RunState {
   return { ...next, equipped };
 }
 
-/** 装备（同槽互斥：先卸下旧装备再穿新的；要求不满足会返回 requirement） */
-export function equipItem(state: RunState, invId: string): EquipOutcome {
+export function equippedSlotOf(state: RunState, invId: string): EquipSlot | null {
+  for (const slot of EQUIP_SLOTS) {
+    if (state.equipped?.[slot] === invId) return slot;
+  }
+  return null;
+}
+
+/** 给某类装备挑一个落点：单槽类别固定；饰品优先空槽，四槽全满则替换 accessory1 */
+function resolveTargetSlot(state: RunState, category: EquipCategory, targetSlot?: EquipSlot): EquipSlot {
+  if (category !== 'accessory') return SINGLE_SLOT[category];
+  if (targetSlot && ACCESSORY_SLOTS.includes(targetSlot)) return targetSlot;
+  const empty = ACCESSORY_SLOTS.find((s) => !state.equipped?.[s]);
+  return empty ?? 'accessory1';
+}
+
+/**
+ * 装备（T-022）：
+ * - outfit/hair/haircolor 固定各自的槽，同槽换装自动卸下旧的（含隐形加成还原）
+ * - accessory 传入 targetSlot（accessory1..4）就装该槽；不传则填第一个空槽，四槽全满替换 accessory1
+ * - 同一件装备不会同时出现在两个槽：若已装备在别的槽，先卸下原槽
+ */
+export function equipItem(state: RunState, invId: string, targetSlot?: EquipSlot): EquipOutcome {
   const entry = (state.inventory ?? []).find((e) => e.id === invId);
   if (!entry) return { state, result: 'not-found', notice: '找不到这个装备。' };
   const def = equipDefOf(entry);
@@ -335,29 +405,46 @@ export function equipItem(state: RunState, invId: string): EquipOutcome {
   if (!meetsEquipRequirement(state, def)) {
     return { state, result: 'requirement', notice: `装备要求未满足：${entryName(entry)}` };
   }
-  if (state.equipped?.[def.slot] === invId) return { state, result: 'ok', notice: `已装备「${def.name}」。` };
 
-  // 先卸下同槽旧装备（还原它的隐形加成），再穿新的（加隐形加成）
-  let next = unequipSlot(state, def.slot);
+  const slot = resolveTargetSlot(state, def.slot, targetSlot);
+  if (state.equipped?.[slot] === invId) {
+    return { state, result: 'ok', notice: `已装备「${def.name}」。` };
+  }
+
+  // 去重：该件装备已在别的槽 → 先卸下原槽
+  let next = state;
+  const already = equippedSlotOf(next, invId);
+  if (already) next = unequipSlot(next, already);
+
+  // 同槽旧装备（若有）先卸下，再挂新的
+  next = unequipSlot(next, slot);
   next = applyHidden(next, def.hidden);
-  next = { ...next, equipped: { ...next.equipped, [def.slot]: invId } };
+  next = { ...next, equipped: { ...next.equipped, [slot]: invId } };
   return { state: next, result: 'ok', notice: `装备了「${def.name}」。` };
 }
 
-export function unequipItem(state: RunState, slot: EquipSlot): { state: RunState; notice: string } {
-  const current = state.equipped?.[slot];
+/**
+ * 卸下装备（T-022）：接受 7 个角色槽位；
+ * 兼容传入类别（'accessory' 会挑第一个已装备的饰品槽，供旧调用/测试使用）。
+ */
+export function unequipItem(
+  state: RunState,
+  slot: EquipSlot | EquipCategory,
+): { state: RunState; notice: string } {
+  const actual: EquipSlot =
+    slot === 'accessory'
+      ? (ACCESSORY_SLOTS.find((s) => !!state.equipped?.[s]) ?? 'accessory1')
+      : slot;
+  const current = state.equipped?.[actual];
   if (!current) return { state, notice: '这个槽位没有装备。' };
-  const a = applyHidden(state, hiddenOfEquipped(state, current), -1);
-  const equipped = { ...a.equipped };
-  delete equipped[slot];
-  return { state: { ...a, equipped }, notice: '已卸下装备。' };
+  const next = unequipSlot(state, actual);
+  return { state: next, notice: '已卸下装备。' };
 }
 
-/** 装备加成后的实际属性（演出评分用它）：四槽显性加成并入四维；旧装备用 legacy.affix 兜底 */
+/** 装备加成后的实际属性（演出评分用它）：7 槽显性加成并入四维；旧装备用 legacy.affix 兜底 */
 export function effectiveStats(state: RunState): Stats {
   const stats: Stats = { ...state.stats };
-  const slots: EquipSlot[] = ['hair', 'outfit', 'shoes', 'accessory'];
-  for (const slot of slots) {
+  for (const slot of EQUIP_SLOTS) {
     const invId = state.equipped?.[slot];
     if (!invId) continue;
     const entry = (state.inventory ?? []).find((e) => e.id === invId);

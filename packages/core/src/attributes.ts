@@ -71,6 +71,8 @@ export function attrValue(state: RunState, key: string): number {
   if (key === 'stamina') return state.stamina;
   if (key === 'mood') return state.mood ?? 70;
   if (key === 'satiety') return state.satiety ?? 70;
+  // T-021：健康（旧档缺省按满值）
+  if (key === 'health') return state.health ?? 100;
 
   const fan = (state.fans.byType as unknown as Record<string, number>)[key];
   if (fan !== undefined) return fan;

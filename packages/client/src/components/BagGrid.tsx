@@ -1,6 +1,8 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
+  EQUIP_SLOT_LABEL,
+  EQUIP_SLOTS,
   RARITY_COLOR_KEY,
   RARITY_LABEL,
   STAT_LABEL,
@@ -11,8 +13,11 @@ import {
   entryName,
   entryRarity,
   entryTypeLabel,
+  equippedSlotOf,
   meetsEquipRequirement,
+  slotsForCategory,
   visibleEffectLines,
+  type EquipCategory,
   type EquipSlot,
   type InventoryEntry,
   type RunState,
@@ -54,21 +59,28 @@ const EFFECT_LABEL: Record<string, string> = {
 const labelOf = (key: string) =>
   EFFECT_LABEL[key] ?? STAT_LABEL[key as keyof typeof STAT_LABEL] ?? key;
 
-function slotOf(entry: InventoryEntry): EquipSlot | null {
+function categoryOf(entry: InventoryEntry): EquipCategory | null {
   const def = equipDefOf(entry);
   if (def) return def.slot;
   return entry.legacy ? 'outfit' : null;
 }
 
 function isEquipped(run: RunState, entry: InventoryEntry): boolean {
-  const slot = slotOf(entry);
-  return !!slot && run.equipped?.[slot] === entry.id;
+  return !!equippedSlotOf(run, entry.id);
+}
+
+/** 某槽位可放哪些类别：饰品 4 槽都放 accessory，其它槽放对应类别 */
+function fitsSlot(slot: EquipSlot, entry: InventoryEntry): boolean {
+  const category = categoryOf(entry);
+  return !!category && slotsForCategory(category).includes(slot);
 }
 
 export function BagGrid({ api }: { api: AppApi }) {
   const { run, bagTab, setBagTab, doUseItem, doEquipBag, doUnequipBag } = api;
 
   const [tip, setTip] = useState<{ entry: InventoryEntry; top: number; left: number; below: boolean } | null>(null);
+  /** T-022：点空槽后打开「该槽可选装备」列表 */
+  const [chooserSlot, setChooserSlot] = useState<EquipSlot | null>(null);
   const hideTimer = useRef<number | null>(null);
   const cellRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
@@ -119,7 +131,6 @@ export function BagGrid({ api }: { api: AppApi }) {
     const rarity = entryRarity(entry);
     const name = entryName(entry);
     const equipped = isEquipped(run, entry);
-    const slot = slotOf(entry);
     return (
       <button
         key={entry.id}
@@ -138,8 +149,9 @@ export function BagGrid({ api }: { api: AppApi }) {
         onMouseLeave={closeTipSoon}
         onClick={() => {
           if (def) doUseItem(entry.id);
-          else if (equipDef && slot) {
-            if (equipped) doUnequipBag(slot);
+          else if (equipDef) {
+            const at = equippedSlotOf(run, entry.id);
+            if (at) doUnequipBag(at);
             else doEquipBag(entry.id);
           }
         }}
@@ -155,6 +167,44 @@ export function BagGrid({ api }: { api: AppApi }) {
   const tipEquip = tipEntry ? equipDefOf(tipEntry) : null;
   const tipRarity = tipEntry ? entryRarity(tipEntry) : 'common';
   const conditionOk = tipEquip ? meetsEquipRequirement(run, tipEquip) : true;
+
+  /** T-022：7 槽里的一格（已装备 → 点击卸下；空槽 → 点击打开可选列表） */
+  const renderSlot = (slot: EquipSlot) => {
+    const id = run.equipped?.[slot];
+    const entry = id ? (run.inventory ?? []).find((e) => e.id === id) : undefined;
+    const label = (
+      <span className="equip-slot-label">{EQUIP_SLOT_LABEL[slot] ?? slot}</span>
+    );
+    if (!entry) {
+      return (
+        <button
+          key={slot}
+          type="button"
+          className="equip-slot empty"
+          onClick={() => setChooserSlot(slot)}
+          title={`选择要放入「${EQUIP_SLOT_LABEL[slot] ?? slot}」的装备`}
+        >
+          {label}
+          <span className="equip-slot-plus">+</span>
+        </button>
+      );
+    }
+    const rarity = entryRarity(entry);
+    return (
+      <button
+        key={slot}
+        type="button"
+        className={['equip-slot filled', RARITY_CLASS[RARITY_COLOR_KEY[rarity]] ?? 'rar-common'].join(' ')}
+        onMouseEnter={(e) => openTip(entry, e.currentTarget)}
+        onMouseLeave={closeTipSoon}
+        onClick={() => doUnequipBag(slot)}
+        title="点击卸下"
+      >
+        {label}
+        <span className="equip-slot-name">{entryName(entry)}</span>
+      </button>
+    );
+  };
 
   return (
     <>
@@ -173,6 +223,58 @@ export function BagGrid({ api }: { api: AppApi }) {
           </Fragment>
         ))}
       </nav>
+
+      {bagTab === 'equip' ? (
+        <div className="equip-panel">
+          <div className="equip-panel-head">
+            装备
+            <span className="muted small">
+              {EQUIP_SLOTS.filter((s) => !!run.equipped?.[s]).length}/7
+            </span>
+          </div>
+          <div className="equip-row equip-row-main">{EQUIP_SLOTS.slice(0, 3).map(renderSlot)}</div>
+          <div className="equip-row equip-row-acc">{EQUIP_SLOTS.slice(3).map(renderSlot)}</div>
+          {chooserSlot ? (
+            <div className="equip-chooser">
+              <div className="equip-chooser-head">
+                {EQUIP_SLOT_LABEL[chooserSlot] ?? chooserSlot} · 选择装备
+                <button className="del" title="关闭" onClick={() => setChooserSlot(null)}>
+                  ×
+                </button>
+              </div>
+              {(() => {
+                const list = (run.inventory ?? []).filter((e) => fitsSlot(chooserSlot, e));
+                if (list.length === 0) {
+                  return <p className="muted small">没有可放入这个槽位的装备。</p>;
+                }
+                return (
+                  <div className="equip-chooser-list">
+                    {list.map((e) => {
+                      const rarity = entryRarity(e);
+                      return (
+                        <button
+                          key={e.id}
+                          type="button"
+                          className={[
+                            'equip-choice',
+                            RARITY_CLASS[RARITY_COLOR_KEY[rarity]] ?? 'rar-common',
+                          ].join(' ')}
+                          onClick={() => {
+                            doEquipBag(e.id, chooserSlot);
+                            setChooserSlot(null);
+                          }}
+                        >
+                          {entryName(e)}
+                        </button>
+                      );
+                    })}
+                  </div>
+                );
+              })()}
+            </div>
+          ) : null}
+        </div>
+      ) : null}
 
       {bagTab === 'other' ? (
         <p className="muted small">敬请期待。</p>

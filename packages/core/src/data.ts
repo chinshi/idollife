@@ -45,9 +45,13 @@ export interface RawResult {
     mood?: number;
     /** 饱腹变化 */
     satiety?: number;
+    /** 健康变化（T-021） */
+    health?: number;
     /** 粉丝增加量（按当前最强属性决定粉丝类型） */
     fans?: number;
     stats?: Record<string, number | [number, number]>;
+    /** 隐藏轴变化（T-021：自我/他人/适配；不展示数值，只进悬浮框底层） */
+    axes?: Record<string, number | [number, number]>;
   };
   /** 文案，支持 {属性字段名} / {n} / {stamina} / {money} */
   text: string;

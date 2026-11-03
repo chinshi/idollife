@@ -1,39 +1,49 @@
-import { Fragment } from 'react';
-import {
-  ACTIONS, ACTION_LIST, CATEGORY_LABEL, CHANNELS, TASKS, STAT_LABEL, SHOW_ACTION_ID, activeTasks, completedTasks, describeCondition, describeRewards, taskStatus, canDebut, canShowAction, cooldownLeftDays, effectiveStats, getShop, memberStats, previewAction, remainingTimes, RECRUIT_COST, DEBUT_THRESHOLD, DAY_MS,
-} from '@idollife/core';
-import type { AppApi, BagTab } from './api';
+import { ACTIONS, SHOW_ACTION_ID } from '@idollife/core';
+import type { AppApi } from './api';
 
+/**
+ * 行程页（T-021）：主系统里只显示一行「当前 / 下一条行程」，
+ * 完整配置统一在「安排行程」弹窗里；条目样式与弹窗同款。
+ */
 export function PlanPanel({ api }: { api: AppApi }) {
-  const { removeItem, seed, run, party, pending, visibleItems, pastItems, futureItems, nextItem, dayBreakLabels, visibleLog, running, gameNow, remainMs, currentPct, speed, lastStop, stopText, mainTab, setMainTab, taskTab, setTaskTab, friendsTab, setFriendsTab, rightTab, setRightTab, bagTab, setBagTab, logTab, setLogTab, flippedIds, toggleFlip, managing, setManaging, historyLimit, setHistoryLimit, todayIndex, usedToday, statTotal, totalFans, syncStatus, syncText, savedAt, user, notice, setNotice, advance, stopCurrent, openPlan, addShow, doAccept, doReward, doMeet, doInvite, doKick, doBuy, doDebut, doSwitchParty, openPartyModal, doDivine, signOut, restartForTest, setShowInvite, setShowDivination, setActiveEventId, setKickTarget, setShowStops, setShowDebug, setDebugText, dayLabel, biasLabel, weekdayName } = api;
+  const { run, nextItem, pending, dayLabel, openPlan } = api;
+
+  const next = nextItem;
+  const name = next
+    ? (ACTIONS[next.actionId]?.name ?? (next.actionId === SHOW_ACTION_ID ? '演出' : next.actionId))
+    : '';
+  const pendingName = next
+    ? null
+    : pending.length > 0
+      ? (ACTIONS[pending[0]!.actionId]?.name ?? pending[0]!.actionId)
+      : null;
 
   return (
     <>
-              <>
-                <div className="mod-head">
-                  <h2>行程</h2>
-                </div>
-                {pending.length === 0 ? (
-                  <p className="muted small">还没有待执行行程。</p>
-                ) : (
-                  <ul className="plan-list">
-                    {pending.map((s) => {
-                      const a = ACTIONS[s.actionId];
-                      return (
-                        <li key={s.id}>
-                          <span className="plan-day">{dayLabel(s.startAt, run.at)}</span>
-                          <span className="plan-name">
-                            {a?.name ?? (s.actionId === SHOW_ACTION_ID ? '演出' : s.actionId)}
-                          </span>
-                          <button className="del" onClick={() => removeItem(s.id)}>
-                            ×
-                          </button>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
-              </>
+      <div className="mod-head">
+        <h2>行程</h2>
+        <span className="muted small">待执行 {pending.length} 个</span>
+      </div>
+
+      {next ? (
+        <div className="plan-row">
+          <span className="plan-name">{name}</span>
+          <span className="plan-when">{dayLabel(next.startAt, run.at)}</span>
+        </div>
+      ) : pendingName ? (
+        <div className="plan-row">
+          <span className="plan-name">{pendingName}</span>
+          <span className="plan-when">待执行</span>
+        </div>
+      ) : (
+        <p className="muted small">还没有待执行行程。</p>
+      )}
+
+      <div className="row">
+        <button className="primary" onClick={openPlan}>
+          安排行程
+        </button>
+      </div>
     </>
   );
 }

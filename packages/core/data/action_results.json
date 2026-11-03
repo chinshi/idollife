@@ -903,15 +903,18 @@
       "condition": {},
       "priority": 99,
       "effects": {
-        "stamina": -34,
-        "money": -1100,
-        "mood": -1,
-        "satiety": -8,
+        "stamina": -28,
+        "money": -880,
+        "mood": 0,
+        "satiety": -4,
         "stats": {
           "vocal": [
-            5,
-            6
+            7,
+            9
           ]
+        },
+        "axes": {
+          "self": 1
         }
       },
       "text": "老师让你唱一个单音，唱完他说：你一直在躲它。（演唱 +{vocal}）"
@@ -923,15 +926,18 @@
       "condition": "vocal >= 35",
       "priority": 30,
       "effects": {
-        "stamina": -34,
-        "money": -1100,
-        "mood": -1,
-        "satiety": -8,
+        "stamina": -28,
+        "money": -880,
+        "mood": 0,
+        "satiety": -4,
         "stats": {
           "vocal": [
-            3,
-            4
+            7,
+            9
           ]
+        },
+        "axes": {
+          "self": 1
         }
       },
       "text": "半小时只练了两个音。他说，你现在才叫在唱。（演唱 +{vocal}）"
@@ -943,15 +949,18 @@
       "condition": "vocal >= 65",
       "priority": 20,
       "effects": {
-        "stamina": -34,
-        "money": -1100,
-        "mood": -1,
-        "satiety": -8,
+        "stamina": -28,
+        "money": -880,
+        "mood": 0,
+        "satiety": -4,
         "stats": {
           "vocal": [
-            2,
-            3
+            7,
+            9
           ]
+        },
+        "axes": {
+          "self": 1
         }
       },
       "text": "他让你别用力。你松开之后，声音反而传得更远。（演唱 +{vocal}）"
@@ -963,15 +972,18 @@
       "condition": "stamina < 25",
       "priority": 10,
       "effects": {
-        "stamina": -34,
-        "money": -1100,
-        "mood": -4,
-        "satiety": -8,
+        "stamina": -28,
+        "money": -880,
+        "mood": 0,
+        "satiety": -4,
         "stats": {
           "vocal": [
-            1,
-            2
+            7,
+            9
           ]
+        },
+        "axes": {
+          "self": 1
         }
       },
       "text": "嗓子是哑的，课也退不了。你听完了一小时的示范。（演唱 +{vocal}）"
@@ -983,15 +995,18 @@
       "condition": "vocal >= 80",
       "priority": 15,
       "effects": {
-        "stamina": -34,
-        "money": -1100,
-        "mood": -1,
-        "satiety": -8,
+        "stamina": -28,
+        "money": -880,
+        "mood": 0,
+        "satiety": -4,
         "stats": {
           "vocal": [
-            1,
-            2
+            7,
+            9
           ]
+        },
+        "axes": {
+          "self": 1
         }
       },
       "text": "老师说，技术层面他已经没什么能教的了。剩下的是你自己要不要信。（演唱 +{vocal}）"
@@ -1003,15 +1018,18 @@
       "condition": {},
       "priority": 99,
       "effects": {
-        "stamina": -34,
-        "money": -1000,
-        "mood": -1,
-        "satiety": -8,
+        "stamina": -28,
+        "money": -800,
+        "mood": 0,
+        "satiety": -4,
         "stats": {
           "dance": [
-            5,
-            6
+            7,
+            9
           ]
+        },
+        "axes": {
+          "self": 1
         }
       },
       "text": "落地的时候膝盖响了一声。你没停，把最后八拍走完。（舞蹈 +{dance}）"
@@ -1023,15 +1041,18 @@
       "condition": "dance >= 35",
       "priority": 30,
       "effects": {
-        "stamina": -34,
-        "money": -1000,
-        "mood": -1,
-        "satiety": -8,
+        "stamina": -28,
+        "money": -800,
+        "mood": 0,
+        "satiety": -4,
         "stats": {
           "dance": [
-            3,
-            4
+            7,
+            9
           ]
+        },
+        "axes": {
+          "self": 1
         }
       },
       "text": "镜子里六个人，只有你在数拍子。老师说，先别数，先听。（舞蹈 +{dance}）"
@@ -1043,15 +1064,18 @@
       "condition": "dance >= 65",
       "priority": 20,
       "effects": {
-        "stamina": -34,
-        "money": -1000,
-        "mood": -1,
-        "satiety": -8,
+        "stamina": -28,
+        "money": -800,
+        "mood": 0,
+        "satiety": -4,
         "stats": {
           "dance": [
-            2,
-            3
+            7,
+            9
           ]
+        },
+        "axes": {
+          "self": 1
         }
       },
       "text": "同样的动作，你比别人多留了半拍。那半拍就是全部。（舞蹈 +{dance}）"
@@ -1063,15 +1087,18 @@
       "condition": "stamina < 25",
       "priority": 10,
       "effects": {
-        "stamina": -34,
-        "money": -1000,
-        "mood": -4,
-        "satiety": -8,
+        "stamina": -28,
+        "money": -800,
+        "mood": 0,
+        "satiety": -4,
         "stats": {
           "dance": [
-            1,
-            2
+            7,
+            9
           ]
+        },
+        "axes": {
+          "self": 1
         }
       },
       "text": "扶着把杆跳完。下课没人说什么，你自己知道难看。（舞蹈 +{dance}）"
@@ -1083,15 +1110,18 @@
       "condition": "dance >= 80",
       "priority": 15,
       "effects": {
-        "stamina": -34,
-        "money": -1000,
-        "mood": -1,
-        "satiety": -8,
+        "stamina": -28,
+        "money": -800,
+        "mood": 0,
+        "satiety": -4,
         "stats": {
           "dance": [
-            1,
-            2
+            7,
+            9
           ]
+        },
+        "axes": {
+          "self": 1
         }
       },
       "text": "整间舞室只有你跟得上这段。跳完你在镜子前站了很久，没觉得高兴。（舞蹈 +{dance}）"
@@ -1103,15 +1133,18 @@
       "condition": {},
       "priority": 99,
       "effects": {
-        "stamina": -34,
-        "money": -1000,
-        "mood": -1,
-        "satiety": -8,
+        "stamina": -28,
+        "money": -800,
+        "mood": 0,
+        "satiety": -4,
         "stats": {
           "acting": [
-            5,
-            6
+            7,
+            9
           ]
+        },
+        "axes": {
+          "self": 1
         }
       },
       "text": "他让你演一段什么都没发生的戏。你演了四十分钟，他一次没打断。（演技 +{acting}）"
@@ -1123,15 +1156,18 @@
       "condition": "acting >= 35",
       "priority": 30,
       "effects": {
-        "stamina": -34,
-        "money": -1000,
-        "mood": -1,
-        "satiety": -8,
+        "stamina": -28,
+        "money": -800,
+        "mood": 0,
+        "satiety": -4,
         "stats": {
           "acting": [
-            3,
-            4
+            7,
+            9
           ]
+        },
+        "axes": {
+          "self": 1
         }
       },
       "text": "他说你演的是情绪，不是人。你重来了一遍，这回手在抖。（演技 +{acting}）"
@@ -1143,15 +1179,18 @@
       "condition": "acting >= 65",
       "priority": 20,
       "effects": {
-        "stamina": -34,
-        "money": -1000,
-        "mood": -1,
-        "satiety": -8,
+        "stamina": -28,
+        "money": -800,
+        "mood": 0,
+        "satiety": -4,
         "stats": {
           "acting": [
-            2,
-            3
+            7,
+            9
           ]
+        },
+        "axes": {
+          "self": 1
         }
       },
       "text": "你终于能在该停的地方停下。停下来比说出来难。（演技 +{acting}）"
@@ -1163,15 +1202,18 @@
       "condition": "stamina < 25",
       "priority": 10,
       "effects": {
-        "stamina": -34,
-        "money": -1000,
-        "mood": -4,
-        "satiety": -8,
+        "stamina": -28,
+        "money": -800,
+        "mood": 0,
+        "satiety": -4,
         "stats": {
           "acting": [
-            1,
-            2
+            7,
+            9
           ]
+        },
+        "axes": {
+          "self": 1
         }
       },
       "text": "台词背不进去。你坐在那儿，把本子翻了三遍。（演技 +{acting}）"
@@ -1183,15 +1225,18 @@
       "condition": "acting >= 80",
       "priority": 15,
       "effects": {
-        "stamina": -34,
-        "money": -1000,
-        "mood": -1,
-        "satiety": -8,
+        "stamina": -28,
+        "money": -800,
+        "mood": 0,
+        "satiety": -4,
         "stats": {
           "acting": [
-            1,
-            2
+            7,
+            9
           ]
+        },
+        "axes": {
+          "self": 1
         }
       },
       "text": "他让你别再演了，就站在那儿。你站了十分钟，他说「就是这个」。（演技 +{acting}）"
@@ -1203,15 +1248,15 @@
       "condition": {},
       "priority": 99,
       "effects": {
-        "stamina": -32,
-        "money": -900,
-        "mood": -1,
-        "satiety": -8,
+        "stamina": -26,
+        "money": -720,
+        "mood": 0,
+        "satiety": -4,
         "fans": 4,
         "stats": {
           "talk": [
-            5,
-            6
+            7,
+            9
           ]
         }
       },
@@ -1224,15 +1269,15 @@
       "condition": "talk >= 35",
       "priority": 30,
       "effects": {
-        "stamina": -32,
-        "money": -900,
-        "mood": -1,
-        "satiety": -8,
+        "stamina": -26,
+        "money": -720,
+        "mood": 0,
+        "satiety": -4,
         "fans": 4,
         "stats": {
           "talk": [
-            3,
-            4
+            7,
+            9
           ]
         }
       },
@@ -1245,15 +1290,15 @@
       "condition": "talk >= 65",
       "priority": 20,
       "effects": {
-        "stamina": -32,
-        "money": -900,
-        "mood": -1,
-        "satiety": -8,
+        "stamina": -26,
+        "money": -720,
+        "mood": 0,
+        "satiety": -4,
         "fans": 4,
         "stats": {
           "talk": [
-            2,
-            3
+            7,
+            9
           ]
         }
       },
@@ -1266,15 +1311,15 @@
       "condition": "stamina < 25",
       "priority": 10,
       "effects": {
-        "stamina": -32,
-        "money": -900,
-        "mood": -4,
-        "satiety": -8,
+        "stamina": -26,
+        "money": -720,
+        "mood": 0,
+        "satiety": -4,
         "fans": 4,
         "stats": {
           "talk": [
-            1,
-            2
+            7,
+            9
           ]
         }
       },
@@ -1287,15 +1332,15 @@
       "condition": "talk >= 80",
       "priority": 15,
       "effects": {
-        "stamina": -32,
-        "money": -900,
-        "mood": -1,
-        "satiety": -8,
+        "stamina": -26,
+        "money": -720,
+        "mood": 0,
+        "satiety": -4,
         "fans": 4,
         "stats": {
           "talk": [
-            1,
-            2
+            7,
+            9
           ]
         }
       },
@@ -1310,7 +1355,8 @@
       "effects": {
         "stamina": 40,
         "mood": 8,
-        "satiety": -8
+        "satiety": -8,
+        "health": 6
       },
       "text": "闹钟响了三遍，你只听见最后一遍。醒来天已经黑透。（体力 +40）"
     },
@@ -1324,7 +1370,8 @@
         "stamina": 8,
         "money": -80,
         "mood": 6,
-        "satiety": 18
+        "satiety": 18,
+        "health": -3
       },
       "text": "一份意面，一杯免费的水，坐了四十分钟。没人赶你。（饱腹 +18 · 心情 +6）"
     },
@@ -1352,7 +1399,8 @@
         "stamina": 28,
         "money": -520,
         "mood": 25,
-        "satiety": 38
+        "satiety": 38,
+        "health": 4
       },
       "text": "拍了很多照片。真正吃完的只有一半。（饱腹 +38 · 心情 +25）"
     },
@@ -1366,7 +1414,8 @@
         "stamina": 15,
         "money": -60,
         "mood": 12,
-        "satiety": -2
+        "satiety": -2,
+        "health": 2
       },
       "text": "在澡堂泡到手指发皱。隔壁阿姨问你是哪个团的。（体力 +15 · 心情 +12）"
     },
@@ -1380,7 +1429,8 @@
         "stamina": -12,
         "money": -400,
         "mood": 28,
-        "satiety": -10
+        "satiety": -10,
+        "health": -2
       },
       "text": "一个人坐了两遍过山车。第二遍的时候，你终于喊出来了。（心情 +28）"
     },
@@ -1394,7 +1444,8 @@
         "stamina": 15,
         "money": -1800,
         "mood": 45,
-        "satiety": -20
+        "satiety": -20,
+        "health": 6
       },
       "text": "三天没进排练室。回来的时候，你居然想跳了。（心情 +45 · 体力 +15）"
     },
@@ -1408,7 +1459,8 @@
         "stamina": 15,
         "money": -300,
         "mood": -4,
-        "satiety": -4
+        "satiety": -4,
+        "health": 35
       },
       "text": "医生说不是大问题，但你得停两周。你说下个月有场。（体力 +15）"
     },
@@ -1421,7 +1473,8 @@
       "effects": {
         "stamina": 55,
         "mood": -18,
-        "satiety": -10
+        "satiety": -10,
+        "health": 10
       },
       "text": "烧到三十八度七。手机在枕边，群里的消息你一条都没回。（体力 +55 · 心情 -18）"
     },
@@ -1576,11 +1629,14 @@
       "condition": {},
       "priority": 99,
       "effects": {
-        "stamina": -22,
+        "stamina": -20,
         "money": 900,
-        "mood": -5,
+        "mood": -3,
         "satiety": -7,
-        "fans": 3
+        "fans": 3,
+        "axes": {
+          "others": 1
+        }
       },
       "text": "棚里开着暖风机。摄影师说，再收一点下巴。（收入 +900 · 粉丝 +3）"
     },
@@ -1591,10 +1647,13 @@
       "condition": "stamina < 25",
       "priority": 10,
       "effects": {
-        "stamina": -24,
+        "stamina": -22,
         "money": 700,
-        "mood": -8,
-        "satiety": -7
+        "mood": -5,
+        "satiety": -7,
+        "axes": {
+          "others": 1
+        }
       },
       "text": "眼睛睁不开，笑也僵。客户换人拍完了剩下的半卷。（收入 +700）"
     },
@@ -1637,7 +1696,10 @@
         "money": 260,
         "mood": 2,
         "satiety": -7,
-        "fans": 12
+        "fans": 12,
+        "axes": {
+          "others": 2
+        }
       },
       "text": "开了两小时，最高在线十九人。你在第十人进来的时候唱了歌。（收入 +260 · 粉丝 +12）"
     },
@@ -1652,7 +1714,10 @@
         "money": 180,
         "mood": -2,
         "satiety": -7,
-        "fans": 7
+        "fans": 7,
+        "axes": {
+          "others": 2
+        }
       },
       "text": "对着镜头打了个哈欠。有人刷了礼物，说早点睡。（收入 +180 · 粉丝 +7）"
     },
@@ -1667,7 +1732,10 @@
         "money": 1800,
         "mood": 8,
         "satiety": -10,
-        "fans": 150
+        "fans": 150,
+        "axes": {
+          "others": 1
+        }
       },
       "text": "灯亮起来的一瞬间，全场安静了半秒，然后开始喊。你在那半秒里忘了呼吸。（粉丝 +150 · 收入 +1800）"
     },
@@ -1682,7 +1750,10 @@
         "money": 1100,
         "mood": 5,
         "satiety": -10,
-        "fans": 90
+        "fans": 90,
+        "axes": {
+          "others": 1
+        }
       },
       "text": "最后一首的副歌，台下有人接上了。你差点在台上笑出声。（粉丝 +90 · 收入 +1100）"
     },
@@ -1697,7 +1768,10 @@
         "money": 600,
         "mood": 2,
         "satiety": -10,
-        "fans": 45
+        "fans": 45,
+        "axes": {
+          "others": 1
+        }
       },
       "text": "没出错，也没记住什么。散场时有两个人说下次还来。（粉丝 +45 · 收入 +600）"
     },
@@ -1712,7 +1786,10 @@
         "money": 220,
         "mood": -6,
         "satiety": -10,
-        "fans": 15
+        "fans": 15,
+        "axes": {
+          "others": 1
+        }
       },
       "text": "中间忘了一个转身，你笑着圆过去了。台下没人发现，只有你自己知道。（粉丝 +15 · 收入 +220）"
     },
@@ -1727,7 +1804,10 @@
         "money": 180,
         "mood": 3,
         "satiety": -6,
-        "fans": 12
+        "fans": 12,
+        "axes": {
+          "self": 1
+        }
       },
       "text": "琴盒还没放下，就有人认出你。她说她坐了两站地铁过来。（粉丝 +12 · 收入 +180）"
     },
@@ -1742,7 +1822,10 @@
         "money": 60,
         "mood": -5,
         "satiety": -6,
-        "fans": 3
+        "fans": 3,
+        "axes": {
+          "self": 1
+        }
       },
       "text": "唱了六首，路过的人没有停。有个小孩站了一会儿，被妈妈拉走了。（粉丝 +3 · 收入 +60）"
     },
@@ -1757,7 +1840,10 @@
         "money": 380,
         "mood": 6,
         "satiety": -9,
-        "fans": 30
+        "fans": 30,
+        "axes": {
+          "fit": 2
+        }
       },
       "text": "音响很烂，但你把人从摊位那边拉了过来。前排站了五排。（粉丝 +30 · 收入 +380）"
     },
@@ -1772,7 +1858,10 @@
         "money": 200,
         "mood": 1,
         "satiety": -9,
-        "fans": 14
+        "fans": 14,
+        "axes": {
+          "fit": 2
+        }
       },
       "text": "台下都是等抽奖的。你把三十五分钟唱完，掌声零零散散。（粉丝 +14 · 收入 +200）"
     },
@@ -1787,7 +1876,10 @@
         "money": 2200,
         "mood": -2,
         "satiety": -10,
-        "fans": 70
+        "fans": 70,
+        "axes": {
+          "others": 3
+        }
       },
       "text": "甲方在台下点头。唱完有人递名片，说以后有活动找你。（粉丝 +70 · 收入 +2200）"
     },
@@ -1802,7 +1894,10 @@
         "money": 1600,
         "mood": -4,
         "satiety": -10,
-        "fans": 40
+        "fans": 40,
+        "axes": {
+          "others": 3
+        }
       },
       "text": "开场前改了三次流程。你唱完两首就被请下台，因为超时。（粉丝 +40 · 收入 +1600）"
     },
@@ -1817,7 +1912,10 @@
         "money": 2600,
         "mood": 10,
         "satiety": -11,
-        "fans": 180
+        "fans": 180,
+        "axes": {
+          "self": 3
+        }
       },
       "text": "这次没有别人的团在前面。安可唱了两首，台下还一直在喊。（粉丝 +180 · 收入 +2600）"
     },
@@ -1832,7 +1930,10 @@
         "money": 1800,
         "mood": 4,
         "satiety": -11,
-        "fans": 90
+        "fans": 90,
+        "axes": {
+          "self": 3
+        }
       },
       "text": "场地只坐了一半。散场后你在后台数了一下应援棒。（粉丝 +90 · 收入 +1800）"
     },
@@ -1847,7 +1948,10 @@
         "money": 700,
         "mood": 6,
         "satiety": -6,
-        "fans": 20
+        "fans": 20,
+        "axes": {
+          "others": 2
+        }
       },
       "text": "チェキ拍到六十张。有个女孩排了三次，每次都只说一句「加油」。（粉丝 +20 · 收入 +700）"
     },
@@ -1862,7 +1966,10 @@
         "money": 280,
         "mood": 2,
         "satiety": -6,
-        "fans": 8
+        "fans": 8,
+        "axes": {
+          "others": 2
+        }
       },
       "text": "桌子摆了四十分钟，来了六个人。你给每个人都写了名字。（粉丝 +8 · 收入 +280）"
     }

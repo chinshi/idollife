@@ -20,14 +20,17 @@ export function Modal({
   onClose,
   children,
   wide,
+  dismissOnMask = true,
 }: {
   title: string;
   onClose?: () => void;
   children: ReactNode;
   wide?: boolean;
+  /** 点遮罩是否关闭（默认 true；安排行程这类怕误丢配置的弹窗传 false） */
+  dismissOnMask?: boolean;
 }) {
   return (
-    <div className="overlay" onClick={onClose}>
+    <div className="overlay" onClick={dismissOnMask ? onClose : undefined}>
       <div className={wide ? 'modal wide' : 'modal'} onClick={(e) => e.stopPropagation()}>
         <div className="modal-head">
           <h3>{title}</h3>

@@ -17,7 +17,11 @@ import {
   useItem,
 } from '../src/items';
 import { createFans } from '../src/fans';
-import type { EquipItem, RunState } from '../src/types';
+import type { EquipCategory, EquipItem, RunState } from '../src/types';
+
+/** 装备类别 → 具体角色槽位（T-022：配置表 slot 是类别，饰品落到 accessory1） */
+const slotOf = (category: EquipCategory): 'outfit' | 'hair' | 'haircolor' | 'accessory1' =>
+  category === 'accessory' ? 'accessory1' : category;
 
 const T0 = 3 * 1_800_000;
 
@@ -59,10 +63,19 @@ const medicineWithHidden = ITEMS.find(
 describe('T-019 道具系统', () => {
   it('导入规模与稀有度口径', () => {
     expect(ITEMS.length).toBe(92);
-    expect(EQUIPS.length).toBe(67);
+    // T-022：装备槽位改为 服装+发型+发色+饰品×4，鞋袜 11 件删除、发色新增 12 件（67 → 68）
+    expect(EQUIPS.length).toBe(68);
+    const slotCount: Record<string, number> = {};
+    for (const e of EQUIPS) slotCount[e.slot] = (slotCount[e.slot] ?? 0) + 1;
+    expect(slotCount.outfit).toBe(30);
+    expect(slotCount.hair).toBe(12);
+    expect(slotCount.haircolor).toBe(12);
+    expect(slotCount.accessory).toBe(14);
+    expect(slotCount.shoes).toBeUndefined();
     expect(RARITY_LABEL.legendary).toBe('传说');
     expect(RARITY_COLOR_KEY.rare).toBe('rare');
     expect(EQUIP_SLOT_LABEL.accessory).toBe('饰品');
+    expect(EQUIP_SLOT_LABEL.haircolor).toBe('发色');
   });
 
   it('消耗品堆叠：同 itemId 合并，上限 99', () => {
@@ -118,7 +131,7 @@ describe('T-019 道具系统', () => {
     const strong = base({ inventory: [entry], stats: { vocal: 10, dance: 20, acting: 10, talk: 10 } });
     const out = equipItem(strong, entry.id);
     expect(out.result).toBe('ok');
-    expect(out.state.equipped[equipWithReq.slot]).toBe(entry.id);
+    expect(out.state.equipped[slotOf(equipWithReq.slot)]).toBe(entry.id);
 
     const eff = effectiveStats(out.state);
     for (const [k, v] of Object.entries(equipWithReq.bonus)) {
@@ -153,8 +166,8 @@ describe('T-019 道具系统', () => {
     const equipped = equipItem(s, entry.id).state;
     const axesAfterEquip = { ...equipped.axes };
 
-    const { state: after } = unequipItem(equipped, equipWithHidden.slot);
-    expect(after.equipped[equipWithHidden.slot]).toBeUndefined();
+    const { state: after } = unequipItem(equipped, slotOf(equipWithHidden.slot));
+    expect(after.equipped[slotOf(equipWithHidden.slot)]).toBeUndefined();
     expect(after.axes).toEqual(s.axes);
     // 装备时 axes 确实变化过（若该装备带隐藏加成）
     if (Object.keys(equipWithHidden.hidden).some((k) => ['self', 'others', 'fit'].includes(k))) {
@@ -213,5 +226,63 @@ describe('T-019 道具系统', () => {
     );
     expect(noReq).toBeTruthy();
     if (noReq) expect(meetsEquipRequirement(base(), noReq)).toBe(true);
+  });
+});
+
+describe('T-022 饰品四槽与槽位改版', () => {
+  const accessories = EQUIPS.filter((e) => e.slot === 'accessory');
+  const strong = { vocal: 80, dance: 80, acting: 80, talk: 80 };
+  const accEntries = (n: number) =>
+    accessories.slice(0, n).map((def, i) => ({ id: `inv-acc-${i}`, itemId: def.id, count: 1 }));
+
+  it('饰品可装 4 件：前 4 次自动填空槽 accessory1..4', () => {
+    const list = accEntries(4);
+    expect(list).toHaveLength(4);
+    let s = base({ stats: { ...strong }, inventory: list });
+    const ids = list.map((e) => e.id);
+
+    for (let i = 0; i < 4; i += 1) {
+      const out = equipItem(s, ids[i]!);
+      expect(out.result).toBe('ok');
+      expect(out.state.equipped[`accessory${i + 1}` as 'accessory1']).toBe(ids[i]);
+      s = out.state;
+    }
+    expect(s.equipped.accessory1).toBe(ids[0]);
+    expect(s.equipped.accessory4).toBe(ids[3]);
+    expect(Object.keys(s.equipped).filter((k) => k.startsWith('accessory'))).toHaveLength(4);
+  });
+
+  it('同一件饰品不会同时占两个槽：指定 accessory2 会从 accessory1 移走', () => {
+    const list = accEntries(2);
+    const s0 = base({ stats: { ...strong }, inventory: list });
+    const first = equipItem(s0, list[0]!.id).state; // → accessory1
+    expect(first.equipped.accessory1).toBe(list[0]!.id);
+
+    const moved = equipItem(first, list[0]!.id, 'accessory2').state;
+    expect(moved.equipped.accessory2).toBe(list[0]!.id);
+    expect(moved.equipped.accessory1).toBeUndefined();
+  });
+
+  it('卸载任意饰品槽：隐形加成还原', () => {
+    const list = accEntries(1);
+    const def = equipDefOf({ id: list[0]!.id, itemId: list[0]!.itemId, count: 1 })!;
+    const s = base({ stats: { ...strong }, axes: { self: 50, others: 50, fit: 50 }, inventory: list });
+    const equipped = equipItem(s, list[0]!.id).state;
+    const axesAfter = { ...equipped.axes };
+    const { state: after } = unequipItem(equipped, 'accessory1');
+
+    expect(after.equipped.accessory1).toBeUndefined();
+    expect(after.axes).toEqual(s.axes);
+    if (Object.keys(def.hidden).some((k) => ['self', 'others', 'fit'].includes(k))) {
+      expect(axesAfter).not.toEqual(s.axes);
+    }
+  });
+
+  it('槽位标签：7 槽 + 饰品类别兜底', () => {
+    for (const slot of ['outfit', 'hair', 'haircolor', 'accessory1', 'accessory2', 'accessory3', 'accessory4']) {
+      expect(EQUIP_SLOT_LABEL[slot]).toBeTruthy();
+    }
+    expect(EQUIP_SLOT_LABEL.accessory).toBe('饰品');
+    expect(EQUIP_SLOT_LABEL.accessory4).toBe('饰品四');
   });
 });

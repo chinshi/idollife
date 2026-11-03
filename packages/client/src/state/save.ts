@@ -80,16 +80,71 @@ function normalizeInventory(v: unknown): InventoryEntry[] {
   });
 }
 
-/** T-019：装备槽只保留四槽的合法 id（旧档其它键丢弃，避免脏数据） */
-function normalizeEquipped(v: unknown): RunState['equipped'] {
-  const slots: EquipSlot[] = ['hair', 'outfit', 'shoes', 'accessory'];
-  const src = (v ?? {}) as Record<string, unknown>;
-  const out: RunState['equipped'] = {};
-  for (const slot of slots) {
-    const id = src[slot];
-    if (typeof id === 'string' && id) out[slot] = id;
+/**
+ * T-022：装备槽改版（鞋袜删除、饰品 1→4、新增发色）的一次性旧档迁移。
+ *
+ * 因为装备加成是直写 stats/axes（T-019 方案），直接丢掉 equipped.shoes 会让那部分加成永久留在角色身上，
+ * 所以这里按映射表把旧鞋袜的显性/隐形加成减回去，再删除字段。幂等：迁移后 shoes/accessory 键不存在。
+ */
+const SHOE_LEGACY_EFFECTS: Record<
+  string,
+  { bonus?: Record<string, number>; hidden?: Record<string, number> }
+> = {
+  'eq-canvas-shoes': { bonus: { dance: 2 } },
+  'eq-knee-socks': { bonus: { talk: 1 } },
+  'eq-black-over-knee': { bonus: { dance: 1, talk: 1 } },
+  'eq-stage-socks': { bonus: { dance: 1 } },
+  'eq-martin-boots': { bonus: { dance: 3 } },
+  'eq-mary-jane': { bonus: { acting: 2 } },
+  'eq-platform-shoes': { bonus: { talk: 2 } },
+  'eq-ballet-flats': { bonus: { dance: 2, vocal: 1 } },
+  'eq-fishnet': { bonus: { dance: 1, acting: 2 }, hidden: { others: 2 } },
+  'eq-strapped-boots': { bonus: { dance: 4 }, hidden: { self: 2 } },
+  'eq-custom-boots': { bonus: { dance: 5, vocal: 2 }, hidden: { fit: 3 } },
+};
+
+const clamp100 = (v: number) => Math.max(0, Math.min(100, v));
+
+/** 旧档装备迁移：返回「已还原旧槽加成 + 7 槽归一」的 run（纯函数、幂等） */
+function migrateEquipped(run: RunState): RunState {
+  const src = (run.equipped ?? {}) as Record<string, unknown>;
+  const equipped: RunState['equipped'] = {};
+  const stats = { ...run.stats };
+  const axes = { ...run.axes };
+  const negatives = { ...(run.negatives ?? {}) };
+
+  // 1) 旧单一饰品槽 → accessory1（已有 accessory1 时以后者为准）
+  if (typeof src.accessory === 'string' && src.accessory && !src.accessory1) {
+    equipped.accessory1 = src.accessory;
   }
-  return out;
+
+  // 2) 旧鞋袜：按映射表还原加成后丢弃
+  const shoesId = typeof src.shoes === 'string' ? src.shoes : '';
+  if (shoesId) {
+    const legacy = SHOE_LEGACY_EFFECTS[shoesId];
+    if (legacy) {
+      for (const [key, value] of Object.entries(legacy.bonus ?? {})) {
+        if (key in stats) stats[key as keyof typeof stats] = clamp100(stats[key as keyof typeof stats] - value);
+      }
+      for (const [key, value] of Object.entries(legacy.hidden ?? {})) {
+        if (key === 'self' || key === 'others' || key === 'fit') {
+          axes[key] = clamp100(axes[key] - value);
+        } else if (key in negatives) {
+          negatives[key as keyof typeof negatives] = clamp100(
+            (negatives[key as keyof typeof negatives] ?? 0) - value,
+          );
+        }
+      }
+    }
+    // 不在映射表的 legacy 自定义鞋子：静默丢弃（回执里说明残留影响可忽略）
+  }
+
+  // 3) 其余 7 槽只保留合法 id（未知键一律丢弃）
+  for (const slot of ['outfit', 'hair', 'haircolor', 'accessory1', 'accessory2', 'accessory3', 'accessory4'] as const) {
+    const id = src[slot];
+    if (typeof id === 'string' && id) equipped[slot] = id;
+  }
+  return { ...run, equipped, stats, axes, negatives };
 }
 
 /** 把任意来源（本地存档 / 服务端回包 / 旧版本）的 run 补齐成完整结构 */
@@ -106,6 +161,8 @@ export function normalizeRun(run: RunState): RunState {
     stats: run.stats ?? { vocal: 0, dance: 0, acting: 0, talk: 0 },    axes: run.axes ?? { self: 50, others: 50, fit: 50 },
     mood: isNum(run.mood) ? run.mood : 70,
     satiety: isNum(run.satiety) ? run.satiety : 70,
+    // T-021：健康兜底 100（旧档无感迁移）
+    health: isNum(run.health) ? run.health : 100,
     innate: normalizeInnate(run.innate),
     traits: run.traits ?? {
       kind: 0,
@@ -134,18 +191,21 @@ export function normalizeRun(run: RunState): RunState {
     activePartyId: run.activePartyId ?? null,
     // T-019：旧档 inventory 是旧 shop 的 EquipItem，读档时按名称映射到新装备表（映射不到保留 legacy）
     inventory: normalizeInventory(run.inventory),
-    equipped: normalizeEquipped(run.equipped),
     flags: run.flags ?? {},
     pendingEvent: run.pendingEvent ?? null,
     eventQueue: run.eventQueue ?? [],
     log: Array.isArray(run.log) ? run.log : [],
   };
 
+  // T-022：装备槽迁移（鞋子加成还原、accessory→accessory1、7 槽归一）必须在阶段推导之前跑，
+  // 因为还原鞋子加成会改 stats，而阶段推导依赖 total。
+  const migrated = migrateEquipped(normalized);
+
   // T-018：旧档没有 stage:reached 时，按「满足进入条件的最高阶段」推导写回（不改任何数值）
-  if (typeof normalized.flags[STAGE_REACHED_KEY] === 'number') return normalized;
+  if (typeof migrated.flags[STAGE_REACHED_KEY] === 'number') return migrated;
   return {
-    ...normalized,
-    flags: { ...normalized.flags, [STAGE_REACHED_KEY]: derivedStageSeq(normalized) },
+    ...migrated,
+    flags: { ...migrated.flags, [STAGE_REACHED_KEY]: derivedStageSeq(migrated) },
   };
 }
 

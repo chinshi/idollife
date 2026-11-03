@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react';
 import {
-  ACTIONS, ACTION_LIST, CATEGORY_LABEL, STAT_LABEL, SHOW_ACTION_ID, previewAction, getStoryEvent, availableChoices, remainingTimes, canShowAction, cooldownLeftDays, type ActionCategory,
+  ACTIONS, ACTION_LIST, ACTION_MS, CATEGORY_LABEL, DAILY_SLOTS, DAY_MS, SHOW_ACTION_ID, getStoryEvent, availableChoices, remainingTimes, canShowAction, cooldownLeftDays, type ActionCategory,
 } from '@idollife/core';
 import type { AppApi } from './api';
+import { ActionCard } from './ActionCard';
 import { AuthForm } from './AuthForm';
 import { Modal } from './Modal';
 
@@ -32,7 +34,15 @@ const AXIS_HINTS: Record<string, Record<'high' | 'mid' | 'low', string>> = {
 const AXIS_HINT_LABEL: Record<string, string> = { self: '自我倾向', others: '他人倾向', fit: '适配倾向' };
 
 export function Modals({ ctx }: { ctx: ModalCtx }) {
-  const { doKick, removeItem, activeEventId, setActiveEventId, choose, runId, run, phase, ending, showActions, showDivination, reading, showPartyModal, partyName, confirmAction, showStops, showInvite, kickTarget, forceLogin, showDebug, debugText, setRunId, setRun, setSchedule, setRevision, setNotice, setSyncStatus, setPhase, setEnding, setShowDivination, setShowPartyModal, setPartyName, setConfirmAction, setShowStops, setShowInvite, setKickTarget, setForceLogin, setShowDebug, doStop, doRestart, doInvite, doDivine, savePlan, cancelPlan, addAction, toggleStop, previewRef, dayLabel, biasLabel, party, pending, confirmCreateParty, decide, clearSave, createSave, initialRun, divinationCost } = ctx;
+  const { doKick, removeItem, activeEventId, setActiveEventId, choose, runId, run, phase, ending, showActions, showDivination, reading, showPartyModal, partyName, confirmAction, showStops, showInvite, kickTarget, forceLogin, showDebug, debugText, setRunId, commitRun, setSchedule, setRevision, setNotice, setSyncStatus, setPhase, setEnding, setShowDivination, setShowPartyModal, setPartyName, setConfirmAction, setShowStops, setShowInvite, setKickTarget, setForceLogin, setShowDebug, doStop, doRestart, doInvite, doDivine, savePlan, cancelPlan, clearPlan, addAction, toggleStop, dayLabel, biasLabel, party, pending, confirmCreateParty, decide, clearSave, createSave, initialRun, divinationCost, t0, weekdayName } = ctx;
+
+  /** T-023：安排行程的分类折叠（纯 UI，不持久化；每次打开弹窗重置为全展开） */
+  const [collapsedCats, setCollapsedCats] = useState<Record<string, boolean>>({});
+  useEffect(() => {
+    if (showActions) setCollapsedCats({});
+  }, [showActions]);
+  const toggleCat = (cat: string) =>
+    setCollapsedCats((prev) => ({ ...prev, [cat]: !prev[cat] }));
 
   return (
     <>
@@ -160,84 +170,135 @@ export function Modals({ ctx }: { ctx: ModalCtx }) {
           )}
         </Modal>
       )}
-      {showActions && (
-        <Modal title="安排行程" wide onClose={cancelPlan}>
-          <div className="plan">
-            <div className="plan-actions">
-              {(['growth', 'recover', 'work'] as ActionCategory[]).map((cat) => {
-                const list = ACTION_LIST.filter(
-                  (a) => a.category === cat && canShowAction(run, a.id),
-                );
-                if (list.length === 0) return null;
-                return (
-                  <div key={cat} className="action-group">
-                    <h4>{CATEGORY_LABEL[cat]}</h4>
-                    <div className="actions">
-                      {list.map((a) => {
-                        const pv = previewAction(run, a.id);
-                        const left = remainingTimes(run, a.id);
-                        const statBits = pv
-                          ? Object.entries(pv.stats)
-                              .map(([k, r]) => `${STAT_LABEL[k] ?? k} +${r[0]}~${r[1]}`)
-                              .join(' / ')
-                          : '';
-                        return (
-                          <button
-                            key={a.id}
-                            onClick={() => addAction(a.id)}
-                            disabled={left <= 0}
-                            title={left <= 0 ? '次数已用完' : ''}
-                          >
-                            {a.name}
-                            <small>
-                              {statBits && `${statBits} · `}
-                              {pv && (pv.stamina > 0 ? `体力 +${pv.stamina}` : `体力 ${pv.stamina}`)}
-                              {pv && pv.money > 0 ? ` · +¥${pv.money}` : ''}
-                              {pv && pv.money < 0 ? ` · ¥${-pv.money}` : ''}
-                              {Number.isFinite(left) ? ` · 剩 ${left} 次` : ''}
-                            </small>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+      {showActions &&
+        (() => {
+          // T-021：每天 3 个行动位；从「当前游戏日」起找第一个还有空位的可排日，连续 8 天（每行 4 个、两行）
+          const byDay = new Map<number, typeof pending>();
+          for (const s of pending) {
+            const d = Math.floor((s.startAt - t0) / DAY_MS);
+            const list = byDay.get(d) ?? [];
+            list.push(s);
+            byDay.set(d, list);
+          }
+          const usedSlots = (d: number) =>
+            (byDay.get(d) ?? []).reduce(
+              (n, s) =>
+                n +
+                Math.max(
+                  1,
+                  Math.ceil(
+                    ((ACTIONS[s.actionId]?.durationMs ?? ACTION_MS) as number) / ACTION_MS,
+                  ),
+                ),
+              0,
+            );
 
-            <div className="plan-preview" ref={previewRef}>
-              <div className="plan-preview-head">待执行 {pending.length} 个（已完成的不显示）</div>
-              {pending.length === 0 ? (
-                <p className="muted small">左边点行动，会加到时间轴末尾。</p>
-              ) : (
-                <ul className="plan-list">
-                  {pending.map((s) => {
-                    const a = ACTIONS[s.actionId];
+          const currentDay = Math.floor((run.at - t0) / DAY_MS);
+          let startDay = currentDay;
+          for (let i = 0; i < 30; i += 1) {
+            const d = currentDay + i;
+            if (usedSlots(d) < DAILY_SLOTS) {
+              startDay = d;
+              break;
+            }
+          }
+          const days = Array.from({ length: 8 }, (_, i) => startDay + i);
+          return (
+            <Modal title="安排行程" wide dismissOnMask={false} onClose={cancelPlan}>
+              <div className="plan">
+                <div className="plan-actions">
+                  {(['growth', 'recover', 'work'] as ActionCategory[]).map((cat) => {
+                    const list = ACTION_LIST.filter(
+                      (a) => a.category === cat && canShowAction(run, a.id),
+                    );
+                    if (list.length === 0) return null;
+                    const collapsed = !!collapsedCats[cat];
                     return (
-                      <li key={s.id}>
-                        <span className="plan-day">{dayLabel(s.startAt, run.at)}</span>
-                        <span className="plan-name">
-                          {a?.name ?? (s.actionId === SHOW_ACTION_ID ? '演出' : s.actionId)}
-                        </span>
-                        <button className="del" onClick={() => removeItem(s.id)}>
-                          ×
+                      <div key={cat} className="action-group">
+                        <button
+                          type="button"
+                          className={collapsed ? 'action-group-head collapsed' : 'action-group-head'}
+                          onClick={() => toggleCat(cat)}
+                          aria-expanded={!collapsed}
+                        >
+                          <span className="group-caret">{collapsed ? '▸' : '▾'}</span>
+                          <span className="group-name">{CATEGORY_LABEL[cat]}</span>
+                          <span className="group-count">{list.length}</span>
                         </button>
-                      </li>
+                        {collapsed ? null : (
+                          <div className="actions">
+                            {list.map((a) => (
+                              <ActionCard
+                                key={a.id}
+                                run={run}
+                                action={a}
+                                left={remainingTimes(run, a.id)}
+                                onAdd={() => addAction(a.id)}
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     );
                   })}
-                </ul>
-              )}
-            </div>
-          </div>
+                </div>
 
-          <div className="plan-foot">
-            <button onClick={cancelPlan}>取消</button>
-            <button className="primary" onClick={savePlan}>
-              保存安排
-            </button>
-          </div>
-        </Modal>
-      )}
+                <div className="plan-grid-wrap">
+                  <div className="plan-grid-head">
+                    <span>待执行 {pending.length} 个</span>
+                    <button className="clear-plan" onClick={clearPlan}>
+                      清空全部
+                    </button>
+                  </div>
+
+                  <div className="date-grid">
+                    {days.map((day) => {
+                      const items = byDay.get(day) ?? [];
+                      const used = items.reduce(
+                        (n, s) => n + Math.max(1, Math.ceil(((ACTIONS[s.actionId]?.durationMs ?? ACTION_MS) as number) / ACTION_MS)),
+                        0,
+                      );
+                      const empty = Math.max(0, DAILY_SLOTS - used);
+                      return (
+                        <div className="date-cell" key={day}>
+                          <div className="date-head">
+                            第 {Math.floor(day / 7) + 1} 周 {weekdayName(day)}
+                          </div>
+                          <div className="date-slots">
+                            {items.map((s) => (
+                              <div className="date-slot" key={s.id}>
+                                <span className="nm">
+                                  {ACTIONS[s.actionId]?.name ??
+                                    (s.actionId === SHOW_ACTION_ID ? '演出' : s.actionId)}
+                                </span>
+                                <button className="del" title="删除这一条" onClick={() => removeItem(s.id)}>
+                                  ⊗
+                                </button>
+                              </div>
+                            ))}
+                            {Array.from({ length: empty }).map((_, i) => (
+                              <div className="date-slot empty" key={`e${i}`}>
+                                空
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <p className="muted small plan-grid-hint">点左侧行动 → 按时间顺序填入下一个空槽；⊗ 单独删除。</p>
+                </div>
+              </div>
+
+              <div className="plan-foot">
+                <button onClick={cancelPlan}>取消</button>
+                <button className="primary" onClick={savePlan}>
+                  保存安排
+                </button>
+              </div>
+            </Modal>
+          );
+        })()}
 
       {showDivination && (
         <Modal title="占卜" onClose={() => setShowDivination(false)}>
@@ -304,7 +365,8 @@ export function Modals({ ctx }: { ctx: ModalCtx }) {
               clearSave();
               const fresh = createSave(initialRun, 'run-demo');
               setRunId(fresh.runId);
-              setRun(initialRun);
+              // T-020：重置也要走 App 的统一提交口（同步 runRef，避免时钟 tick 用旧底稿覆盖）
+              commitRun(initialRun);
               setSchedule([]);
               setRevision(0);
               setEnding(null);

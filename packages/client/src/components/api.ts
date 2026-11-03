@@ -1,6 +1,7 @@
 import type {
   Bias,
   EquipItem,
+  EquipSlot,
   LogEntry,
   Party,
   RunState,
@@ -89,8 +90,8 @@ export interface AppApi {
   doBuy: (item: any) => void;
   // T-019：道具/背包
   doUseItem: (invId: string) => void;
-  doEquipBag: (invId: string) => void;
-  doUnequipBag: (slot: 'hair' | 'outfit' | 'shoes' | 'accessory') => void;
+  doEquipBag: (invId: string, targetSlot?: EquipSlot) => void;
+  doUnequipBag: (slot: EquipSlot) => void;
   doBuyConsumable: (itemId: string) => void;
   doDebut: () => void;
   /** T-018：晋级到下一成长阶段（seq4 时内部走出道演出） */

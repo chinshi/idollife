@@ -237,14 +237,23 @@ const counts = {};
     if (mood !== undefined) effects.mood = mood;
     const satiety = num(cell(r, 9));
     if (satiety !== undefined) effects.satiety = satiety;
-    const fans = num(cell(r, 10));
+    // T-021：健康（col10）与隐藏轴（col16-18）
+    const health = num(cell(r, 10));
+    if (health !== undefined) effects.health = health;
+    const fans = num(cell(r, 11));
     if (fans !== undefined) effects.fans = fans;
     const stats = {};
-    for (const [i2, key] of [[11, 'vocal'], [12, 'dance'], [13, 'acting'], [14, 'talk']]) {
+    for (const [i2, key] of [[12, 'vocal'], [13, 'dance'], [14, 'acting'], [15, 'talk']]) {
       const v = parseStat(cell(r, i2));
       if (v !== undefined) stats[key] = v;
     }
     if (Object.keys(stats).length) effects.stats = stats;
+    const axes = {};
+    for (const [i2, key] of [[16, 'self'], [17, 'others'], [18, 'fit']]) {
+      const v = num(cell(r, i2));
+      if (v !== undefined) axes[key] = v;
+    }
+    if (Object.keys(axes).length) effects.axes = axes;
 
     const o = {
       id: str(cell(r, 1)),
@@ -254,7 +263,7 @@ const counts = {};
     o.condition = parseCond(cell(r, 4), 'results.' + o.id + '.condition');
     o.priority = num(cell(r, 5)) ?? 99;
     o.effects = effects;
-    o.text = str(cell(r, 15));
+    o.text = str(cell(r, 19));
     return o;
   });
 

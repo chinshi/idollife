@@ -13,6 +13,7 @@ import {
 } from '@idollife/core';
 import type { AppApi } from './api';
 import { FanRadar } from './FanRadar';
+import { StageAdvanceButton } from './StageAdvanceButton';
 
 /**
  * 属性面板（T-016c 口径，T-016d 修订）
@@ -102,11 +103,14 @@ export function StatsPanel({ api, embedded = false }: { api: AppApi; embedded?: 
         </button>
       </div>
 
-      {/* T-018：阶段徽章（名字下方一行，「阶段名 · 称号」，样式按 s1–s8 递进） */}
-      <div className={stageBadgeClass(stage)}>
-        <span className="stage-name">{stage.name}</span>
-        <span className="stage-sep">·</span>
-        <span className="stage-title">{stage.title}</span>
+      {/* T-018：阶段徽章；T-021：与晋级按钮同一行两端对齐（徽章左 / 按钮右） */}
+      <div className="attr-stage-row">
+        <div className={stageBadgeClass(stage)}>
+          <span className="stage-name">{stage.name}</span>
+          <span className="stage-sep">·</span>
+          <span className="stage-title">{stage.title}</span>
+        </div>
+        <StageAdvanceButton api={api} />
       </div>
 
       <div className="attr-groups">

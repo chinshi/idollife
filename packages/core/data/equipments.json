@@ -507,192 +507,6 @@
       "price": 15000
     },
     {
-      "id": "eq-canvas-shoes",
-      "slot": "shoes",
-      "name": "帆布鞋",
-      "rarity": "common",
-      "icon": "",
-      "requirement": {},
-      "bonus": {
-        "dance": 2
-      },
-      "hidden": {},
-      "hiddenText": "",
-      "text": "洗到发白才好看。",
-      "source": "",
-      "price": 800
-    },
-    {
-      "id": "eq-knee-socks",
-      "slot": "shoes",
-      "name": "白色及膝袜",
-      "rarity": "common",
-      "icon": "",
-      "requirement": {},
-      "bonus": {
-        "talk": 1
-      },
-      "hidden": {},
-      "hiddenText": "",
-      "text": "多买两双，勾丝是宿命。",
-      "source": "",
-      "price": 300
-    },
-    {
-      "id": "eq-black-over-knee",
-      "slot": "shoes",
-      "name": "过膝黑袜",
-      "rarity": "common",
-      "icon": "",
-      "requirement": {},
-      "bonus": {
-        "dance": 1,
-        "talk": 1
-      },
-      "hidden": {},
-      "hiddenText": "",
-      "text": "视觉腿长 +5cm 的魔法。",
-      "source": "",
-      "price": 350
-    },
-    {
-      "id": "eq-stage-socks",
-      "slot": "shoes",
-      "name": "防滑舞台袜",
-      "rarity": "common",
-      "icon": "",
-      "requirement": {},
-      "bonus": {
-        "dance": 1
-      },
-      "hidden": {},
-      "hiddenText": "",
-      "text": "排练室地板杀手。",
-      "source": "",
-      "price": 200
-    },
-    {
-      "id": "eq-martin-boots",
-      "slot": "shoes",
-      "name": "舞台用马丁靴",
-      "rarity": "uncommon",
-      "icon": "",
-      "requirement": "dance >= 15",
-      "bonus": {
-        "dance": 3
-      },
-      "hidden": {},
-      "hiddenText": "",
-      "text": "八孔，磨脚，但帅。创可贴已备好。",
-      "source": "",
-      "price": 2000
-    },
-    {
-      "id": "eq-mary-jane",
-      "slot": "shoes",
-      "name": "玛丽珍鞋",
-      "rarity": "uncommon",
-      "icon": "",
-      "requirement": "acting >= 14",
-      "bonus": {
-        "acting": 2
-      },
-      "hidden": {},
-      "hiddenText": "",
-      "text": "一脚蹬的优雅。",
-      "source": "",
-      "price": 1600
-    },
-    {
-      "id": "eq-platform-shoes",
-      "slot": "shoes",
-      "name": "厚底松糕鞋",
-      "rarity": "uncommon",
-      "icon": "",
-      "requirement": "talk >= 14",
-      "bonus": {
-        "talk": 2
-      },
-      "hidden": {},
-      "hiddenText": "",
-      "text": "矮子乐。摔过一次之后你学会了走稳。",
-      "source": "",
-      "price": 1400
-    },
-    {
-      "id": "eq-ballet-flats",
-      "slot": "shoes",
-      "name": "芭蕾软底鞋",
-      "rarity": "uncommon",
-      "icon": "",
-      "requirement": "dance >= 18",
-      "bonus": {
-        "dance": 2,
-        "vocal": 1
-      },
-      "hidden": {},
-      "hiddenText": "",
-      "text": "像没穿鞋，但每一步都有数。",
-      "source": "",
-      "price": 1500
-    },
-    {
-      "id": "eq-fishnet",
-      "slot": "shoes",
-      "name": "渔网袜",
-      "rarity": "uncommon",
-      "icon": "",
-      "requirement": "acting >= 16",
-      "bonus": {
-        "dance": 1,
-        "acting": 2
-      },
-      "hidden": {
-        "others": 2
-      },
-      "hiddenText": "有人觉得酷，有人看不懂——都行。",
-      "text": "舞台效果一流，日常穿着需要勇气。",
-      "source": "",
-      "price": 600
-    },
-    {
-      "id": "eq-strapped-boots",
-      "slot": "shoes",
-      "name": "绑带长靴",
-      "rarity": "rare",
-      "icon": "",
-      "requirement": "dance >= 30",
-      "bonus": {
-        "dance": 4
-      },
-      "hidden": {
-        "self": 2
-      },
-      "hiddenText": "系带要留最后一格，走起来才有那个劲儿。",
-      "text": "穿上要五分钟，脱下要三分钟。",
-      "source": "",
-      "price": 4800
-    },
-    {
-      "id": "eq-custom-boots",
-      "slot": "shoes",
-      "name": "定制打歌靴",
-      "rarity": "legendary",
-      "icon": "",
-      "requirement": "dance >= 45 && hasFlag(\"ev:debut\")",
-      "bonus": {
-        "dance": 5,
-        "vocal": 2
-      },
-      "hidden": {
-        "fit": 3
-      },
-      "hiddenText": "鞋楦是按你的脚型做的。落地无声，起跳有风。",
-      "text": "师傅量了三次脚型才开工。",
-      "source": "",
-      "price": 12000
-    },
-    {
       "id": "eq-hair-straight",
       "slot": "hair",
       "name": "黑长直·原生态",
@@ -1141,6 +955,236 @@
       "text": "你从来不敢算它值多少钱。",
       "source": "",
       "price": 0
+    },
+    {
+      "id": "eq-hc-natural-black",
+      "slot": "haircolor",
+      "name": "自然黑",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {},
+      "hidden": {
+        "self": 1
+      },
+      "hiddenText": "别人看不见，但你自己知道自己稳不稳。",
+      "text": "最不容易出错的颜色。妈妈说的。",
+      "source": "",
+      "price": 300
+    },
+    {
+      "id": "eq-hc-linen-brown",
+      "slot": "haircolor",
+      "name": "亚麻棕",
+      "rarity": "common",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "talk": 1
+      },
+      "hidden": {
+        "others": 1
+      },
+      "hiddenText": "走在路上多被看一眼，说不清为什么。",
+      "text": "阳光底下的棕，像刚睡醒也很好看。",
+      "source": "",
+      "price": 500
+    },
+    {
+      "id": "eq-hc-honey-tea",
+      "slot": "haircolor",
+      "name": "蜂蜜茶",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "talk": 2
+      },
+      "hidden": {
+        "others": 1,
+        "self": 1
+      },
+      "hiddenText": "镜头偏爱它，说不清为什么。",
+      "text": "甜，但不腻，上镜很吃香。",
+      "source": "",
+      "price": 900
+    },
+    {
+      "id": "eq-hc-chestnut",
+      "slot": "haircolor",
+      "name": "深栗色",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "acting": 1,
+        "talk": 1
+      },
+      "hidden": {
+        "self": 1
+      },
+      "hiddenText": "安静的颜色，思考的时候更沉得住。",
+      "text": "沉稳，适合演戏时的那张脸。",
+      "source": "",
+      "price": 900
+    },
+    {
+      "id": "eq-hc-silver-grey",
+      "slot": "haircolor",
+      "name": "奶奶灰",
+      "rarity": "uncommon",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "acting": 2
+      },
+      "hidden": {
+        "others": 2
+      },
+      "hiddenText": "回头率高，议论也高。",
+      "text": "走在街上会被回头看两次。",
+      "source": "",
+      "price": 1500
+    },
+    {
+      "id": "eq-hc-haze-blue",
+      "slot": "haircolor",
+      "name": "雾霾蓝",
+      "rarity": "rare",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "vocal": 2,
+        "talk": 1
+      },
+      "hidden": {
+        "others": 2,
+        "fit": 1
+      },
+      "hiddenText": "冷调的东西，和麦克风格外合。",
+      "text": "冷调，握住麦时像换了个人。",
+      "source": "",
+      "price": 2400
+    },
+    {
+      "id": "eq-hc-lavender",
+      "slot": "haircolor",
+      "name": "薰衣草紫",
+      "rarity": "rare",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "acting": 2,
+        "talk": 1
+      },
+      "hidden": {
+        "others": 2,
+        "self": 1
+      },
+      "hiddenText": "像从绘本里走出来的人。",
+      "text": "童话感很重，粉丝特别爱拍。",
+      "source": "",
+      "price": 2400
+    },
+    {
+      "id": "eq-hc-sakura-pink",
+      "slot": "haircolor",
+      "name": "樱花粉",
+      "rarity": "rare",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "talk": 3
+      },
+      "hidden": {
+        "others": 2
+      },
+      "hiddenText": "合影时你总是最亮的那一个。",
+      "text": "营业色，拍照永远第一名。",
+      "source": "",
+      "price": 2600
+    },
+    {
+      "id": "eq-hc-mint-green",
+      "slot": "haircolor",
+      "name": "薄荷绿",
+      "rarity": "rare",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "dance": 2,
+        "talk": 1
+      },
+      "hidden": {
+        "others": 1,
+        "fit": 1
+      },
+      "hiddenText": "跳起来的时候，颜色会跟着你走。",
+      "text": "清爽，舞台灯下很跳。",
+      "source": "",
+      "price": 2600
+    },
+    {
+      "id": "eq-hc-rose-gold",
+      "slot": "haircolor",
+      "name": "玫瑰金",
+      "rarity": "legendary",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "vocal": 2,
+        "talk": 2
+      },
+      "hidden": {
+        "others": 3,
+        "fit": 1
+      },
+      "hiddenText": "灯一打，头发先被看见。",
+      "text": "暖调的高级感，镜头吃不下第二个人。",
+      "source": "",
+      "price": 5200
+    },
+    {
+      "id": "eq-hc-platinum",
+      "slot": "haircolor",
+      "name": "白金",
+      "rarity": "legendary",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "vocal": 3,
+        "acting": 1
+      },
+      "hidden": {
+        "others": 3,
+        "self": 1
+      },
+      "hiddenText": "不需要滤镜的一种亮。",
+      "text": "漂到最浅的那种，很贵，也很脆。",
+      "source": "",
+      "price": 6000
+    },
+    {
+      "id": "eq-hc-gradient",
+      "slot": "haircolor",
+      "name": "渐变挑染",
+      "rarity": "legendary",
+      "icon": "",
+      "requirement": {},
+      "bonus": {
+        "dance": 2,
+        "vocal": 2,
+        "talk": 2
+      },
+      "hidden": {
+        "others": 3,
+        "self": 1,
+        "fit": 2
+      },
+      "hiddenText": "维持它很贵，但它替你记住了很多舞台。",
+      "text": "最贵、最难维持，也最上镜。",
+      "source": "",
+      "price": 8000
     }
   ]
 }

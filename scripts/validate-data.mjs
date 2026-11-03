@@ -479,7 +479,7 @@ if (stages) {
 // ── 道具表（T-019）────────────────────────────────────────────────
 const RARITIES = ['common', 'uncommon', 'rare', 'legendary'];
 const ITEM_TYPES = ['food', 'medicine'];
-const EQUIP_SLOTS = ['hair', 'outfit', 'shoes', 'accessory'];
+const EQUIP_SLOTS = ['hair', 'haircolor', 'outfit', 'accessory'];
 const ITEM_EFFECT_KEYS = [
   'stamina', 'mood', 'satiety', 'weight', 'appearance', // 显性
   'stress', 'restless', 'fatigue', 'desire', 'scandal', // 负面

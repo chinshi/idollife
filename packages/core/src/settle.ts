@@ -134,6 +134,12 @@ export function settle(
     state.money += resolved.money;
     state.mood = nextMood;
     state.satiety = nextSatiety;
+    // T-021：健康 0–100（旧档缺省 100）；隐藏轴变化 clamp 后写回（不展示数值）
+    state.health = clamp((state.health ?? 100) + resolved.health, 0, 100);
+    for (const [k, v] of Object.entries(resolved.axes)) {
+      const key = k as keyof typeof state.axes;
+      state.axes[key] = clamp((state.axes[key] ?? 50) + v, 0, 100);
+    }
 
     if (resolved.fans > 0) {
       state.fans = applyFanAction(state.fans, showFanType(state), resolved.fans, 0.3);

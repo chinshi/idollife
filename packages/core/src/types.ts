@@ -33,8 +33,18 @@ export interface EquipItem {
 /** 道具稀有度（T-019；颜色在客户端 CSS，core 只给 key） */
 export type Rarity = 'common' | 'uncommon' | 'rare' | 'legendary';
 
-/** 装备槽位（T-019 四槽） */
-export type EquipSlot = 'hair' | 'outfit' | 'shoes' | 'accessory';
+/** 角色身上的装备槽位（T-022）：服装 1 + 发型 1 + 发色 1 + 饰品 4 */
+export type EquipSlot =
+  | 'outfit'
+  | 'hair'
+  | 'haircolor'
+  | 'accessory1'
+  | 'accessory2'
+  | 'accessory3'
+  | 'accessory4';
+
+/** 装备定义类别（配置表 equipments.slot 的取值） */
+export type EquipCategory = 'outfit' | 'hair' | 'haircolor' | 'accessory';
 
 /**
  * 背包条目（T-019）：消耗品按 itemId 堆叠（count 1–99）；装备每件一条（count 恒 1）。
@@ -114,6 +124,8 @@ export interface RunState {
   mood?: number;
   /** 饱腹 0-100 */
   satiety?: number;
+  /** 健康 0-100（T-021；旧档缺省按 100 处理） */
+  health?: number;
   /** 性格（隐藏） */
   traits?: Record<string, number>;
   /** 负向属性（隐藏） */
@@ -130,8 +142,16 @@ export interface RunState {
   friends: Friend[];
   /** 背包（消耗品堆叠 + 装备实例，T-019） */
   inventory: InventoryEntry[];
-  /** 已装备的槽位 → 背包条目 id（T-019 四槽） */
-  equipped: { hair?: string; outfit?: string; shoes?: string; accessory?: string };
+  /** 已装备的槽位 → 背包条目 id（T-022：7 槽） */
+  equipped: {
+    outfit?: string;
+    hair?: string;
+    haircolor?: string;
+    accessory1?: string;
+    accessory2?: string;
+    accessory3?: string;
+    accessory4?: string;
+  };
   flags: Record<string, boolean | number>;
   /** 重点事件（会暂停时间），不为空时不能继续推进 */
   pendingEvent: string | null;

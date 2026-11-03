@@ -181,4 +181,30 @@ describe('测试 C：存档 v1→v2 迁移与写档备份', () => {
     // 旧装备不丢：映射不到的那件仍能装备，legacy.affix 由 effectiveStats 兜底
     expect(effectiveStats(norm).vocal).toBe(sampleRun().stats.vocal + 4);
   });
+
+  it('T-022：旧档鞋子加成按映射还原、accessory→accessory1，迁移幂等', () => {
+    const oldRun = {
+      ...sampleRun(),
+      stats: { ...sampleRun().stats, dance: 22 }, // 20 基础 + 帆布鞋 dance+2（旧档直写）
+      axes: { self: 50, others: 50, fit: 50 },
+      equipped: { outfit: 'w0-c0', shoes: 'eq-canvas-shoes', accessory: 'inv-acc' },
+    } as unknown as RunState;
+
+    const migrated = normalizeRun(oldRun);
+    expect((migrated.equipped as Record<string, unknown>).shoes).toBeUndefined();
+    expect((migrated.equipped as Record<string, unknown>).accessory).toBeUndefined();
+    expect(migrated.equipped.accessory1).toBe('inv-acc');
+    expect(migrated.stats.dance).toBe(20); // shoes 加成已减回
+
+    // 幂等：再跑一次结果一致
+    const twice = normalizeRun(migrated);
+    expect(twice.equipped).toEqual(migrated.equipped);
+    expect(twice.stats).toEqual(migrated.stats);
+
+    // 未知旧鞋子 id 静默丢弃（不改数值）
+    const unknown = { ...sampleRun(), equipped: { shoes: 'eq-not-exist' } } as unknown as RunState;
+    const kept = normalizeRun(unknown);
+    expect((kept.equipped as Record<string, unknown>).shoes).toBeUndefined();
+    expect(kept.stats).toEqual(sampleRun().stats);
+  });
 });

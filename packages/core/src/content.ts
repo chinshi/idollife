@@ -143,6 +143,21 @@ export function remainingTimes(state: RunState, actionId: string): number {
   return Math.max(0, meta.times - used);
 }
 
+/** 行动三层解锁的层级（T-021 界面角标用）：无条件=1；条件里出现 >=40=3；其余带条件=2 */
+export function actionTier(actionId: string): 1 | 2 | 3 {
+  const meta = ACTION_META[actionId];
+  if (!meta) return 1;
+  const cond = meta.displayCondition as unknown;
+  const text =
+    typeof cond === 'string'
+      ? cond
+      : cond && typeof cond === 'object'
+        ? JSON.stringify(cond)
+        : '';
+  if (!text || text === '{}') return 1;
+  return />=\s*40/.test(text) ? 3 : 2;
+}
+
 /** 体力上限：表里有 staminaMax 就用表里的，没有回落 100 */
 export function staminaMaxFrom(balance: Record<string, unknown>): number {
   const v = Number(balance?.staminaMax);

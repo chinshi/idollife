@@ -264,6 +264,14 @@
       "key": "power",
       "hidden": true,
       "linked": 1
+    },
+    {
+      "category": "status",
+      "categoryName": "状态",
+      "name": "健康",
+      "key": "health",
+      "hidden": false,
+      "linked": 1
     }
   ]
 }

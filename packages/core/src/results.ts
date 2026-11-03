@@ -7,7 +7,7 @@ import { matchesCondition } from './events';
 import type { FanType } from './fans';
 import { effectiveStats } from './items';
 import { randInt } from './rng';
-import type { RunState, Stats } from './types';
+import type { Axes, RunState, Stats } from './types';
 
 export interface ActionResultDef {
   id: string;
@@ -58,9 +58,13 @@ export interface ResolvedAction {
   mood: number;
   /** 饱腹变化 */
   satiety: number;
+  /** 健康变化（T-021） */
+  health: number;
   /** 粉丝增加量 */
   fans: number;
   stats: Partial<Record<keyof Stats, number>>;
+  /** 隐藏轴变化（T-021；只应用，不展示数值） */
+  axes: Partial<Record<keyof Axes, number>>;
   text: string;
 }
 
@@ -110,6 +114,12 @@ export function resolveAction(
   const fans = result.effects.fans ?? 0;
   const mood = result.effects.mood ?? 0;
   const satiety = result.effects.satiety ?? 0;
+  const health = result.effects.health ?? 0;
+
+  const axes: Partial<Record<keyof Axes, number>> = {};
+  for (const [k, v] of Object.entries(result.effects.axes ?? {})) {
+    axes[k as keyof Axes] = rollValue(v, rng);
+  }
 
   let text = result.text;
   for (const [k, v] of Object.entries(stats)) {
@@ -120,15 +130,20 @@ export function resolveAction(
   text = text.split('{stamina}').join(String(stamina));
   text = text.split('{money}').join(String(money));
 
-  return { resultId: result.id, stamina, money, mood, satiety, fans, stats, text };
+  return { resultId: result.id, stamina, money, mood, satiety, health, fans, stats, axes, text };
 }
 
 /** 预览：不消耗随机数，用区间中间值给界面展示 */
 export function previewAction(state: RunState, actionId: string): {
   stamina: number;
   money: number;
+  mood: number;
+  satiety: number;
+  health: number;
   fans: number;
   stats: Partial<Record<keyof Stats, [number, number]>>;
+  /** 隐藏轴：只有配置了才出现（客户端据此决定是否渲染底层） */
+  axes: Partial<Record<keyof Axes, [number, number]>>;
   text: string;
 } | null {
   const result = pickActionResult(state, actionId);
@@ -139,11 +154,20 @@ export function previewAction(state: RunState, actionId: string): {
     stats[k as keyof Stats] = Array.isArray(v) ? [v[0], v[1]] : [v, v];
   }
 
+  const axes: Partial<Record<keyof Axes, [number, number]>> = {};
+  for (const [k, v] of Object.entries(result.effects.axes ?? {})) {
+    axes[k as keyof Axes] = Array.isArray(v) ? [v[0], v[1]] : [v, v];
+  }
+
   return {
     stamina: result.effects.stamina ?? 0,
     money: result.effects.money ?? 0,
+    mood: result.effects.mood ?? 0,
+    satiety: result.effects.satiety ?? 0,
+    health: result.effects.health ?? 0,
     fans: result.effects.fans ?? 0,
     stats,
+    axes,
     text: result.text,
   };
 }

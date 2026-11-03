@@ -62,6 +62,7 @@ import type {
   ActionCategory,
   Ending,
   EquipItem,
+  EquipSlot,
   RunState,
   ScheduleItem,
   SettleResult,
@@ -71,6 +72,7 @@ import { clearSave, createSave, loadSave, normalizeRun, writeSave } from './stat
 import { AuthForm } from './components/AuthForm';
 import { CrashBanner, Modal } from './components/Modal';
 import { TimeAxis } from './components/TimeAxis';
+import { TimelineStatus } from './components/TimelineStatus';
 import { LogPanel } from './components/LogPanel';
 import { TaskPanel, type TaskTab } from './components/TaskPanel';
 import { FriendsPanel } from './components/FriendsPanel';
@@ -109,6 +111,7 @@ const initialRun: RunState = {
   axes: { self: 50, others: 50, fit: 50 },
   mood: 70,
   satiety: 70,
+  health: 100,
   innate: {
     // T-016c：身高直接存厘米（145–180）；体重存公斤（40–80）；样貌对齐文案区间（50–100）
     height: 145 + Math.round(Math.random() * 35),
@@ -294,6 +297,18 @@ function AppInner() {
   );
 
   const runRef = useRef<RunState>(run);
+
+  /**
+   * T-020：统一的状态提交口 —— 任何「基于旧状态产出新 RunState」的地方都必须走这里。
+   *
+   * 为什么必须同步写 runRef：rAF 时钟 tick 在 paint **之前**读 runRef.current 做结算底稿，
+   * 而 `useEffect(() => runRef.current = run)` 在 paint **之后**才跑。handler 里若只 setRun，
+   * 下一次 tick 会拿旧底稿 settle，把刚提交的新状态整个覆盖掉（组合创建后消失 = 这个竞态）。
+   */
+  function commitRun(next: RunState) {
+    runRef.current = next;
+    setRun(next);
+  }
   const scheduleRef = useRef<ScheduleItem[]>(boot?.schedule ?? []);
   const batchRef = useRef<{ from: number; prevRun: RunState; prevSchedule: ScheduleItem[] } | null>(null);
   const timelineRef = useRef<HTMLDivElement | null>(null);
@@ -363,8 +378,9 @@ function AppInner() {
         run.at === T0;
       if (localEmpty || latest.revision > revision) {
         setRunId(latest.runId);
-        // 云端恢复后同样补跑一次自动领取（与进入游戏口径一致）
-        setRun(autoAcceptTasks(normalizeRun(latest.run)));
+        // 云端恢复后同样补跑一次自动领取（与进入游戏口径一致）。
+        // T-020：云端恢复可能发生在时钟已启动之后，必须同步 runRef，否则下一 tick 会用旧底稿覆盖。
+        commitRun(autoAcceptTasks(normalizeRun(latest.run)));
         setSchedule(latest.schedule);
         setRevision(latest.revision);
         setNotice('已从云端恢复进度。');
@@ -494,9 +510,8 @@ function AppInner() {
 
       if (result.executed.length > 0) {
         const nextSched = markExecuted(prevSched, result.executed);
-        runRef.current = result.state;
         scheduleRef.current = nextSched;
-        setRun(result.state);
+        commitRun(result.state);
         setSchedule(nextSched);
         dbg('执行 ' + result.executed.join(',') + ' → at=' + String(result.state.at));
       }
@@ -535,9 +550,9 @@ function AppInner() {
           // 关键：heal 会把 run.at 直接前移，锚点必须同步重设，否则 target 被钉死在新的 run.at 上，
           // 倒计时会“冻住”到墙钟把这段差补回来为止（跨日时最明显）。
           const prevAt = runRef.current.at;
-          runRef.current = { ...runRef.current, at: next.startAt };
-          setRun(runRef.current);
-          anchorGame = runRef.current.at;
+          const healed: RunState = { ...runRef.current, at: next.startAt };
+          commitRun(healed);
+          anchorGame = healed.at;
           anchorPerf = nowPerf;
           setGameNow(runRef.current.at);
           dbg('跨空档对齐：跳到 ' + String(next.startAt) +
@@ -617,9 +632,6 @@ function AppInner() {
 
   const renderBrief = (entry: TaskBriefEntry) => {
     const { task, status, progress, deadline } = entry;
-    const text = progress
-      ? `${task.name}（${progress.current}/${progress.target}）`
-      : task.brief;
     const timeText = deadline
       ? status === 'expired'
         ? '已错过'
@@ -651,7 +663,19 @@ function AppInner() {
         }}
       >
         <span className={done ? 'brief-check' : 'dot'}>{done ? '✓' : ''}</span>
-        <span className="brief-text">{text}</span>
+        {/* T-023：任务名可省略，进度数字保持完整 */}
+        <span className="brief-text">
+          {progress ? (
+            <>
+              <span className="brief-name">{task.name}</span>
+              <span className="brief-progress">
+                （{progress.current}/{progress.target}）
+              </span>
+            </>
+          ) : (
+            <span className="brief-name">{task.brief}</span>
+          )}
+        </span>
         {timeText ? (
           <span className={'brief-time' + (deadline?.urgent ? ' urgent' : '')}>{timeText}</span>
         ) : null}
@@ -894,9 +918,8 @@ function AppInner() {
       const serverRun = normalizeRun(outcome.data.state);
       const fixedSchedule = repairChain(scheduleRef.current, serverRun.at);
 
-      runRef.current = serverRun;
       scheduleRef.current = fixedSchedule;
-      setRun(serverRun);
+      commitRun(serverRun);
       setSchedule(fixedSchedule);
       setGameNow(serverRun.at);
       setRevision(outcome.data.revision);
@@ -912,7 +935,7 @@ function AppInner() {
     const res = outcome.data;
     setRevision(res.revision);
     if (!sameState(res.state, local.state)) {
-      setRun(normalizeRun(res.state));
+      commitRun(normalizeRun(res.state));
       setNotice('服务器已校准进度（以服务器为准）。');
     }
     setSyncStatus('synced');
@@ -958,6 +981,12 @@ function AppInner() {
     setPlanBackup(null);
     setShowActions(false);
     setNotice('已取消，行程恢复原样。');
+  }
+
+  /** T-021：清空全部未执行行程（保留已执行历史；直接清 + toast，弹窗不关） */
+  function clearPlan() {
+    setSchedule((prev) => prev.filter((s) => s.done));
+    setNotice('已清空全部未执行行程。');
   }
 
   function addAction(actionId: string) {
@@ -1080,24 +1109,24 @@ function AppInner() {
   function advance() {
     if (!requireLogin()) return;
     if (running) return;
-    if (pending.length === 0) {
+    if (scheduleRef.current.filter((s) => !s.done).length === 0) {
       setNotice('没有待执行的行程，先点「安排行程」加几条。');
       dbg('推进失败：没有待执行条目');
       return;
     }
-    if (run.pendingEvent) {
+    if (runRef.current.pendingEvent) {
       setNotice('先处理重点事件，时间已暂停。');
-      setActiveEventId(run.pendingEvent);
+      setActiveEventId(runRef.current.pendingEvent);
       return;
     }
 
-    const repaired = repairChain(schedule, run.at);
-    if (repaired !== schedule) {
+    const repaired = repairChain(scheduleRef.current, runRef.current.at);
+    if (repaired !== scheduleRef.current) {
       dbg('修复重叠行程');
       setSchedule(repaired);
     }
 
-    const staleAtStart = repaired.filter((s) => !s.done && s.startAt < run.at);
+    const staleAtStart = repaired.filter((s) => !s.done && s.startAt < runRef.current.at);
     const usable = repaired.filter((s) => !staleAtStart.includes(s));
     if (staleAtStart.length > 0) {
       dbg('开始前清理过期行程 ' + String(staleAtStart.length) + ' 条');
@@ -1105,19 +1134,19 @@ function AppInner() {
     }
 
     const firstPending = usable.filter((s) => !s.done).sort((a, b) => a.startAt - b.startAt)[0];
-    let baseRun = run;
-    if (firstPending && firstPending.startAt > run.at) {
-      const skipped = Math.round((firstPending.startAt - run.at) / 1000);
+    let baseRun = runRef.current;
+    if (firstPending && firstPending.startAt > baseRun.at) {
+      const skipped = Math.round((firstPending.startAt - baseRun.at) / 1000);
       dbg('跳过空档 ' + String(skipped) + 's');
-      baseRun = { ...run, at: firstPending.startAt };
-      setRun(baseRun);
+      baseRun = { ...baseRun, at: firstPending.startAt };
+      commitRun(baseRun);
     }
 
     setSnapshot({ run: baseRun, schedule: usable });
     batchRef.current = { from: baseRun.at, prevRun: baseRun, prevSchedule: usable };
     setGameNow(Math.max(baseRun.at, gameNowRef.current));
     setRunning(true);
-    dbg('开始推进 pending=' + String(pending.length) + ' at=' + String(run.at));
+    dbg('开始推进 pending=' + String(usable.filter((s) => !s.done).length) + ' at=' + String(baseRun.at));
   }
 
   advanceRef.current = advance;
@@ -1156,8 +1185,7 @@ function AppInner() {
   function applyIdolName(raw: string) {
     const trimmed = String(raw ?? '').trim().slice(0, 12);
     const next: RunState = { ...runRef.current, name: trimmed || '未命名' };
-    runRef.current = next;
-    setRun(next);
+    commitRun(next);
     setNameModalOpen(false);
     setNameDraft('');
     // 立即写一次存档，否则刷新页面会再弹一次起名框
@@ -1207,7 +1235,7 @@ function AppInner() {
     setSnapshot(null);
     setGameNow(T0);
     setRunId(fresh.runId);
-    setRun(initialRun);
+    commitRun(initialRun);
     setSchedule([]);
     setRevision(0);
     setEnding(null);
@@ -1226,27 +1254,28 @@ function AppInner() {
   }
 
   function confirmCreateParty() {
-    const { state } = createParty(run, partyName);
-    setRun(state);
+    // T-020：底稿取 runRef.current；提交走 commitRun（同步 runRef，避免下一 tick 用旧状态覆盖）
+    const { state } = createParty(runRef.current, partyName);
+    commitRun(state);
     setShowPartyModal(false);
     setNotice('组合创建好了。');
     void pushWholeState(state);
   }
 
   function doMeet(channelId: string) {
-    const r = meetFriend(run, channelId, seed);
+    const r = meetFriend(runRef.current, channelId, seed);
     if (r.result === 'poor') {
       setNotice('钱不够，先攒一点。');
       return;
     }
     if (r.result === 'empty') {
-      setRun(r.state);
+      commitRun(r.state);
       setNotice('这次没遇到合适的人（钱照扣）。');
       return;
     }
     if (r.result === 'dup') {
       // 走的是「重复认识」分支：也要把新的状态写回去（扣钱 + 日志 + 默契）
-      setRun(r.state);
+      commitRun(r.state);
       setNotice('又见到了认识的人，默契 +1%。');
       return;
     }
@@ -1254,15 +1283,15 @@ function AppInner() {
       setNotice('这个渠道暂时去不了。');
       return;
     }
-    setRun(r.state);
+    commitRun(r.state);
     // 不切换页签：留在「认识新朋友」方便连续抽取
     setNotice(r.friend ? `认识了 ${r.friend.name}，已加入朋友圈。` : '认识了一个新朋友。');
   }
 
   function doReward(taskId: string) {
-    const r = claimTaskReward(run, taskId);
+    const r = claimTaskReward(runRef.current, taskId);
     if (r.result === 'ok') {
-      setRun(r.state);
+      commitRun(r.state);
       // T-013 bug 2：任务标记（doneAt/count）要推给服务端，否则云端重算会把本地任务状态冲掉
       void pushWholeState(r.state);
       setNotice('任务奖励已领取。');
@@ -1272,9 +1301,9 @@ function AppInner() {
   }
 
   function doAccept(taskId: string) {
-    const r = acceptTask(run, taskId);
+    const r = acceptTask(runRef.current, taskId);
     if (r.result === 'ok') {
-      setRun(r.state);
+      commitRun(r.state);
       // T-013 bug 2：acceptedAt 标记要推给服务端（与 doBuy/doEquip 一致）
       void pushWholeState(r.state);
       setNotice('任务已领取，完成后会自动结算奖励。');
@@ -1284,27 +1313,28 @@ function AppInner() {
   }
 
   function doKick(memberId: string) {
-    const partyId = run.activePartyId;
+    const base = runRef.current;
+    const partyId = base.activePartyId;
     if (!partyId) return;
-    const target = run.parties.find((p) => p.id === partyId)?.members.find((m) => m.id === memberId);
-    setRun({
-      ...run,
-      parties: run.parties.map((p) =>
+    const target = base.parties.find((p) => p.id === partyId)?.members.find((m) => m.id === memberId);
+    commitRun({
+      ...base,
+      parties: base.parties.map((p) =>
         p.id === partyId ? { ...p, members: p.members.filter((m) => m.id !== memberId) } : p,
       ),
       friends: target
-        ? run.friends.map((f) =>
+        ? base.friends.map((f) =>
             f.name === target.name
-              ? { ...f, partyId: null, cooldownUntil: run.at + RECRUIT_COOLDOWN_DAYS * DAY_MS }
+              ? { ...f, partyId: null, cooldownUntil: base.at + RECRUIT_COOLDOWN_DAYS * DAY_MS }
               : f,
           )
-        : run.friends,
+        : base.friends,
     });
     setNotice('已移出组合。');
   }
 
   function doInvite(friendId: string) {
-    const r = inviteFriend(run, friendId);
+    const r = inviteFriend(runRef.current, friendId);
     if (r.result === 'no-party') {
       setNotice('先创建或选择一个组合。');
       return;
@@ -1322,16 +1352,17 @@ function AppInner() {
       return;
     }
     if (r.result !== 'ok') return;
-    setRun(r.state);
+    commitRun(r.state);
     setNotice('已经邀请进组合了。');
   }
 
   function doRecruit() {
-    if (!party) {
+    const base = runRef.current;
+    if (!base.activePartyId) {
       setNotice('还没有组合，招募不了。');
       return;
     }
-    const { state, result } = recruit(run, `${seed}:recruit:${run.log.length}:${Date.now()}`);
+    const { state, result } = recruit(base, `${seed}:recruit:${base.log.length}:${Date.now()}`);
     if (result === 'poor') {
       setNotice('钱不够招募了。');
       return;
@@ -1340,13 +1371,13 @@ function AppInner() {
       setNotice('还没有组合，招募不了。');
       return;
     }
-    setRun(state);
+    commitRun(state);
     setNotice(state.log.at(-1)?.text ?? '');
     void pushWholeState(state);
   }
 
   function doSwitchParty(id: string) {
-    setRun(switchParty(run, id));
+    commitRun(switchParty(runRef.current, id));
   }
 
   /** 参加演出：排在最近的周六/周日，占满当天 3 个行动位 */
@@ -1403,12 +1434,12 @@ function AppInner() {
     return () => window.clearTimeout(t);
   }, [user, schedule]);
   function doDivine() {
-    const { state, result, cost } = divine(run);
+    const { state, result, cost } = divine(runRef.current);
     if (result === 'poor') {
       setNotice(`占卜要 ${cost}，钱不够。`);
       return;
     }
-    setRun(state);
+    commitRun(state);
     setReading(divinationReading(state));
     setNotice(`花 ${cost} 占了一卦。`);
     void pushWholeState(state);
@@ -1416,21 +1447,22 @@ function AppInner() {
 
   function doDebut() {
     // T-018：出道成功后把推导出的阶段（seq4 rookie-idol）补进 stage:reached
-    const next = syncStageReached(debut(run));
-    setRun(next);
-    setNotice(next === run ? '还没达到出道条件。' : '出道了！现在可以组建组合。');
+    const base = runRef.current;
+    const next = syncStageReached(debut(base));
+    commitRun(next);
+    setNotice(next === base ? '还没达到出道条件。' : '出道了！现在可以组建组合。');
     void pushWholeState(next);
   }
 
   /** T-018：晋级（下一阶段是 seq4 时走出道演出流程） */
   function doAdvanceStage() {
-    const result = advanceStage(run);
+    const result = advanceStage(runRef.current);
     if (result.result === 'debut-required') {
       doDebut();
       return;
     }
     if (result.result === 'ok') {
-      setRun(result.state);
+      commitRun(result.state);
       setNotice(result.notice);
       void pushWholeState(result.state);
       return;
@@ -1439,20 +1471,21 @@ function AppInner() {
   }
 
   function doBuy(item: EquipItem) {
-    const { state, result } = buyItem(run, item);
+    const { state, result } = buyItem(runRef.current, item);
     if (result !== 'ok') {
       setNotice('钱不够。');
       return;
     }
-    setRun(state);
+    commitRun(state);
     setNotice(state.log.at(-1)?.text ?? '');
     void pushWholeState(state);
   }
 
-  function doEquipBag(invId: string) {
-    const outcome = equipItem(run, invId);
+  function doEquipBag(invId: string, targetSlot?: EquipSlot) {
+    const base = runRef.current;
+    const outcome = equipItem(base, invId, targetSlot);
     if (outcome.result === 'requirement') {
-      const entry = run.inventory.find((e) => e.id === invId);
+      const entry = base.inventory.find((e) => e.id === invId);
       const def = entry ? equipDefOf(entry) : null;
       setNotice(`装备要求未满足：${def ? describeCondition(def.requirement) : '条件不足'}。`);
       return;
@@ -1461,26 +1494,26 @@ function AppInner() {
       setNotice(outcome.notice);
       return;
     }
-    setRun(outcome.state);
+    commitRun(outcome.state);
     setNotice(outcome.notice);
     void pushWholeState(outcome.state);
   }
 
-  function doUnequipBag(slot: 'hair' | 'outfit' | 'shoes' | 'accessory') {
-    const { state, notice } = unequipItem(run, slot);
-    setRun(state);
+  function doUnequipBag(slot: EquipSlot) {
+    const { state, notice } = unequipItem(runRef.current, slot);
+    commitRun(state);
     setNotice(notice);
     void pushWholeState(state);
   }
 
   /** T-019：使用消耗品（隐藏效果写进 axes/负向，但日志与 notice 只列显性部分） */
   function doUseItem(invId: string) {
-    const outcome = useItem(run, invId);
+    const outcome = useItem(runRef.current, invId);
     if (outcome.result !== 'ok') {
       setNotice(outcome.notice);
       return;
     }
-    setRun(outcome.state);
+    commitRun(outcome.state);
     setNotice(outcome.notice);
     void pushWholeState(outcome.state);
   }
@@ -1489,11 +1522,12 @@ function AppInner() {
   function doBuyConsumable(itemId: string) {
     const def = ITEMS_MAP[itemId];
     if (!def) return;
-    if (run.money < def.price) {
+    const base = runRef.current;
+    if (base.money < def.price) {
       setNotice('钱不够。');
       return;
     }
-    let next = addConsumable(run, itemId);
+    let next = addConsumable(base, itemId);
     next = {
       ...next,
       money: next.money - def.price,
@@ -1509,25 +1543,26 @@ function AppInner() {
         },
       ],
     };
-    setRun(next);
+    commitRun(next);
     setNotice(`买下了「${def.name}」。`);
     void pushWholeState(next);
   }
 
   async function choose(eventId: string, choiceId: string) {
-    const wasMajor = run.pendingEvent === eventId;
-    const next = applyChoice(run, eventId, choiceId);
+    const base = runRef.current;
+    const wasMajor = base.pendingEvent === eventId;
+    const next = applyChoice(base, eventId, choiceId);
     setActiveEventId(null);
-    setRun(next);
+    commitRun(next);
     setNotice('选择已记录。');
     dbg('选择 ' + choiceId);
     await pushWholeState(next);
 
-    const rest = schedule.filter((s) => !s.done);
+    const rest = scheduleRef.current.filter((s) => !s.done);
     if (wasMajor && resumeAfterEvent.current && rest.length > 0) {
       resumeAfterEvent.current = false;
       setSnapshot(null);
-      batchRef.current = { from: next.at, prevRun: next, prevSchedule: schedule };
+      batchRef.current = { from: next.at, prevRun: next, prevSchedule: scheduleRef.current };
       setGameNow(next.at);
       setRunning(true);
       dbg('事件处理完，自动续跑 ' + String(rest.length) + ' 个');
@@ -1535,10 +1570,10 @@ function AppInner() {
   }
 
   function decide(d: 'stay' | 'backstage' | 'leave') {
-    setEnding(judgeEnding(run, d));
+    setEnding(judgeEnding(runRef.current, d));
     setPhase('ended');
     setNotice(null);
-    void pushWholeState(run);
+    void pushWholeState(runRef.current);
   }
 
   if (!supabase) {
@@ -1677,7 +1712,7 @@ function AppInner() {
     showDebug,
     debugText,
     setRunId,
-    setRun,
+    commitRun,
     setSchedule,
     setRevision,
     setNotice,
@@ -1700,6 +1735,8 @@ function AppInner() {
     doDivine,
     savePlan,
     cancelPlan,
+    clearPlan,
+    t0: T0,
     addAction,
     removeItem,
     toggleStop,
@@ -1719,9 +1756,15 @@ function AppInner() {
     <div className="app">
       <CrashBanner msg={crash} onClose={() => setCrash(null)} />
       <header className="bar">
-        <div className="bar-left">
-          <span className="brand">idollife</span>
-          <span className="clock">
+        {/* T-023：一行 5 块并列 —— 标题卡 / 角色动画 / 时间轴 / 状态 / 任务简报 */}
+        <div className="bar-left bar-card">
+          <div className="title-brand-row">
+            <span className="brand">idollife</span>
+            {syncStatus !== 'local' && (
+              <span className={`chip chip-${syncStatus}`}>{SYNC_TEXT[syncStatus]}</span>
+            )}
+          </div>
+          <span className="clock title-clock">
             第 {todayIndex + 1} 天 · {weekdayName(todayIndex)} · 今日剩余{' '}
             {Math.max(0, 3 - usedToday)}/3
           </span>
@@ -1729,9 +1772,6 @@ function AppInner() {
             <span className="acct-email" title={user?.email ?? ''}>
               {user?.email ?? '已离线'}
             </span>
-            {syncStatus !== 'local' && (
-              <span className={`chip chip-${syncStatus}`}>{SYNC_TEXT[syncStatus]}</span>
-            )}
             <span className="acct-icons">
               <button
                 className="icon-btn"
@@ -1752,6 +1792,11 @@ function AppInner() {
             </span>
           </div>
         </div>
+
+        {/* 角色动画占位（无标题，白卡外观由 .bar-card 统一） */}
+        <aside className="mod tl-anim bar-card">
+          <div className="tl-anim-hold">动画预留位</div>
+        </aside>
 
         <TimeAxis
           pastItems={pastItems}
@@ -1775,7 +1820,10 @@ function AppInner() {
           onHistory={() => setMainTab('plan')}
           onOpenStops={() => setShowStops(true)}
         />
-        <div className="bar-right">
+
+        <TimelineStatus run={run} />
+
+        <div className="bar-right bar-card">
           <div className="brief-head">任务简报</div>
           <ul className="brief-list">
             {briefSections.length === 0 ? (
@@ -1791,7 +1839,9 @@ function AppInner() {
             ))}
             {briefOverflow > 0 ? <li className="brief-more">+{briefOverflow}</li> : null}
           </ul>
-        </div>      </header>
+        </div>
+      </header>
+
 
 
       <main className="shell">
