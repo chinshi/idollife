@@ -5,7 +5,7 @@ import {
 import type { AppApi, BagTab } from './api';
 
 export function PartyPanel({ api }: { api: AppApi }) {
-  const { removeItem, seed, run, party, pending, visibleItems, pastItems, futureItems, nextItem, dayBreakLabels, visibleLog, running, gameNow, remainMs, currentPct, lastStop, stopText, mainTab, setMainTab, taskTab, setTaskTab, friendsTab, setFriendsTab, rightTab, setRightTab, bagTab, setBagTab, logTab, setLogTab, flippedIds, toggleFlip, managing, setManaging, historyLimit, setHistoryLimit, todayIndex, usedToday, statTotal, totalFans, syncStatus, syncText, savedAt, user, notice, setNotice, advance, stopCurrent, openPlan, doAccept, doReward, doMeet, doInvite, doKick, doBuy, doDebut, doSwitchParty, openPartyModal, doDivine, signOut, restartForTest, setShowInvite, setShowDivination, setActiveEventId, setKickTarget, setShowStops, setShowDebug, setDebugText, dayLabel, biasLabel, weekdayName } = api;
+  const { removeItem, seed, run, party, pending, visibleItems, pastItems, futureItems, nextItem, dayBreakLabels, visibleLog, running, gameNow, remainMs, currentPct, lastStop, stopText, mainTab, setMainTab, taskTab, setTaskTab, friendsTab, setFriendsTab, rightTab, setRightTab, bagTab, setBagTab, logTab, setLogTab, flippedIds, toggleFlip, managing, setManaging, historyLimit, setHistoryLimit, todayIndex, usedToday, statTotal, totalFans, syncStatus, syncText, savedAt, user, notice, setNotice, advance, stopCurrent, openPlan, doAccept, doReward, doMeet, doInvite, doKick, doBuy, doDebut, doSwitchParty, openPartyModal, doDivine, signOut, restartForTest, setShowInvite, setShowDivination, setActiveEventId, setKickTarget, setShowStops, setShowDebug, setDebugText, dayLabel, biasLabel, weekdayName, busyKey } = api;
 
   return (
     <>
@@ -18,9 +18,10 @@ export function PartyPanel({ api }: { api: AppApi }) {
                         <button
                           key={p.id}
                           className={p.id === run.activePartyId ? 'mini-tab active' : 'mini-tab'}
+                          disabled={!!busyKey}
                           onClick={() => doSwitchParty(p.id)}
                         >
-                          {p.name}
+                          {busyKey === `switch:${p.id}` ? '切换中…' : p.name}
                         </button>
                       ))}
                     </div>

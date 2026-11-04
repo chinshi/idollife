@@ -28,6 +28,7 @@ export function TaskPanel({
   onAccept,
   onReward,
   dayLabel,
+  busyKey,
 }: {
   run: RunState;
   tab: TaskTab;
@@ -35,6 +36,8 @@ export function TaskPanel({
   onAccept: (id: string) => void;
   onReward: (id: string) => void;
   dayLabel: (at: number, now: number) => string;
+  /** T-040：等服务端回包期间锁按钮，被点那条显示加载文案 */
+  busyKey?: string | null;
 }) {
   const renderTask = (task: TaskDef) => {
     const status = taskStatus(run, task);
@@ -116,16 +119,26 @@ export function TaskPanel({
                 : '已完成'}
             </span>
           ) : status === 'completable' ? (
-            <button className="primary" onClick={() => onReward(task.id)}>
-              领取奖励
+            <button
+              className="primary"
+              disabled={!!busyKey}
+              onClick={() => onReward(task.id)}
+            >
+              {busyKey === `reward:${task.id}` ? '领取中…' : '领取奖励'}
             </button>
           ) : (
             <button
               className={status === 'claimable' ? 'primary' : ''}
-              disabled={status !== 'claimable'}
+              disabled={status !== 'claimable' || !!busyKey}
               onClick={() => onAccept(task.id)}
             >
-              {status === 'active' ? '已领取' : status === 'expired' ? '已错过' : '领取任务'}
+              {busyKey === `accept:${task.id}`
+                ? '领取中…'
+                : status === 'active'
+                  ? '已领取'
+                  : status === 'expired'
+                    ? '已错过'
+                    : '领取任务'}
             </button>
           )}
         </div>

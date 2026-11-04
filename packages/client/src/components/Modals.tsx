@@ -57,8 +57,12 @@ export function Modals({ ctx }: { ctx: ModalCtx }) {
               <p>{ev.text}</p>
               <div className="choices">
                 {availableChoices(run, activeEventId).map((c) => (
-                  <button key={c.id} onClick={() => void choose(activeEventId, c.id)}>
-                    {c.label}
+                  <button
+                    key={c.id}
+                    disabled={ctx.busyKey !== null}
+                    onClick={() => choose(activeEventId, c.id)}
+                  >
+                    {ctx.busyKey === `choice:${c.id}` ? '处理中…' : c.label}
                   </button>
                 ))}
               </div>
@@ -94,15 +98,15 @@ export function Modals({ ctx }: { ctx: ModalCtx }) {
         <Modal title="请离成员" onClose={() => setKickTarget(null)}>
           <p>如果请离了该成员，可能对于团会产生不好的影响，且一个月内无法重新入团。</p>
           <div className="row">
-            <button onClick={() => setKickTarget(null)}>取消</button>
+            <button onClick={() => setKickTarget(null)} disabled={!!ctx.busyKey}>
+              取消
+            </button>
             <button
               className="primary"
-              onClick={() => {
-                doKick(kickTarget);
-                setKickTarget(null);
-              }}
+              disabled={!!ctx.busyKey}
+              onClick={() => doKick(kickTarget)}
             >
-              确认请离
+              {ctx.busyKey === `kick:${kickTarget}` ? '请离中…' : '确认请离'}
             </button>
           </div>
         </Modal>
@@ -137,8 +141,17 @@ export function Modals({ ctx }: { ctx: ModalCtx }) {
                         <span className="team">冷却中 · 剩余 {cool} 天</span>
                       )}
                       <span className="spacer" />
-                      <button disabled={blocked || !party} onClick={() => doInvite(f.id)}>
-                        {f.partyId ? '不可邀请' : cool > 0 ? `冷却 ${cool} 天` : '邀请'}
+                      <button
+                        disabled={blocked || !party || !!ctx.busyKey}
+                        onClick={() => doInvite(f.id)}
+                      >
+                        {ctx.busyKey === `invite:${f.id}`
+                          ? '邀请中…'
+                          : f.partyId
+                            ? '不可邀请'
+                            : cool > 0
+                              ? `冷却 ${cool} 天`
+                              : '邀请'}
                       </button>
                     </li>
                   );
@@ -232,6 +245,10 @@ export function Modals({ ctx }: { ctx: ModalCtx }) {
                       清空全部
                     </button>
                   </div>
+                  {/* T-040：编辑期间不再跑自动推进（否则回包会把刚改的行程盖回去） */}
+                  <p className="muted small plan-edit-hint">
+                    编辑期间界面暂停刷新，关闭本窗口后按新行程结算。
+                  </p>
 
                   <div className="date-grid">
                     {days.map((day) => {
@@ -324,8 +341,12 @@ export function Modals({ ctx }: { ctx: ModalCtx }) {
             <p className="muted">还没占过。占卜能看到你现在的状态倾向。</p>
           )}
           <div className="row">
-            <button className="primary" onClick={doDivine} disabled={run.money < divinationCost(run)}>
-              占一卦
+            <button
+              className="primary"
+              onClick={doDivine}
+              disabled={run.money < divinationCost(run) || !!ctx.busyKey}
+            >
+              {ctx.busyKey === 'divine' ? '占卜中…' : '占一卦'}
               <small>-{divinationCost(run)}</small>
             </button>
           </div>
@@ -365,20 +386,8 @@ export function Modals({ ctx }: { ctx: ModalCtx }) {
         <Modal title="结局">
           <h4 className="ending-title">{ending.title}</h4>
           <p>{ending.text}</p>
-          <button
-            className="primary"
-            onClick={() => {
-              clearSave();
-              const fresh = createSave(initialRun, 'run-demo');
-              setRunId(fresh.runId);
-              // T-020：重置也要走 App 的统一提交口（同步 runRef，避免时钟 tick 用旧底稿覆盖）
-              commitRun(initialRun);
-              setSchedule([]);
-              setRevision(0);
-              setEnding(null);
-              setPhase('playing');
-            }}
-          >
+          {/* T-041：重开也必须落库（原来只改内存，刷新后新档就没了） */}
+          <button className="primary" onClick={() => doRestart()}>
             再来一次
           </button>
         </Modal>

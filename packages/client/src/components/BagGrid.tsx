@@ -76,7 +76,7 @@ function fitsSlot(slot: EquipSlot, entry: InventoryEntry): boolean {
 }
 
 export function BagGrid({ api }: { api: AppApi }) {
-  const { run, bagTab, setBagTab, doUseItem, doEquipBag, doUnequipBag } = api;
+  const { run, bagTab, setBagTab, doUseItem, doEquipBag, doUnequipBag, busyKey } = api;
 
   const [tip, setTip] = useState<{ entry: InventoryEntry; top: number; left: number; below: boolean } | null>(null);
   /** T-022：点空槽后打开「该槽可选装备」列表 */
@@ -147,6 +147,7 @@ export function BagGrid({ api }: { api: AppApi }) {
           .join(' ')}
         onMouseEnter={(e) => openTip(entry, e.currentTarget)}
         onMouseLeave={closeTipSoon}
+        disabled={!!busyKey}
         onClick={() => {
           if (def) doUseItem(entry.id);
           else if (equipDef) {
@@ -198,6 +199,7 @@ export function BagGrid({ api }: { api: AppApi }) {
         onMouseEnter={(e) => openTip(entry, e.currentTarget)}
         onMouseLeave={closeTipSoon}
         onClick={() => doUnequipBag(slot)}
+        disabled={!!busyKey}
         title="点击卸下"
       >
         {label}
@@ -259,6 +261,7 @@ export function BagGrid({ api }: { api: AppApi }) {
                             'equip-choice',
                             RARITY_CLASS[RARITY_COLOR_KEY[rarity]] ?? 'rar-common',
                           ].join(' ')}
+                          disabled={!!busyKey}
                           onClick={() => {
                             doEquipBag(e.id, chooserSlot);
                             setChooserSlot(null);

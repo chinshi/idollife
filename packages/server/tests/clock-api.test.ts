@@ -249,4 +249,48 @@ describe('T-039 服务端唯一结算', () => {
     expect(res.status).toBe(200);
     expect(res.json.nextStopAt).toBeNull();
   });
+
+  // T-040：清空行程后不能留 running 的僵尸钟
+  it('G16 PUT 提交空排程 → clock 收敛成 paused', async () => {
+    const rec = record('g16', {
+      clock: { ...createClock(T0), status: 'running', wallAnchor: Date.now() - 30 * MIN },
+    });
+    await store.putRun(rec as never);
+    const res = await request('/api/v1/state', 'PUT', {
+      runId: 'g16',
+      expectedRevision: 1,
+      schedule: [{ ...scheduleItem('done1'), done: true } as never],
+    });
+    expect(res.status).toBe(200);
+    expect(res.json.clock.status).toBe('paused');
+    expect(res.json.clock.wallAnchor).toBe(0);
+    expect(res.json.nextStopAt).toBeNull();
+  });
+
+  it('G17 PUT 仍有未完成排程 → clock 保持 running（不能误停）', async () => {
+    const rec = record('g17', {
+      clock: { ...createClock(T0), status: 'running', wallAnchor: Date.now() - 5 * MIN },
+    });
+    await store.putRun(rec as never);
+    const res = await request('/api/v1/state', 'PUT', {
+      runId: 'g17',
+      expectedRevision: 1,
+      schedule: [{ ...scheduleItem('keep'), startAt: T0 + 10 * MIN, endAt: T0 + 20 * MIN } as never],
+    });
+    expect(res.status).toBe(200);
+    expect(res.json.clock.status).toBe('running');
+    expect(res.json.nextStopAt).toBe(T0 + 20 * MIN);
+  });
+
+  it('G18 paused 时 PUT 不会把钟拉起来', async () => {
+    const rec = record('g18');
+    await store.putRun(rec as never);
+    const res = await request('/api/v1/state', 'PUT', {
+      runId: 'g18',
+      expectedRevision: 1,
+      schedule: [scheduleItem('x') as never],
+    });
+    expect(res.status).toBe(200);
+    expect(res.json.clock.status).toBe('paused');
+  });
 });

@@ -5,7 +5,7 @@ import {
 import type { AppApi, BagTab } from './api';
 
 export function FriendsPanel({ api }: { api: AppApi }) {
-  const { removeItem, seed, run, party, pending, visibleItems, pastItems, futureItems, nextItem, dayBreakLabels, visibleLog, running, gameNow, remainMs, currentPct, lastStop, stopText, mainTab, setMainTab, taskTab, setTaskTab, friendsTab, setFriendsTab, rightTab, setRightTab, bagTab, setBagTab, logTab, setLogTab, flippedIds, toggleFlip, managing, setManaging, historyLimit, setHistoryLimit, todayIndex, usedToday, statTotal, totalFans, syncStatus, syncText, savedAt, user, notice, setNotice, advance, stopCurrent, openPlan, doAccept, doReward, doMeet, doInvite, doKick, doBuy, doDebut, doSwitchParty, openPartyModal, doDivine, signOut, restartForTest, setShowInvite, setShowDivination, setActiveEventId, setKickTarget, setShowStops, setShowDebug, setDebugText, dayLabel, biasLabel, weekdayName } = api;
+  const { removeItem, seed, run, party, pending, visibleItems, pastItems, futureItems, nextItem, dayBreakLabels, visibleLog, running, gameNow, remainMs, currentPct, lastStop, stopText, mainTab, setMainTab, taskTab, setTaskTab, friendsTab, setFriendsTab, rightTab, setRightTab, bagTab, setBagTab, logTab, setLogTab, flippedIds, toggleFlip, managing, setManaging, historyLimit, setHistoryLimit, todayIndex, usedToday, statTotal, totalFans, syncStatus, syncText, savedAt, user, notice, setNotice, advance, stopCurrent, openPlan, doAccept, doReward, doMeet, doInvite, doKick, doBuy, doDebut, doSwitchParty, openPartyModal, doDivine, signOut, restartForTest, setShowInvite, setShowDivination, setActiveEventId, setKickTarget, setShowStops, setShowDebug, setDebugText, dayLabel, biasLabel, weekdayName, busyKey } = api;
 
   return (
     <>
@@ -44,9 +44,16 @@ export function FriendsPanel({ api }: { api: AppApi }) {
                         className={run.money < c.cost ? 'meet-poor' : ''}
                         onClick={() => doMeet(c.id)}
                         title={c.text}
+                        disabled={!!busyKey}
                       >
-                        {c.name}
-                        <small>¥{c.cost}</small>
+                        {busyKey === `meet:${c.id}` ? (
+                          '抽取中…'
+                        ) : (
+                          <>
+                            {c.name}
+                            <small>¥{c.cost}</small>
+                          </>
+                        )}
                       </button>
                     ))}
                   </div>

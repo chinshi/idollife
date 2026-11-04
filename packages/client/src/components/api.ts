@@ -81,6 +81,14 @@ export interface AppApi {
   advance: () => void;
   stopCurrent: () => void;
   openPlan: () => void;
+  /**
+   * T-040：正在等服务端回包的动作标识（null = 空闲）。
+   * 所有提交类按钮都应 `disabled={busyKey !== null}`，被点的那一个显示加载文案，
+   * 避免连点撞 revision 冲突、以及「点了没反应 → 数值突然变」的观感。
+   */
+  busyKey: string | null;
+  /** T-040：事件抉择（等回包后才关弹窗） */
+  choose: (eventId: string, choiceId: string) => void;
   /** T-032 演出报名 */
   bookShow: (occ: import('@idollife/core').ShowOccurrence, slot: import('@idollife/core').ShowSlotDef) => void;
   cancelBooking: (bookingId: string) => void;

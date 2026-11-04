@@ -99,3 +99,20 @@ export function judgeEnding(state: RunState, decision: Decision): Ending {
   }
   return ENDINGS[FAN_ENDING[dominant]]!;
 }
+
+/**
+ * T-041：把玩家的抉择写进存档。
+ *
+ * 幂等——已经做过抉择的档不再被覆盖，避免连点换出另一个结局。
+ * 老档（`ending` 缺省）视为还没抉择，照常写入。
+ */
+export function recordEnding(state: RunState, decision: Decision): RunState {
+  if (state.ending) return state;
+  return { ...state, ending: { decision, at: state.at } };
+}
+
+/** 存档里记录的结局；还没做过抉择返回 null */
+export function decidedEnding(state: RunState): Ending | null {
+  const decision = state.ending?.decision;
+  return decision ? judgeEnding(state, decision) : null;
+}

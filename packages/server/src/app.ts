@@ -128,10 +128,22 @@ export function createApp(options: { getUser?: GetUser } = {}) {
     if (body.expectedRevision !== rec.revision) return c.json({ error: 'conflict', ...snapshot(rec) }, 409);
     if (body.run && body.run.at !== rec.run.at) return c.json({ error: 'stale_clock', ...snapshot(rec) }, 409);
 
+    // T-040：清空/删光行程后不能留着 running 的钟。
+    // running + 没有未完成排程 = 僵尸状态：nextStopAt 恒为 null，客户端再也不会来 advance，
+    // 而 wallAnchor 一直在走，下次加了行程会一次性补算出巨量时间。
+    // 所以只要提交后的排程没有未完成项，就把时钟收敛成 paused。
+    const nextSchedule = body.schedule ?? rec.schedule;
+    const noPending = !nextSchedule.some((s) => !s.done);
+    const clock =
+      noPending && rec.clock.status === 'running'
+        ? { ...rec.clock, status: 'paused' as const, wallAnchor: 0, updatedAt: now }
+        : rec.clock;
+
     const next: RunRecord = {
       ...rec,
       run: body.run ?? rec.run,
-      schedule: body.schedule ?? rec.schedule,
+      schedule: nextSchedule,
+      clock,
       revision: rec.revision + 1,
       lastSyncAt: (body.run ?? rec.run).at,
       updatedAt: now,

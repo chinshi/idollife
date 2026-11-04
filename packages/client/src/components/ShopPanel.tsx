@@ -16,7 +16,7 @@ const EFFECT_LABEL: Record<string, string> = {
 };
 
 export function ShopPanel({ api }: { api: AppApi }) {
-  const { seed, run, doBuy, doBuyConsumable } = api;
+  const { seed, run, doBuy, doBuyConsumable, busyKey } = api;
 
   const convItems = ITEMS.filter((i) => i.rarity === 'common' || i.rarity === 'uncommon');
   const RARITY_TEXT: Record<Rarity, string> = {
@@ -40,8 +40,11 @@ export function ShopPanel({ api }: { api: AppApi }) {
               {STAT_LABEL[item.affix.stat]} +{item.affix.value}
               {item.rarity === 'rare' ? ' · 稀有' : ''}
             </span>
-            <button onClick={() => doBuy(item)} disabled={run.money < item.price}>
-              ¥{item.price}
+            <button
+              onClick={() => doBuy(item)}
+              disabled={run.money < item.price || !!busyKey}
+            >
+              {busyKey === `buy:${item.id}` ? '购买中…' : `¥${item.price}`}
             </button>
           </li>
         ))}
@@ -63,8 +66,11 @@ export function ShopPanel({ api }: { api: AppApi }) {
                 .map(([k, v]) => `${EFFECT_LABEL[k] ?? k} ${v > 0 ? '+' : ''}${v}`)
                 .join(' · ')}
             </span>
-            <button onClick={() => doBuyConsumable(item.id)} disabled={run.money < item.price}>
-              ¥{item.price}
+            <button
+              onClick={() => doBuyConsumable(item.id)}
+              disabled={run.money < item.price || !!busyKey}
+            >
+              {busyKey === `consume:${item.id}` ? '购买中…' : `¥${item.price}`}
             </button>
           </li>
         ))}

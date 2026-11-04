@@ -23,6 +23,41 @@ export function sortedPending(schedule: ScheduleItem[]): ScheduleItem[] {
   return schedule.filter((s) => !s.done).sort((a, b) => a.startAt - b.startAt);
 }
 
+/**
+ * 某条排程项是否「正在执行」：已开始、还没结束、未标记完成。
+ *
+ * 为什么要单独判：清空行程 / 删除单条时如果把它一起删掉，服务端下一轮 settle 会
+ * 找不到这一条（已经开跑的那段产出直接蒸发），而本地 `run.at` 又在它内部，
+ * 表现为「时间卡住 / 推进没反应」。所以任何删除动作都必须跳过正在执行的这条。
+ */
+export function isExecuting(item: ScheduleItem, at: number): boolean {
+  if (item.done) return false;
+  return item.startAt <= at && at < item.endAt;
+}
+
+/**
+ * 行程变更后要提交给服务端的那份排程（T-040）。
+ *
+ * 规则，按优先级：
+ * 1. `done` —— 服务端已确认执行完的，原样保留（`doneIds` 来自服务端回包）
+ * 2. 正在执行的（`endAt > at`）—— 保留，等它跑完
+ * 3. 其余未完成且 `endAt <= at` —— 已错过执行窗口，settle 会直接跳过，
+ *    留在界面上只会变成"永远执行不了的灰条"，一律移除
+ *
+ * 这样本地编辑始终生效（不再被服务端旧副本覆盖），同时不会留下一批
+ * 明明跳过了却还占着槽位的幽灵条目。
+ */
+export function reconcileSchedule(
+  local: ScheduleItem[],
+  serverDoneIds: Iterable<string>,
+  at: number,
+): ScheduleItem[] {
+  const done = new Set(serverDoneIds);
+  return local
+    .map((s) => (done.has(s.id) && !s.done ? { ...s, done: true } : s))
+    .filter((s) => s.done || s.endAt > at);
+}
+
 export interface SlotPlanInput {
   schedule: ScheduleItem[];
   /** 当前游戏时间 run.at */

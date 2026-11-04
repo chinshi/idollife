@@ -50,7 +50,7 @@ export function ShowPanel({
   api: AppApi;
   initialTab?: 'list' | 'mine' | 'calendar';
 }) {
-  const { run, seed, setCity, doDebut, dayLabel } = api;
+  const { run, seed, setCity, doDebut, dayLabel, busyKey } = api;
   const [tab, setTab] = useState<'list' | 'mine' | 'calendar'>(initialTab);
   const [selectedOcc, setSelectedOcc] = useState<ShowOccurrence | null>(null);
   const city = run.city ?? 3;
@@ -90,8 +90,8 @@ export function ShowPanel({
         </div>
         <div className="show-gate">
           <p>出道之后才能参与演出。</p>
-          <button className="primary" onClick={doDebut}>
-            去出道
+          <button className="primary" disabled={!!busyKey} onClick={doDebut}>
+            {busyKey === 'debut' ? '出道中…' : '去出道'}
           </button>
         </div>
       </>
@@ -113,8 +113,13 @@ export function ShowPanel({
         {firstWeek ? (
           <span className="show-city-switch">
             {([0, 1, 2, 3] as const).map((c) => (
-              <button key={c} className={c === city ? 'active' : ''} onClick={() => setCity(c)}>
-                {CITY_LABEL[c]}
+              <button
+                key={c}
+                className={c === city ? 'active' : ''}
+                disabled={!!busyKey}
+                onClick={() => setCity(c)}
+              >
+                {busyKey === `city:${c}` ? '切换中…' : CITY_LABEL[c]}
               </button>
             ))}
           </span>
@@ -176,8 +181,15 @@ export function ShowPanel({
                     </div>
                   )}
                   {b.status === 'booked' && (
-                    <button disabled={d <= 7} onClick={() => api.cancelBooking(b.id)}>
-                      {d <= 7 ? '已宣发不可取消' : '取消报名'}
+                    <button
+                      disabled={d <= 7 || !!busyKey}
+                      onClick={() => api.cancelBooking(b.id)}
+                    >
+                      {busyKey === `unbook:${b.id}`
+                        ? '取消中…'
+                        : d <= 7
+                          ? '已宣发不可取消'
+                          : '取消报名'}
                     </button>
                   )}
                 </div>
@@ -250,7 +262,7 @@ function ShowCard({ api, occ, onOpen }: { api: AppApi; occ: ShowOccurrence; onOp
 }
 
 export function ShowDetailModal({ api, occ, onClose }: { api: AppApi; occ: ShowOccurrence; onClose: () => void }) {
-  const { run, party, bookShow, schedule, dayLabel } = api;
+  const { run, party, bookShow, schedule, dayLabel, busyKey } = api;
   const bookings = run.bookings ?? [];
   const mineSlots = bookings
     .filter((b) => b.occurrenceId === occ.id && b.status !== 'cancelled')
@@ -377,13 +389,13 @@ export function ShowDetailModal({ api, occ, onClose }: { api: AppApi; occ: ShowO
           </div>
           <button
             className="primary"
-            disabled={disabled}
+            disabled={disabled || !!busyKey}
             onClick={() => {
               bookShow(occ, slot);
               onClose();
             }}
           >
-            {disabled ? disabledText : '报名'}
+            {disabled ? disabledText : busyKey?.startsWith('book:') ? '报名中…' : '报名'}
           </button>
         </div>
       </div>

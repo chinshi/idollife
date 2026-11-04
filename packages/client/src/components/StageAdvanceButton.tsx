@@ -20,7 +20,7 @@ function themeColorCss(color: string): string {
  * tooltip 复用 T-016d 的 portal + fixed（防闪断、贴边翻转），不受面板 overflow 裁切。
  */
 export function StageAdvanceButton({ api }: { api: AppApi }) {
-  const { run, doAdvanceStage } = api;
+  const { run, doAdvanceStage, busyKey } = api;
   const wrapRef = useRef<HTMLSpanElement | null>(null);
   const [tipPos, setTipPos] = useState<{ top: number; left: number; below: boolean } | null>(null);
   const hideTimer = useRef<number | null>(null);
@@ -47,11 +47,13 @@ export function StageAdvanceButton({ api }: { api: AppApi }) {
     if (!el) return;
     const r = el.getBoundingClientRect();
     const W = 260;
-    const H = 140;
-    const gap = 8;
-    const below = window.innerHeight - r.bottom < H + 16 && r.top > H + 16;
+    const gap = 6;
+    // T-040：只判断"下方放得下吗"，不再用估算高度算 top ——
+    // 之前硬编码 H=140 而实际内容只有 70–90px，提示框会被推出去老远。
+    // 现在 above 由 CSS `translateY(-100%)` 自己往上顶，永远贴住按钮 6px。
+    const below = window.innerHeight - r.bottom < 120 && r.top > 120;
     const left = Math.min(Math.max(8, r.left + r.width / 2 - W / 2), window.innerWidth - W - 8);
-    setTipPos({ top: below ? r.bottom + gap : Math.max(8, r.top - H - gap), left, below });
+    setTipPos({ top: below ? r.bottom + gap : r.top - gap, left, below });
   };
   const closeTipSoon = () => {
     if (hideTimer.current !== null) window.clearTimeout(hideTimer.current);
@@ -74,8 +76,12 @@ export function StageAdvanceButton({ api }: { api: AppApi }) {
         onMouseEnter={openTip}
         onMouseLeave={closeTipSoon}
       >
-        <button className={canGo ? 'primary stage-advance-btn' : 'stage-advance-btn'} disabled={!canGo} onClick={doAdvanceStage}>
-          {label}
+        <button
+          className={canGo ? 'primary stage-advance-btn' : 'stage-advance-btn'}
+          disabled={!canGo || !!busyKey}
+          onClick={doAdvanceStage}
+        >
+          {busyKey === 'stage' ? '晋级中…' : label}
         </button>
       </span>
       {tipPos

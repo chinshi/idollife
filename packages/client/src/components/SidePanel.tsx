@@ -3,7 +3,7 @@ import { BagGrid } from './BagGrid';
 import { StatsPanel } from './StatsPanel';
 
 export function SidePanel({ api }: { api: AppApi }) {
-  const { rightTab, setRightTab, setShowDivination } = api;
+  const { rightTab, setRightTab } = api;
 
   return (
     <aside className="col-right">
@@ -26,12 +26,8 @@ export function SidePanel({ api }: { api: AppApi }) {
         {rightTab === 'stats' ? (
           <div className="aux-body">
             {/* T-016b：侧栏属性页直接复用 StatsPanel（偶像名→阶段徽章+晋级按钮→固有→状态→成长→…） */}
+            {/* T-040：占卜入口从这里去掉（占卜只从主菜单「占卜」页进） */}
             <StatsPanel api={api} embedded />
-
-            <div className="row">
-              {/* T-021：晋级按钮已上移到属性面板顶部（与阶段徽章同行），这里只保留占卜入口 */}
-              <button onClick={() => setShowDivination(true)}>占卜</button>
-            </div>
           </div>
         ) : (
           <BagGrid api={api} />

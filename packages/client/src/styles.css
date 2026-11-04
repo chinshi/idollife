@@ -2648,6 +2648,8 @@ body { overflow: hidden; }
 }
 .stage-tip.below::after { bottom: 100%; border-bottom-color: rgba(15, 15, 18, 0.92); }
 .stage-tip.above::after { top: 100%; border-top-color: rgba(15, 15, 18, 0.92); }
+/* T-040：向上展开时由自身高度顶上去，不再靠 JS 猜高度（猜大了提示框会离按钮很远） */
+.stage-tip.above { transform: translateY(-100%); }
 
 @media (prefers-reduced-motion: reduce) {
   .stage-badge.s6,
@@ -2855,7 +2857,22 @@ body { overflow: hidden; }
 /* 属性面板顶部：阶段徽章 + 晋级按钮同行 */
 .attr-stage-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 2px 0 10px; }
 .attr-stage-row .stage-badge { margin: 0; }
-.stage-advance-btn { font-size: 11px; padding: 2px 10px; border-radius: 999px; }
+/* T-040：晋级按钮放大（原 11px/2px 10px 太小，且与徽章挤在一行显得更小） */
+.stage-advance-btn {
+  font-size: 12px;
+  padding: 4px 12px;
+  min-height: 24px;
+  border-radius: 999px;
+  flex-shrink: 0;
+  line-height: 1.2;
+}
+/* 按钮变大后让徽章可压缩，避免两端对齐时溢出侧栏 */
+.attr-stage-row .stage-badge {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 /* 安排行程：紧凑行动卡（T-023：单行、30–32px） */
 .action-card {

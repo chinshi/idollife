@@ -175,6 +175,47 @@ export type InviteResult = 'ok' | 'no-party' | 'not-found' | 'full' | 'taken' | 
 /** 组合人数上限（含主角自己） */
 export const PARTY_MAX = BALANCE.partyMax ?? 10;
 
+export type KickResult = 'ok' | 'no-party' | 'not-found';
+
+/**
+ * 把成员移出当前组合。被踢的人回到朋友圈并进入招募冷却。
+ *
+ * T-041：原来这段逻辑写在客户端里直接 `commitRun`，只改内存不落库，
+ * 刷新就还原成「人还在团里」。搬进 core 才能用同一个提交口写服务端。
+ */
+export function kickMember(state: RunState, memberId: string): { state: RunState; result: KickResult } {
+  const party = state.parties.find((p) => p.id === state.activePartyId);
+  if (!party || !state.activePartyId) return { state, result: 'no-party' };
+  const target = party.members.find((m) => m.id === memberId);
+  if (!target) return { state, result: 'not-found' };
+
+  return {
+    state: {
+      ...state,
+      parties: state.parties.map((p) =>
+        p.id === party.id ? { ...p, members: p.members.filter((m) => m.id !== memberId) } : p,
+      ),
+      friends: state.friends.map((f) =>
+        f.name === target.name
+          ? { ...f, partyId: null, cooldownUntil: state.at + RECRUIT_COOLDOWN_DAYS * DAY_MS }
+          : f,
+      ),
+      log: [
+        ...state.log,
+        {
+          at: state.at,
+          actionId: 'kick',
+          text: `${target.name} 离开了「${party.name}」。`,
+          staminaDelta: 0,
+          statDelta: {},
+          kind: 'action',
+        },
+      ],
+    },
+    result: 'ok',
+  };
+}
+
 /** 从朋友圈邀请一个人加入当前组合 */
 export function inviteFriend(
   state: RunState,

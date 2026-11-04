@@ -20,7 +20,6 @@ import {
   applyShow,
   biasLabel,
   buyItem,
-  RECRUIT_COOLDOWN_DAYS,
   cooldownLeftDays,
   TASKS,
   acceptTask,
@@ -34,6 +33,7 @@ import {
   CHANNELS,
   meetFriend,
   inviteFriend,
+  kickMember,
   previewAction,
   remainingTimes,
   createFans,
@@ -52,6 +52,9 @@ import {
   createClock,
   // T-027：槽位落位
   placeAction,
+  // T-040：清空/删除要跳过正在执行的条目；提交前按服务端执行结果对齐
+  isExecuting,
+  reconcileSchedule,
   START_AT,
   // T-028：推进公式
   gameAdvance,
@@ -66,6 +69,9 @@ import {
   useItem,
   unequipItem,
   judgeEnding,
+  // T-041：结局抉择落库 + 刷新后恢复结局页
+  recordEnding,
+  decidedEnding,
   memberStats,
   performShow,
   recruit,
@@ -237,6 +243,13 @@ function AppInner() {
   const [savedAt, setSavedAt] = useState<number | null>(bootRef.current?.updatedAt ?? null);
   const [notice, setNotice] = useState<string | null>(null);
   const [syncStatus, setSyncStatus] = useState<SyncStatus>('local');
+  /**
+   * T-040：正在等服务端回包的动作标识（null = 空闲）。
+   * 所有「点了要等服务器」的按钮都用它出加载态并互斥，
+   * 避免玩家以为没点上、连点导致 revision 冲突后数值突然跳变。
+   */
+  const [busyKey, setBusyKey] = useState<string | null>(null);
+  const busyRef = useRef<string | null>(null);
 
   const [phase, setPhase] = useState<'playing' | 'deciding' | 'ended'>('playing');
   const [ending, setEnding] = useState<Ending | null>(null);
@@ -513,6 +526,10 @@ function AppInner() {
   const advancingRef = useRef(false);
   useEffect(() => {
     if (!running || !clock || clock.status !== 'running') return;
+    // T-040：安排行程弹窗开着时停止自动推进。
+    // 回包会 applyServerState → 覆盖 schedule，玩家正在编辑的内容会被服务端旧副本冲掉，
+    // 表现就是「改行程时被正在执行的行程覆盖」。关掉弹窗后由 putSchedule 一次对齐。
+    if (showActions) return;
     const timer = window.setInterval(() => {
       const serverNow = Date.now() + serverOffsetRef.current;
       setGameNow(clock.gameAt + gameAdvance(serverNow - clock.wallAnchor, 1, TIME_SCALE));
@@ -550,7 +567,7 @@ function AppInner() {
       })();
     }, 100);
     return () => window.clearInterval(timer);
-  }, [running, clock, schedule, revision, runId]);
+  }, [running, clock, schedule, revision, runId, showActions]);
 
   const lastEnd = useMemo(
     () => schedule.reduce((max, s) => Math.max(max, s.endAt), run.at),
@@ -812,6 +829,16 @@ function AppInner() {
     }
     return marks;
   }, [visibleItems, run.at]);
+  /**
+   * T-041：存档里已经有结局抉择 → 刷新页面 / 换设备后直接回到结局页。
+   * 用 `prev ??` 是为了不覆盖刚算出来的那份，避免文案每 100ms 重算一次。
+   */
+  useEffect(() => {
+    if (!run.ending) return;
+    setEnding((prev) => prev ?? decidedEnding(run));
+    setPhase('ended');
+  }, [run]);
+
   // 有新日志 / 刷新页面时，滚到最底部显示最新一条
   useEffect(() => {
     const el = logRef.current;
@@ -882,17 +909,60 @@ function AppInner() {
     return null;
   }
 
-  /** 只提交排程：先对齐，PUT 不带 run（服务端沿用记录里的 run） */
+  /**
+   * T-040：包住「要等服务端回包」的动作。
+   *
+   * 为什么必须互斥：服务端用 `expectedRevision` 做乐观锁，连点两次会让第二次
+   * 拿旧 revision 打到 409，客户端再对齐重放，玩家看到的就是数值突然跳一次。
+   * 所以只要有动作在飞，其余提交类按钮全部禁用，被点的那个显示加载态。
+   */
+  function runBusy(key: string, task: () => Promise<unknown>) {
+    if (busyRef.current) return;
+    busyRef.current = key;
+    setBusyKey(key);
+    void Promise.resolve()
+      .then(task)
+      .catch(() => {
+        setNotice('操作没提交成功，稍后再试一次。');
+      })
+      .finally(() => {
+        busyRef.current = null;
+        setBusyKey(null);
+      });
+  }
+
+  /**
+   * 只提交排程：先对齐，PUT 不带 run（服务端沿用记录里的 run）
+   *
+   * T-040：这里的顺序必须小心 —— `serverAdvance` 回包带着**服务端那份** schedule，
+   * 直接 `applyServerState` 会把玩家刚改的行程整份盖掉（"改了没用"的真身）。
+   * 所以先抓本地快照，对齐只用来拿「哪些已执行完」和「现在到哪一刻」，
+   * 内容仍以本地编辑为准，再按 `reconcileSchedule` 去掉已错过执行窗口的条目。
+   */
   async function putSchedule(): Promise<void> {
     const token = await getAccessToken();
     if (!token) {
       setForceLogin(true);
       return;
     }
+    // 本地编辑快照：必须在对齐覆盖 scheduleRef 之前取
+    const local = scheduleRef.current;
+
     const aligned = await serverAdvance(runId, revision, null, token);
     const expected = aligned.kind === 'ok' ? aligned.data.revision : revision;
+    const at = aligned.kind === 'ok' ? aligned.data.run.at : runRef.current.at;
+    const serverSchedule = aligned.kind === 'ok' ? aligned.data.schedule : local;
     if (aligned.kind === 'ok') applyServerState(aligned.data);
-    const res = await putState(runId, expected, { schedule: scheduleRef.current }, token);
+
+    const merged = reconcileSchedule(
+      local,
+      serverSchedule.filter((s) => s.done).map((s) => s.id),
+      at,
+    );
+    scheduleRef.current = merged;
+    setSchedule(merged);
+
+    const res = await putState(runId, expected, { schedule: merged }, token);
     if (res.kind === 'ok') {
       applyServerState(res.data);
       setSyncStatus('synced');
@@ -934,12 +1004,22 @@ function AppInner() {
     setNotice('已取消，行程恢复原样。');
   }
 
-  /** T-021：清空全部未执行行程（保留已执行历史；直接清 + toast） */
+  /**
+   * T-021：清空全部未执行行程（保留已执行历史；直接清 + toast）
+   * T-040：正在执行的那条必须留下 —— 服务端 settle 已经把它算进本轮了，
+   * 本地把它删掉会让 run.at 停在一条不存在的行程里，表现为时间卡住。
+   */
   function clearPlan() {
-    const next = scheduleRef.current.filter((s) => s.done);
-    scheduleRef.current = next;
-    setSchedule(next);
-    setNotice('已清空全部未执行行程。');
+    const at = runRef.current.at;
+    const kept = scheduleRef.current.filter((s) => s.done || isExecuting(s, at));
+    const running = kept.filter((s) => !s.done).length;
+    scheduleRef.current = kept;
+    setSchedule(kept);
+    setNotice(
+      running > 0
+        ? `已清空后续行程（正在执行的 ${running} 条保留，等它跑完）。`
+        : '已清空全部未执行行程。',
+    );
     void putSchedule();
   }
 
@@ -971,7 +1051,14 @@ function AppInner() {
     setPlanTick((n) => n + 1);
   }
 
+  /** T-040：正在执行的条目不许删（删了服务端这一轮就没法结算） */
   function removeItem(id: string) {
+    const at = runRef.current.at;
+    const target = scheduleRef.current.find((s) => s.id === id);
+    if (target && isExecuting(target, at)) {
+      setNotice('这条正在执行，等它跑完再改。');
+      return;
+    }
     const next = scheduleRef.current.filter((s) => s.id !== id);
     scheduleRef.current = next;
     setSchedule(next);
@@ -1176,117 +1263,130 @@ function AppInner() {
   }
 
   function doMeet(channelId: string) {
-    const r = meetFriend(runRef.current, channelId, seed);
-    if (r.result === 'poor') {
-      setNotice('钱不够，先攒一点。');
-      return;
-    }
-    if (r.result === 'empty') {
-      commitRun(r.state);
-      setNotice('这次没遇到合适的人（钱照扣）。');
-      return;
-    }
-    if (r.result === 'dup') {
-      // 走的是「重复认识」分支：也要把新的状态写回去（扣钱 + 日志 + 默契）
-      commitRun(r.state);
-      setNotice('又见到了认识的人，默契 +1%。');
-      return;
-    }
-    if (r.result !== 'ok') {
-      setNotice('这个渠道暂时去不了。');
-      return;
-    }
-    commitRun(r.state);
-    // 不切换页签：留在「认识新朋友」方便连续抽取
-    setNotice(r.friend ? `认识了 ${r.friend.name}，已加入朋友圈。` : '认识了一个新朋友。');
+    runBusy(`meet:${channelId}`, () =>
+      pushFresh((b) => {
+        const r = meetFriend(b, channelId, seed);
+        if (r.result === 'poor') {
+          setNotice('钱不够，先攒一点。');
+          return b;
+        }
+        if (r.result === 'empty') {
+          setNotice('这次没遇到合适的人（钱照扣）。');
+          return r.state;
+        }
+        if (r.result === 'dup') {
+          // 走的是「重复认识」分支：也要把新的状态写回去（扣钱 + 日志 + 默契）
+          setNotice('又见到了认识的人，默契 +1%。');
+          return r.state;
+        }
+        if (r.result !== 'ok') {
+          setNotice('这个渠道暂时去不了。');
+          return b;
+        }
+        // 不切换页签：留在「认识新朋友」方便连续抽取
+        setNotice(r.friend ? `认识了 ${r.friend.name}，已加入朋友圈。` : '认识了一个新朋友。');
+        return r.state;
+      }),
+    );
   }
 
   function doReward(taskId: string) {
-    void pushFresh((b) => {
-      const r = claimTaskReward(b, taskId);
-      if (r.result !== 'ok') {
-        setNotice('任务还没完成。');
-        return b;
-      }
-      setNotice('任务奖励已领取。');
-      return r.state;
-    });
+    runBusy(`reward:${taskId}`, () =>
+      pushFresh((b) => {
+        const r = claimTaskReward(b, taskId);
+        if (r.result !== 'ok') {
+          setNotice('任务还没完成。');
+          return b;
+        }
+        setNotice('任务奖励已领取。');
+        return r.state;
+      }),
+    );
   }
 
   function doAccept(taskId: string) {
-    void pushFresh((b) => {
-      const r = acceptTask(b, taskId);
-      if (r.result !== 'ok') {
-        setNotice(r.result === 'done' ? '这个任务已经完成了。' : '现在还不能领取。');
-        return b;
-      }
-      setNotice('任务已领取，完成后会自动结算奖励。');
-      return r.state;
-    });
+    runBusy(`accept:${taskId}`, () =>
+      pushFresh((b) => {
+        const r = acceptTask(b, taskId);
+        if (r.result !== 'ok') {
+          setNotice(r.result === 'done' ? '这个任务已经完成了。' : '现在还不能领取。');
+          return b;
+        }
+        setNotice('任务已领取，完成后会自动结算奖励。');
+        return r.state;
+      }),
+    );
   }
 
   function doKick(memberId: string) {
-    const base = runRef.current;
-    const partyId = base.activePartyId;
-    if (!partyId) return;
-    const target = base.parties.find((p) => p.id === partyId)?.members.find((m) => m.id === memberId);
-    commitRun({
-      ...base,
-      parties: base.parties.map((p) =>
-        p.id === partyId ? { ...p, members: p.members.filter((m) => m.id !== memberId) } : p,
-      ),
-      friends: target
-        ? base.friends.map((f) =>
-            f.name === target.name
-              ? { ...f, partyId: null, cooldownUntil: base.at + RECRUIT_COOLDOWN_DAYS * DAY_MS }
-              : f,
-          )
-        : base.friends,
-    });
-    setNotice('已移出组合。');
+    runBusy(`kick:${memberId}`, () =>
+      pushFresh((b) => {
+        const r = kickMember(b, memberId);
+        if (r.result === 'no-party') {
+          setNotice('先创建一个组合，或者选一个当前组合。');
+          return b;
+        }
+        if (r.result !== 'ok') {
+          setNotice('这个人已经不在组合里了。');
+          return b;
+        }
+        setNotice('已移出组合。');
+        return r.state;
+      }).then((next) => {
+        // 回包才关确认框（T-040 同一条规矩）
+        if (next) setKickTarget(null);
+      }),
+    );
   }
 
   function doInvite(friendId: string) {
-    const r = inviteFriend(runRef.current, friendId);
-    if (r.result === 'no-party') {
-      setNotice('先创建或选择一个组合。');
-      return;
-    }
-    if (r.result === 'full') {
-      setNotice('组合满了（最多 10 人）。');
-      return;
-    }
-    if (r.result === 'taken') {
-      setNotice('这个人已经在别的组合里了。');
-      return;
-    }
-    if (r.result === 'cooldown') {
-      setNotice('这个人在冷却期，暂时不能入团。');
-      return;
-    }
-    if (r.result !== 'ok') return;
-    commitRun(r.state);
-    setNotice('已经邀请进组合了。');
+    runBusy(`invite:${friendId}`, () =>
+      pushFresh((b) => {
+        const r = inviteFriend(b, friendId);
+        if (r.result === 'no-party') {
+          setNotice('先创建或选择一个组合。');
+          return b;
+        }
+        if (r.result === 'full') {
+          setNotice('组合满了（最多 10 人）。');
+          return b;
+        }
+        if (r.result === 'taken') {
+          setNotice('这个人已经在别的组合里了。');
+          return b;
+        }
+        if (r.result === 'cooldown') {
+          setNotice('这个人在冷却期，暂时不能入团。');
+          return b;
+        }
+        if (r.result !== 'ok') return b;
+        setNotice('已经邀请进组合了。');
+        return r.state;
+      }),
+    );
   }
 
   function doRecruit() {
-    void pushFresh((b) => {
-      if (!b.activePartyId) {
-        setNotice('还没有组合，招募不了。');
-        return b;
-      }
-      const { state, result } = recruit(b, `${seed}:recruit:${b.log.length}`);
-      if (result === 'poor' || result === 'full' || result === 'no-party') {
-        setNotice(result === 'poor' ? '钱不够招募了。' : '现在不能招募。');
-        return b;
-      }
-      setNotice(state.log.at(-1)?.text ?? '');
-      return state;
-    });
+    runBusy('recruit', () =>
+      pushFresh((b) => {
+        if (!b.activePartyId) {
+          setNotice('还没有组合，招募不了。');
+          return b;
+        }
+        const { state, result } = recruit(b, `${seed}:recruit:${b.log.length}`);
+        if (result === 'poor' || result === 'full' || result === 'no-party') {
+          setNotice(result === 'poor' ? '钱不够招募了。' : '现在不能招募。');
+          return b;
+        }
+        setNotice(state.log.at(-1)?.text ?? '');
+        return state;
+      }),
+    );
   }
 
   function doSwitchParty(id: string) {
-    commitRun(switchParty(runRef.current, id));
+    // 切换的只是 activePartyId，但服务端存的还是旧值 → 换设备后组合会跳回去
+    runBusy(`switch:${id}`, () => pushFresh((b) => switchParty(b, id)));
   }
 
   /** 参加演出：排在最近的周六/周日，占满当天 3 个行动位 */
@@ -1344,22 +1444,24 @@ function AppInner() {
     scheduleRef.current = nextSchedule;
     setSchedule(nextSchedule);
     setNotice(`报名成功，出场费 ¥${fee} 已到账`);
-    void pushFresh((b) => ({
-      ...b,
-      money: b.money + fee,
-      bookings: [...(b.bookings ?? []), booking],
-      log: [
-        ...b.log,
-        {
-          at: b.at,
-          actionId: `book:${slot.showId}`,
-          text: `报名了《${occ.name}》${slot.slotName}位，出场费 ¥${fee} 已到账。`,
-          staminaDelta: 0,
-          statDelta: {},
-          kind: 'action',
-        },
-      ],
-    }));
+    runBusy(`book:${bookingId}`, () =>
+      pushFresh((b) => ({
+        ...b,
+        money: b.money + fee,
+        bookings: [...(b.bookings ?? []), booking],
+        log: [
+          ...b.log,
+          {
+            at: b.at,
+            actionId: `book:${slot.showId}`,
+            text: `报名了《${occ.name}》${slot.slotName}位，出场费 ¥${fee} 已到账。`,
+            staminaDelta: 0,
+            statDelta: {},
+            kind: 'action',
+          },
+        ],
+      })),
+    );
   }
 
   /** T-032：取消报名（d≤7 禁止；7<d≤15 违约金） */
@@ -1376,59 +1478,67 @@ function AppInner() {
     scheduleRef.current = nextSchedule;
     setSchedule(nextSchedule);
     setNotice(r.penalty > 0 ? `已取消，追回违约金 ¥${r.penalty}。` : '已取消报名。');
-    void pushFresh((b) => ({
-      ...b,
-      money: b.money - r.penalty,
-      bookings: (b.bookings ?? []).map((x) =>
-        x.id === bookingId ? { ...x, status: 'cancelled' as const } : x,
-      ),
-      log: [
-        ...b.log,
-        {
-          at: b.at,
-          actionId: `cancel:${booking.showId}`,
-          text: r.penalty > 0
-            ? `取消了《${booking.name}》的报名，扣违约金 ¥${r.penalty}。`
-            : `取消了《${booking.name}》的报名。`,
-          staminaDelta: 0,
-          statDelta: {},
-          kind: 'action',
-        },
-      ],
-    }));
+    runBusy(`unbook:${bookingId}`, () =>
+      pushFresh((b) => ({
+        ...b,
+        money: b.money - r.penalty,
+        bookings: (b.bookings ?? []).map((x) =>
+          x.id === bookingId ? { ...x, status: 'cancelled' as const } : x,
+        ),
+        log: [
+          ...b.log,
+          {
+            at: b.at,
+            actionId: `cancel:${booking.showId}`,
+            text: r.penalty > 0
+              ? `取消了《${booking.name}》的报名，扣违约金 ¥${r.penalty}。`
+              : `取消了《${booking.name}》的报名。`,
+            staminaDelta: 0,
+            statDelta: {},
+            kind: 'action',
+          },
+        ],
+      })),
+    );
   }
 
   /** T-032：城市切换（第一周内；之后锁定） */
   function doSetCity(city: 0 | 1 | 2 | 3) {
-    void pushFresh((b) => {
-      if (b.at >= b.startedAt + WEEK_MS) {
-        setNotice('搬迁功能后续开放。');
-        return b;
-      }
-      setNotice('城市已切换。');
-      return { ...b, city };
-    });
+    runBusy(`city:${city}`, () =>
+      pushFresh((b) => {
+        if (b.at >= b.startedAt + WEEK_MS) {
+          setNotice('搬迁功能后续开放。');
+          return b;
+        }
+        setNotice('城市已切换。');
+        return { ...b, city };
+      }),
+    );
   }
 
   function doDivine() {
-    void pushFresh((b) => {
-      const { state, result, cost } = divine(b);
-      if (result === 'poor') {
-        setNotice(`占卜要 ${cost}，钱不够。`);
-        return b;
-      }
-      setReading(divinationReading(state));
-      setNotice(`花 ${cost} 占了一卦。`);
-      return state;
-    });
+    runBusy('divine', () =>
+      pushFresh((b) => {
+        const { state, result, cost } = divine(b);
+        if (result === 'poor') {
+          setNotice(`占卜要 ${cost}，钱不够。`);
+          return b;
+        }
+        setReading(divinationReading(state));
+        setNotice(`花 ${cost} 占了一卦。`);
+        return state;
+      }),
+    );
   }
 
   function doDebut() {
-    void pushFresh((b) => {
-      const next = syncStageReached(debut(b));
-      setNotice(next === b ? '还没达到出道条件。' : '出道了！现在可以组建组合。');
-      return next;
-    });
+    runBusy('debut', () =>
+      pushFresh((b) => {
+        const next = syncStageReached(debut(b));
+        setNotice(next === b ? '还没达到出道条件。' : '出道了！现在可以组建组合。');
+        return next;
+      }),
+    );
   }
 
   /** T-018：晋级（下一阶段是 seq4 时走出道演出流程） */
@@ -1438,110 +1548,127 @@ function AppInner() {
       doDebut();
       return;
     }
-    void pushFresh((b) => {
-      const result = advanceStage(b);
-      if (result.result !== 'ok') {
+    runBusy('stage', () =>
+      pushFresh((b) => {
+        const result = advanceStage(b);
+        if (result.result !== 'ok') {
+          setNotice(result.notice);
+          return b;
+        }
         setNotice(result.notice);
-        return b;
-      }
-      setNotice(result.notice);
-      return result.state;
-    });
+        return result.state;
+      }),
+    );
   }
 
   function doBuy(item: EquipItem) {
-    void pushFresh((b) => {
-      const { state, result } = buyItem(b, item);
-      if (result !== 'ok') {
-        setNotice('钱不够。');
-        return b;
-      }
-      setNotice(state.log.at(-1)?.text ?? '');
-      return state;
-    });
+    runBusy(`buy:${item.id}`, () =>
+      pushFresh((b) => {
+        const { state, result } = buyItem(b, item);
+        if (result !== 'ok') {
+          setNotice('钱不够。');
+          return b;
+        }
+        setNotice(state.log.at(-1)?.text ?? '');
+        return state;
+      }),
+    );
   }
 
   function doEquipBag(invId: string, targetSlot?: EquipSlot) {
-    void pushFresh((b) => {
-      const outcome = equipItem(b, invId, targetSlot);
-      if (outcome.result === 'requirement') {
-        const entry = b.inventory.find((e) => e.id === invId);
-        const def = entry ? equipDefOf(entry) : null;
-        setNotice(`装备要求未满足：${def ? describeCondition(def.requirement) : '条件不足'}。`);
-        return b;
-      }
-      if (outcome.result !== 'ok') {
+    runBusy(`equip:${invId}`, () =>
+      pushFresh((b) => {
+        const outcome = equipItem(b, invId, targetSlot);
+        if (outcome.result === 'requirement') {
+          const entry = b.inventory.find((e) => e.id === invId);
+          const def = entry ? equipDefOf(entry) : null;
+          setNotice(`装备要求未满足：${def ? describeCondition(def.requirement) : '条件不足'}。`);
+          return b;
+        }
+        if (outcome.result !== 'ok') {
+          setNotice(outcome.notice);
+          return b;
+        }
         setNotice(outcome.notice);
-        return b;
-      }
-      setNotice(outcome.notice);
-      return outcome.state;
-    });
+        return outcome.state;
+      }),
+    );
   }
 
   function doUnequipBag(slot: EquipSlot) {
-    void pushFresh((b) => {
-      const { state, notice } = unequipItem(b, slot);
-      setNotice(notice);
-      return state;
-    });
+    runBusy(`unequip:${slot}`, () =>
+      pushFresh((b) => {
+        const { state, notice } = unequipItem(b, slot);
+        setNotice(notice);
+        return state;
+      }),
+    );
   }
 
   /** T-019：使用消耗品 */
   function doUseItem(invId: string) {
-    void pushFresh((b) => {
-      const outcome = useItem(b, invId);
-      if (outcome.result !== 'ok') {
+    runBusy(`use:${invId}`, () =>
+      pushFresh((b) => {
+        const outcome = useItem(b, invId);
+        if (outcome.result !== 'ok') {
+          setNotice(outcome.notice);
+          return b;
+        }
         setNotice(outcome.notice);
-        return b;
-      }
-      setNotice(outcome.notice);
-      return outcome.state;
-    });
+        return outcome.state;
+      }),
+    );
   }
 
   /** T-019：便利店买消耗品 */
   function doBuyConsumable(itemId: string) {
     const def = ITEMS_MAP[itemId];
     if (!def) return;
-    void pushFresh((b) => {
-      if (b.money < def.price) {
-        setNotice('钱不够。');
-        return b;
-      }
-      const withItem = addConsumable(b, itemId);
-      setNotice(`买下了「${def.name}」。`);
-      return {
-        ...withItem,
-        money: withItem.money - def.price,
-        log: [
-          ...withItem.log,
-          {
-            at: withItem.at,
-            actionId: 'buy-consume',
-            text: `在便利店买了「${def.name}」。`,
-            staminaDelta: 0,
-            statDelta: {},
-            kind: 'action',
-          },
-        ],
-      };
-    });
+    runBusy(`consume:${itemId}`, () =>
+      pushFresh((b) => {
+        if (b.money < def.price) {
+          setNotice('钱不够。');
+          return b;
+        }
+        const withItem = addConsumable(b, itemId);
+        setNotice(`买下了「${def.name}」。`);
+        return {
+          ...withItem,
+          money: withItem.money - def.price,
+          log: [
+            ...withItem.log,
+            {
+              at: withItem.at,
+              actionId: 'buy-consume',
+              text: `在便利店买了「${def.name}」。`,
+              staminaDelta: 0,
+              statDelta: {},
+              kind: 'action',
+            },
+          ],
+        };
+      }),
+    );
   }
 
-  async function choose(eventId: string, choiceId: string) {
+  /**
+   * T-040：事件抉择要等回包 —— 弹窗留到结果回来再关，期间按钮显示「处理中」。
+   * 之前是点完立刻关弹窗、数值过一会儿才变，观感就是"点了没反应然后突然跳"。
+   */
+  function choose(eventId: string, choiceId: string) {
     const wasMajor = runRef.current.pendingEvent === eventId;
-    setActiveEventId(null);
-    setNotice('选择已记录。');
     dbg('选择 ' + choiceId);
-    await pushFresh((b) => applyChoice(b, eventId, choiceId));
-
-    const rest = scheduleRef.current.filter((s) => !s.done);
-    if (wasMajor && resumeAfterEvent.current && rest.length > 0) {
-      resumeAfterEvent.current = false;
-      dbg('事件处理完，自动续跑 ' + String(rest.length) + ' 个');
-      void advanceRef.current();
-    }
+    runBusy(`choice:${choiceId}`, async () => {
+      await pushFresh((b) => applyChoice(b, eventId, choiceId));
+      setActiveEventId(null);
+      setNotice('选择已记录。');
+      const rest = scheduleRef.current.filter((s) => !s.done);
+      if (wasMajor && resumeAfterEvent.current && rest.length > 0) {
+        resumeAfterEvent.current = false;
+        dbg('事件处理完，自动续跑 ' + String(rest.length) + ' 个');
+        void advanceRef.current();
+      }
+    });
   }
 
   async function doSignOut() {
@@ -1559,11 +1686,24 @@ function AppInner() {
     await signOut();
   }
 
+  /**
+   * T-041：结局抉择要落库。
+   *
+   * 原来这里只是 `pushFresh((b) => b)` —— 什么都没写，刷新/换设备又回到游戏里。
+   * 现在把抉择本身写进存档（`run.ending`），结局文案仍由 `judgeEnding` 现算，
+   * 所以不会因为数值后续变化而"结局和当下状态不匹配"。
+   */
   function decide(d: 'stay' | 'backstage' | 'leave') {
-    setEnding(judgeEnding(runRef.current, d));
-    setPhase('ended');
-    setNotice(null);
-    void pushFresh((b) => b);
+    runBusy('decide', async () => {
+      const next = await pushFresh((b) => recordEnding(b, d));
+      if (!next) {
+        setNotice('结局没能保存到云端，稍后再试一次。');
+        return;
+      }
+      setEnding(decidedEnding(next) ?? judgeEnding(next, d));
+      setPhase('ended');
+      setNotice(null);
+    });
   }
 
   if (!supabase) {
@@ -1648,6 +1788,8 @@ function AppInner() {
     advance,
     stopCurrent,
     openPlan,
+    busyKey,
+    choose,
     bookShow: doBookShow,
     cancelBooking: doCancelBooking,
     setCity: doSetCity,
@@ -1936,6 +2078,7 @@ function AppInner() {
                 onAccept={doAccept}
                 onReward={doReward}
                 dayLabel={dayLabel}
+                busyKey={busyKey}
               />
             )}
             {mainTab === 'friends' && <FriendsPanel api={api} />}

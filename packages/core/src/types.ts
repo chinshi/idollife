@@ -161,6 +161,11 @@ export interface RunState {
   pendingEvent: string | null;
   /** 普通事件队列：不暂停时间，玩家有空再处理 */
   eventQueue: string[];
+  /**
+   * T-041：结局抉择。一旦写入就代表这局结束，重开才会清掉。
+   * 老档缺省视为「还没做抉择」。
+   */
+  ending?: { decision: 'stay' | 'backstage' | 'leave'; at: number } | null;
   log: LogEntry[];
 }
 
