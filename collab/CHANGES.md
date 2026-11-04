@@ -11,6 +11,10 @@
 
 ## 记录
 
+- `2026-11-05 00:45` ｜ 来源：用户直派 T-041 ｜ 把四处「只改内存不落库」的动作接进统一提交口（`runBusy` + `pushFresh`）：认识新朋友 `doMeet`、邀请入团 `doInvite`、请离成员 `doKick`（逻辑抽成 core `kickMember` 纯函数）、切换组合 `doSwitchParty`；结局抉择 `decide` 原来只发一次空调请求，改为把抉择写进 `run.ending`（core `recordEnding` / `decidedEnding`），刷新或换设备能回到结局页；「再来一次」改走 `doRestart`（会新建云端档）；上述按钮补加载态。守卫 `ending-record.test.ts` 8 条，真实服务端回读四项通过 ｜ `packages/core/src/{friends,endings,types}.ts`、`packages/core/tests/ending-record.test.ts`、`packages/client/src/{App.tsx,components/api.ts,components/Modals.tsx,components/FriendsPanel.tsx,components/PartyPanel.tsx}`、`collab/T-041-落库补齐.md`
+
+- `2026-11-05 00:40` ｜ 来源：用户直派 T-040 ｜ ①清空/删行程跳过「正在执行」的条目（core 新增 `isExecuting`）；②`putSchedule` 先抓本地快照再对齐，按 `reconcileSchedule` 合并服务端 done 并丢掉已错过窗口的条目（修「改行程被服务端旧副本覆盖」）；编辑弹窗打开期间停止自动 advance；③服务端 `PUT /v1/state` 在没有未完成排程时把 running 收敛成 paused（修清空后的僵尸钟）；④晋级按钮放大 + tooltip 改用 `translateY(-100%)` 贴住按钮；⑤属性页占卜入口移除；⑥新增 `busyKey` 统一加载态，覆盖领取/接取/报名/取消/城市/占卜/晋级/出道/购买/使用/装备/卸下/事件抉择 ｜ `packages/core/src/plan.ts`、`packages/core/tests/plan-reconcile.test.ts`、`packages/server/src/app.ts`、`packages/server/tests/clock-api.test.ts`、`packages/client/src/{App.tsx,styles.css}`、`packages/client/src/components/{api.ts,Modals.tsx,TaskPanel.tsx,ShowPanel.tsx,ShopPanel.tsx,BagGrid.tsx,StageAdvanceButton.tsx,SidePanel.tsx}`、`collab/T-040-行程冲突与加载态.md`
+
 - `2026-11-04 22:23` ｜ 来源：T-039-r4 返工 ｜ 删除 mergeAligned/rebaseChange/pushWholeState；新增 pushFresh（先对齐后用 aligned base compute 一次）+ putSchedule；20 处调用点函数化，重开档直接 putState；新增 freshBase/shouldWriteFresh 与 G17/G18 用例 ｜ `packages/client/src/{App.tsx,components/{advance-scheduler.ts,fresh-state.ts}}`、`packages/client/tests/{advance-scheduler.test.ts,fresh-state.test.ts}`、`collab/T-039-r4-先对齐再算.md`
 
 - `2026-11-04 22:18` ｜ 来源：T-039-r3 返工 ｜ `pushWholeState` 只收函数；新增 `mergeAligned` 把变更相对旧 run 的数值/日志增量合并到对齐后 base；20 个调用点改函数形式，重开档直接 putState；G16 用例+证红 ｜ `packages/client/src/{App.tsx,components/advance-scheduler.ts}`、`packages/client/tests/advance-scheduler.test.ts`、`collab/T-039-r3-状态变更要 rebase 全部字段.md`
