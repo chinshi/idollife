@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import {
-  ACTIONS, ACTION_LIST, ACTION_MS, CATEGORY_LABEL, DAILY_SLOTS, DAY_MS, SHOW_ACTION_ID, SHOW_DURATION_MS, buildDaySlots, getStoryEvent, availableChoices, remainingTimes, canShowAction, cooldownLeftDays, type ActionCategory, type ScheduleItem,
+  ACTIONS, ACTION_MS, CATEGORY_LABEL, DAILY_SLOTS, DAY_MS, SHOW_ACTION_ID, SHOW_DURATION_MS, buildDaySlots, getStoryEvent, availableChoices, remainingTimes, cooldownLeftDays, type ScheduleItem,
 } from '@idollife/core';
 import type { AppApi } from './api';
 import { ActionCard } from './ActionCard';
 import { AuthForm } from './AuthForm';
+import { groupPlanActions } from './action-groups';
 import { Modal } from './Modal';
 
 /** 弹窗需要的上下文：AppApi + 弹窗专用的临时状态 */
@@ -192,13 +193,7 @@ export function Modals({ ctx }: { ctx: ModalCtx }) {
             <Modal title="安排行程" wide dismissOnMask={false} onClose={cancelPlan}>
               <div className="plan">
                 <div className="plan-actions">
-                  {(['growth', 'recover', 'work', 'performance'] as ActionCategory[]).map((cat) => {
-                    const list = ACTION_LIST.filter(
-                      (a) =>
-                        a.category !== 'performance' && // T-032：演出统一走「演出」菜单报名
-                        canShowAction(run, a.id),
-                    );
-                    if (list.length === 0) return null;
+                  {groupPlanActions(run).map(({ cat, items: list }) => {
                     const collapsed = !!collapsedCats[cat];
                     return (
                       <div key={cat} className="action-group">

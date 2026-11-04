@@ -35,6 +35,35 @@ export function advanceBlockText(
     : `「${actionName}」${scopeWord}次数已用完${times}，删掉它，后面的行程才能走。`;
 }
 
+/**
+ * T-038：推进入口门禁。
+ *
+ * `advance()` 里任何 return 都必须走这里，由主区横幅给出可见原因——
+ * 不允许出现"点了没反应"（T-035 只治了 preflight 那一条出口，另外四条仍静默）。
+ * 返回 null = 放行。
+ */
+export interface AdvanceGateInput {
+  /** 已有一批在跑 */
+  running: boolean;
+  /** 未完成行程条数 */
+  pendingCount: number;
+  /** 有未处理的重点事件 */
+  hasPendingEvent: boolean;
+}
+
+export function advanceGate(i: AdvanceGateInput): AdvanceBlock | null {
+  if (i.running) {
+    return { reason: 'running', text: '正在推进中，等这一批走完，或点「停止」再改行程。' };
+  }
+  if (i.pendingCount === 0) {
+    return { reason: 'empty', text: '没有待执行的行程，点「去安排行程」至少加一条。' };
+  }
+  if (i.hasPendingEvent) {
+    return { reason: 'event', text: '有一条重点事件还没处理，先处理它才能继续推进。' };
+  }
+  return null;
+}
+
 /** 统一生成横幅状态与顶栏徽章 reason（保证 lastStop 非空） */
 export function makeAdvanceBlock(
   pf: PreflightResult,

@@ -42,7 +42,6 @@ export interface AppApi {
   gameNow: number;
   remainMs: number;
   currentPct: number;
-  speed: number;
   lastStop: string;
   stopText: Record<string, string>;
 

@@ -31,6 +31,8 @@ export interface SettleOptions {
   storyEvents?: boolean;
   /** 周目结束时间点；到达即停止并提示结局 */
   endAt?: number;
+  /** 单次最多结算条数，默认不限制 */
+  maxSteps?: number;
 }
 
 export function settle(
@@ -73,8 +75,14 @@ export function settle(
   let cursor = Math.max(from, run.at);
 
   const items = [...schedule].sort((a, b) => a.startAt - b.startAt);
+  const maxSteps = opts.maxSteps ?? Number.POSITIVE_INFINITY;
+  let steps = 0;
 
   for (const item of items) {
+    if (steps >= maxSteps) {
+      stoppedReason = 'time';
+      break;
+    }
     if (item.startAt < cursor) continue;
     if (item.endAt > to) {
       stoppedReason = 'time';
@@ -85,6 +93,7 @@ export function settle(
       const booking = (state.bookings ?? []).find((b) => b.id === item.bookingId);
       state = booking ? settleShow(state, item, booking) : { ...state, at: item.endAt };
       executed.push(item.id);
+      steps += 1;
       continue;
     }
 
@@ -193,6 +202,7 @@ export function settle(
     state.at = item.endAt;
     cursor = item.endAt;
     executed.push(item.id);
+    steps += 1;
 
     // 常规事件：只改数值，不动三轴
     if (rng() < routineChance) {

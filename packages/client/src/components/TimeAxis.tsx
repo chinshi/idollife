@@ -1,5 +1,5 @@
 import React from 'react';
-import { ACTIONS, ALLOWED_SPEEDS, SHOW_ACTION_ID, TIME_SCALE, type ScheduleItem } from '@idollife/core';
+import { ACTIONS, SHOW_ACTION_ID, TIME_SCALE, type ScheduleItem } from '@idollife/core';
 
 export interface TimeAxisProps {
   pastItems: ScheduleItem[];
@@ -10,8 +10,6 @@ export interface TimeAxisProps {
   pct: number;
   dayBreakLabels: Map<string, string>;
   actionNo: (it: { id: string; startAt: number }) => number;
-  speed: number;
-  setSpeed: (v: number) => void;
   pendingCount: number;
   todayIndex: number;
   weekdayName: (d: number) => string;
@@ -34,8 +32,6 @@ export function TimeAxis(props: TimeAxisProps) {
     pct,
     dayBreakLabels,
     actionNo,
-    speed,
-    setSpeed,
     pendingCount,
     todayIndex,
     weekdayName,
@@ -99,7 +95,7 @@ export function TimeAxis(props: TimeAxisProps) {
               {running && nextItem
                 ? remainMs === 0
                   ? '结算中…'
-                  : `还剩 ${Math.ceil(remainMs / (Math.max(1, speed) * TIME_SCALE) / 1000)} 秒`
+                  : `还剩 ${Math.ceil(remainMs / TIME_SCALE / 1000)} 秒`
                 : nextItem
                   ? `行动${actionNo(nextItem)} · 待执行`
                   : '时间已停止'}
@@ -138,17 +134,6 @@ export function TimeAxis(props: TimeAxisProps) {
         <div className="tlx-tools">
           <div className="tools-left">
             <button onClick={onOpenStops}>设置暂停时间点</button>
-            <div className="speed-row">
-              {ALLOWED_SPEEDS.map((v) => (
-                <button
-                  key={v}
-                  className={speed === v ? 'mini-tab active' : 'mini-tab'}
-                  onClick={() => setSpeed(v)}
-                >
-                  {v}×
-                </button>
-              ))}
-            </div>
           </div>
 
           <div className="tools-center">

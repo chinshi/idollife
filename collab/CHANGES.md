@@ -11,6 +11,16 @@
 
 ## 记录
 
+- `2026-11-04 22:23` ｜ 来源：T-039-r4 返工 ｜ 删除 mergeAligned/rebaseChange/pushWholeState；新增 pushFresh（先对齐后用 aligned base compute 一次）+ putSchedule；20 处调用点函数化，重开档直接 putState；新增 freshBase/shouldWriteFresh 与 G17/G18 用例 ｜ `packages/client/src/{App.tsx,components/{advance-scheduler.ts,fresh-state.ts}}`、`packages/client/tests/{advance-scheduler.test.ts,fresh-state.test.ts}`、`collab/T-039-r4-先对齐再算.md`
+
+- `2026-11-04 22:18` ｜ 来源：T-039-r3 返工 ｜ `pushWholeState` 只收函数；新增 `mergeAligned` 把变更相对旧 run 的数值/日志增量合并到对齐后 base；20 个调用点改函数形式，重开档直接 putState；G16 用例+证红 ｜ `packages/client/src/{App.tsx,components/advance-scheduler.ts}`、`packages/client/tests/advance-scheduler.test.ts`、`collab/T-039-r3-状态变更要 rebase 全部字段.md`
+
+- `2026-11-04 22:15` ｜ 来源：T-039-r2 返工 ｜ 修在线调度不触发（100ms tick + shouldFireAdvance）、挂机过期项停死（exhausted 未完成保持 running）、运行中改状态 409（对齐后 rebase at）；清死代码；nextStopAt 去 run 参数并按 status 返回；补 G11~G15 用例 ｜ `packages/client/src/{App.tsx,components/advance-scheduler.ts}`、`packages/client/tests/advance-scheduler.test.ts`、`packages/core/src/clock.ts`、`packages/core/tests/clock.test.ts`、`packages/server/src/app.ts`、`packages/server/tests/clock-api.test.ts`、`collab/T-039-r2-三条必退.md`
+
+- `2026-11-04 22:08` ｜ 来源：用户直派 T-039 ｜ 推进流程重设：ClockState 去 speed/session，core 新增 maxTargetAt/advanceAnchor/nextStopAt；server 四端点（GET/PUT state、advance、start、pause）唯一结算；client 删 outbox/只读/倍速/tick settle，纯展示+到点 advance；旧 T-036/同步文件移入 _archive ｜ `packages/core/src/{clock.ts,settle.ts}`、`packages/core/tests/clock.test.ts`、`packages/server/src/app.ts`、`packages/server/tests/clock-api.test.ts`、`packages/client/src/{App.tsx,api/sync.ts,components/{TimeAxis.tsx,api.ts,DivinePanel.tsx,FriendsPanel.tsx,PartyPanel.tsx}}`、`_archive/*`、`collab/T-039-推进时间流程重设.md`
+
+- `2026-11-04 12:50` ｜ 来源：策划（T-038）｜ **推进入口不再有静默出口**：新增 `advanceGate`（只读 / 运行中 / 待办 0 / 重点事件 四条 return 统一走主区 BlockBar 文案），`advance()` 入口追加一行诊断日志（at / 待办 / 队首 id+actionId+startAt / running / 只读）；新增 client 6 条用例；证红：去掉待办 0 判断 → `expected undefined to be 'empty'`、`expected null not to be null` ｜ `packages/client/src/{App.tsx,components/advance-block.ts}`、`packages/client/tests/advance-gate.test.ts`、`collab/T-038-推进入口统一反馈.md`
+
 - `2026-11-04 10:30` ｜ 来源：策划（T-036 终验）｜ 收紧 `buildSignedOutState` 用例：原来的 `expect(fresh.runId).not.toBe(old)` 拿对象比字符串恒真（假断言），改为「两次调用 runId 必须不同 + 形如 run-」，并补 `savedAt === null`；亲手证红：把 `runId: fresh.runId` 改成固定 `'run-fixed'` → `expected 'run-fixed' not to be 'run-fixed'` ｜ `packages/client/tests/t036-account.test.ts`、`collab/T-036-多设备登录态互斥.md`
 
 - `2026-11-04 02:20` ｜ 来源：策划（T-034 终验）｜ **docs/29 §5.4 改写 NPC 填充曲线**为截止前集中填充版（d>14=0 / 14→0.05 … 10→0.65 / 9·8→填满「已满」/ ≤7「已宣发」），补「已满 vs 已宣发」状态定义与设计意图；T-034 卡片置 done 并追加策划终验 ｜ `docs/29-演出系统（报名制）设计案.md`、`collab/T-034-演出列表体验重做.md`
