@@ -50,6 +50,8 @@ export interface ClockState {
   wallAnchor: number;
   speed: number;
   sessionId: string | null;
+  /** T-036：最后一次所有权变更的服务端时间（仅排查，不参与裁决） */
+  ownerTs?: number;
   updatedAt: number;
 }
 
@@ -63,6 +65,7 @@ export function createClock(gameAt: number, overrides: Partial<ClockState> = {})
     wallAnchor: 0,
     speed: 1,
     sessionId: null,
+    ownerTs: 0,
     updatedAt: 0,
     ...overrides,
   };

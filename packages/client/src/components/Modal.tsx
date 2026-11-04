@@ -1,3 +1,4 @@
+import React from 'react';
 import type { ReactNode } from 'react';
 
 export function CrashBanner({ msg, onClose }: { msg: string | null; onClose: () => void }) {

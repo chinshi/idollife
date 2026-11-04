@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { ShowOccurrence, ShowSlotDef } from '@idollife/core';
+import { npcOccupied, scheduleWeek, type ShowOccurrence, type ShowSlotDef } from '@idollife/core';
 import { cardState, firstOpenSlotIndex } from '../src/components/show-card';
 
 const at = Date.UTC(2026, 0, 1, 9, 0, 0);
@@ -61,5 +61,15 @@ describe('T-033 报名卡状态', () => {
     const o = occ(at + 15 * DAY);
     expect(firstOpenSlotIndex(o, new Set([1, 2, 3, 4]))).toBe(-1);
     expect(firstOpenSlotIndex(o, new Set([1]))).toBe(1);
+  });
+
+  it('T-034 可达性：一线 4 顺位 d=8/9 的 cardState 是 full', () => {
+    const real = scheduleWeek(1, 3, 'seed-abc').find((o) => o.slots.length >= 4)!;
+    expect(real).toBeTruthy();
+    for (const d of [9, 8]) {
+      const npc = npcOccupied(real, real.startAt - d * DAY, []);
+      expect(cardState(real, real.startAt - d * DAY, npc)).toBe('full');
+      expect(npc.size).toBe(real.slots.length);
+    }
   });
 });

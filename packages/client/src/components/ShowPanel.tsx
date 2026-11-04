@@ -1,8 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import {
-  ACTIONS,
   DAY_MS,
-  DAILY_SLOTS,
   START_AT,
   WEEK_MS,
   canBook,
@@ -12,17 +10,16 @@ import {
   effectiveStats,
   entryFee,
   npcOccupied,
-  partyFameStub,
   scheduleWeek,
   SHOW_SLOTS_DEFS,
   TIER_LABEL,
   weekIndexOf,
   type ShowOccurrence,
-  type ShowSlotDef,
 } from '@idollife/core';
-import { cardState, firstOpenSlotIndex } from './show-card';
+import { cardState, firstOpenSlotIndex, type ShowCardState } from './show-card';
 import type { AppApi } from './api';
 import { showHeaderText } from './show-header';
+import { Modal } from './Modal';
 
 const CITY_LABEL: Record<number, string> = { 0: '超一线', 1: '一线', 2: '二线', 3: '三线' };
 const TYPE_LABEL: Record<string, string> = {
@@ -33,7 +30,19 @@ const TYPE_LABEL: Record<string, string> = {
   shoot: '拍摄',
 };
 
-/** T-032 演出（报名制） */
+function freeSlots(occ: ShowOccurrence, npc: Set<number>, mineSlots: number[]): number {
+  const blocked = new Set([...npc, ...mineSlots]);
+  return occ.slots.filter((s) => !blocked.has(s.slot)).length;
+}
+
+function statusWeight(state: ShowCardState, mineCount: number): number {
+  if (mineCount > 0) return 0;
+  if (state === 'open') return 1;
+  if (state === 'full') return 2;
+  return 3;
+}
+
+/** T-032 演出（报名制）T-034 列表/详情重做 */
 export function ShowPanel({
   api,
   initialTab = 'list',
@@ -41,8 +50,9 @@ export function ShowPanel({
   api: AppApi;
   initialTab?: 'list' | 'mine' | 'calendar';
 }) {
-  const { run, party, seed, bookShow, cancelBooking, setCity, doDebut, dayLabel } = api;
+  const { run, seed, setCity, doDebut, dayLabel } = api;
   const [tab, setTab] = useState<'list' | 'mine' | 'calendar'>(initialTab);
+  const [selectedOcc, setSelectedOcc] = useState<ShowOccurrence | null>(null);
   const city = run.city ?? 3;
   const cityInfo = cityDef(city);
   const bookings = run.bookings ?? [];
@@ -51,18 +61,24 @@ export function ShowPanel({
   const occurrences = useMemo(() => {
     const w = weekIndexOf(run.at);
     const list: ShowOccurrence[] = [];
-    for (let i = 0; i < 4; i += 1) {
-      list.push(...scheduleWeek(city, w + i, seed));
-    }
+    for (let i = 0; i < 4; i += 1) list.push(...scheduleWeek(city, w + i, seed));
     return list
       .filter((o) => {
         const d = daysUntil(o.startAt, run.at);
         return d >= -1 && d <= 60;
       })
+      .map((occ) => {
+        const mineSlots = bookings
+          .filter((b) => b.occurrenceId === occ.id && b.status !== 'cancelled')
+          .map((b) => b.slot);
+        const npc = npcOccupied(occ, run.at, mineSlots);
+        const state = cardState(occ, run.at, npc, mineSlots);
+        return { occ, state, mineCount: mineSlots.length };
+      })
       .sort((a, b) => {
-        const ba = bookings.some((x) => x.startAt === a.startAt && x.status !== 'cancelled') ? 1 : 0;
-        const bb = bookings.some((x) => x.startAt === b.startAt && x.status !== 'cancelled') ? 1 : 0;
-        return ba - bb || daysUntil(a.startAt, run.at) - daysUntil(b.startAt, run.at);
+        const wa = statusWeight(a.state, a.mineCount);
+        const wb = statusWeight(b.state, b.mineCount);
+        return wa - wb || daysUntil(a.occ.startAt, run.at) - daysUntil(b.occ.startAt, run.at);
       });
   }, [city, run.at, seed, bookings]);
 
@@ -117,8 +133,8 @@ export function ShowPanel({
       {tab === 'list' && (
         <div className="show-list">
           {occurrences.length === 0 && <p className="muted small">本周还没有刷出演出。</p>}
-          {occurrences.map((occ) => (
-            <ShowCard key={occ.id} api={api} occ={occ} />
+          {occurrences.map(({ occ }) => (
+            <ShowCard key={occ.id} api={api} occ={occ} onOpen={() => setSelectedOcc(occ)} />
           ))}
         </div>
       )}
@@ -139,7 +155,7 @@ export function ShowPanel({
                   ? '主位'
                   : (slotDef?.slotName ?? (b.slot === 1 ? '主位' : `${b.slot}号位`));
               return (
-                <div className="show-card" key={b.id}>
+                <div className="show-card static" key={b.id}>
                   <div className="show-title">
                     <strong>{b.name}</strong>
                     <span className="show-badge">{TYPE_LABEL[b.type] ?? b.type}</span>
@@ -160,7 +176,7 @@ export function ShowPanel({
                     </div>
                   )}
                   {b.status === 'booked' && (
-                    <button disabled={d <= 7} onClick={() => cancelBooking(b.id)}>
+                    <button disabled={d <= 7} onClick={() => api.cancelBooking(b.id)}>
                       {d <= 7 ? '已宣发不可取消' : '取消报名'}
                     </button>
                   )}
@@ -174,11 +190,12 @@ export function ShowPanel({
         <div className="show-calendar">
           {Array.from({ length: 30 }, (_, i) => {
             const day = Math.floor((run.at - START_AT) / DAY_MS) + i;
-            const start = START_AT + day * DAY_MS;
             const booked = bookings.find(
               (b) => b.status !== 'cancelled' && Math.floor((b.startAt - START_AT) / DAY_MS) === day,
             );
-            const open = occurrences.some((o) => Math.floor((o.startAt - START_AT) / DAY_MS) === day);
+            const open = occurrences.some(
+              (o) => Math.floor((o.occ.startAt - START_AT) / DAY_MS) === day,
+            );
             return (
               <div key={day} className={`show-cal-day${booked ? ' booked' : open ? ' open' : ''}`}>
                 <span>第 {day + 1} 天</span>
@@ -188,123 +205,188 @@ export function ShowPanel({
           })}
         </div>
       )}
+
+      {selectedOcc && (
+        <ShowDetailModal api={api} occ={selectedOcc} onClose={() => setSelectedOcc(null)} />
+      )}
     </>
   );
 }
 
-function ShowCard({ api, occ }: { api: AppApi; occ: ShowOccurrence }) {
-  const { run, party, bookShow, schedule, setNotice } = api;
+function ShowCard({ api, occ, onOpen }: { api: AppApi; occ: ShowOccurrence; onOpen: () => void }) {
+  const { run, dayLabel } = api;
   const bookings = run.bookings ?? [];
   const d = daysUntil(occ.startAt, run.at);
-  const announced = d <= 7;
-  const dayTaken = bookings.some(
-    (b) => b.status !== 'cancelled' && Math.floor((b.startAt - START_AT) / DAY_MS) === Math.floor((occ.startAt - START_AT) / DAY_MS),
-  );
-  const dayUsed = schedule
-    .filter((s) => Math.floor((s.startAt - START_AT) / DAY_MS) === Math.floor((occ.startAt - START_AT) / DAY_MS))
-    .reduce((n, s) => n + (s.slots ?? 1), 0);
-  const fame = partyFameStub(run, party);
   const mineSlots = bookings
     .filter((b) => b.occurrenceId === occ.id && b.status !== 'cancelled')
     .map((b) => b.slot);
   const npc = npcOccupied(occ, run.at, mineSlots);
   const state = cardState(occ, run.at, npc, mineSlots);
-  const [slotIdx, setSlotIdx] = useState(() => firstOpenSlotIndex(occ, npc, mineSlots));
-  const activeIdx = slotIdx >= 0 ? slotIdx : 0;
-  const slot = occ.slots[activeIdx]!;
-  const chk = checkBooking(run, party, occ, slot);
-  const bookChk = canBook(run, party, occ, slot, run.at, bookings, dayUsed);
-  const { fee, uplift } = entryFee(run, party, slot);
-  const stats = effectiveStats(run);
-  const takenSelected = npc.has(slot.slot) && !mineSlots.includes(slot.slot);
+  const free = freeSlots(occ, npc, mineSlots);
+  const dd = Math.max(0, d - 7);
+  const status = mineSlots.length > 0 ? '已报名' : state === 'announced' ? '已宣发' : state === 'full' ? '已满' : '';
 
   return (
-    <div className={`show-card${state === 'announced' ? ' announced' : ''}`}>
+    <button
+      type="button"
+      className={`show-card${state === 'announced' ? ' announced' : ''}`}
+      onClick={onOpen}
+    >
       <div className="show-title">
         <strong>{occ.name}</strong>
         <span className="show-badge">{TYPE_LABEL[occ.type] ?? occ.type}</span>
         <span className={`show-badge tier-${occ.tier}`}>{TIER_LABEL[occ.tier]}</span>
-        {state === 'announced' ? <span className="show-badge status-announced">已宣发</span> : null}
-        {state === 'full' ? <span className="show-badge status-full">本场已满</span> : null}
+        {status === '已宣发' && <span className="show-badge status-announced">已宣发</span>}
+        {status === '已满' && <span className="show-badge status-full">已满</span>}
+        {status === '已报名' && <span className="show-badge status-mine">已报名</span>}
       </div>
-      <div className="muted small">
-        第 {weekIndexOf(occ.startAt) + 1} 周 · 距开演 {d} 天 · 报名截止还剩 {Math.max(0, d - 7)} 天
+      <div className="show-meta">
+        {dayLabel(occ.startAt, run.at)} · 开演 {d} 天后 · {d <= 7 ? '报名已截止' : `报名截止 ${dd} 天后`}
       </div>
-      <div className="show-lineup">
-        {occ.slots.map((s, i) => {
-          const taken = npc.has(s.slot);
-          const mine = bookings.some((b) => b.occurrenceId === occ.id && b.slot === s.slot && b.status !== 'cancelled');
-          return (
-            <button
-              key={s.slot}
-              className={`show-slot${i === slotIdx ? ' active' : ''}${taken ? ' taken' : ''}`}
-              aria-disabled={taken && !mine}
-              onClick={() => {
-                if (taken && !mine) {
-                  setNotice('这个位置已经被占了');
-                  return;
-                }
-                setSlotIdx(i);
-              }}
-            >
-              <span>{s.slotName}</span>
-              <em>{mine ? '已报名' : taken ? 'NPC 已占' : '空位'}</em>
-              <small>名气 {s.reqFame}</small>
-            </button>
-          );
-        })}
+      <div className="show-free">空位 {free} / {occ.slots.length}</div>
+      <div className="show-open">点击查看详情 ›</div>
+    </button>
+  );
+}
+
+export function ShowDetailModal({ api, occ, onClose }: { api: AppApi; occ: ShowOccurrence; onClose: () => void }) {
+  const { run, party, bookShow, schedule, dayLabel } = api;
+  const bookings = run.bookings ?? [];
+  const mineSlots = bookings
+    .filter((b) => b.occurrenceId === occ.id && b.status !== 'cancelled')
+    .map((b) => b.slot);
+  const npc = npcOccupied(occ, run.at, mineSlots);
+  const state = cardState(occ, run.at, npc, mineSlots);
+  const first = firstOpenSlotIndex(occ, npc, mineSlots);
+  const [selected, setSelected] = useState(first >= 0 ? first : 0);
+  const slot = occ.slots[selected]!;
+  const stats = effectiveStats(run);
+  const chk = checkBooking(run, party, occ, slot);
+  const dayTaken = bookings.some(
+    (b) =>
+      b.status !== 'cancelled' &&
+      Math.floor((b.startAt - START_AT) / DAY_MS) === Math.floor((occ.startAt - START_AT) / DAY_MS),
+  );
+  const dayUsed = schedule
+    .filter((s) => Math.floor((s.startAt - START_AT) / DAY_MS) === Math.floor((occ.startAt - START_AT) / DAY_MS))
+    .reduce((n, s) => n + (s.slots ?? 1), 0);
+  const bookChk = canBook(run, party, occ, slot, run.at, bookings, dayUsed);
+  const { fee, uplift } = entryFee(run, party, slot);
+  const selectedTaken = npc.has(slot.slot) || mineSlots.includes(slot.slot);
+  const selectedMine = mineSlots.includes(slot.slot);
+  const d = daysUntil(occ.startAt, run.at);
+  const dd = Math.max(0, d - 7);
+  const title =
+    state === 'announced' ? '已宣发' : state === 'full' ? '已满' : '';
+
+  const disabledText = selectedMine
+    ? '你已报名'
+    : state === 'announced'
+      ? '已宣发，报名已截止'
+      : state === 'full'
+        ? '本场已满'
+        : selectedTaken
+          ? '位置已被占'
+          : dayTaken
+            ? '这天已有安排'
+            : !bookChk.ok && bookChk.reason === 'day-full'
+              ? '这天行程排满了'
+              : !chk.ok
+                ? '条件不足'
+                : '';
+  const disabled =
+    selectedMine ||
+    state !== 'open' ||
+    selectedTaken ||
+    dayTaken ||
+    !bookChk.ok ||
+    !chk.ok;
+
+  return (
+    <Modal title={`${occ.name}`} wide onClose={onClose}>
+      <div className="show-detail">
+        <div className="show-title">
+          <span className="show-badge">{TYPE_LABEL[occ.type] ?? occ.type}</span>
+          <span className={`show-badge tier-${occ.tier}`}>{TIER_LABEL[occ.tier]}</span>
+          {title === '已宣发' && <span className="show-badge status-announced">已宣发</span>}
+          {title === '已满' && <span className="show-badge status-full">已满</span>}
+        </div>
+        <div className="show-meta">
+          {dayLabel(occ.startAt, run.at)} · 开演 {d} 天后 · {d <= 7 ? '报名已截止' : `报名截止 ${dd} 天后`}
+        </div>
+
+        <div className="show-detail-list">
+          {occ.slots.map((s, i) => {
+            const taken = npc.has(s.slot);
+            const mine = mineSlots.includes(s.slot);
+            const rowChk = checkBooking(run, party, occ, s);
+            const rowFee = entryFee(run, party, s).fee;
+            const req = s.reqStats;
+            const bad = (k: 'vocal' | 'dance' | 'acting' | 'talk') =>
+              stats[k] < (req[k] ?? 0);
+            return (
+              <div
+                key={s.slot}
+                className={`show-detail-row${i === selected ? ' selected' : ''}${taken ? ' taken' : ''}${mine ? ' mine' : ''}`}
+                onClick={() => {
+                  if (taken || mine) return;
+                  setSelected(i);
+                }}
+              >
+                <div className="show-detail-name">{s.slotName}</div>
+                <div className="show-detail-req">
+                  名气 <span className={rowChk.missing.fame !== undefined ? 'req-bad' : ''}>{s.reqFame}</span> · 演唱 <span className={bad('vocal') ? 'req-bad' : ''}>{req.vocal ?? 0}</span> · 舞蹈{' '}
+                  <span className={bad('dance') ? 'req-bad' : ''}>{req.dance ?? 0}</span> · 演技{' '}
+                  <span className={bad('acting') ? 'req-bad' : ''}>{req.acting ?? 0}</span> · 口才{' '}
+                  <span className={bad('talk') ? 'req-bad' : ''}>{req.talk ?? 0}</span>
+                  <div className="show-detail-sub">
+                    <span className={rowChk.missing.fans !== undefined ? 'req-bad' : ''}>粉丝 {s.reqFans}</span>
+                    {s.reqParty > 0 ? (
+                      <span className={rowChk.missing.party !== undefined ? 'req-bad' : ''}> · 成员 {s.reqParty}</span>
+                    ) : null}
+                  </div>
+                </div>
+                <div className="show-detail-fee">¥{rowFee.toLocaleString()}</div>
+                <div className="show-detail-act">
+                  {mine ? (
+                    <span>你已报名</span>
+                  ) : taken ? (
+                    <span>NPC 已占</span>
+                  ) : (
+                    <button type="button" className="show-pick" onClick={() => setSelected(i)}>
+                      选择
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="show-rules">
+          <div>报名截止：开演前 7 天，之后转为已宣发、不再接受报名</div>
+          <div>同一天只能报一场演出</div>
+          <div>取消规则：距开演 ≤15 天取消扣 60% 出场费；≤7 天不可取消</div>
+          <div>出场费按属性超出要求的幅度提成，最多 +30%</div>
+        </div>
+
+        <div className="show-detail-foot">
+          <div>
+            {!chk.ok ? `达标后约 ¥${fee.toLocaleString()}` : `出场费 ¥${fee.toLocaleString()}`}
+            {chk.ok && uplift > 0 ? `（含属性提成 +${Math.round(uplift * 100)}%${uplift >= 0.3 ? '，已封顶' : ''}）` : ''}
+          </div>
+          <button
+            className="primary"
+            disabled={disabled}
+            onClick={() => {
+              bookShow(occ, slot);
+              onClose();
+            }}
+          >
+            {disabled ? disabledText : '报名'}
+          </button>
+        </div>
       </div>
-      <div className="show-req">
-        <span>名气 {fame >= slot.reqFame ? '够' : `差 ${slot.reqFame - fame}`}</span>
-        {(['vocal', 'dance', 'acting', 'talk'] as const).map((k) => {
-          const need = slot.reqStats[k] ?? 0;
-          return (
-            <span key={k}>
-              {k === 'vocal' ? '演唱' : k === 'dance' ? '舞蹈' : k === 'acting' ? '演技' : '口才'}{' '}
-              {stats[k] >= need ? '够' : `差 ${need - stats[k]}`}
-            </span>
-          );
-        })}
-        <span>粉丝 {chk.missing.fans ? `差 ${chk.missing.fans}` : '够'}</span>
-      </div>
-      <div className="show-fee">
-        {!chk.ok ? `达标后约 ¥${fee}` : `出场费 ¥${fee}`}
-        {chk.ok && uplift > 0 ? `（含属性提成 +${Math.round(uplift * 100)}%${uplift >= 0.3 ? '，已封顶' : ''}）` : ''}
-      </div>
-      <button
-        className="primary"
-        disabled={state !== 'open' || dayTaken || !chk.ok || !bookChk.ok || takenSelected}
-        title={
-          state === 'announced'
-            ? '报名已截止'
-            : state === 'full'
-              ? '本场已满'
-              : takenSelected
-                ? '位置已被占'
-                : !bookChk.ok && bookChk.reason === 'day-full'
-                  ? '这天行程排满了'
-                  : !chk.ok
-                    ? '条件不足'
-                    : dayTaken
-                      ? '这天已有安排'
-                      : ''
-        }
-        onClick={() => bookShow(occ, slot)}
-      >
-        {state === 'announced'
-          ? '已宣发，报名已截止'
-          : state === 'full'
-            ? '本场已满'
-            : takenSelected
-              ? '位置已被占'
-              : dayTaken
-                ? '这天已有安排'
-                : !bookChk.ok && bookChk.reason === 'day-full'
-                  ? '这天行程排满了'
-                  : !chk.ok
-                    ? '条件不足'
-                    : '报名'}
-      </button>
-    </div>
+    </Modal>
   );
 }

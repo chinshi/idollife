@@ -8,6 +8,21 @@
 import { START_AT } from './content';
 import type { ScheduleItem } from './types';
 
+/** 排程里下一条要执行的（未完成 + 按 startAt 升序第一条）；没有则 null */
+export function nextPendingItem(schedule: ScheduleItem[]): ScheduleItem | null {
+  let next: ScheduleItem | null = null;
+  for (const item of schedule) {
+    if (item.done) continue;
+    if (!next || item.startAt < next.startAt) next = item;
+  }
+  return next;
+}
+
+/** 未完成项按 startAt 升序（给 UI 列表/计数用；nextPendingItem 是它的第一项） */
+export function sortedPending(schedule: ScheduleItem[]): ScheduleItem[] {
+  return schedule.filter((s) => !s.done).sort((a, b) => a.startAt - b.startAt);
+}
+
 export interface SlotPlanInput {
   schedule: ScheduleItem[];
   /** 当前游戏时间 run.at */

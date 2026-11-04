@@ -318,13 +318,28 @@ export function daysUntil(startAt: number, at: number): number {
   return Math.floor((startAt - at) / DAY_MS);
 }
 
+/** T-034 占位曲线：平时全空，压力集中在报名截止（d=7）前 7 天 */
+export function npcFillRatio(d: number): number {
+  if (d > 14) return 0;
+  if (d <= 7) return 1;
+  const table: Record<number, number> = {
+    14: 0.05,
+    13: 0.15,
+    12: 0.28,
+    11: 0.45,
+    10: 0.65,
+    9: 1,
+    8: 1,
+  };
+  return table[d] ?? 0;
+}
+
 /** 该场该时刻被 NPC 占用的顺位集合（跳过玩家已占位） */
 export function npcOccupied(occ: ShowOccurrence, at: number, playerSlots: number[]): Set<number> {
   const d = daysUntil(occ.startAt, at);
   const n = occ.slots.length;
-  const ratio =
-    d > 45 ? 0 : d > 30 ? 0.25 : d > 20 ? 0.45 : d > 10 ? 0.7 : d > 7 ? 0.85 : 1;
-  const count = ratio === 1 ? n : n === 1 ? 0 : Math.min(n - 1, Math.ceil(n * ratio));
+  const ratio = npcFillRatio(d);
+  const count = ratio >= 1 ? n : n === 1 ? 0 : Math.min(n - 1, Math.round(n * ratio));
   const occupied = new Set<number>();
   const player = new Set(playerSlots);
   for (const s of occ.slots) {

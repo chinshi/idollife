@@ -14,6 +14,8 @@ interface SavePayload {
   seed: string;
   run: RunState;
   schedule: ScheduleItem[];
+  /** T-036：存档所属账号；老档缺失 */
+  ownerId?: string;
 }
 
 /** 旧版存档（只读迁移路径） */
@@ -286,7 +288,7 @@ export function clearSave(): void {
   }
 }
 
-export function createSave(run: RunState, seed: string): SaveV2 {
+export function createSave(run: RunState, seed: string, ownerId?: string): SaveV2 {
   return {
     version: 2,
     runId: newRunId(),
@@ -295,7 +297,16 @@ export function createSave(run: RunState, seed: string): SaveV2 {
     seed,
     run,
     schedule: [],
+    ownerId,
   };
+}
+
+/** T-036：ownerId 缺失（老档）或一致 → 可用；属于别的账号 → null */
+export function resolveBootSave(boot: SaveV2 | null, userId: string | null): SaveV2 | null {
+  if (!boot) return null;
+  if (!userId) return boot;
+  if (!boot.ownerId) return boot;
+  return boot.ownerId === userId ? boot : null;
 }
 
 export const SAVE_KEY = KEY;

@@ -6,7 +6,8 @@
  */
 import { ACTION_META, remainingTimes } from './content';
 import { previewAction } from './results';
-import type { RunState } from './types';
+import { nextPendingItem } from './plan';
+import type { RunState, ScheduleItem } from './types';
 
 export type PreflightReason = 'ok' | 'stamina' | 'money' | 'times';
 
@@ -63,4 +64,14 @@ export function preflightAction(state: RunState, actionId: string): PreflightRes
   }
 
   return { ok: true, reason: 'ok', text: '' };
+}
+
+/** 队首项预检；没有待执行项或队首是演出项（不可预检）时返回 null */
+export function preflightNext(
+  schedule: ScheduleItem[],
+  state: RunState,
+): PreflightResult | null {
+  const first = nextPendingItem(schedule);
+  if (!first || first.kind === 'show') return null;
+  return preflightAction(state, first.actionId);
 }

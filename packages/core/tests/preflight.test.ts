@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { ACTION_LIST, ACTION_META, createFans, previewAction, settle } from '../src';
-import { preflightAction } from '../src/preflight';
+import { preflightAction, preflightNext } from '../src/preflight';
 import type { RunState, ScheduleItem } from '../src/types';
 
 const T0 = Date.UTC(2026, 0, 1, 9, 0, 0);
@@ -103,8 +103,20 @@ describe('T-031 preflightAction', () => {
     expect(r.text).not.toContain('每局');
   });
 
-  it('settle 侧：第一条体力不足 → executed=[] 且 state.at 不前进', () => {
-    const schedule: ScheduleItem[] = [
+  it('T-035 show 项跳过预检（队首是演出时返回 null）', () => {
+    const showItem: ScheduleItem = {
+      id: 'show1',
+      actionId: staminaAction,
+      kind: 'show',
+      startAt: T0,
+      endAt: T0 + MIN,
+    };
+    const blocked = preflightAction(baseRun({ stamina: 0 }), staminaAction);
+    expect(blocked.ok).toBe(false);
+    expect(preflightNext([showItem], baseRun({ stamina: 0 }))).toBeNull();
+  });
+
+  it('settle 侧：第一条体力不足 → executed=[] 且 state.at 不前进', () => {    const schedule: ScheduleItem[] = [
       { id: 's1', actionId: staminaAction, startAt: T0, endAt: T0 + 10 * MIN },
     ];
     const r = settle(baseRun({ stamina: 0 }), schedule, T0, T0 + 60 * MIN, 'pf-seed', {

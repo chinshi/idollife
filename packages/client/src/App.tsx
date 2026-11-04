@@ -5,6 +5,10 @@ import {
   CATEGORY_LABEL,
   DAILY_SLOTS,
   ACTION_MS,
+  ACTION_META,
+  nextPendingItem,
+  sortedPending,
+  preflightNext,
   DAY_MS,
   WEEK_MS,
   SHOW_ACTION_ID,
@@ -51,8 +55,6 @@ import {
   START_AT,
   // T-028：推进公式
   gameAdvance,
-  // T-031：推进前可行性
-  preflightAction,
   // T-032：演出
   canBook,
   canCancel,
@@ -84,7 +86,9 @@ import type {
   SettleResult,
   TaskBriefEntry,
 } from '@idollife/core';
-import { clearSave, createSave, loadSave, normalizeRun, writeSave } from './state/save';
+import { clearSave, createSave, loadSave, normalizeRun, resolveBootSave, writeSave, type SaveV2 } from './state/save';
+import { blockReadonlyWrite } from './state/readonly';
+import { buildSignedOutState } from './state/signout';
 import { AuthForm } from './components/AuthForm';
 import { CrashBanner, Modal } from './components/Modal';
 import { TimeAxis } from './components/TimeAxis';
@@ -95,6 +99,9 @@ import { FriendsPanel } from './components/FriendsPanel';
 import { StatsPanel } from './components/StatsPanel';
 import { PlanPanel } from './components/PlanPanel';
 import { ShowPanel } from './components/ShowPanel';
+import { makeAdvanceBlock, type AdvanceBlock } from './components/advance-block';
+import { BlockBar } from './components/BlockBar';
+import { ReadonlyBanner } from './components/ReadonlyBanner';
 import { BagPanel } from './components/BagPanel';
 import { PartyPanel } from './components/PartyPanel';
 import { ShopPanel } from './components/ShopPanel';
@@ -106,6 +113,7 @@ import {
   fetchLatestRun,
   pushChoice,
   fetchClockSession,
+  takeoverClock,
   type OfflineSummary,
 } from './api/sync';
 import {
@@ -115,6 +123,8 @@ import {
   flush,
   flushWithTimeout,
   readLocalClockState,
+  clearLocalClock,
+  resetOutbox,
   writeLocalClock,
 } from './state/outbox';
 import {
@@ -221,7 +231,7 @@ const SYNC_TEXT: Record<SyncStatus, string> = {
 };
 
 function AppInner() {
-  const boot = useRef(loadSave()).current;
+  const bootRef = useRef<SaveV2 | null>(loadSave());
 
   const [user, setUser] = useState<AuthUser | null>(null);
   const [authLost, setAuthLost] = useState(false);
@@ -229,14 +239,14 @@ function AppInner() {
   const hadUser = useRef(false);
   const [checking, setChecking] = useState(true);
 
-  const [runId, setRunId] = useState(boot?.runId ?? createSave(initialRun, 'run-demo').runId);
+  const [runId, setRunId] = useState(bootRef.current?.runId ?? createSave(initialRun, 'run-demo').runId);
   // T-017：进入游戏（读档 / 新档）时先补跑一次自动领取，让引导任务从第一眼就是「进行中」。
   // 放在 useState 的惰性初始化里 = 首次渲染前完成，不需要等第一次行动结算。
-  const [run, setRun] = useState<RunState>(() => autoAcceptTasks(boot?.run ?? initialRun));
-  const [schedule, setSchedule] = useState<ScheduleItem[]>(boot?.schedule ?? []);
-  const [revision, setRevision] = useState<number>(boot?.revision ?? 0);
-  const [seed] = useState(boot?.seed ?? 'run-demo');
-  const [savedAt, setSavedAt] = useState<number | null>(boot?.updatedAt ?? null);
+  const [run, setRun] = useState<RunState>(() => autoAcceptTasks(bootRef.current?.run ?? initialRun));
+  const [schedule, setSchedule] = useState<ScheduleItem[]>(bootRef.current?.schedule ?? []);
+  const [revision, setRevision] = useState<number>(bootRef.current?.revision ?? 0);
+  const [seed] = useState(bootRef.current?.seed ?? 'run-demo');
+  const [savedAt, setSavedAt] = useState<number | null>(bootRef.current?.updatedAt ?? null);
   const [notice, setNotice] = useState<string | null>(null);
   const [syncStatus, setSyncStatus] = useState<SyncStatus>('local');
 
@@ -260,6 +270,7 @@ function AppInner() {
   const [logTab, setLogTab] = useState<LogTab>('all');
   const [mainTab, setMainTab] = useState<MainTab>('plan');
   const [lastStop, setLastStop] = useState('');
+  const [advanceBlock, setAdvanceBlock] = useState<AdvanceBlock | null>(null);
   const [confirmAction, setConfirmAction] = useState<null | 'stop' | 'restart'>(null);
   const [rightTab, setRightTab] = useState<'stats' | 'bag'>('stats');
   const [flippedIds, setFlippedIds] = useState<string[]>([]);
@@ -276,6 +287,7 @@ function AppInner() {
   const STOP_TEXT: Record<string, string> = {
     stamina: '体力不够，停在这一条',
     money: '钱不够，停在这一条',
+    times: '次数用完了',
     exhausted: '这一批行程走完了',
     stopped: '到指定的停止点停下了',
     event: '有事件需要处理',
@@ -298,6 +310,12 @@ function AppInner() {
   const [clock, setClock] = useState<ClockState | null>(null);
   const clockRef = useRef<ClockState | null>(null);
   const [readonlyBanner, setReadonlyBanner] = useState(false);
+  const readonlyBannerRef = useRef(false);
+  const [takingOver, setTakingOver] = useState(false);
+  useEffect(() => {
+    readonlyBannerRef.current = readonlyBanner;
+  }, [readonlyBanner]);
+  const blockIfReadonly = () => blockReadonlyWrite(readonlyBannerRef.current, setNotice);
   const [clockSyncError, setClockSyncError] = useState(false);
 
   // T-025：sessionId（关标签页失效）；后到者接管靠它识别旧端
@@ -317,7 +335,7 @@ function AppInner() {
     }
   }, []);
 
-  const [gameNow, setGameNow] = useState<number>(boot?.run?.at ?? T0);
+  const [gameNow, setGameNow] = useState<number>(bootRef.current?.run?.at ?? T0);
 
   const runRef = useRef<RunState>(run);
 
@@ -449,11 +467,11 @@ function AppInner() {
     }
     await confirmClockSession(runId, token);
   }
-  const scheduleRef = useRef<ScheduleItem[]>(boot?.schedule ?? []);
+  const scheduleRef = useRef<ScheduleItem[]>(bootRef.current?.schedule ?? []);
   const batchRef = useRef<{ from: number; prevRun: RunState; prevSchedule: ScheduleItem[] } | null>(null);
   const timelineRef = useRef<HTMLDivElement | null>(null);
   const [boxH, setBoxH] = useState(0);
-  const gameNowRef = useRef<number>(boot?.run?.at ?? T0);
+  const gameNowRef = useRef<number>(bootRef.current?.run?.at ?? T0);
   const resumeAfterEvent = useRef(false);
   /** T-025：fire-and-forget 上报失败队列（下次成功时合并补报） */
   /** T-029：服务端时间偏移 / 本次运行起点与墙钟 */
@@ -534,14 +552,37 @@ function AppInner() {
       if (cancelled) return;
 
       let effectiveRunId = runId;
+      let baseRun = run;
+      let baseSchedule = schedule;
+      let baseRevision = revision;
+
+      // T-036：本地档属于别的账号 → 丢弃并用新 runId 重置（云端档随后照常采纳）
+      const ownedBoot = resolveBootSave(bootRef.current, user.id);
+      if (bootRef.current && !ownedBoot) {
+        clearSave();
+        bootRef.current = null;
+        const reset = createSave(autoAcceptTasks(normalizeRun(initialRun)), 'run-demo', user.id);
+        effectiveRunId = reset.runId;
+        baseRun = reset.run;
+        baseSchedule = [];
+        baseRevision = 0;
+        setRunId(reset.runId);
+        commitRun(reset.run);
+        scheduleRef.current = [];
+        setSchedule([]);
+        setRevision(0);
+        setSavedAt(null);
+        setNotice('检测到另一个账号的本地存档，已切换。');
+      }
+
       if (latest) {
         // T-017：开局初始化会写入「领取任务」日志，这里判定「本地还是空档」时忽略这类日志，
         // 避免新档因此不再从云端恢复。
         const localEmpty =
-          run.log.filter((l) => !l.actionId.startsWith('task-accept:')).length === 0 &&
-          schedule.length === 0 &&
-          run.at === T0;
-        if (localEmpty || latest.revision > revision) {
+          baseRun.log.filter((l) => !l.actionId.startsWith('task-accept:')).length === 0 &&
+          baseSchedule.length === 0 &&
+          baseRun.at === T0;
+        if (localEmpty || latest.revision > baseRevision) {
           setRunId(latest.runId);
           effectiveRunId = latest.runId;
           // 云端恢复后同样补跑一次自动领取（与进入游戏口径一致）。
@@ -556,7 +597,7 @@ function AppInner() {
         }
       } else {
         // 新档：先确保服务端有记录（choice 创建，clock 默认 idle）
-        await pushChoice(runId, autoAcceptTasks(normalizeRun(runRef.current)), sessionId, token);
+        await pushChoice(effectiveRunId, autoAcceptTasks(normalizeRun(baseRun)), sessionId, token);
       }
 
       // T-025/T-026：以服务端 clock 为准决定开屏是否自动播放 / 只读（失败会重试一次并提示）
@@ -579,6 +620,7 @@ function AppInner() {
         seed,
         run,
         schedule,
+        ownerId: user?.id,
       });
       if (ok) setSavedAt(Date.now());
     }, 250);
@@ -611,10 +653,22 @@ function AppInner() {
       },
       onTakenOver: () => {
         setRunning(false);
+        batchRef.current = null;
+        setSnapshot(null);
+        writeLocalClock(runId, { status: 'paused', gameAt: runRef.current.at, speed });
         setReadonlyBanner(true);
-        setNotice('另一台设备接手了这局。');
+        setNotice('账号已在另一台设备继续，本设备已转为只读。');
       },
       onUnauthorized: () => setForceLogin(true),
+      // T-036：403 终态，队列已清；清本地缓存并重新确认 holder
+      onForbidden: () => {
+        resetOutbox(runId);
+        clearSave();
+        clearLocalClock(runId);
+        bootRef.current = null;
+        setNotice('这一局属于另一个账号，正在按当前账号重新同步…');
+        window.setTimeout(() => window.location.reload(), 1200);
+      },
     });
   }, [user, runId]);
 
@@ -677,7 +731,7 @@ function AppInner() {
 
       if (nowPerf - lastBeat > 2000) {
         lastBeat = nowPerf;
-        const fp = scheduleRef.current.filter((s) => !s.done).sort((a, b) => a.startAt - b.startAt)[0];
+        const fp = nextPendingItem(scheduleRef.current);
         const rest = fp ? Math.max(0, Math.round((fp.endAt - target) / 1000)) : -1;
         dbg(
           '心跳 target=' + String(Math.round(target)) +
@@ -713,9 +767,7 @@ function AppInner() {
 
       const stillPending = scheduleRef.current.some((s) => !s.done);
       if (result.stoppedReason === 'exhausted' && stillPending) {
-        const next = scheduleRef.current
-          .filter((s) => !s.done)
-          .sort((a, b) => a.startAt - b.startAt)[0];
+        const next = nextPendingItem(scheduleRef.current);
 
         // 防「永远执行不了」的行程项把时间轴冻住：同一条连续 3 个 tick 卡住就丢弃
         if (next) {
@@ -785,7 +837,17 @@ function AppInner() {
   );
 
 
-  const pending = useMemo(() => schedule.filter((s) => !s.done), [schedule]);
+  const pending = useMemo(() => sortedPending(schedule), [schedule]);
+
+  // T-035-r2：拦截横幅绑定队首条目；条目被删/完成后自动失效
+  useEffect(() => {
+    const id = advanceBlock?.itemId;
+    if (!id) return;
+    if (!schedule.some((s) => s.id === id && !s.done)) {
+      setAdvanceBlock(null);
+      setLastStop('');
+    }
+  }, [schedule, advanceBlock?.itemId]);
 
   // T-017：任务简报数据（三类分区；引导只取当前组，常规/限时只取进行中 / 可领奖）
   const briefGroups = useMemo(() => {
@@ -878,10 +940,7 @@ function AppInner() {
     );
   };
 
-  const nextItem =
-    pending.length > 0
-      ? [...pending].sort((a, b) => a.startAt - b.startAt)[0] ?? null
-      : null;
+  const nextItem = pending.length > 0 ? pending[0]! : null;
   const nextDuration = nextItem ? Math.max(1, nextItem.endAt - nextItem.startAt) : 1;
   const remainMs =
     running && nextItem
@@ -1078,6 +1137,7 @@ function AppInner() {
 
   /** 事件抉择等「不推进时间」的状态提交（仍带 sessionId） */
   async function pushWholeState(next: RunState, overrideRunId?: string) {
+    if (blockIfReadonly()) return;
     const token = await getAccessToken();
     if (!token) {
       setForceLogin(true);
@@ -1138,11 +1198,13 @@ function AppInner() {
   }
 
   function savePlan() {
+    if (blockIfReadonly()) return;
     setPlanBackup(null);
     setShowActions(false);
     setNotice('行程已保存。');
   }
   function cancelPlan() {
+    if (blockIfReadonly()) return;
     if (planBackup) setSchedule(planBackup);
     setPlanBackup(null);
     setShowActions(false);
@@ -1151,6 +1213,7 @@ function AppInner() {
 
   /** T-021：清空全部未执行行程（保留已执行历史；直接清 + toast，弹窗不关） */
   function clearPlan() {
+    if (blockIfReadonly()) return;
     setSchedule((prev) => prev.filter((s) => s.done));
     setNotice('已清空全部未执行行程。');
   }
@@ -1243,10 +1306,7 @@ function AppInner() {
   }
 
   function endBatch(result: SettleResult, batch: { from: number; prevRun: RunState; prevSchedule: ScheduleItem[] }) {
-    const nextPending = scheduleRef.current
-      .filter((s) => !s.done)
-      .sort((a, b) => a.startAt - b.startAt)[0];
-    const pf = nextPending ? preflightAction(result.state, nextPending.actionId) : null;
+    const pf = preflightNext(scheduleRef.current, result.state);
     if (result.stoppedReason === 'ending') {
       setPhase('deciding');
       setNotice('两年到了。最后做一个决定吧。');
@@ -1278,6 +1338,7 @@ function AppInner() {
    * 运行期间服务端只做审计，不阻塞、不反向校准。
    */
   function advance() {
+    if (blockIfReadonly()) return;
     if (!requireLogin()) return;
     if (running) return;
     if (scheduleRef.current.filter((s) => !s.done).length === 0) {
@@ -1292,16 +1353,20 @@ function AppInner() {
     }
 
     // T-031：推进前可行性（次数 → 体力 → 钱），命中时零副作用直接提示
-    const first = scheduleRef.current
-      .filter((s) => !s.done)
-      .sort((a, b) => a.startAt - b.startAt)[0];
-    const pf = first ? preflightAction(runRef.current, first.actionId) : null;
+    const first = nextPendingItem(scheduleRef.current);
+    const pf = preflightNext(scheduleRef.current, runRef.current);
     if (pf && !pf.ok) {
-      setLastStop('');
-      setNotice(pf.text);
+      const meta = first ? ACTION_META[first.actionId] : undefined;
+      const actionName = first ? ACTIONS[first.actionId]?.name ?? first.actionId : '这一条';
+      const scopeWord = { day: '今天', week: '本周', run: '本局' }[meta?.timesScope ?? 'run'];
+      const block = makeAdvanceBlock(pf, actionName, scopeWord, meta?.times, first?.id);
+      setAdvanceBlock({ reason: block.reason, text: block.text, itemId: block.itemId });
+      setLastStop(block.lastStop);
+      setNotice(block.text);
       dbg('推进被拦截 reason=' + pf.reason);
       return;
     }
+    setAdvanceBlock(null);
 
     const at = runRef.current.at;
     runStartAtRef.current = at;
@@ -1347,7 +1412,9 @@ function AppInner() {
 
   /** T-029：停止本地立即生效；stop 事件后台串行上传（冻结本次运行时长） */
   function doStop() {
+    if (blockIfReadonly()) return;
     setConfirmAction(null);
+    setAdvanceBlock(null);
     if (!running) return;
     const at = runRef.current.at;
     setRunning(false);
@@ -1396,6 +1463,7 @@ function AppInner() {
       seed,
       run: next,
       schedule: scheduleRef.current,
+      ownerId: user?.id,
     });
     if (ok) setSavedAt(Date.now());
     void pushWholeState(next);
@@ -1584,6 +1652,7 @@ function AppInner() {
   /** 参加演出：排在最近的周六/周日，占满当天 3 个行动位 */
   /** T-032：报名演出（立即扣出场费 + 写 fixed 排程项） */
   function doBookShow(occ: ShowOccurrence, slot: ShowSlotDef) {
+    if (blockIfReadonly()) return;
     if (!runRef.current.debuted) {
       setNotice('出道之后才能参与演出。');
       return;
@@ -1657,6 +1726,7 @@ function AppInner() {
 
   /** T-032：取消报名（d≤7 禁止；7<d≤15 违约金） */
   function doCancelBooking(bookingId: string) {
+    if (blockIfReadonly()) return;
     const base = runRef.current;
     const booking = (base.bookings ?? []).find((b) => b.id === bookingId);
     if (!booking) return;
@@ -1872,9 +1942,63 @@ function AppInner() {
     setNotice(`倍速已切到 ${next}×。`);
   }
 
-  async function continueHere() {
+  /** T-036：退出时先尽量送达，再清本地档/队列/本地时钟，不碰云端 */
+  async function doSignOut() {
+    await flushWithTimeout(800);
+    clearSave();
+    resetOutbox(runId);
+    clearLocalClock(runId);
+    const signedOut = buildSignedOutState(initialRun);
+    bootRef.current = null;
+    setRunId(signedOut.runId);
+    commitRun(signedOut.run);
+    scheduleRef.current = [];
+    setSchedule([]);
+    setRevision(0);
+    setSavedAt(null);
+    commitClock(createClock(initialRun.at));
+    setRunning(false);
     setReadonlyBanner(false);
-    await advance();
+    await signOut();
+  }
+
+  async function continueHere() {
+    if (takingOver) return;
+    setTakingOver(true);
+    try {
+      const token = await getAccessToken();
+      if (!token) {
+        setForceLogin(true);
+        return;
+      }
+      const res = await takeoverClock(runId, sessionId, speed, token);
+      if (res.kind === 'ok') {
+        const clock = res.data.clock;
+        applyAuthoritative(res.data.state, res.data.schedule, clock, res.data.revision);
+        runStartAtRef.current = clock.gameAt;
+        runStartTsRef.current = Date.now() + serverOffsetRef.current;
+        batchRef.current = null;
+        setSnapshot({ run: res.data.state, schedule: res.data.schedule });
+        writeLocalClock(runId, { status: 'running', gameAt: clock.gameAt, speed });
+        setRunning(true);
+        setReadonlyBanner(false);
+        setAdvanceBlock(null);
+        setNotice('已在本设备接管，另一台设备已退出登录。');
+        return;
+      }
+      if (res.kind === 'no_schedule') {
+        setNotice('没有待执行的行程，先安排行程再接管。');
+        return;
+      }
+      if (res.kind === 'pending_event') {
+        setNotice('先处理重点事件再接管。');
+        return;
+      }
+      setClockSyncError(true);
+      setNotice('接管失败，另一台设备仍是当前持有者。');
+    } finally {
+      setTakingOver(false);
+    }
   }
 
   function decide(d: 'stay' | 'backstage' | 'leave') {
@@ -1985,7 +2109,7 @@ function AppInner() {
     doSwitchParty,
     openPartyModal,
     doDivine,
-    signOut,
+    signOut: doSignOut,
     restartForTest,
     setShowInvite,
     setShowDivination,
@@ -2078,15 +2202,7 @@ function AppInner() {
         </div>
       ) : null}
       {readonlyBanner ? (
-        <div className="crash-banner readonly-banner">
-          <div className="crash-text">
-            <strong>只读模式：</strong>
-            <span>另一台设备接手了这局。</span>
-          </div>
-          <button className="icon-btn" onClick={() => void continueHere()}>
-            在此设备继续
-          </button>
-        </div>
+        <ReadonlyBanner takingOver={takingOver} onContinue={() => void continueHere()} />
       ) : null}
       <header className="bar">
         {/* T-023：一行 5 块并列 —— 标题卡 / 角色动画 / 时间轴 / 状态 / 任务简报 */}
@@ -2119,7 +2235,7 @@ function AppInner() {
               <button className="icon-btn" title="重新开始" onClick={restartForTest}>
                 重开
               </button>
-              <button className="icon-btn" title="退出" onClick={() => void signOut()}>
+              <button className="icon-btn" title="退出" onClick={() => void doSignOut()}>
                 退出
               </button>
             </span>
@@ -2229,6 +2345,13 @@ function AppInner() {
 
         {/* 中：时间轴 / 待办 / 主系统 / 日志 */}
         <section className="col-center">
+          {advanceBlock && (
+            <BlockBar
+              block={advanceBlock}
+              onPlan={() => setMainTab('plan')}
+              onClose={() => setAdvanceBlock(null)}
+            />
+          )}
           {(run.pendingEvent || run.eventQueue.length > 0) && (
             <section className={run.pendingEvent ? 'mod mod-todo major' : 'mod mod-todo'}>
               <div className="mod-head">

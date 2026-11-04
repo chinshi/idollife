@@ -1,3 +1,4 @@
+import React from 'react';
 import { memo, useEffect, useMemo, useRef } from 'react';
 import {
   ACTIONS,
@@ -9,10 +10,12 @@ import {
   SHOW_DURATION_MS,
   START_AT,
   buildDaySlots,
+  nextPendingItem,
   preflightAction,
 } from '@idollife/core';
 import type { ScheduleItem } from '@idollife/core';
 import type { AppApi } from './api';
+import { advanceBlockText } from './advance-block';
 
 /** 行动占槽数：演出占满 3 槽，其余按 durationMs；spanOf 留在调用方（content 依赖） */
 const spanOf = (item: ScheduleItem) => Math.max(1, item.slots ?? 1);
@@ -97,9 +100,12 @@ export function PlanPanel({ api }: { api: AppApi }) {
   const dirtyRef = useRef(false);
   const programmaticRef = useRef(false);
 
-  // 常驻前置提示：只看 pending[0]（O(1)），不遍历整个排程
-  const nextPending = pending[0];
-  const pf = nextPending ? preflightAction(run, nextPending.actionId) : null;
+  // 常驻前置提示：与推进共用 nextPendingItem，演出项跳过预检
+  const nextPending = nextPendingItem(schedule);
+  const pf =
+    nextPending && nextPending.kind !== 'show'
+      ? preflightAction(run, nextPending.actionId)
+      : null;
   const blocked = !!pf && !pf.ok;
   const nextName = nextPending
     ? ACTIONS[nextPending.actionId]?.name ?? nextPending.actionId
@@ -107,13 +113,8 @@ export function PlanPanel({ api }: { api: AppApi }) {
   const scopeWord = nextPending
     ? { day: '今天', week: '本周', run: '本局' }[ACTION_META[nextPending.actionId]?.timesScope ?? 'run']
     : '';
-  const blockedText = blocked
-    ? pf.reason === 'stamina'
-      ? `下一条「${nextName}」体力差 ${Math.max(0, (pf.need ?? 0) - (pf.have ?? 0))}`
-      : pf.reason === 'money'
-        ? `下一条「${nextName}」钱差 ¥${Math.max(0, (pf.need ?? 0) - (pf.have ?? 0))}`
-        : `下一条「${nextName}」${scopeWord ?? '本局'}次数已用完`
-    : '';
+  const blockedText =
+    blocked && pf ? advanceBlockText(pf, nextName, scopeWord, { compact: true }) : '';
 
   const currentDay = Math.max(0, Math.floor((run.at - START_AT) / DAY_MS));
   const maxItemDay = schedule.reduce(

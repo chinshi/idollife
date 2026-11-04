@@ -163,6 +163,9 @@ export function createApp(options: { getUser?: GetUser } = {}) {
     if (loaded.rec.userId && loaded.rec.userId !== user.id) return c.json({ error: 'forbidden' }, 403);
 
     const rec = loaded.rec;
+    if (rec.clock.sessionId && rec.clock.sessionId !== body.sessionId) {
+      return c.json({ error: 'taken_over', reason: 'taken_over', ...snapshot(rec) }, 409);
+    }
     if (!rec.schedule.some((s) => !s.done)) {
       return c.json({ error: 'no_schedule', reason: 'no_schedule', ...snapshot(rec) }, 409);
     }
@@ -181,6 +184,50 @@ export function createApp(options: { getUser?: GetUser } = {}) {
     };
     const next = await saveClock(rec, clock, { lastSyncAt: rec.run.at }, now);
     return c.json(snapshot(next, { offline: loaded.offline, accepted: [] }));
+  });
+
+  app.post('/v1/clock/takeover', async (c) => {
+    const user = await getUser(c);
+    if (!user) return c.json({ error: 'unauthorized' }, 401);
+
+    const body = (await c.req.json().catch(() => null)) as
+      | { runId?: string; sessionId?: string; speed?: number }
+      | null;
+    if (!body?.runId || typeof body.runId !== 'string') return c.json({ error: 'runId required' }, 400);
+    if (typeof body.sessionId !== 'string' || !body.sessionId) {
+      return c.json({ error: 'sessionId required' }, 400);
+    }
+    const speed = body.speed ?? 1;
+    if (!ALLOWED_SPEEDS.includes(speed as (typeof ALLOWED_SPEEDS)[number])) {
+      return c.json({ error: 'bad_speed', reason: 'bad_speed' }, 400);
+    }
+
+    const now = Date.now();
+    // 以服务端 run/schedule 为底：接管方可能落后，不能采信客户端的进度
+    const loaded = await loadAndCatchUp(body.runId, now);
+    if (!loaded) return c.json({ error: 'not found' }, 404);
+    if (loaded.rec.userId && loaded.rec.userId !== user.id) return c.json({ error: 'forbidden' }, 403);
+
+    const rec = loaded.rec;
+    if (!rec.schedule.some((s) => !s.done)) {
+      return c.json({ error: 'no_schedule', reason: 'no_schedule', ...snapshot(rec) }, 409);
+    }
+    if (rec.run.pendingEvent) {
+      return c.json({ error: 'pending_event', reason: 'pending_event', ...snapshot(rec) }, 409);
+    }
+
+    const clock: ClockState = {
+      ...rec.clock,
+      status: 'running',
+      gameAt: rec.run.at,
+      wallAnchor: now,
+      speed,
+      sessionId: body.sessionId,
+      ownerTs: now,
+      updatedAt: now,
+    };
+    const next = await saveClock(rec, clock, { lastSyncAt: rec.run.at }, now);
+    return c.json(snapshot(next, { offline: loaded.offline, holder: true, accepted: [] }));
   });
 
   interface ClockPauseBody {
@@ -247,6 +294,12 @@ export function createApp(options: { getUser?: GetUser } = {}) {
 
     let rec = loaded.rec;
 
+    // T-036：先判 holder，非主直接返回，绝不写 sessionId / 不结算 lost_pause
+    const holder = rec.clock.sessionId === body.sessionId || rec.clock.sessionId === null;
+    if (!holder) {
+      return c.json(snapshot(rec, { offline: loaded.offline, holder: false, accepted: [] }));
+    }
+
     // T-029：丢失暂停兜底 —— 本地记得自己按了暂停，但服务端仍是 running
     const local = body.localClock;
     if (
@@ -277,16 +330,13 @@ export function createApp(options: { getUser?: GetUser } = {}) {
       return c.json(snapshot(next, { offline: loaded.offline, holder: true, accepted: [], reconciled: 'lost_pause' }));
     }
 
-    const holder = rec.clock.sessionId === body.sessionId || rec.clock.sessionId === null;
-    if (holder && rec.clock.sessionId === null) {
+    if (rec.clock.sessionId === null) {
       // 无持有者时顺手写入，避免每次都要靠失败的 sync 才发现被接管
       const clock: ClockState = { ...rec.clock, sessionId: body.sessionId, updatedAt: now };
       rec = await saveClock(rec, clock, {}, now);
     }
     return c.json(snapshot(rec, { offline: loaded.offline, holder, accepted: [] }));
   });
-
-  // ---------- T-029 时钟事件（本地优先，后台串行上传） ----------
 
   interface ClockEventBody {
     runId: string;

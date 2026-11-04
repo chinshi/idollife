@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { ACTION_MS, DAILY_SLOTS, DAY_MS, START_AT } from '../src/content';
-import { placeAction, buildDaySlots } from '../src/plan';
+import { placeAction, buildDaySlots, nextPendingItem } from '../src/plan';
 import type { ScheduleItem } from '../src/types';
 
 const T0 = START_AT;
@@ -100,5 +100,16 @@ describe('T-030 buildDaySlots', () => {
     const out = buildDaySlots(schedule, T0, 3, A, () => 1);
     expect(out[0]!.item?.id).toBe('a');
     expect(out.map((s) => s.item?.id).filter(Boolean)).toEqual(['a']);
+  });
+});
+
+describe('T-035 nextPendingItem', () => {
+  it('乱序 3/1/2 → 返回 startAt 最早的 1；空/all done → null', () => {
+    const a = item('3', 2);
+    const b = item('1', 0);
+    const c = item('2', 1);
+    expect(nextPendingItem([a, b, c])?.id).toBe('1');
+    expect(nextPendingItem([])).toBeNull();
+    expect(nextPendingItem([{ ...a, done: true }, { ...b, done: true }])).toBeNull();
   });
 });

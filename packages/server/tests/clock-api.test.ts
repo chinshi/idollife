@@ -471,11 +471,76 @@ describe('T-025 服务端时钟接口', () => {
       clock: { ...createClock(T0), status: 'running', wallAnchor: Date.now(), speed: 1, sessionId: 'A' },
     });
     await store.putRun(rec as never);
-
     const first = await request('/api/v1/clock/pause', { runId: 'run-pause', sessionId: 'A' });
     expect(first.status).toBe(200);
     const second = await request('/api/v1/clock/pause', { runId: 'run-pause', sessionId: 'A' });
     expect(second.status).toBe(200);
     expect((second.json.clock as { status: string }).status).toBe('paused');
+  });
+
+  it('T-036 接管：B 换主、A 事件 409、B 事件 200', async () => {
+    const rec = record('run-takeover', {
+      clock: { ...createClock(T0), status: 'running', wallAnchor: Date.now(), speed: 1, sessionId: 'A', ownerTs: 1 },
+    });
+    await store.putRun(rec as never);
+
+    const takeover = await request('/api/v1/clock/takeover', {
+      runId: 'run-takeover',
+      sessionId: 'B',
+      speed: 2,
+    });
+    expect(takeover.status).toBe(200);
+    const clock = takeover.json.clock as { sessionId: string; ownerTs: number };
+    expect(clock.sessionId).toBe('B');
+    expect(clock.ownerTs).toBeGreaterThan(0);
+
+    const event = (sessionId: string, eventId: string) => ({
+      runId: 'run-takeover',
+      sessionId,
+      eventId,
+      type: 'stop',
+      speed: 1,
+      at: rec.run.at,
+      run: rec.run,
+      schedule: rec.schedule,
+      seed: 'seed-test',
+      runStartAt: rec.run.at,
+      elapsedMs: 0,
+      clientTs: Date.now(),
+    });
+    const old = await request('/api/v1/clock/event', event('A', 'ev-a'));
+    expect(old.status).toBe(409);
+    expect(old.json.error).toBe('taken_over');
+    const fresh = await request('/api/v1/clock/event', event('B', 'ev-b'));
+    expect(fresh.status).toBe(200);
+  });
+
+  it('T-036 非 holder 的 lost_pause 不抢主、不写 sessionId', async () => {
+    const rec = record('run-lost-holder', {
+      clock: { ...createClock(T0), status: 'running', wallAnchor: Date.now(), speed: 1, sessionId: 'B', ownerTs: 5 },
+    });
+    await store.putRun(rec as never);
+
+    const before = (await store.getRun('run-lost-holder'))!.clock;
+    const res = await request('/api/v1/clock/session', {
+      runId: 'run-lost-holder',
+      sessionId: 'A',
+      localClock: { ...createClock(T0 - MIN), status: 'paused', sessionId: 'A' },
+    });
+    expect(res.status).toBe(200);
+    expect(res.json.holder).toBe(false);
+    const after = (await store.getRun('run-lost-holder'))!.clock;
+    expect(after.sessionId).toBe('B');
+    expect(after.gameAt).toBeGreaterThanOrEqual(before.gameAt);
+  });
+
+  it('T-036 start 非 holder 也 409，不改主', async () => {
+    const rec = record('run-start-holder', {
+      clock: { ...createClock(T0), status: 'running', wallAnchor: Date.now(), speed: 1, sessionId: 'A' },
+    });
+    await store.putRun(rec as never);
+    const res = await request('/api/v1/clock/start', { runId: 'run-start-holder', sessionId: 'B' });
+    expect(res.status).toBe(409);
+    expect((await store.getRun('run-start-holder'))!.clock.sessionId).toBe('A');
   });
 });

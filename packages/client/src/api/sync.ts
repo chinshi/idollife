@@ -38,6 +38,7 @@ export type SyncOutcome =
   | { kind: 'too_fast'; data: SyncResponse }
   | { kind: 'mismatch'; data: SyncResponse }
   | { kind: 'unauthorized' }
+  | { kind: 'forbidden' }
   | { kind: 'error'; status: number };
 
 async function post(path: string, body: unknown, token: string | null) {
@@ -69,6 +70,7 @@ export async function syncRun(body: SyncRequest, token: string | null): Promise<
   const res = await post('/v1/sync', body, token);
   if (!res) return { kind: 'error', status: 0 };
   if (res.status === 401) return { kind: 'unauthorized' };
+  if (res.status === 403) return { kind: 'forbidden' };
   if (res.status === 409 || res.status === 400) {
     const data = (await res.json().catch(() => ({}))) as SyncResponse & { reason?: string };
     const reason = reasonOf(data);
@@ -127,6 +129,7 @@ export type ClockEventOutcome =
   | { kind: 'ok'; data: ClockEventResponse }
   | { kind: 'taken_over'; data: ClockEventResponse }
   | { kind: 'unauthorized' }
+  | { kind: 'forbidden' }
   | { kind: 'error'; status: number };
 
 /** 上传一条时钟事件；409 taken_over 单独返回 */
@@ -137,6 +140,7 @@ export async function sendClockEvent(
   const res = await post('/v1/clock/event', body, token);
   if (!res) return { kind: 'error', status: 0 };
   if (res.status === 401) return { kind: 'unauthorized' };
+  if (res.status === 403) return { kind: 'forbidden' };
   if (res.status === 409) {
     const data = (await res.json().catch(() => ({}))) as ClockEventResponse;
     return { kind: 'taken_over', data };
@@ -150,16 +154,18 @@ export type ClockOutcome =
   | { kind: 'taken_over' | 'no_schedule' | 'pending_event'; data: ClockResponse & { reason?: string } }
   | { kind: 'bad_speed' }
   | { kind: 'unauthorized' }
+  | { kind: 'forbidden' }
   | { kind: 'error'; status: number };
 
 async function clockCall(
-  path: '/v1/clock/start' | '/v1/clock/pause' | '/v1/clock/session',
+  path: '/v1/clock/start' | '/v1/clock/pause' | '/v1/clock/session' | '/v1/clock/takeover',
   body: Record<string, unknown>,
   token: string | null,
 ): Promise<ClockOutcome> {
   const res = await post(path, body, token);
   if (!res) return { kind: 'error', status: 0 };
   if (res.status === 401) return { kind: 'unauthorized' };
+  if (res.status === 403) return { kind: 'forbidden' };
   if (res.status === 400) {
     const data = (await res.json().catch(() => ({}))) as { reason?: string };
     return data.reason === 'bad_speed' ? { kind: 'bad_speed' } : { kind: 'error', status: 400 };
@@ -185,6 +191,16 @@ export function startClock(
   schedule?: ScheduleItem[],
 ): Promise<ClockOutcome> {
   return clockCall('/v1/clock/start', { runId, sessionId, speed, schedule }, token);
+}
+
+/** 显式接管（T-036）；失败不排队，不自动重试 */
+export function takeoverClock(
+  runId: string,
+  sessionId: string,
+  speed: number,
+  token: string | null,
+): Promise<ClockOutcome> {
+  return clockCall('/v1/clock/takeover', { runId, sessionId, speed }, token);
 }
 
 /** 暂停（服务端先把流逝部分结算掉） */

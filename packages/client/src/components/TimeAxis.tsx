@@ -1,3 +1,4 @@
+import React from 'react';
 import { ACTIONS, ALLOWED_SPEEDS, SHOW_ACTION_ID, TIME_SCALE, type ScheduleItem } from '@idollife/core';
 
 export interface TimeAxisProps {

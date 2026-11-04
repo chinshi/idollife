@@ -35,6 +35,8 @@ interface OutboxConfig {
   onEvent: (kind: 'ok' | 'taken_over', data: ClockEventResponse) => void;
   onTakenOver: (data: ClockEventResponse | SyncResponse) => void;
   onUnauthorized: () => void;
+  /** T-036：403 终态，交给客户端清缓存并重新确认 holder */
+  onForbidden?: () => void;
 }
 
 const OUTBOX_PREFIX = 'idollife:outbox:';
@@ -103,6 +105,26 @@ export function pendingCount(): number {
   return queue.length;
 }
 
+/** T-036：退出登录/换号时清空当前 runId 队列与内存 */
+export function resetOutbox(runId?: string): void {
+  const key = runId ? `${OUTBOX_PREFIX}${runId}` : storageKey();
+  queue = [];
+  if (key) {
+    try {
+      localStorage.removeItem(key);
+    } catch {
+      /* 忽略 */
+    }
+  }
+  if (storageKey() && storageKey() !== key) {
+    try {
+      localStorage.removeItem(storageKey());
+    } catch {
+      /* 忽略 */
+    }
+  }
+}
+
 /** 串行发送；网络错误/401 保留队列并停止本次 flush */
 export async function flush(): Promise<void> {
   if (!config || flushing) return;
@@ -120,6 +142,12 @@ export async function flush(): Promise<void> {
       if (item.kind === 'clockEvent') {
         const outcome = await sendClockEvent(item.body, token);
         if (outcome.kind === 'error') return;
+        if (outcome.kind === 'forbidden') {
+          queue = [];
+          persist();
+          cfg.onForbidden?.();
+          return;
+        }
         if (outcome.kind === 'unauthorized') {
           cfg.onUnauthorized();
           return;
@@ -137,6 +165,12 @@ export async function flush(): Promise<void> {
       } else {
         const outcome = await syncRun(item.body, token);
         if (outcome.kind === 'error') return;
+        if (outcome.kind === 'forbidden') {
+          queue = [];
+          persist();
+          cfg.onForbidden?.();
+          return;
+        }
         if (outcome.kind === 'unauthorized') {
           cfg.onUnauthorized();
           return;
@@ -184,6 +218,14 @@ export function readLocalClock(runId: string): LocalClock | null {
     return data;
   } catch {
     return null;
+  }
+}
+
+export function clearLocalClock(runId: string): void {
+  try {
+    localStorage.removeItem(`${LOCAL_CLOCK_PREFIX}${runId}`);
+  } catch {
+    /* 忽略 */
   }
 }
 

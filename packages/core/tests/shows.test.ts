@@ -10,6 +10,7 @@ import {
   daysUntil,
   entryFee,
   npcOccupied,
+  npcFillRatio,
   scheduleWeek,
   showVisibleIn,
 } from '../src/shows';
@@ -91,7 +92,7 @@ describe('T-032 shows', () => {
   it('NPC 填充单调：d 从 60 递减到 7 空位不增，d=7 为 0', () => {
     const occ = firstOcc();
     let prev = -1;
-    for (const d of [60, 44, 29, 19, 9, 7]) {
+    for (const d of [60, 21, 15, 14, 12, 10, 8, 7]) {
       const at = occ.startAt - d * DAY;
       const occupied = npcOccupied(occ, at, []).size;
       expect(occupied).toBeGreaterThanOrEqual(prev);
@@ -100,13 +101,14 @@ describe('T-032 shows', () => {
     expect(npcOccupied(occ, occ.startAt - 7 * DAY, []).size).toBe(occ.slots.length);
   });
 
-  it('开场先满：d=20 的已占位是顺位前缀', () => {
+  it('开场先满：d=11（0.42 档）的已占位是顺位前缀', () => {
     const occ = firstOcc();
     const n = occ.slots.length;
-    const at = occ.startAt - 21 * DAY;
+    const at = occ.startAt - 11 * DAY;
     const occupied = [...npcOccupied(occ, at, [])].sort((a, b) => a - b);
-    const expected = occ.slots.slice(0, Math.ceil(n * 0.45)).map((s) => s.slot);
-    expect(occupied).toEqual(expected);  });
+    const expected = occ.slots.slice(0, Math.round(n * npcFillRatio(11))).map((s) => s.slot);
+    expect(occupied).toEqual(expected);
+  });
 
   it('违约金：d=14 → 60%，d=16 → 0，d=6 → 不可取消', () => {
     const booking: Booking = {
@@ -181,24 +183,24 @@ describe('T-032 shows', () => {
     expect(r.state.log.some((l) => l.kind === 'show')).toBe(true);
   });
 
-  it('NPC 留位边界：4 顺位 d=8 至少留 1，d=7 填满；1 顺位同理', () => {
+  it('NPC 留位边界：4 顺位 d=10 至少留 1，d=9 填满；1 顺位同理', () => {
     const four = scheduleWeek(3, 3, 'seed-abc').find((o) => o.slots.length === 4)!;
     expect(four).toBeTruthy();
-    const free8 = four.slots.filter((s) => !npcOccupied(four, four.startAt - 8 * DAY, []).has(s.slot));
-    expect(free8.length).toBeGreaterThanOrEqual(1);
-    expect(npcOccupied(four, four.startAt - 7 * DAY, []).size).toBe(4);
+    const free10 = four.slots.filter((s) => !npcOccupied(four, four.startAt - 10 * DAY, []).has(s.slot));
+    expect(free10.length).toBeGreaterThanOrEqual(1);
+    expect(npcOccupied(four, four.startAt - 9 * DAY, []).size).toBe(4);
 
     const single = [...scheduleWeek(2, 0, 'seed-a'), ...scheduleWeek(1, 0, 'seed-a')].find(
       (o) => o.slots.length === 1,
     )!;
     expect(single).toBeTruthy();
-    expect(npcOccupied(single, single.startAt - 8 * DAY, []).size).toBe(0);
-    expect(npcOccupied(single, single.startAt - 7 * DAY, []).size).toBe(1);
+    expect(npcOccupied(single, single.startAt - 10 * DAY, []).size).toBe(0);
+    expect(npcOccupied(single, single.startAt - 9 * DAY, []).size).toBe(1);
   });
 
-  it('4 顺位 d=8 恰好留 1 个空位（0.85 档不许填满）', () => {
+  it('4 顺位 d=10 恰好留 1 个空位（0.65 档不许填满）', () => {
     const four = scheduleWeek(3, 3, 'seed-abc').find((o) => o.slots.length === 4)!;
-    const occupied = npcOccupied(four, four.startAt - 8 * DAY, []);
+    const occupied = npcOccupied(four, four.startAt - 10 * DAY, []);
     expect(occupied.size).toBe(3);
     expect(four.slots.filter((s) => !occupied.has(s.slot))).toHaveLength(1);
   });
@@ -315,5 +317,50 @@ describe('T-032 shows', () => {
       for (const o of scheduleWeek(2, w, 's')) two.add(o.showId);
     }
     for (const id of two) expect(one.has(id)).toBe(true);
+  });
+
+  it('T-034 npcFillRatio 曲线边界', () => {
+    expect(npcFillRatio(60)).toBe(0);
+    expect(npcFillRatio(21)).toBe(0);
+    expect(npcFillRatio(15)).toBe(0);
+    expect(npcFillRatio(14)).toBe(0.05);
+    expect(npcFillRatio(13)).toBe(0.15);
+    expect(npcFillRatio(12)).toBe(0.28);
+    expect(npcFillRatio(11)).toBe(0.45);
+    expect(npcFillRatio(10)).toBe(0.65);
+    expect(npcFillRatio(9)).toBe(1);
+    expect(npcFillRatio(8)).toBe(1);
+    expect(npcFillRatio(7)).toBe(1);
+    expect(npcFillRatio(0)).toBe(1);
+  });
+
+  it('T-034 集中性：4 顺位 d15=0、d10=3、d9=4、d7=4', () => {
+    const four = scheduleWeek(3, 3, 'seed-abc').find((o) => o.slots.length === 4)!;
+    const count = (d: number) => npcOccupied(four, four.startAt - d * DAY, []).size;
+    expect(count(15)).toBe(0);
+    expect(count(10)).toBe(3);
+    expect(count(9)).toBe(4);
+    expect(count(7)).toBe(4);
+  });
+
+  it('T-034 单顺位 d10=0、d9=1', () => {
+    const single = [...scheduleWeek(2, 0, 'seed-a'), ...scheduleWeek(1, 0, 'seed-a')].find(
+      (o) => o.slots.length === 1,
+    )!;
+    expect(npcOccupied(single, single.startAt - 10 * DAY, []).size).toBe(0);
+    expect(npcOccupied(single, single.startAt - 9 * DAY, []).size).toBe(1);
+  });
+
+  it('T-034 可达性：一线 4 顺位 d=9 时 NPC 占满', () => {
+    const four = scheduleWeek(1, 3, 'seed-abc').find((o) => o.slots.length >= 4)!;
+    const npc = npcOccupied(four, four.startAt - 9 * DAY, []);
+    expect(npc.size).toBe(four.slots.length);
+  });
+
+  it('T-034 玩家已占顺位不被 NPC 抢', () => {
+    const four = scheduleWeek(3, 3, 'seed-abc').find((o) => o.slots.length === 4)!;
+    const occupied = npcOccupied(four, four.startAt - 10 * DAY, [1]);
+    expect(occupied.has(1)).toBe(false);
+    expect(occupied.size).toBe(3);
   });
 });

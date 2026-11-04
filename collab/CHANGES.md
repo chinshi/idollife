@@ -11,6 +11,22 @@
 
 ## 记录
 
+- `2026-11-04 10:30` ｜ 来源：策划（T-036 终验）｜ 收紧 `buildSignedOutState` 用例：原来的 `expect(fresh.runId).not.toBe(old)` 拿对象比字符串恒真（假断言），改为「两次调用 runId 必须不同 + 形如 run-」，并补 `savedAt === null`；亲手证红：把 `runId: fresh.runId` 改成固定 `'run-fixed'` → `expected 'run-fixed' not to be 'run-fixed'` ｜ `packages/client/tests/t036-account.test.ts`、`collab/T-036-多设备登录态互斥.md`
+
+- `2026-11-04 02:20` ｜ 来源：策划（T-034 终验）｜ **docs/29 §5.4 改写 NPC 填充曲线**为截止前集中填充版（d>14=0 / 14→0.05 … 10→0.65 / 9·8→填满「已满」/ ≤7「已宣发」），补「已满 vs 已宣发」状态定义与设计意图；T-034 卡片置 done 并追加策划终验 ｜ `docs/29-演出系统（报名制）设计案.md`、`collab/T-034-演出列表体验重做.md`
+
+- `2026-11-04 10:05` ｜ 来源：T-036-r2 返工 ｜ 登出重置内存态（bootRef/runId/run/schedule/revision/clock），403 改为清缓存+延时 reload 不再原地 retry，修 outbox/continueHere 三处断行；client +2 断言 ｜ `packages/client/src/{App.tsx,state/{outbox.ts,signout.ts}}`、`packages/client/tests/t036-account.test.ts`、`collab/T-036-r2-返工单.md`
+
+- `2026-11-04 10:00` ｜ 来源：策划派单 T-036 ｜ 多设备互斥：新增 /v1/clock/takeover 与 ownerTs；event/start 非主 409，session 先判 holder 再 lost_pause；客户端 continueHere 直连接管、只读全写入口拦截、账号 ownerId 隔离、退出清本地/outbox；403 终态 forbidden；core/client/server 219/17/21 ｜ `packages/core/src/clock.ts`、`packages/server/src/app.ts`、`packages/server/tests/clock-api.test.ts`、`packages/client/src/{App.tsx,api/sync.ts,state/{outbox.ts,save.ts,readonly.ts},components/ReadonlyBanner.tsx}`、`packages/client/tests/t036-account.test.ts`、`packages/server/scripts/t036-two-session.ts`、`collab/T-036-多设备登录态互斥.md`
+
+- `2026-11-04 09:51` ｜ 来源：T-035-r2 返工 ｜ 时间轴工具行改 flex-wrap 防止倍速/推进按钮重叠，倍速按钮补完整边框；次数文案加「删掉它，」；AdvanceBlock 绑定 itemId，条目删除/完成后自动清横幅与 lastStop；client +1 断言 ｜ `packages/client/src/{App.tsx,styles.css,components/advance-block.ts}`、`packages/client/tests/advance-block.test.ts`、`collab/T-035-r2-返工单.md`
+
+- `2026-11-04 09:46` ｜ 来源：用户直派 T-035 ｜ 推进受阻可见反馈：core 新增 nextPendingItem/sortedPending/preflightNext（show 跳过）；client 统一 pending 口径，拦截保留 lastStop+主区 BlockBar，STOP_TEXT 补 times，PlanPanel 共用 advanceBlockText；新增 client 3 条、core 2 条测试 ｜ `packages/core/src/{plan.ts,preflight.ts}`、`packages/core/tests/{plan.test.ts,preflight.test.ts}`、`packages/client/src/{App.tsx,components/{advance-block.ts,BlockBar.tsx,PlanPanel.tsx,TimeAxis.tsx},styles.css}`、`packages/client/tests/advance-block.test.ts`、`collab/T-035-推进受阻的可见反馈.md`
+
+- `2026-11-04 00:55` ｜ 来源：T-034-r2 返工 ｜ 曲线改为 d9/8 满（d10 留1）；名气/粉丝/成员红字、已报名优先、报名后关弹窗、金额千分位、删 statusWeight 死参与旧顺位块 CSS、新增 status-mine；core 217/client 11 ｜ `packages/core/src/shows.ts`、`packages/core/tests/shows.test.ts`、`packages/client/src/components/ShowPanel.tsx`、`packages/client/src/styles.css`、`packages/client/tests/show-card.test.ts`、`collab/T-034-演出列表体验重做.md`
+
+- `2026-11-04 00:46` ｜ 来源：用户直派 T-034 ｜ 演出列表体验重做：npcFillRatio 改为截止前 7 天集中填充；列表状态排序/网格/紧凑卡；新增 ShowDetailModal（竖排顺位、NPC 斜纹、红色未达标、细则、底部报名条）；core +4 测试、client 10；更新旧曲线用例 ｜ `packages/core/src/shows.ts`、`packages/core/tests/shows.test.ts`、`packages/client/src/components/{ShowPanel.tsx,Modal.tsx}`、`packages/client/src/styles.css`、`collab/T-034-演出列表体验重做.md`
+
 - `2026-11-04 00:36` ｜ 来源：T-033-r3 返工 ｜ 报名列表区分 open/announced/full：新增 cardState/firstOpenSlotIndex，默认选中第一个空位，d≤7 卡加已宣发徽标/降透明/按钮禁用，满场显示本场已满；已参与卡按 slotName 显示主位；新增 client 2 测试；3 张真实 ShowPanel 渲染截图 ｜ `packages/client/src/components/{ShowPanel.tsx,show-card.ts}`、`packages/client/src/styles.css`、`packages/client/tests/show-card.test.ts`、`collab/T-033-演出去城市维度与演出级别.md`
 
 - `2026-11-04 00:34` ｜ 来源：T-033-r2 返工 ｜ 页头容量文案抽 showHeaderText（超一线周中/不限顺位），已参与卡片补类型/级别徽标并兜底普通，新增 client 2 条测试；截图改为真实 ShowPanel + scheduleWeek 渲染 ｜ `packages/client/src/components/{ShowPanel.tsx,show-header.ts}`、`packages/client/tests/show-header.test.ts`、`collab/T-033-演出去城市维度与演出级别.md`
