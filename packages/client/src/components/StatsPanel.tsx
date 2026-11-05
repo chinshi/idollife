@@ -40,8 +40,21 @@ const INNATE_UNIT: Record<string, string> = { height: 'cm', weight: 'kg' };
 
 const thousands = (n: number) => Math.round(n).toLocaleString('zh-CN');
 
-/** 状态类三项共用的色调规则（<15 红、<30 橙、其余常态），体力/心情/饱腹一致 */
-const statusTone = (value: number) => (value < 15 ? 'danger' : value < 30 ? 'warn' : '');
+/**
+ * 状态条色调：正向指标（体力/心情/健康）越低越危险；压力是反向指标，越高越危险（T-044）。
+ */
+const statusTone = (value: number, inverted = false) =>
+  inverted
+    ? value >= 100
+      ? 'danger'
+      : value >= 60
+        ? 'warn'
+        : ''
+    : value < 15
+      ? 'danger'
+      : value < 30
+        ? 'warn'
+        : '';
 
 export function StatsPanel({ api, embedded = false }: { api: AppApi; embedded?: boolean }) {
   const { run, totalFans } = api;
@@ -138,7 +151,7 @@ export function StatsPanel({ api, embedded = false }: { api: AppApi; embedded?: 
                   // 只有状态组有进度条；成长属性无上限不配条，固有属性是固定值也不配条
                   const showBar = isStatus;
                   const percent = Math.max(0, Math.min(100, (value / max) * 100));
-                  const tone = isStatus ? statusTone(value) : '';
+                  const tone = isStatus ? statusTone(value, a.key === 'stress') : '';
                   const unit = INNATE_UNIT[a.key];
                   return (
                     <div key={a.key} className={isStatus ? 'attr-item attr-vital' : 'attr-item'}>

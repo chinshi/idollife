@@ -107,7 +107,7 @@ await build('action_results.xlsx', [
         r.id, r.actionId, r.actionName,
         condText(r.condition),
         r.priority ?? 99,
-        fx.stamina ?? '', fx.money ?? '', fx.mood ?? '', fx.satiety ?? '', fx.fans ?? '',
+        fx.stamina ?? '', fx.money ?? '', fx.mood ?? '', fx.stress ?? '', fx.fans ?? '',
         cell(st.vocal), cell(st.dance), cell(st.acting), cell(st.talk),
         r.text,
       ];
@@ -125,7 +125,7 @@ for (const e of events.story) {
       e.id, c.id, c.label, c.text,
       fx.stamina ?? '', ax.self ?? '', ax.others ?? '', ax.fit ?? '',
       st.vocal ?? '', st.dance ?? '', st.acting ?? '', st.talk ?? '', c.setFlag ?? '',
-      fx.mood ?? '', fx.satiety ?? '',
+      fx.mood ?? '', fx.stress ?? '',
       fx.traits ? JSON.stringify(fx.traits) : '',
       fx.negatives ? JSON.stringify(fx.negatives) : '',
       c.requires && Object.keys(c.requires).length ? condText(c.requires) : '',
@@ -150,7 +150,7 @@ await build('events.xlsx', [
   },
   {
     name: 'choices',
-    headers: ['eventId', 'id', 'label', 'text', 'stamina', 'self', 'others', 'fit', 'vocal', 'dance', 'acting', 'talk', 'setFlag', 'mood', 'satiety', 'traits', 'negatives', 'requires'],
+    headers: ['eventId', 'id', 'label', 'text', 'stamina', 'self', 'others', 'fit', 'vocal', 'dance', 'acting', 'talk', 'setFlag', 'mood', 'stress', 'traits', 'negatives', 'requires'],
     rows: choiceRows,
   },
 ]);

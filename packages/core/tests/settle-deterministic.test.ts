@@ -16,7 +16,6 @@ function base(): RunState {
     stats: { vocal: 30, dance: 30, acting: 30, talk: 30 },
     axes: { self: 50, others: 50, fit: 50 },
     mood: 70,
-    satiety: 70,
     fans: createFans(0),
     debuted: false,
     parties: [],

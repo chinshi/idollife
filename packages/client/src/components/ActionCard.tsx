@@ -14,7 +14,7 @@ import {
  * T-021：安排行程弹窗里的紧凑行动卡。
  *
  * - 卡面只显示：名称 + 一句话摘要 + 层级角标（不再直显属性变化）
- * - 悬浮 portal tooltip 三层：① 消耗（金钱/时长/次数）② 显性变化（体力/心情/饱腹/健康/粉丝/四维，区间用「+3~4」）
+ * - 悬浮 portal tooltip 三层：① 消耗（金钱/时长/次数）② 显性变化（体力/心情/压力/健康/粉丝/四维，区间用「+3~4」）
  *   ③ 隐形变化（自我/他人/适配，来自 effects.axes）；**该行动没有轴数据时整层不渲染**
  */
 const AXIS_LABEL: Record<string, string> = { self: '自我', others: '他人', fit: '适配' };
@@ -184,15 +184,15 @@ export function ActionCard({
                 {pv.stamina !== 0 ? (
                   <div className={pv.stamina > 0 ? 'eff-up' : 'eff-down'}>
                     体力 {fmt(pv.stamina)}
-                    {pv.hungerHalved ? <em className="eff-dim">（太饿，恢复减半）</em> : null}
                   </div>
                 ) : null}
                 {pv.mood !== 0 ? (
                   <div className={pv.mood > 0 ? 'eff-up' : 'eff-down'}>心情 {fmt(pv.mood)}</div>
                 ) : null}
-                {pv.satiety !== 0 ? (
-                  <div className={pv.satiety > 0 ? 'eff-up' : 'eff-down'}>
-                    饱腹 {fmt(pv.satiety)}
+                {pv.stress !== 0 ? (
+                  // 压力是反向指标：涨上去是坏事（红），降下来是好事（绿）
+                  <div className={pv.stress > 0 ? 'eff-down' : 'eff-up'}>
+                    压力 {fmt(pv.stress)}
                   </div>
                 ) : null}
                 {pv.health !== 0 ? (

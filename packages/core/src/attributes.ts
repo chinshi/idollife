@@ -98,7 +98,6 @@ export function attrValue(state: RunState, key: string): number {
   // T-043：体力/心情这类真字段也防一手 null / NaN（旧档可能缺），别把 NaN 直接画到屏幕上
   if (key === 'stamina') return Number.isFinite(state.stamina) ? state.stamina : 0;
   if (key === 'mood') return Number.isFinite(state.mood) ? (state.mood as number) : 70;
-  if (key === 'satiety') return Number.isFinite(state.satiety) ? (state.satiety as number) : 70;
   // T-021：健康（旧档缺省按满值）
   if (key === 'health') return Number.isFinite(state.health) ? (state.health as number) : 100;
 

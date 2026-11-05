@@ -9,7 +9,7 @@
       "icon": "",
       "effects": {
         "mood": 12,
-        "satiety": 5
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -25,7 +25,7 @@
       "icon": "",
       "effects": {
         "mood": 12,
-        "satiety": 6
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -120,7 +120,7 @@
       "icon": "",
       "effects": {
         "mood": 16,
-        "satiety": 8
+        "stress": -5
       },
       "negative": {},
       "hidden": {},
@@ -151,7 +151,7 @@
       "icon": "",
       "effects": {
         "mood": 8,
-        "satiety": 5
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -197,7 +197,7 @@
       "icon": "",
       "effects": {
         "mood": 10,
-        "satiety": 5
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -213,7 +213,7 @@
       "icon": "",
       "effects": {
         "mood": 12,
-        "satiety": 8
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -289,7 +289,7 @@
       "icon": "",
       "effects": {
         "mood": 14,
-        "satiety": 10
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -305,7 +305,7 @@
       "icon": "",
       "effects": {
         "mood": 8,
-        "satiety": 5
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -336,7 +336,7 @@
       "icon": "",
       "effects": {
         "mood": 10,
-        "satiety": 6
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -352,7 +352,7 @@
       "icon": "",
       "effects": {
         "mood": 12,
-        "satiety": 10
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -444,9 +444,9 @@
       "rarity": "uncommon",
       "icon": "",
       "effects": {
-        "satiety": 30,
         "mood": 10,
-        "stamina": 8
+        "stamina": 8,
+        "stress": -5
       },
       "negative": {},
       "hidden": {},
@@ -461,8 +461,8 @@
       "rarity": "uncommon",
       "icon": "",
       "effects": {
-        "satiety": 25,
-        "mood": 15
+        "mood": 15,
+        "stress": -5
       },
       "negative": {},
       "hidden": {},
@@ -477,8 +477,8 @@
       "rarity": "uncommon",
       "icon": "",
       "effects": {
-        "satiety": 28,
-        "mood": 18
+        "mood": 18,
+        "stress": -5
       },
       "negative": {},
       "hidden": {},
@@ -493,8 +493,8 @@
       "rarity": "common",
       "icon": "",
       "effects": {
-        "satiety": 25,
-        "mood": 10
+        "mood": 10,
+        "stress": -5
       },
       "negative": {},
       "hidden": {},
@@ -509,9 +509,9 @@
       "rarity": "common",
       "icon": "",
       "effects": {
-        "satiety": 20,
         "mood": 8,
-        "stamina": 5
+        "stamina": 5,
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -526,8 +526,8 @@
       "rarity": "common",
       "icon": "",
       "effects": {
-        "satiety": 22,
-        "stamina": 8
+        "stamina": 8,
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -542,7 +542,7 @@
       "rarity": "common",
       "icon": "",
       "effects": {
-        "satiety": 22
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -557,8 +557,8 @@
       "rarity": "common",
       "icon": "",
       "effects": {
-        "satiety": 18,
-        "mood": 5
+        "mood": 5,
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -573,8 +573,8 @@
       "rarity": "common",
       "icon": "",
       "effects": {
-        "satiety": 15,
-        "mood": 12
+        "mood": 12,
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -589,8 +589,8 @@
       "rarity": "uncommon",
       "icon": "",
       "effects": {
-        "satiety": 25,
-        "mood": 20
+        "mood": 20,
+        "stress": -5
       },
       "negative": {},
       "hidden": {},
@@ -605,8 +605,8 @@
       "rarity": "rare",
       "icon": "",
       "effects": {
-        "satiety": 20,
-        "mood": 28
+        "mood": 28,
+        "stress": -8
       },
       "negative": {},
       "hidden": {},
@@ -621,8 +621,8 @@
       "rarity": "rare",
       "icon": "",
       "effects": {
-        "satiety": 35,
-        "mood": 30
+        "mood": 30,
+        "stress": -12
       },
       "negative": {
         "stamina": 5
@@ -639,8 +639,8 @@
       "rarity": "uncommon",
       "icon": "",
       "effects": {
-        "satiety": 30,
-        "mood": 12
+        "mood": 12,
+        "stress": -8
       },
       "negative": {},
       "hidden": {},
@@ -655,8 +655,8 @@
       "rarity": "common",
       "icon": "",
       "effects": {
-        "satiety": 18,
-        "mood": 10
+        "mood": 10,
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -671,8 +671,8 @@
       "rarity": "common",
       "icon": "",
       "effects": {
-        "satiety": 12,
-        "mood": 10
+        "mood": 10,
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -687,8 +687,8 @@
       "rarity": "common",
       "icon": "",
       "effects": {
-        "satiety": 15,
-        "mood": 10
+        "mood": 10,
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -703,7 +703,7 @@
       "rarity": "common",
       "icon": "",
       "effects": {
-        "satiety": 20
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -718,8 +718,8 @@
       "rarity": "common",
       "icon": "",
       "effects": {
-        "satiety": 30,
-        "stamina": 10
+        "stamina": 10,
+        "stress": -5
       },
       "negative": {},
       "hidden": {},
@@ -734,8 +734,8 @@
       "rarity": "common",
       "icon": "",
       "effects": {
-        "satiety": 28,
-        "stamina": 10
+        "stamina": 10,
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -750,8 +750,8 @@
       "rarity": "uncommon",
       "icon": "",
       "effects": {
-        "satiety": 32,
-        "mood": 15
+        "mood": 15,
+        "stress": -5
       },
       "negative": {},
       "hidden": {},
@@ -766,8 +766,8 @@
       "rarity": "uncommon",
       "icon": "",
       "effects": {
-        "satiety": 25,
-        "mood": 10
+        "mood": 10,
+        "stress": -5
       },
       "negative": {},
       "hidden": {},
@@ -782,8 +782,8 @@
       "rarity": "uncommon",
       "icon": "",
       "effects": {
-        "satiety": 28,
-        "mood": 20
+        "mood": 20,
+        "stress": -8
       },
       "negative": {},
       "hidden": {},
@@ -798,8 +798,8 @@
       "rarity": "common",
       "icon": "",
       "effects": {
-        "satiety": 15,
-        "stamina": 5
+        "stamina": 5,
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -814,7 +814,7 @@
       "rarity": "common",
       "icon": "",
       "effects": {
-        "satiety": 18
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -829,8 +829,8 @@
       "rarity": "common",
       "icon": "",
       "effects": {
-        "satiety": 15,
-        "mood": 3
+        "mood": 3,
+        "stress": -5
       },
       "negative": {},
       "hidden": {},
@@ -845,8 +845,8 @@
       "rarity": "common",
       "icon": "",
       "effects": {
-        "satiety": 10,
-        "mood": 6
+        "mood": 6,
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -861,8 +861,8 @@
       "rarity": "common",
       "icon": "",
       "effects": {
-        "satiety": 10,
-        "stamina": 8
+        "stamina": 8,
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -878,7 +878,7 @@
       "icon": "",
       "effects": {
         "stamina": 12,
-        "satiety": 8
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -893,8 +893,8 @@
       "rarity": "common",
       "icon": "",
       "effects": {
-        "satiety": 10,
-        "mood": 8
+        "mood": 8,
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -910,7 +910,7 @@
       "icon": "",
       "effects": {
         "mood": 20,
-        "satiety": 10
+        "stress": -5
       },
       "negative": {},
       "hidden": {},
@@ -925,8 +925,8 @@
       "rarity": "common",
       "icon": "",
       "effects": {
-        "satiety": 25,
-        "stamina": 8
+        "stamina": 8,
+        "stress": -3
       },
       "negative": {},
       "hidden": {},
@@ -942,7 +942,7 @@
       "icon": "",
       "effects": {
         "mood": 50,
-        "satiety": 20
+        "stress": -20
       },
       "negative": {},
       "hidden": {},
@@ -958,8 +958,8 @@
       "icon": "",
       "effects": {
         "mood": 45,
-        "satiety": 40,
-        "stamina": 20
+        "stamina": 20,
+        "stress": -15
       },
       "negative": {},
       "hidden": {},
@@ -975,8 +975,8 @@
       "icon": "",
       "effects": {
         "mood": 40,
-        "satiety": 35,
-        "stamina": 15
+        "stamina": 15,
+        "stress": -25
       },
       "negative": {},
       "hidden": {},

@@ -481,7 +481,7 @@ const RARITIES = ['common', 'uncommon', 'rare', 'legendary'];
 const ITEM_TYPES = ['food', 'medicine'];
 const EQUIP_SLOTS = ['hair', 'haircolor', 'outfit', 'accessory'];
 const ITEM_EFFECT_KEYS = [
-  'stamina', 'mood', 'satiety', 'weight', 'appearance', // 显性
+  'stamina', 'mood', 'stress', 'weight', 'appearance', // 显性
   'stress', 'restless', 'fatigue', 'desire', 'scandal', // 负面
   'self', 'others', 'fit', // 隐藏
 ];

@@ -11,7 +11,7 @@
         "stamina": -10,
         "money": -60,
         "mood": -1,
-        "satiety": -5,
+        "stress": 5,
         "stats": {
           "vocal": [
             3,
@@ -31,7 +31,7 @@
         "stamina": -10,
         "money": -60,
         "mood": -1,
-        "satiety": -5,
+        "stress": 5,
         "stats": {
           "vocal": [
             2,
@@ -51,7 +51,7 @@
         "stamina": -10,
         "money": -60,
         "mood": -1,
-        "satiety": -5,
+        "stress": 5,
         "stats": {
           "vocal": [
             1,
@@ -71,7 +71,7 @@
         "stamina": -10,
         "money": -60,
         "mood": -4,
-        "satiety": -5,
+        "stress": 5,
         "stats": {
           "vocal": [
             1,
@@ -91,7 +91,7 @@
         "stamina": -10,
         "money": -60,
         "mood": -1,
-        "satiety": -5,
+        "stress": 5,
         "stats": {
           "vocal": [
             1,
@@ -110,7 +110,7 @@
       "effects": {
         "stamina": -10,
         "mood": -1,
-        "satiety": -5,
+        "stress": 5,
         "stats": {
           "dance": [
             3,
@@ -129,7 +129,7 @@
       "effects": {
         "stamina": -10,
         "mood": -1,
-        "satiety": -5,
+        "stress": 5,
         "stats": {
           "dance": [
             2,
@@ -148,7 +148,7 @@
       "effects": {
         "stamina": -10,
         "mood": -1,
-        "satiety": -5,
+        "stress": 5,
         "stats": {
           "dance": [
             1,
@@ -167,7 +167,7 @@
       "effects": {
         "stamina": -10,
         "mood": -4,
-        "satiety": -5,
+        "stress": 5,
         "stats": {
           "dance": [
             1,
@@ -186,7 +186,7 @@
       "effects": {
         "stamina": -10,
         "mood": -1,
-        "satiety": -5,
+        "stress": 5,
         "stats": {
           "dance": [
             1,
@@ -205,7 +205,7 @@
       "effects": {
         "stamina": -10,
         "mood": -1,
-        "satiety": -5,
+        "stress": 5,
         "stats": {
           "acting": [
             3,
@@ -228,7 +228,7 @@
       "effects": {
         "stamina": -10,
         "mood": -1,
-        "satiety": -5,
+        "stress": 5,
         "stats": {
           "acting": [
             2,
@@ -251,7 +251,7 @@
       "effects": {
         "stamina": -10,
         "mood": -1,
-        "satiety": -5,
+        "stress": 5,
         "stats": {
           "acting": [
             1,
@@ -274,7 +274,7 @@
       "effects": {
         "stamina": -10,
         "mood": -4,
-        "satiety": -5,
+        "stress": 5,
         "stats": {
           "acting": [
             1,
@@ -297,7 +297,7 @@
       "effects": {
         "stamina": -10,
         "mood": -1,
-        "satiety": -5,
+        "stress": 5,
         "stats": {
           "acting": [
             1,
@@ -320,7 +320,7 @@
       "effects": {
         "stamina": -8,
         "mood": -1,
-        "satiety": -4,
+        "stress": 5,
         "stats": {
           "talk": [
             3,
@@ -339,7 +339,7 @@
       "effects": {
         "stamina": -8,
         "mood": -1,
-        "satiety": -4,
+        "stress": 5,
         "stats": {
           "talk": [
             2,
@@ -358,7 +358,7 @@
       "effects": {
         "stamina": -8,
         "mood": -1,
-        "satiety": -4,
+        "stress": 5,
         "stats": {
           "talk": [
             1,
@@ -377,7 +377,7 @@
       "effects": {
         "stamina": -8,
         "mood": -4,
-        "satiety": -4,
+        "stress": 5,
         "stats": {
           "talk": [
             1,
@@ -396,7 +396,7 @@
       "effects": {
         "stamina": -8,
         "mood": -1,
-        "satiety": -4,
+        "stress": 5,
         "stats": {
           "talk": [
             1,
@@ -416,7 +416,7 @@
         "stamina": -22,
         "money": 80,
         "mood": -1,
-        "satiety": -7,
+        "stress": 6,
         "fans": 3,
         "stats": {
           "vocal": [
@@ -441,7 +441,7 @@
         "stamina": -22,
         "money": 80,
         "mood": -1,
-        "satiety": -7,
+        "stress": 6,
         "fans": 3,
         "stats": {
           "vocal": [
@@ -466,7 +466,7 @@
         "stamina": -22,
         "money": 80,
         "mood": -1,
-        "satiety": -7,
+        "stress": 6,
         "fans": 3,
         "stats": {
           "vocal": [
@@ -491,7 +491,7 @@
         "stamina": -22,
         "money": 80,
         "mood": -4,
-        "satiety": -7,
+        "stress": 6,
         "fans": 3,
         "stats": {
           "vocal": [
@@ -516,7 +516,7 @@
         "stamina": -22,
         "money": 80,
         "mood": -1,
-        "satiety": -7,
+        "stress": 6,
         "fans": 3,
         "stats": {
           "vocal": [
@@ -541,7 +541,7 @@
         "stamina": -22,
         "money": -320,
         "mood": -1,
-        "satiety": -7,
+        "stress": 6,
         "stats": {
           "dance": [
             4,
@@ -565,7 +565,7 @@
         "stamina": -22,
         "money": -320,
         "mood": -1,
-        "satiety": -7,
+        "stress": 6,
         "stats": {
           "dance": [
             3,
@@ -589,7 +589,7 @@
         "stamina": -22,
         "money": -320,
         "mood": -1,
-        "satiety": -7,
+        "stress": 6,
         "stats": {
           "dance": [
             1,
@@ -613,7 +613,7 @@
         "stamina": -22,
         "money": -320,
         "mood": -4,
-        "satiety": -7,
+        "stress": 6,
         "stats": {
           "dance": [
             1,
@@ -637,7 +637,7 @@
         "stamina": -22,
         "money": -320,
         "mood": -1,
-        "satiety": -7,
+        "stress": 6,
         "stats": {
           "dance": [
             1,
@@ -661,7 +661,7 @@
         "stamina": -22,
         "money": -300,
         "mood": -1,
-        "satiety": -7,
+        "stress": 6,
         "stats": {
           "acting": [
             4,
@@ -685,7 +685,7 @@
         "stamina": -22,
         "money": -300,
         "mood": -1,
-        "satiety": -7,
+        "stress": 6,
         "stats": {
           "acting": [
             3,
@@ -709,7 +709,7 @@
         "stamina": -22,
         "money": -300,
         "mood": -1,
-        "satiety": -7,
+        "stress": 6,
         "stats": {
           "acting": [
             1,
@@ -733,7 +733,7 @@
         "stamina": -22,
         "money": -300,
         "mood": -4,
-        "satiety": -7,
+        "stress": 6,
         "stats": {
           "acting": [
             1,
@@ -757,7 +757,7 @@
         "stamina": -22,
         "money": -300,
         "mood": -1,
-        "satiety": -7,
+        "stress": 6,
         "stats": {
           "acting": [
             1,
@@ -781,7 +781,7 @@
         "stamina": -24,
         "money": -280,
         "mood": -1,
-        "satiety": -7,
+        "stress": 7,
         "fans": 6,
         "stats": {
           "acting": [
@@ -806,7 +806,7 @@
         "stamina": -24,
         "money": -280,
         "mood": -1,
-        "satiety": -7,
+        "stress": 7,
         "fans": 6,
         "stats": {
           "acting": [
@@ -831,7 +831,7 @@
         "stamina": -24,
         "money": -280,
         "mood": -1,
-        "satiety": -7,
+        "stress": 7,
         "fans": 6,
         "stats": {
           "acting": [
@@ -856,7 +856,7 @@
         "stamina": -24,
         "money": -280,
         "mood": -4,
-        "satiety": -7,
+        "stress": 7,
         "fans": 6,
         "stats": {
           "acting": [
@@ -881,7 +881,7 @@
         "stamina": -24,
         "money": -280,
         "mood": -1,
-        "satiety": -7,
+        "stress": 7,
         "fans": 6,
         "stats": {
           "acting": [
@@ -906,7 +906,7 @@
         "stamina": -28,
         "money": -880,
         "mood": 0,
-        "satiety": -4,
+        "stress": 7,
         "stats": {
           "vocal": [
             7,
@@ -929,7 +929,7 @@
         "stamina": -28,
         "money": -880,
         "mood": 0,
-        "satiety": -4,
+        "stress": 7,
         "stats": {
           "vocal": [
             7,
@@ -952,7 +952,7 @@
         "stamina": -28,
         "money": -880,
         "mood": 0,
-        "satiety": -4,
+        "stress": 7,
         "stats": {
           "vocal": [
             7,
@@ -975,7 +975,7 @@
         "stamina": -28,
         "money": -880,
         "mood": 0,
-        "satiety": -4,
+        "stress": 7,
         "stats": {
           "vocal": [
             7,
@@ -998,7 +998,7 @@
         "stamina": -28,
         "money": -880,
         "mood": 0,
-        "satiety": -4,
+        "stress": 7,
         "stats": {
           "vocal": [
             7,
@@ -1021,7 +1021,7 @@
         "stamina": -28,
         "money": -800,
         "mood": 0,
-        "satiety": -4,
+        "stress": 7,
         "stats": {
           "dance": [
             7,
@@ -1044,7 +1044,7 @@
         "stamina": -28,
         "money": -800,
         "mood": 0,
-        "satiety": -4,
+        "stress": 7,
         "stats": {
           "dance": [
             7,
@@ -1067,7 +1067,7 @@
         "stamina": -28,
         "money": -800,
         "mood": 0,
-        "satiety": -4,
+        "stress": 7,
         "stats": {
           "dance": [
             7,
@@ -1090,7 +1090,7 @@
         "stamina": -28,
         "money": -800,
         "mood": 0,
-        "satiety": -4,
+        "stress": 7,
         "stats": {
           "dance": [
             7,
@@ -1113,7 +1113,7 @@
         "stamina": -28,
         "money": -800,
         "mood": 0,
-        "satiety": -4,
+        "stress": 7,
         "stats": {
           "dance": [
             7,
@@ -1136,7 +1136,7 @@
         "stamina": -28,
         "money": -800,
         "mood": 0,
-        "satiety": -4,
+        "stress": 7,
         "stats": {
           "acting": [
             7,
@@ -1159,7 +1159,7 @@
         "stamina": -28,
         "money": -800,
         "mood": 0,
-        "satiety": -4,
+        "stress": 7,
         "stats": {
           "acting": [
             7,
@@ -1182,7 +1182,7 @@
         "stamina": -28,
         "money": -800,
         "mood": 0,
-        "satiety": -4,
+        "stress": 7,
         "stats": {
           "acting": [
             7,
@@ -1205,7 +1205,7 @@
         "stamina": -28,
         "money": -800,
         "mood": 0,
-        "satiety": -4,
+        "stress": 7,
         "stats": {
           "acting": [
             7,
@@ -1228,7 +1228,7 @@
         "stamina": -28,
         "money": -800,
         "mood": 0,
-        "satiety": -4,
+        "stress": 7,
         "stats": {
           "acting": [
             7,
@@ -1251,7 +1251,7 @@
         "stamina": -26,
         "money": -720,
         "mood": 0,
-        "satiety": -4,
+        "stress": 7,
         "fans": 4,
         "stats": {
           "talk": [
@@ -1272,7 +1272,7 @@
         "stamina": -26,
         "money": -720,
         "mood": 0,
-        "satiety": -4,
+        "stress": 7,
         "fans": 4,
         "stats": {
           "talk": [
@@ -1293,7 +1293,7 @@
         "stamina": -26,
         "money": -720,
         "mood": 0,
-        "satiety": -4,
+        "stress": 7,
         "fans": 4,
         "stats": {
           "talk": [
@@ -1314,7 +1314,7 @@
         "stamina": -26,
         "money": -720,
         "mood": 0,
-        "satiety": -4,
+        "stress": 7,
         "fans": 4,
         "stats": {
           "talk": [
@@ -1335,7 +1335,7 @@
         "stamina": -26,
         "money": -720,
         "mood": 0,
-        "satiety": -4,
+        "stress": 7,
         "fans": 4,
         "stats": {
           "talk": [
@@ -1355,7 +1355,7 @@
       "effects": {
         "stamina": 40,
         "mood": 8,
-        "satiety": -8,
+        "stress": 0,
         "health": 6
       },
       "text": "闹钟响了三遍，你只听见最后一遍。醒来天已经黑透。（体力 +40）"
@@ -1370,7 +1370,7 @@
         "stamina": 8,
         "money": -80,
         "mood": 6,
-        "satiety": 18,
+        "stress": -12,
         "health": -3
       },
       "text": "一份意面，一杯免费的水，坐了四十分钟。没人赶你。（饱腹 +18 · 心情 +6）"
@@ -1385,7 +1385,7 @@
         "stamina": 20,
         "money": -220,
         "mood": 15,
-        "satiety": 30
+        "stress": -22
       },
       "text": "拿了两盘，看迴转带转了三圈。结账时心疼了一下，但值。（饱腹 +30 · 心情 +15）"
     },
@@ -1399,7 +1399,7 @@
         "stamina": 28,
         "money": -520,
         "mood": 25,
-        "satiety": 38,
+        "stress": -32,
         "health": 4
       },
       "text": "拍了很多照片。真正吃完的只有一半。（饱腹 +38 · 心情 +25）"
@@ -1414,7 +1414,7 @@
         "stamina": 15,
         "money": -60,
         "mood": 12,
-        "satiety": -2,
+        "stress": -8,
         "health": 2
       },
       "text": "在澡堂泡到手指发皱。隔壁阿姨问你是哪个团的。（体力 +15 · 心情 +12）"
@@ -1429,7 +1429,7 @@
         "stamina": -12,
         "money": -400,
         "mood": 28,
-        "satiety": -10,
+        "stress": -50,
         "health": -2
       },
       "text": "一个人坐了两遍过山车。第二遍的时候，你终于喊出来了。（心情 +28）"
@@ -1444,7 +1444,7 @@
         "stamina": 15,
         "money": -1800,
         "mood": 45,
-        "satiety": -20,
+        "stress": -100,
         "health": 6
       },
       "text": "三天没进排练室。回来的时候，你居然想跳了。（心情 +45 · 体力 +15）"
@@ -1459,7 +1459,7 @@
         "stamina": 15,
         "money": -300,
         "mood": -4,
-        "satiety": -4,
+        "stress": -5,
         "health": 35
       },
       "text": "医生说不是大问题，但你得停两周。你说下个月有场。（体力 +15）"
@@ -1473,7 +1473,7 @@
       "effects": {
         "stamina": 55,
         "mood": -18,
-        "satiety": -10,
+        "stress": -15,
         "health": 10
       },
       "text": "烧到三十八度七。手机在枕边，群里的消息你一条都没回。（体力 +55 · 心情 -18）"
@@ -1488,7 +1488,7 @@
         "stamina": -18,
         "money": 380,
         "mood": -4,
-        "satiety": -8
+        "stress": 6
       },
       "text": "站了四个小时，收了三张过期的券。店长说你笑起来太有礼貌。（收入 +380）"
     },
@@ -1502,7 +1502,7 @@
         "stamina": -20,
         "money": 280,
         "mood": -6,
-        "satiety": -8
+        "stress": 6
       },
       "text": "困得找错了三次钱。店长让你提前下班，扣了半天工钱。（收入 +280）"
     },
@@ -1516,7 +1516,7 @@
         "stamina": -18,
         "money": 350,
         "mood": -3,
-        "satiety": -8
+        "stress": 6
       },
       "text": "手上全是糖浆。摇杯的声音在脑子里响了一整晚。（收入 +350）"
     },
@@ -1530,7 +1530,7 @@
         "stamina": -20,
         "money": 250,
         "mood": -5,
-        "satiety": -8
+        "stress": 6
       },
       "text": "封口机压到手。你笑着说没事，其实想哭。（收入 +250）"
     },
@@ -1544,7 +1544,7 @@
         "stamina": -24,
         "money": 480,
         "mood": -2,
-        "satiety": -8,
+        "stress": 6,
         "fans": 6
       },
       "text": "穿着围裙说「おかえり」。有人点了你的名字，多给了五十。（收入 +480 · 粉丝 +6）"
@@ -1559,7 +1559,7 @@
         "stamina": -26,
         "money": 380,
         "mood": -6,
-        "satiety": -8,
+        "stress": 6,
         "fans": 4
       },
       "text": "笑不出来。你躲在备餐间站了十分钟才出去。（收入 +380 · 粉丝 +4）"
@@ -1574,7 +1574,7 @@
         "stamina": -14,
         "money": 200,
         "mood": -5,
-        "satiety": -6,
+        "stress": 5,
         "fans": 4
       },
       "text": "在天桥下发了两个小时。大部分被扔了，有两个人认真看了海报上的时间。（收入 +200 · 粉丝 +4）"
@@ -1589,7 +1589,7 @@
         "stamina": -16,
         "money": 150,
         "mood": -7,
-        "satiety": -6,
+        "stress": 5,
         "fans": 3
       },
       "text": "手冻得握不住纸。你把剩下的一叠塞进包里，明天再发。（收入 +150 · 粉丝 +3）"
@@ -1604,7 +1604,7 @@
         "stamina": -16,
         "money": 620,
         "mood": -2,
-        "satiety": -6
+        "stress": 5
       },
       "text": "给一个高二学生讲了两小时函数。他妈妈硬塞了水果给你。（收入 +620）"
     },
@@ -1618,7 +1618,7 @@
         "stamina": -18,
         "money": 500,
         "mood": -5,
-        "satiety": -6
+        "stress": 5
       },
       "text": "讲到一半断片了。学生反而给你讲了一遍。（收入 +500）"
     },
@@ -1632,7 +1632,7 @@
         "stamina": -20,
         "money": 900,
         "mood": -3,
-        "satiety": -7,
+        "stress": 6,
         "fans": 3,
         "axes": {
           "others": 1
@@ -1650,7 +1650,7 @@
         "stamina": -22,
         "money": 700,
         "mood": -5,
-        "satiety": -7,
+        "stress": 6,
         "axes": {
           "others": 1
         }
@@ -1667,7 +1667,7 @@
         "stamina": -26,
         "money": 520,
         "mood": -4,
-        "satiety": -9
+        "stress": 7
       },
       "text": "散场后搬了四十把折叠椅，手上留下胶带的印子。（收入 +520）"
     },
@@ -1681,7 +1681,7 @@
         "stamina": -28,
         "money": 420,
         "mood": -7,
-        "satiety": -9
+        "stress": 7
       },
       "text": "音箱比想的沉。你和另一个人抬，走三步歇一次。（收入 +420）"
     },
@@ -1695,7 +1695,7 @@
         "stamina": -20,
         "money": 260,
         "mood": 2,
-        "satiety": -7,
+        "stress": 6,
         "fans": 12,
         "axes": {
           "others": 2
@@ -1713,7 +1713,7 @@
         "stamina": -22,
         "money": 180,
         "mood": -2,
-        "satiety": -7,
+        "stress": 6,
         "fans": 7,
         "axes": {
           "others": 2
@@ -1731,7 +1731,7 @@
         "stamina": -32,
         "money": 1800,
         "mood": 8,
-        "satiety": -10,
+        "stress": 7,
         "fans": 150,
         "axes": {
           "others": 1
@@ -1749,7 +1749,7 @@
         "stamina": -32,
         "money": 1100,
         "mood": 5,
-        "satiety": -10,
+        "stress": 7,
         "fans": 90,
         "axes": {
           "others": 1
@@ -1767,7 +1767,7 @@
         "stamina": -32,
         "money": 600,
         "mood": 2,
-        "satiety": -10,
+        "stress": 7,
         "fans": 45,
         "axes": {
           "others": 1
@@ -1785,7 +1785,7 @@
         "stamina": -32,
         "money": 220,
         "mood": -6,
-        "satiety": -10,
+        "stress": 7,
         "fans": 15,
         "axes": {
           "others": 1
@@ -1803,7 +1803,7 @@
         "stamina": -14,
         "money": 180,
         "mood": 3,
-        "satiety": -6,
+        "stress": 5,
         "fans": 12,
         "axes": {
           "self": 1
@@ -1821,7 +1821,7 @@
         "stamina": -14,
         "money": 60,
         "mood": -5,
-        "satiety": -6,
+        "stress": 5,
         "fans": 3,
         "axes": {
           "self": 1
@@ -1839,7 +1839,7 @@
         "stamina": -26,
         "money": 380,
         "mood": 6,
-        "satiety": -9,
+        "stress": 7,
         "fans": 30,
         "axes": {
           "fit": 2
@@ -1857,7 +1857,7 @@
         "stamina": -26,
         "money": 200,
         "mood": 1,
-        "satiety": -9,
+        "stress": 7,
         "fans": 14,
         "axes": {
           "fit": 2
@@ -1875,7 +1875,7 @@
         "stamina": -32,
         "money": 2200,
         "mood": -2,
-        "satiety": -10,
+        "stress": 7,
         "fans": 70,
         "axes": {
           "others": 3
@@ -1893,7 +1893,7 @@
         "stamina": -32,
         "money": 1600,
         "mood": -4,
-        "satiety": -10,
+        "stress": 7,
         "fans": 40,
         "axes": {
           "others": 3
@@ -1911,7 +1911,7 @@
         "stamina": -36,
         "money": 2600,
         "mood": 10,
-        "satiety": -11,
+        "stress": 7,
         "fans": 180,
         "axes": {
           "self": 3
@@ -1929,7 +1929,7 @@
         "stamina": -36,
         "money": 1800,
         "mood": 4,
-        "satiety": -11,
+        "stress": 7,
         "fans": 90,
         "axes": {
           "self": 3
@@ -1947,7 +1947,7 @@
         "stamina": -20,
         "money": 700,
         "mood": 6,
-        "satiety": -6,
+        "stress": 6,
         "fans": 20,
         "axes": {
           "others": 2
@@ -1965,7 +1965,7 @@
         "stamina": -20,
         "money": 280,
         "mood": 2,
-        "satiety": -6,
+        "stress": 6,
         "fans": 8,
         "axes": {
           "others": 2

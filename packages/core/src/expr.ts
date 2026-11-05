@@ -9,10 +9,10 @@
  *   vocal / dance / acting / talk     四项显性属性
  *   self / others / fit               三轴
  *   stamina / money / friends / total 体力 / 资金 / 朋友圈人数 / 四属性总和
- *   mood / satiety                    心情 / 饱腹（缺省 70）
+ *   mood / stress                     心情 / 压力（缺省 70 / 0）
  *   fans.stage / fans.gachi …         各类粉丝
  *   flags.xxx                         标记（0/1）
- *   中文别名：演唱 舞蹈 演技 口才 自我 他人 适配 体力 资金 心情 饱腹 粉丝数 总属性
+ *   中文别名：演唱 舞蹈 演技 口才 自我 他人 适配 体力 资金 心情 压力 粉丝数 总属性
  *
  * 函数：sum(...) / max(...) / min(...) / abs(x) / hasFlag("name")
  *
@@ -51,7 +51,11 @@ export function buildExprData(state: RunState): Record<string, unknown> {
     stamina: state.stamina,
     money: state.money,
     mood: state.mood ?? 70,
-    satiety: state.satiety ?? 70,
+    stress: state.negatives?.stress ?? 0,
+    // T-044：数据里存量条件写的是 neg.stress / neg.fatigue / neg.desire / neg.scandal，
+    // 校验器（GROUP_PREFIXES 含 'neg'）一直认这套写法，但求值侧从来没提供 neg 对象，
+    // 于是这些条件恒为 false —— 4 个剧情事件一直触发不了。这里补上。
+    neg: state.negatives ?? {},
     friends: (state.friends ?? []).length,
     total: STAT_KEYS.reduce((sum, k) => sum + state.stats[k], 0),
     // T-018：六类粉丝之和（与客户端 totalFans 同口径）

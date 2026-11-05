@@ -1,4 +1,14 @@
-import { ACTIONS, RENT_PER_WEEK, STAMINA_MAX, clampStamina, settleStamina, WEEK_MS } from './content';
+import {
+  ACTIONS,
+  PRESSURE_MAX,
+  RENT_PER_WEEK,
+  STAMINA_MAX,
+  STRESS_EFFICIENCY_MUL,
+  STRESS_EFFICIENCY_THRESHOLD,
+  clampStamina,
+  settleStamina,
+  WEEK_MS,
+} from './content';
 import { isStatKey } from './attributes';
 import { previewAction, resolveAction, showFanType } from './results';
 import { preflightAction } from './preflight';
@@ -94,6 +104,11 @@ export function settle(
     }
 
     if (item.kind === 'show') {
+      // T-044：演出不走 preflightAction，压力满了也要拦下来
+      if ((state.negatives?.stress ?? 0) >= PRESSURE_MAX) {
+        stoppedReason = 'pressure';
+        break;
+      }
       const booking = (state.bookings ?? []).find((b) => b.id === item.bookingId);
       state = booking ? settleShow(state, item, booking) : { ...state, at: item.endAt };
       executed.push(item.id);
@@ -118,7 +133,9 @@ export function settle(
             ? 'stamina'
             : pf.reason === 'money'
               ? 'money'
-              : null;
+              : pf.reason === 'pressure'
+                ? 'pressure'
+                : null;
       break;
     }
 
@@ -129,9 +146,9 @@ export function settle(
     const resolved = resolveAction(state, item.actionId, rng);
     if (!resolved) continue;
 
-    // 心情 / 饱腹：先结算变化，再算它对本条行动的影响
+    // 心情 / 压力：先结算变化，再算它对本条行动的影响（T-044 饱腹退役）
     const nextMood = Math.max(0, Math.min(100, (state.mood ?? 70) + resolved.mood));
-    const nextSatiety = Math.max(0, Math.min(100, (state.satiety ?? 70) + resolved.satiety));
+    const nextStress = clamp((state.negatives?.stress ?? 0) + resolved.stress, 0, PRESSURE_MAX);
 
     const negatives = state.negatives ?? {};
     const proficiency = state.proficiency ?? {};
@@ -139,18 +156,18 @@ export function settle(
     let efficiency = 1;
     if (nextMood < 30) efficiency *= 0.7;
     else if (nextMood > 70) efficiency *= 1.05;
-    if (nextSatiety < 20) efficiency *= 0.8;
     if ((negatives.restless ?? 0) > 50) efficiency *= 0.95;
-    if ((negatives.stress ?? 0) > 60) efficiency *= 0.95;
+    // 压力过高效率打折：本条按「行动开始时」的压力判定（压力满了根本不让做，见 preflight）
+    if ((negatives.stress ?? 0) > STRESS_EFFICIENCY_THRESHOLD) efficiency *= STRESS_EFFICIENCY_MUL;
 
-    // 积劳：体力消耗更大；太饿：恢复减半。规则与预览 / 预检共用（T-042）
-    const staminaRule = settleStamina(resolved.stamina, nextSatiety, negatives.fatigue ?? 0);
+    // 积劳：体力消耗更大。规则与预览 / 预检共用（T-042 / T-044）
+    const staminaRule = settleStamina(resolved.stamina, negatives.fatigue ?? 0);
     const staminaApplied = staminaRule.applied;
 
     state.stamina = clampStamina(state.stamina + staminaApplied);
     state.money += resolved.money;
     state.mood = nextMood;
-    state.satiety = nextSatiety;
+    state.negatives = { ...negatives, stress: nextStress };
     // T-021：健康 0–100（旧档缺省 100）；隐藏轴变化 clamp 后写回（不展示数值）
     state.health = clamp((state.health ?? 100) + resolved.health, 0, 100);
     for (const [k, v] of Object.entries(resolved.axes)) {
@@ -195,12 +212,9 @@ export function settle(
     state.log.push({
       at: item.endAt,
       actionId: action.id,
-      // 太饿导致恢复减半时补一句说明：配置文案写的是原值（如「体力 +40」），
-      // 不解释的话玩家只会看到「睡了但没加多少」。
-      text: staminaRule.halvedByHunger
-        ? `${resolved.text}（肚子太饿，体力只恢复了一半）`
-        : resolved.text,
+      text: resolved.text,
       staminaDelta: staminaApplied,
+      stressDelta: nextStress - (negatives.stress ?? 0),
       statDelta,
       kind: 'action',
     });

@@ -15,7 +15,6 @@ function dirtyRun(): RunState {
     stats: { vocal: 43, dance: 45, acting: 34, talk: 57, stamina: null } as unknown as RunState['stats'],
     axes: { self: 50, others: 50, fit: 50 },
     mood: 100,
-    satiety: 59,
     health: 100,
     fans: createFans(0),
     debuted: false,

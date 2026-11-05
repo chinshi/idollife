@@ -57,8 +57,8 @@ export interface ResolvedAction {
   money: number;
   /** 心情变化 */
   mood: number;
-  /** 饱腹变化 */
-  satiety: number;
+  /** 压力变化（T-044；正=更有压力，负=减压） */
+  stress: number;
   /** 健康变化（T-021） */
   health: number;
   /** 粉丝增加量 */
@@ -114,7 +114,7 @@ export function resolveAction(
   const money = result.effects.money ?? 0;
   const fans = result.effects.fans ?? 0;
   const mood = result.effects.mood ?? 0;
-  const satiety = result.effects.satiety ?? 0;
+  const stress = result.effects.stress ?? 0;
   const health = result.effects.health ?? 0;
 
   const axes: Partial<Record<keyof Axes, number>> = {};
@@ -131,17 +131,15 @@ export function resolveAction(
   text = text.split('{stamina}').join(String(stamina));
   text = text.split('{money}').join(String(money));
 
-  return { resultId: result.id, stamina, money, mood, satiety, health, fans, stats, axes, text };
+  return { resultId: result.id, stamina, money, mood, stress, health, fans, stats, axes, text };
 }
 
 /** 预览：不消耗随机数，用区间中间值给界面展示 */
 export function previewAction(state: RunState, actionId: string): {
   stamina: number;
-  /** 这条恢复被「太饿」打了对折（界面可以据此加一句说明） */
-  hungerHalved: boolean;
   money: number;
   mood: number;
-  satiety: number;
+  stress: number;
   health: number;
   fans: number;
   stats: Partial<Record<keyof Stats, [number, number]>>;
@@ -162,21 +160,15 @@ export function previewAction(state: RunState, actionId: string): {
     axes[k as keyof Axes] = Array.isArray(v) ? [v[0], v[1]] : [v, v];
   }
 
-  // 体力按结算规则折算：积劳放大消耗、太饿恢复减半。
+  // 体力按结算规则折算：积劳放大消耗。
   // 预览、预检、实际结算必须是同一个数，否则就会出现「卡片写 +40、面板只涨 20」。
-  const satietyAfter = Math.max(0, Math.min(100, (state.satiety ?? 70) + (result.effects.satiety ?? 0)));
-  const staminaRule = settleStamina(
-    result.effects.stamina ?? 0,
-    satietyAfter,
-    state.negatives?.fatigue ?? 0,
-  );
+  const staminaRule = settleStamina(result.effects.stamina ?? 0, state.negatives?.fatigue ?? 0);
 
   return {
     stamina: staminaRule.applied,
-    hungerHalved: staminaRule.halvedByHunger,
     money: result.effects.money ?? 0,
     mood: result.effects.mood ?? 0,
-    satiety: result.effects.satiety ?? 0,
+    stress: result.effects.stress ?? 0,
     health: result.effects.health ?? 0,
     fans: result.effects.fans ?? 0,
     stats,

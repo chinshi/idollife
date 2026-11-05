@@ -18213,7 +18213,7 @@ var action_results_default = {
         stamina: -10,
         money: -60,
         mood: -1,
-        satiety: -5,
+        stress: 5,
         stats: {
           vocal: [
             3,
@@ -18233,7 +18233,7 @@ var action_results_default = {
         stamina: -10,
         money: -60,
         mood: -1,
-        satiety: -5,
+        stress: 5,
         stats: {
           vocal: [
             2,
@@ -18253,7 +18253,7 @@ var action_results_default = {
         stamina: -10,
         money: -60,
         mood: -1,
-        satiety: -5,
+        stress: 5,
         stats: {
           vocal: [
             1,
@@ -18273,7 +18273,7 @@ var action_results_default = {
         stamina: -10,
         money: -60,
         mood: -4,
-        satiety: -5,
+        stress: 5,
         stats: {
           vocal: [
             1,
@@ -18293,7 +18293,7 @@ var action_results_default = {
         stamina: -10,
         money: -60,
         mood: -1,
-        satiety: -5,
+        stress: 5,
         stats: {
           vocal: [
             1,
@@ -18312,7 +18312,7 @@ var action_results_default = {
       effects: {
         stamina: -10,
         mood: -1,
-        satiety: -5,
+        stress: 5,
         stats: {
           dance: [
             3,
@@ -18331,7 +18331,7 @@ var action_results_default = {
       effects: {
         stamina: -10,
         mood: -1,
-        satiety: -5,
+        stress: 5,
         stats: {
           dance: [
             2,
@@ -18350,7 +18350,7 @@ var action_results_default = {
       effects: {
         stamina: -10,
         mood: -1,
-        satiety: -5,
+        stress: 5,
         stats: {
           dance: [
             1,
@@ -18369,7 +18369,7 @@ var action_results_default = {
       effects: {
         stamina: -10,
         mood: -4,
-        satiety: -5,
+        stress: 5,
         stats: {
           dance: [
             1,
@@ -18388,7 +18388,7 @@ var action_results_default = {
       effects: {
         stamina: -10,
         mood: -1,
-        satiety: -5,
+        stress: 5,
         stats: {
           dance: [
             1,
@@ -18407,7 +18407,7 @@ var action_results_default = {
       effects: {
         stamina: -10,
         mood: -1,
-        satiety: -5,
+        stress: 5,
         stats: {
           acting: [
             3,
@@ -18430,7 +18430,7 @@ var action_results_default = {
       effects: {
         stamina: -10,
         mood: -1,
-        satiety: -5,
+        stress: 5,
         stats: {
           acting: [
             2,
@@ -18453,7 +18453,7 @@ var action_results_default = {
       effects: {
         stamina: -10,
         mood: -1,
-        satiety: -5,
+        stress: 5,
         stats: {
           acting: [
             1,
@@ -18476,7 +18476,7 @@ var action_results_default = {
       effects: {
         stamina: -10,
         mood: -4,
-        satiety: -5,
+        stress: 5,
         stats: {
           acting: [
             1,
@@ -18499,7 +18499,7 @@ var action_results_default = {
       effects: {
         stamina: -10,
         mood: -1,
-        satiety: -5,
+        stress: 5,
         stats: {
           acting: [
             1,
@@ -18522,7 +18522,7 @@ var action_results_default = {
       effects: {
         stamina: -8,
         mood: -1,
-        satiety: -4,
+        stress: 5,
         stats: {
           talk: [
             3,
@@ -18541,7 +18541,7 @@ var action_results_default = {
       effects: {
         stamina: -8,
         mood: -1,
-        satiety: -4,
+        stress: 5,
         stats: {
           talk: [
             2,
@@ -18560,7 +18560,7 @@ var action_results_default = {
       effects: {
         stamina: -8,
         mood: -1,
-        satiety: -4,
+        stress: 5,
         stats: {
           talk: [
             1,
@@ -18579,7 +18579,7 @@ var action_results_default = {
       effects: {
         stamina: -8,
         mood: -4,
-        satiety: -4,
+        stress: 5,
         stats: {
           talk: [
             1,
@@ -18598,7 +18598,7 @@ var action_results_default = {
       effects: {
         stamina: -8,
         mood: -1,
-        satiety: -4,
+        stress: 5,
         stats: {
           talk: [
             1,
@@ -18618,7 +18618,7 @@ var action_results_default = {
         stamina: -22,
         money: 80,
         mood: -1,
-        satiety: -7,
+        stress: 6,
         fans: 3,
         stats: {
           vocal: [
@@ -18643,7 +18643,7 @@ var action_results_default = {
         stamina: -22,
         money: 80,
         mood: -1,
-        satiety: -7,
+        stress: 6,
         fans: 3,
         stats: {
           vocal: [
@@ -18668,7 +18668,7 @@ var action_results_default = {
         stamina: -22,
         money: 80,
         mood: -1,
-        satiety: -7,
+        stress: 6,
         fans: 3,
         stats: {
           vocal: [
@@ -18693,7 +18693,7 @@ var action_results_default = {
         stamina: -22,
         money: 80,
         mood: -4,
-        satiety: -7,
+        stress: 6,
         fans: 3,
         stats: {
           vocal: [
@@ -18718,7 +18718,7 @@ var action_results_default = {
         stamina: -22,
         money: 80,
         mood: -1,
-        satiety: -7,
+        stress: 6,
         fans: 3,
         stats: {
           vocal: [
@@ -18743,7 +18743,7 @@ var action_results_default = {
         stamina: -22,
         money: -320,
         mood: -1,
-        satiety: -7,
+        stress: 6,
         stats: {
           dance: [
             4,
@@ -18767,7 +18767,7 @@ var action_results_default = {
         stamina: -22,
         money: -320,
         mood: -1,
-        satiety: -7,
+        stress: 6,
         stats: {
           dance: [
             3,
@@ -18791,7 +18791,7 @@ var action_results_default = {
         stamina: -22,
         money: -320,
         mood: -1,
-        satiety: -7,
+        stress: 6,
         stats: {
           dance: [
             1,
@@ -18815,7 +18815,7 @@ var action_results_default = {
         stamina: -22,
         money: -320,
         mood: -4,
-        satiety: -7,
+        stress: 6,
         stats: {
           dance: [
             1,
@@ -18839,7 +18839,7 @@ var action_results_default = {
         stamina: -22,
         money: -320,
         mood: -1,
-        satiety: -7,
+        stress: 6,
         stats: {
           dance: [
             1,
@@ -18863,7 +18863,7 @@ var action_results_default = {
         stamina: -22,
         money: -300,
         mood: -1,
-        satiety: -7,
+        stress: 6,
         stats: {
           acting: [
             4,
@@ -18887,7 +18887,7 @@ var action_results_default = {
         stamina: -22,
         money: -300,
         mood: -1,
-        satiety: -7,
+        stress: 6,
         stats: {
           acting: [
             3,
@@ -18911,7 +18911,7 @@ var action_results_default = {
         stamina: -22,
         money: -300,
         mood: -1,
-        satiety: -7,
+        stress: 6,
         stats: {
           acting: [
             1,
@@ -18935,7 +18935,7 @@ var action_results_default = {
         stamina: -22,
         money: -300,
         mood: -4,
-        satiety: -7,
+        stress: 6,
         stats: {
           acting: [
             1,
@@ -18959,7 +18959,7 @@ var action_results_default = {
         stamina: -22,
         money: -300,
         mood: -1,
-        satiety: -7,
+        stress: 6,
         stats: {
           acting: [
             1,
@@ -18983,7 +18983,7 @@ var action_results_default = {
         stamina: -24,
         money: -280,
         mood: -1,
-        satiety: -7,
+        stress: 7,
         fans: 6,
         stats: {
           acting: [
@@ -19008,7 +19008,7 @@ var action_results_default = {
         stamina: -24,
         money: -280,
         mood: -1,
-        satiety: -7,
+        stress: 7,
         fans: 6,
         stats: {
           acting: [
@@ -19033,7 +19033,7 @@ var action_results_default = {
         stamina: -24,
         money: -280,
         mood: -1,
-        satiety: -7,
+        stress: 7,
         fans: 6,
         stats: {
           acting: [
@@ -19058,7 +19058,7 @@ var action_results_default = {
         stamina: -24,
         money: -280,
         mood: -4,
-        satiety: -7,
+        stress: 7,
         fans: 6,
         stats: {
           acting: [
@@ -19083,7 +19083,7 @@ var action_results_default = {
         stamina: -24,
         money: -280,
         mood: -1,
-        satiety: -7,
+        stress: 7,
         fans: 6,
         stats: {
           acting: [
@@ -19108,7 +19108,7 @@ var action_results_default = {
         stamina: -28,
         money: -880,
         mood: 0,
-        satiety: -4,
+        stress: 7,
         stats: {
           vocal: [
             7,
@@ -19131,7 +19131,7 @@ var action_results_default = {
         stamina: -28,
         money: -880,
         mood: 0,
-        satiety: -4,
+        stress: 7,
         stats: {
           vocal: [
             7,
@@ -19154,7 +19154,7 @@ var action_results_default = {
         stamina: -28,
         money: -880,
         mood: 0,
-        satiety: -4,
+        stress: 7,
         stats: {
           vocal: [
             7,
@@ -19177,7 +19177,7 @@ var action_results_default = {
         stamina: -28,
         money: -880,
         mood: 0,
-        satiety: -4,
+        stress: 7,
         stats: {
           vocal: [
             7,
@@ -19200,7 +19200,7 @@ var action_results_default = {
         stamina: -28,
         money: -880,
         mood: 0,
-        satiety: -4,
+        stress: 7,
         stats: {
           vocal: [
             7,
@@ -19223,7 +19223,7 @@ var action_results_default = {
         stamina: -28,
         money: -800,
         mood: 0,
-        satiety: -4,
+        stress: 7,
         stats: {
           dance: [
             7,
@@ -19246,7 +19246,7 @@ var action_results_default = {
         stamina: -28,
         money: -800,
         mood: 0,
-        satiety: -4,
+        stress: 7,
         stats: {
           dance: [
             7,
@@ -19269,7 +19269,7 @@ var action_results_default = {
         stamina: -28,
         money: -800,
         mood: 0,
-        satiety: -4,
+        stress: 7,
         stats: {
           dance: [
             7,
@@ -19292,7 +19292,7 @@ var action_results_default = {
         stamina: -28,
         money: -800,
         mood: 0,
-        satiety: -4,
+        stress: 7,
         stats: {
           dance: [
             7,
@@ -19315,7 +19315,7 @@ var action_results_default = {
         stamina: -28,
         money: -800,
         mood: 0,
-        satiety: -4,
+        stress: 7,
         stats: {
           dance: [
             7,
@@ -19338,7 +19338,7 @@ var action_results_default = {
         stamina: -28,
         money: -800,
         mood: 0,
-        satiety: -4,
+        stress: 7,
         stats: {
           acting: [
             7,
@@ -19361,7 +19361,7 @@ var action_results_default = {
         stamina: -28,
         money: -800,
         mood: 0,
-        satiety: -4,
+        stress: 7,
         stats: {
           acting: [
             7,
@@ -19384,7 +19384,7 @@ var action_results_default = {
         stamina: -28,
         money: -800,
         mood: 0,
-        satiety: -4,
+        stress: 7,
         stats: {
           acting: [
             7,
@@ -19407,7 +19407,7 @@ var action_results_default = {
         stamina: -28,
         money: -800,
         mood: 0,
-        satiety: -4,
+        stress: 7,
         stats: {
           acting: [
             7,
@@ -19430,7 +19430,7 @@ var action_results_default = {
         stamina: -28,
         money: -800,
         mood: 0,
-        satiety: -4,
+        stress: 7,
         stats: {
           acting: [
             7,
@@ -19453,7 +19453,7 @@ var action_results_default = {
         stamina: -26,
         money: -720,
         mood: 0,
-        satiety: -4,
+        stress: 7,
         fans: 4,
         stats: {
           talk: [
@@ -19474,7 +19474,7 @@ var action_results_default = {
         stamina: -26,
         money: -720,
         mood: 0,
-        satiety: -4,
+        stress: 7,
         fans: 4,
         stats: {
           talk: [
@@ -19495,7 +19495,7 @@ var action_results_default = {
         stamina: -26,
         money: -720,
         mood: 0,
-        satiety: -4,
+        stress: 7,
         fans: 4,
         stats: {
           talk: [
@@ -19516,7 +19516,7 @@ var action_results_default = {
         stamina: -26,
         money: -720,
         mood: 0,
-        satiety: -4,
+        stress: 7,
         fans: 4,
         stats: {
           talk: [
@@ -19537,7 +19537,7 @@ var action_results_default = {
         stamina: -26,
         money: -720,
         mood: 0,
-        satiety: -4,
+        stress: 7,
         fans: 4,
         stats: {
           talk: [
@@ -19557,7 +19557,7 @@ var action_results_default = {
       effects: {
         stamina: 40,
         mood: 8,
-        satiety: -8,
+        stress: 0,
         health: 6
       },
       text: "\u95F9\u949F\u54CD\u4E86\u4E09\u904D\uFF0C\u4F60\u53EA\u542C\u89C1\u6700\u540E\u4E00\u904D\u3002\u9192\u6765\u5929\u5DF2\u7ECF\u9ED1\u900F\u3002\uFF08\u4F53\u529B +40\uFF09"
@@ -19572,7 +19572,7 @@ var action_results_default = {
         stamina: 8,
         money: -80,
         mood: 6,
-        satiety: 18,
+        stress: -12,
         health: -3
       },
       text: "\u4E00\u4EFD\u610F\u9762\uFF0C\u4E00\u676F\u514D\u8D39\u7684\u6C34\uFF0C\u5750\u4E86\u56DB\u5341\u5206\u949F\u3002\u6CA1\u4EBA\u8D76\u4F60\u3002\uFF08\u9971\u8179 +18 \xB7 \u5FC3\u60C5 +6\uFF09"
@@ -19587,7 +19587,7 @@ var action_results_default = {
         stamina: 20,
         money: -220,
         mood: 15,
-        satiety: 30
+        stress: -22
       },
       text: "\u62FF\u4E86\u4E24\u76D8\uFF0C\u770B\u8FF4\u8F6C\u5E26\u8F6C\u4E86\u4E09\u5708\u3002\u7ED3\u8D26\u65F6\u5FC3\u75BC\u4E86\u4E00\u4E0B\uFF0C\u4F46\u503C\u3002\uFF08\u9971\u8179 +30 \xB7 \u5FC3\u60C5 +15\uFF09"
     },
@@ -19601,7 +19601,7 @@ var action_results_default = {
         stamina: 28,
         money: -520,
         mood: 25,
-        satiety: 38,
+        stress: -32,
         health: 4
       },
       text: "\u62CD\u4E86\u5F88\u591A\u7167\u7247\u3002\u771F\u6B63\u5403\u5B8C\u7684\u53EA\u6709\u4E00\u534A\u3002\uFF08\u9971\u8179 +38 \xB7 \u5FC3\u60C5 +25\uFF09"
@@ -19616,7 +19616,7 @@ var action_results_default = {
         stamina: 15,
         money: -60,
         mood: 12,
-        satiety: -2,
+        stress: -8,
         health: 2
       },
       text: "\u5728\u6FA1\u5802\u6CE1\u5230\u624B\u6307\u53D1\u76B1\u3002\u9694\u58C1\u963F\u59E8\u95EE\u4F60\u662F\u54EA\u4E2A\u56E2\u7684\u3002\uFF08\u4F53\u529B +15 \xB7 \u5FC3\u60C5 +12\uFF09"
@@ -19631,7 +19631,7 @@ var action_results_default = {
         stamina: -12,
         money: -400,
         mood: 28,
-        satiety: -10,
+        stress: -50,
         health: -2
       },
       text: "\u4E00\u4E2A\u4EBA\u5750\u4E86\u4E24\u904D\u8FC7\u5C71\u8F66\u3002\u7B2C\u4E8C\u904D\u7684\u65F6\u5019\uFF0C\u4F60\u7EC8\u4E8E\u558A\u51FA\u6765\u4E86\u3002\uFF08\u5FC3\u60C5 +28\uFF09"
@@ -19646,7 +19646,7 @@ var action_results_default = {
         stamina: 15,
         money: -1800,
         mood: 45,
-        satiety: -20,
+        stress: -100,
         health: 6
       },
       text: "\u4E09\u5929\u6CA1\u8FDB\u6392\u7EC3\u5BA4\u3002\u56DE\u6765\u7684\u65F6\u5019\uFF0C\u4F60\u5C45\u7136\u60F3\u8DF3\u4E86\u3002\uFF08\u5FC3\u60C5 +45 \xB7 \u4F53\u529B +15\uFF09"
@@ -19661,7 +19661,7 @@ var action_results_default = {
         stamina: 15,
         money: -300,
         mood: -4,
-        satiety: -4,
+        stress: -5,
         health: 35
       },
       text: "\u533B\u751F\u8BF4\u4E0D\u662F\u5927\u95EE\u9898\uFF0C\u4F46\u4F60\u5F97\u505C\u4E24\u5468\u3002\u4F60\u8BF4\u4E0B\u4E2A\u6708\u6709\u573A\u3002\uFF08\u4F53\u529B +15\uFF09"
@@ -19675,7 +19675,7 @@ var action_results_default = {
       effects: {
         stamina: 55,
         mood: -18,
-        satiety: -10,
+        stress: -15,
         health: 10
       },
       text: "\u70E7\u5230\u4E09\u5341\u516B\u5EA6\u4E03\u3002\u624B\u673A\u5728\u6795\u8FB9\uFF0C\u7FA4\u91CC\u7684\u6D88\u606F\u4F60\u4E00\u6761\u90FD\u6CA1\u56DE\u3002\uFF08\u4F53\u529B +55 \xB7 \u5FC3\u60C5 -18\uFF09"
@@ -19690,7 +19690,7 @@ var action_results_default = {
         stamina: -18,
         money: 380,
         mood: -4,
-        satiety: -8
+        stress: 6
       },
       text: "\u7AD9\u4E86\u56DB\u4E2A\u5C0F\u65F6\uFF0C\u6536\u4E86\u4E09\u5F20\u8FC7\u671F\u7684\u5238\u3002\u5E97\u957F\u8BF4\u4F60\u7B11\u8D77\u6765\u592A\u6709\u793C\u8C8C\u3002\uFF08\u6536\u5165 +380\uFF09"
     },
@@ -19704,7 +19704,7 @@ var action_results_default = {
         stamina: -20,
         money: 280,
         mood: -6,
-        satiety: -8
+        stress: 6
       },
       text: "\u56F0\u5F97\u627E\u9519\u4E86\u4E09\u6B21\u94B1\u3002\u5E97\u957F\u8BA9\u4F60\u63D0\u524D\u4E0B\u73ED\uFF0C\u6263\u4E86\u534A\u5929\u5DE5\u94B1\u3002\uFF08\u6536\u5165 +280\uFF09"
     },
@@ -19718,7 +19718,7 @@ var action_results_default = {
         stamina: -18,
         money: 350,
         mood: -3,
-        satiety: -8
+        stress: 6
       },
       text: "\u624B\u4E0A\u5168\u662F\u7CD6\u6D46\u3002\u6447\u676F\u7684\u58F0\u97F3\u5728\u8111\u5B50\u91CC\u54CD\u4E86\u4E00\u6574\u665A\u3002\uFF08\u6536\u5165 +350\uFF09"
     },
@@ -19732,7 +19732,7 @@ var action_results_default = {
         stamina: -20,
         money: 250,
         mood: -5,
-        satiety: -8
+        stress: 6
       },
       text: "\u5C01\u53E3\u673A\u538B\u5230\u624B\u3002\u4F60\u7B11\u7740\u8BF4\u6CA1\u4E8B\uFF0C\u5176\u5B9E\u60F3\u54ED\u3002\uFF08\u6536\u5165 +250\uFF09"
     },
@@ -19746,7 +19746,7 @@ var action_results_default = {
         stamina: -24,
         money: 480,
         mood: -2,
-        satiety: -8,
+        stress: 6,
         fans: 6
       },
       text: "\u7A7F\u7740\u56F4\u88D9\u8BF4\u300C\u304A\u304B\u3048\u308A\u300D\u3002\u6709\u4EBA\u70B9\u4E86\u4F60\u7684\u540D\u5B57\uFF0C\u591A\u7ED9\u4E86\u4E94\u5341\u3002\uFF08\u6536\u5165 +480 \xB7 \u7C89\u4E1D +6\uFF09"
@@ -19761,7 +19761,7 @@ var action_results_default = {
         stamina: -26,
         money: 380,
         mood: -6,
-        satiety: -8,
+        stress: 6,
         fans: 4
       },
       text: "\u7B11\u4E0D\u51FA\u6765\u3002\u4F60\u8EB2\u5728\u5907\u9910\u95F4\u7AD9\u4E86\u5341\u5206\u949F\u624D\u51FA\u53BB\u3002\uFF08\u6536\u5165 +380 \xB7 \u7C89\u4E1D +4\uFF09"
@@ -19776,7 +19776,7 @@ var action_results_default = {
         stamina: -14,
         money: 200,
         mood: -5,
-        satiety: -6,
+        stress: 5,
         fans: 4
       },
       text: "\u5728\u5929\u6865\u4E0B\u53D1\u4E86\u4E24\u4E2A\u5C0F\u65F6\u3002\u5927\u90E8\u5206\u88AB\u6254\u4E86\uFF0C\u6709\u4E24\u4E2A\u4EBA\u8BA4\u771F\u770B\u4E86\u6D77\u62A5\u4E0A\u7684\u65F6\u95F4\u3002\uFF08\u6536\u5165 +200 \xB7 \u7C89\u4E1D +4\uFF09"
@@ -19791,7 +19791,7 @@ var action_results_default = {
         stamina: -16,
         money: 150,
         mood: -7,
-        satiety: -6,
+        stress: 5,
         fans: 3
       },
       text: "\u624B\u51BB\u5F97\u63E1\u4E0D\u4F4F\u7EB8\u3002\u4F60\u628A\u5269\u4E0B\u7684\u4E00\u53E0\u585E\u8FDB\u5305\u91CC\uFF0C\u660E\u5929\u518D\u53D1\u3002\uFF08\u6536\u5165 +150 \xB7 \u7C89\u4E1D +3\uFF09"
@@ -19806,7 +19806,7 @@ var action_results_default = {
         stamina: -16,
         money: 620,
         mood: -2,
-        satiety: -6
+        stress: 5
       },
       text: "\u7ED9\u4E00\u4E2A\u9AD8\u4E8C\u5B66\u751F\u8BB2\u4E86\u4E24\u5C0F\u65F6\u51FD\u6570\u3002\u4ED6\u5988\u5988\u786C\u585E\u4E86\u6C34\u679C\u7ED9\u4F60\u3002\uFF08\u6536\u5165 +620\uFF09"
     },
@@ -19820,7 +19820,7 @@ var action_results_default = {
         stamina: -18,
         money: 500,
         mood: -5,
-        satiety: -6
+        stress: 5
       },
       text: "\u8BB2\u5230\u4E00\u534A\u65AD\u7247\u4E86\u3002\u5B66\u751F\u53CD\u800C\u7ED9\u4F60\u8BB2\u4E86\u4E00\u904D\u3002\uFF08\u6536\u5165 +500\uFF09"
     },
@@ -19834,7 +19834,7 @@ var action_results_default = {
         stamina: -20,
         money: 900,
         mood: -3,
-        satiety: -7,
+        stress: 6,
         fans: 3,
         axes: {
           others: 1
@@ -19852,7 +19852,7 @@ var action_results_default = {
         stamina: -22,
         money: 700,
         mood: -5,
-        satiety: -7,
+        stress: 6,
         axes: {
           others: 1
         }
@@ -19869,7 +19869,7 @@ var action_results_default = {
         stamina: -26,
         money: 520,
         mood: -4,
-        satiety: -9
+        stress: 7
       },
       text: "\u6563\u573A\u540E\u642C\u4E86\u56DB\u5341\u628A\u6298\u53E0\u6905\uFF0C\u624B\u4E0A\u7559\u4E0B\u80F6\u5E26\u7684\u5370\u5B50\u3002\uFF08\u6536\u5165 +520\uFF09"
     },
@@ -19883,7 +19883,7 @@ var action_results_default = {
         stamina: -28,
         money: 420,
         mood: -7,
-        satiety: -9
+        stress: 7
       },
       text: "\u97F3\u7BB1\u6BD4\u60F3\u7684\u6C89\u3002\u4F60\u548C\u53E6\u4E00\u4E2A\u4EBA\u62AC\uFF0C\u8D70\u4E09\u6B65\u6B47\u4E00\u6B21\u3002\uFF08\u6536\u5165 +420\uFF09"
     },
@@ -19897,7 +19897,7 @@ var action_results_default = {
         stamina: -20,
         money: 260,
         mood: 2,
-        satiety: -7,
+        stress: 6,
         fans: 12,
         axes: {
           others: 2
@@ -19915,7 +19915,7 @@ var action_results_default = {
         stamina: -22,
         money: 180,
         mood: -2,
-        satiety: -7,
+        stress: 6,
         fans: 7,
         axes: {
           others: 2
@@ -19933,7 +19933,7 @@ var action_results_default = {
         stamina: -32,
         money: 1800,
         mood: 8,
-        satiety: -10,
+        stress: 7,
         fans: 150,
         axes: {
           others: 1
@@ -19951,7 +19951,7 @@ var action_results_default = {
         stamina: -32,
         money: 1100,
         mood: 5,
-        satiety: -10,
+        stress: 7,
         fans: 90,
         axes: {
           others: 1
@@ -19969,7 +19969,7 @@ var action_results_default = {
         stamina: -32,
         money: 600,
         mood: 2,
-        satiety: -10,
+        stress: 7,
         fans: 45,
         axes: {
           others: 1
@@ -19987,7 +19987,7 @@ var action_results_default = {
         stamina: -32,
         money: 220,
         mood: -6,
-        satiety: -10,
+        stress: 7,
         fans: 15,
         axes: {
           others: 1
@@ -20005,7 +20005,7 @@ var action_results_default = {
         stamina: -14,
         money: 180,
         mood: 3,
-        satiety: -6,
+        stress: 5,
         fans: 12,
         axes: {
           self: 1
@@ -20023,7 +20023,7 @@ var action_results_default = {
         stamina: -14,
         money: 60,
         mood: -5,
-        satiety: -6,
+        stress: 5,
         fans: 3,
         axes: {
           self: 1
@@ -20041,7 +20041,7 @@ var action_results_default = {
         stamina: -26,
         money: 380,
         mood: 6,
-        satiety: -9,
+        stress: 7,
         fans: 30,
         axes: {
           fit: 2
@@ -20059,7 +20059,7 @@ var action_results_default = {
         stamina: -26,
         money: 200,
         mood: 1,
-        satiety: -9,
+        stress: 7,
         fans: 14,
         axes: {
           fit: 2
@@ -20077,7 +20077,7 @@ var action_results_default = {
         stamina: -32,
         money: 2200,
         mood: -2,
-        satiety: -10,
+        stress: 7,
         fans: 70,
         axes: {
           others: 3
@@ -20095,7 +20095,7 @@ var action_results_default = {
         stamina: -32,
         money: 1600,
         mood: -4,
-        satiety: -10,
+        stress: 7,
         fans: 40,
         axes: {
           others: 3
@@ -20113,7 +20113,7 @@ var action_results_default = {
         stamina: -36,
         money: 2600,
         mood: 10,
-        satiety: -11,
+        stress: 7,
         fans: 180,
         axes: {
           self: 3
@@ -20131,7 +20131,7 @@ var action_results_default = {
         stamina: -36,
         money: 1800,
         mood: 4,
-        satiety: -11,
+        stress: 7,
         fans: 90,
         axes: {
           self: 3
@@ -20149,7 +20149,7 @@ var action_results_default = {
         stamina: -20,
         money: 700,
         mood: 6,
-        satiety: -6,
+        stress: 6,
         fans: 20,
         axes: {
           others: 2
@@ -20167,7 +20167,7 @@ var action_results_default = {
         stamina: -20,
         money: 280,
         mood: 2,
-        satiety: -6,
+        stress: 6,
         fans: 8,
         axes: {
           others: 2
@@ -20692,14 +20692,6 @@ var attributes_default = {
       linked: 1
     },
     {
-      category: "status",
-      categoryName: "\u72B6\u6001",
-      name: "\u9971\u8179",
-      key: "satiety",
-      hidden: true,
-      linked: 1
-    },
-    {
       category: "trait",
       categoryName: "\u6027\u683C",
       name: "\u4F53\u8D34",
@@ -20748,12 +20740,12 @@ var attributes_default = {
       linked: 2
     },
     {
-      category: "negative",
-      categoryName: "\u8D1F\u5411",
-      name: "\u7CBE\u795E\u538B\u529B",
+      category: "status",
+      categoryName: "\u72B6\u6001",
+      name: "\u538B\u529B",
       key: "stress",
-      hidden: false,
-      linked: 2
+      hidden: true,
+      linked: 1
     },
     {
       category: "negative",
@@ -31934,7 +31926,7 @@ var ALIAS = {
   \u4F53\u529B: "stamina",
   \u8D44\u91D1: "money",
   \u5FC3\u60C5: "mood",
-  \u9971\u8179: "satiety",
+  \u538B\u529B: "stress",
   \u7C89\u4E1D\u6570: "friends",
   \u597D\u53CB\u6570: "friends",
   \u7C89\u4E1D\u603B\u6570: "fansTotal",
@@ -31966,7 +31958,7 @@ var FIXED_NAMES = [
   "friends",
   "total",
   "mood",
-  "satiety",
+  "stress",
   // T-018：六轴粉丝之和（与客户端 totalFans 同口径）
   "fansTotal"
 ];
@@ -32031,7 +32023,11 @@ function buildExprData(state) {
     stamina: state.stamina,
     money: state.money,
     mood: state.mood ?? 70,
-    satiety: state.satiety ?? 70,
+    stress: state.negatives?.stress ?? 0,
+    // T-044：数据里存量条件写的是 neg.stress / neg.fatigue / neg.desire / neg.scandal，
+    // 校验器（GROUP_PREFIXES 含 'neg'）一直认这套写法，但求值侧从来没提供 neg 对象，
+    // 于是这些条件恒为 false —— 4 个剧情事件一直触发不了。这里补上。
+    neg: state.negatives ?? {},
     friends: (state.friends ?? []).length,
     total: STAT_KEYS2.reduce((sum, k) => sum + state.stats[k], 0),
     // T-018：六类粉丝之和（与客户端 totalFans 同口径）
@@ -32177,8 +32173,7 @@ var STORY_EVENTS = RAW_STORY.map((e) => ({
       axes: c.effects.axes,
       traits: c.effects.traits,
       negatives: c.effects.negatives,
-      mood: c.effects.mood,
-      satiety: c.effects.satiety
+      mood: c.effects.mood
     },
     setFlag: c.setFlag,
     requires: (s) => matchesCondition(s, c.requires)
@@ -32278,21 +32273,15 @@ var STAMINA_MAX = staminaMaxFrom(BALANCE);
 function clampStamina(v) {
   return Math.max(0, Math.min(STAMINA_MAX, Math.round(v)));
 }
-var HUNGRY_SATIETY = 20;
-var HUNGRY_RECOVERY_MUL = 0.5;
+var PRESSURE_MAX = 100;
+var STRESS_EFFICIENCY_THRESHOLD = 60;
+var STRESS_EFFICIENCY_MUL = 0.95;
 var FATIGUE_THRESHOLD = 50;
 var FATIGUE_COST_MUL = 1.2;
-function settleStamina(raw2, satietyAfter, fatigue) {
+function settleStamina(raw2, fatigue) {
   const scaledByFatigue = raw2 < 0 && fatigue > FATIGUE_THRESHOLD;
   const cost = scaledByFatigue ? Math.round(raw2 * FATIGUE_COST_MUL) : raw2;
-  if (cost > 0 && satietyAfter < HUNGRY_SATIETY) {
-    return {
-      applied: Math.round(cost * HUNGRY_RECOVERY_MUL),
-      scaledByFatigue,
-      halvedByHunger: true
-    };
-  }
-  return { applied: cost, scaledByFatigue, halvedByHunger: false };
+  return { applied: cost, scaledByFatigue };
 }
 
 // ../core/src/rng.ts
@@ -33522,7 +33511,7 @@ var items_default = {
       icon: "",
       effects: {
         mood: 12,
-        satiety: 5
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -33538,7 +33527,7 @@ var items_default = {
       icon: "",
       effects: {
         mood: 12,
-        satiety: 6
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -33633,7 +33622,7 @@ var items_default = {
       icon: "",
       effects: {
         mood: 16,
-        satiety: 8
+        stress: -5
       },
       negative: {},
       hidden: {},
@@ -33664,7 +33653,7 @@ var items_default = {
       icon: "",
       effects: {
         mood: 8,
-        satiety: 5
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -33710,7 +33699,7 @@ var items_default = {
       icon: "",
       effects: {
         mood: 10,
-        satiety: 5
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -33726,7 +33715,7 @@ var items_default = {
       icon: "",
       effects: {
         mood: 12,
-        satiety: 8
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -33802,7 +33791,7 @@ var items_default = {
       icon: "",
       effects: {
         mood: 14,
-        satiety: 10
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -33818,7 +33807,7 @@ var items_default = {
       icon: "",
       effects: {
         mood: 8,
-        satiety: 5
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -33849,7 +33838,7 @@ var items_default = {
       icon: "",
       effects: {
         mood: 10,
-        satiety: 6
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -33865,7 +33854,7 @@ var items_default = {
       icon: "",
       effects: {
         mood: 12,
-        satiety: 10
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -33957,9 +33946,9 @@ var items_default = {
       rarity: "uncommon",
       icon: "",
       effects: {
-        satiety: 30,
         mood: 10,
-        stamina: 8
+        stamina: 8,
+        stress: -5
       },
       negative: {},
       hidden: {},
@@ -33974,8 +33963,8 @@ var items_default = {
       rarity: "uncommon",
       icon: "",
       effects: {
-        satiety: 25,
-        mood: 15
+        mood: 15,
+        stress: -5
       },
       negative: {},
       hidden: {},
@@ -33990,8 +33979,8 @@ var items_default = {
       rarity: "uncommon",
       icon: "",
       effects: {
-        satiety: 28,
-        mood: 18
+        mood: 18,
+        stress: -5
       },
       negative: {},
       hidden: {},
@@ -34006,8 +33995,8 @@ var items_default = {
       rarity: "common",
       icon: "",
       effects: {
-        satiety: 25,
-        mood: 10
+        mood: 10,
+        stress: -5
       },
       negative: {},
       hidden: {},
@@ -34022,9 +34011,9 @@ var items_default = {
       rarity: "common",
       icon: "",
       effects: {
-        satiety: 20,
         mood: 8,
-        stamina: 5
+        stamina: 5,
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -34039,8 +34028,8 @@ var items_default = {
       rarity: "common",
       icon: "",
       effects: {
-        satiety: 22,
-        stamina: 8
+        stamina: 8,
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -34055,7 +34044,7 @@ var items_default = {
       rarity: "common",
       icon: "",
       effects: {
-        satiety: 22
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -34070,8 +34059,8 @@ var items_default = {
       rarity: "common",
       icon: "",
       effects: {
-        satiety: 18,
-        mood: 5
+        mood: 5,
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -34086,8 +34075,8 @@ var items_default = {
       rarity: "common",
       icon: "",
       effects: {
-        satiety: 15,
-        mood: 12
+        mood: 12,
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -34102,8 +34091,8 @@ var items_default = {
       rarity: "uncommon",
       icon: "",
       effects: {
-        satiety: 25,
-        mood: 20
+        mood: 20,
+        stress: -5
       },
       negative: {},
       hidden: {},
@@ -34118,8 +34107,8 @@ var items_default = {
       rarity: "rare",
       icon: "",
       effects: {
-        satiety: 20,
-        mood: 28
+        mood: 28,
+        stress: -8
       },
       negative: {},
       hidden: {},
@@ -34134,8 +34123,8 @@ var items_default = {
       rarity: "rare",
       icon: "",
       effects: {
-        satiety: 35,
-        mood: 30
+        mood: 30,
+        stress: -12
       },
       negative: {
         stamina: 5
@@ -34152,8 +34141,8 @@ var items_default = {
       rarity: "uncommon",
       icon: "",
       effects: {
-        satiety: 30,
-        mood: 12
+        mood: 12,
+        stress: -8
       },
       negative: {},
       hidden: {},
@@ -34168,8 +34157,8 @@ var items_default = {
       rarity: "common",
       icon: "",
       effects: {
-        satiety: 18,
-        mood: 10
+        mood: 10,
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -34184,8 +34173,8 @@ var items_default = {
       rarity: "common",
       icon: "",
       effects: {
-        satiety: 12,
-        mood: 10
+        mood: 10,
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -34200,8 +34189,8 @@ var items_default = {
       rarity: "common",
       icon: "",
       effects: {
-        satiety: 15,
-        mood: 10
+        mood: 10,
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -34216,7 +34205,7 @@ var items_default = {
       rarity: "common",
       icon: "",
       effects: {
-        satiety: 20
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -34231,8 +34220,8 @@ var items_default = {
       rarity: "common",
       icon: "",
       effects: {
-        satiety: 30,
-        stamina: 10
+        stamina: 10,
+        stress: -5
       },
       negative: {},
       hidden: {},
@@ -34247,8 +34236,8 @@ var items_default = {
       rarity: "common",
       icon: "",
       effects: {
-        satiety: 28,
-        stamina: 10
+        stamina: 10,
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -34263,8 +34252,8 @@ var items_default = {
       rarity: "uncommon",
       icon: "",
       effects: {
-        satiety: 32,
-        mood: 15
+        mood: 15,
+        stress: -5
       },
       negative: {},
       hidden: {},
@@ -34279,8 +34268,8 @@ var items_default = {
       rarity: "uncommon",
       icon: "",
       effects: {
-        satiety: 25,
-        mood: 10
+        mood: 10,
+        stress: -5
       },
       negative: {},
       hidden: {},
@@ -34295,8 +34284,8 @@ var items_default = {
       rarity: "uncommon",
       icon: "",
       effects: {
-        satiety: 28,
-        mood: 20
+        mood: 20,
+        stress: -8
       },
       negative: {},
       hidden: {},
@@ -34311,8 +34300,8 @@ var items_default = {
       rarity: "common",
       icon: "",
       effects: {
-        satiety: 15,
-        stamina: 5
+        stamina: 5,
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -34327,7 +34316,7 @@ var items_default = {
       rarity: "common",
       icon: "",
       effects: {
-        satiety: 18
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -34342,8 +34331,8 @@ var items_default = {
       rarity: "common",
       icon: "",
       effects: {
-        satiety: 15,
-        mood: 3
+        mood: 3,
+        stress: -5
       },
       negative: {},
       hidden: {},
@@ -34358,8 +34347,8 @@ var items_default = {
       rarity: "common",
       icon: "",
       effects: {
-        satiety: 10,
-        mood: 6
+        mood: 6,
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -34374,8 +34363,8 @@ var items_default = {
       rarity: "common",
       icon: "",
       effects: {
-        satiety: 10,
-        stamina: 8
+        stamina: 8,
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -34391,7 +34380,7 @@ var items_default = {
       icon: "",
       effects: {
         stamina: 12,
-        satiety: 8
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -34406,8 +34395,8 @@ var items_default = {
       rarity: "common",
       icon: "",
       effects: {
-        satiety: 10,
-        mood: 8
+        mood: 8,
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -34423,7 +34412,7 @@ var items_default = {
       icon: "",
       effects: {
         mood: 20,
-        satiety: 10
+        stress: -5
       },
       negative: {},
       hidden: {},
@@ -34438,8 +34427,8 @@ var items_default = {
       rarity: "common",
       icon: "",
       effects: {
-        satiety: 25,
-        stamina: 8
+        stamina: 8,
+        stress: -3
       },
       negative: {},
       hidden: {},
@@ -34455,7 +34444,7 @@ var items_default = {
       icon: "",
       effects: {
         mood: 50,
-        satiety: 20
+        stress: -20
       },
       negative: {},
       hidden: {},
@@ -34471,8 +34460,8 @@ var items_default = {
       icon: "",
       effects: {
         mood: 45,
-        satiety: 40,
-        stamina: 20
+        stamina: 20,
+        stress: -15
       },
       negative: {},
       hidden: {},
@@ -34488,8 +34477,8 @@ var items_default = {
       icon: "",
       effects: {
         mood: 40,
-        satiety: 35,
-        stamina: 15
+        stamina: 15,
+        stress: -25
       },
       negative: {},
       hidden: {},
@@ -35135,7 +35124,7 @@ function resolveAction(state, actionId, rng) {
   const money = result.effects.money ?? 0;
   const fans = result.effects.fans ?? 0;
   const mood = result.effects.mood ?? 0;
-  const satiety = result.effects.satiety ?? 0;
+  const stress = result.effects.stress ?? 0;
   const health = result.effects.health ?? 0;
   const axes = {};
   for (const [k, v] of Object.entries(result.effects.axes ?? {})) {
@@ -35149,7 +35138,7 @@ function resolveAction(state, actionId, rng) {
   text = text.split("{n}").join(String(firstStat));
   text = text.split("{stamina}").join(String(stamina));
   text = text.split("{money}").join(String(money));
-  return { resultId: result.id, stamina, money, mood, satiety, health, fans, stats, axes, text };
+  return { resultId: result.id, stamina, money, mood, stress, health, fans, stats, axes, text };
 }
 function previewAction(state, actionId) {
   const result = pickActionResult(state, actionId);
@@ -35162,18 +35151,12 @@ function previewAction(state, actionId) {
   for (const [k, v] of Object.entries(result.effects.axes ?? {})) {
     axes[k] = Array.isArray(v) ? [v[0], v[1]] : [v, v];
   }
-  const satietyAfter = Math.max(0, Math.min(100, (state.satiety ?? 70) + (result.effects.satiety ?? 0)));
-  const staminaRule = settleStamina(
-    result.effects.stamina ?? 0,
-    satietyAfter,
-    state.negatives?.fatigue ?? 0
-  );
+  const staminaRule = settleStamina(result.effects.stamina ?? 0, state.negatives?.fatigue ?? 0);
   return {
     stamina: staminaRule.applied,
-    hungerHalved: staminaRule.halvedByHunger,
     money: result.effects.money ?? 0,
     mood: result.effects.mood ?? 0,
-    satiety: result.effects.satiety ?? 0,
+    stress: result.effects.stress ?? 0,
     health: result.effects.health ?? 0,
     fans: result.effects.fans ?? 0,
     stats,
@@ -35194,11 +35177,22 @@ function nextPendingItem(schedule) {
 
 // ../core/src/preflight.ts
 function preflightAction(state, actionId) {
+  const meta = ACTION_META[actionId];
+  const stress = state.negatives?.stress ?? 0;
+  if (meta && meta.category !== "recover" && stress >= PRESSURE_MAX) {
+    return {
+      ok: false,
+      reason: "pressure",
+      need: PRESSURE_MAX,
+      have: stress,
+      text: `\u538B\u529B\u5DF2\u7ECF\u6EE1\u4E86\uFF08${stress}/${PRESSURE_MAX}\uFF09\uFF0C\u8FD9\u6761\u505A\u4E0D\u4E86\u3002\u5148\u5B89\u6392\u4E00\u6B21\u51CF\u538B\uFF1A\u6D17\u6FA1\u3001\u6E38\u4E50\u56ED\u6216\u65C5\u884C\u3002`
+    };
+  }
   const left = remainingTimes(state, actionId);
   if (left <= 0) {
-    const meta = ACTION_META[actionId];
-    const scope = meta?.timesScope ?? "run";
-    const times = meta?.times ?? 0;
+    const meta2 = ACTION_META[actionId];
+    const scope = meta2?.timesScope ?? "run";
+    const times = meta2?.times ?? 0;
     const word = { day: "\u4ECA\u5929", week: "\u672C\u5468", run: "\u672C\u5C40" }[scope] ?? "\u672C\u5C40";
     const unit = { day: "\u5929", week: "\u5468", run: "\u5C40" }[scope] ?? "\u5C40";
     return {
@@ -36186,6 +36180,7 @@ var ATTR_LABELS = (() => {
     map[attr.key] = attr.name;
     const prefix = GROUP[attr.category];
     if (prefix) map[prefix + "." + attr.key] = attr.name;
+    if (attr.key === "stress") map["neg.stress"] = attr.name;
   }
   return map;
 })();
@@ -36361,6 +36356,10 @@ function settle(run, schedule, from, to, seed, opts = {}) {
       break;
     }
     if (item.kind === "show") {
+      if ((state.negatives?.stress ?? 0) >= PRESSURE_MAX) {
+        stoppedReason = "pressure";
+        break;
+      }
       const booking = (state.bookings ?? []).find((b) => b.id === item.bookingId);
       state = booking ? settleShow(state, item, booking) : { ...state, at: item.endAt };
       executed.push(item.id);
@@ -36372,7 +36371,7 @@ function settle(run, schedule, from, to, seed, opts = {}) {
     const rng = mulberry32(hashSeed(`${seed}:action:${item.id}`));
     const pf = preflightAction(state, item.actionId);
     if (!pf.ok) {
-      stoppedReason = pf.reason === "times" ? "stopped" : pf.reason === "stamina" ? "stamina" : pf.reason === "money" ? "money" : null;
+      stoppedReason = pf.reason === "times" ? "stopped" : pf.reason === "stamina" ? "stamina" : pf.reason === "money" ? "money" : pf.reason === "pressure" ? "pressure" : null;
       break;
     }
     const preview = previewAction(state, item.actionId);
@@ -36380,21 +36379,20 @@ function settle(run, schedule, from, to, seed, opts = {}) {
     const resolved = resolveAction(state, item.actionId, rng);
     if (!resolved) continue;
     const nextMood = Math.max(0, Math.min(100, (state.mood ?? 70) + resolved.mood));
-    const nextSatiety = Math.max(0, Math.min(100, (state.satiety ?? 70) + resolved.satiety));
+    const nextStress = clamp((state.negatives?.stress ?? 0) + resolved.stress, 0, PRESSURE_MAX);
     const negatives = state.negatives ?? {};
     const proficiency = state.proficiency ?? {};
     let efficiency = 1;
     if (nextMood < 30) efficiency *= 0.7;
     else if (nextMood > 70) efficiency *= 1.05;
-    if (nextSatiety < 20) efficiency *= 0.8;
     if ((negatives.restless ?? 0) > 50) efficiency *= 0.95;
-    if ((negatives.stress ?? 0) > 60) efficiency *= 0.95;
-    const staminaRule = settleStamina(resolved.stamina, nextSatiety, negatives.fatigue ?? 0);
+    if ((negatives.stress ?? 0) > STRESS_EFFICIENCY_THRESHOLD) efficiency *= STRESS_EFFICIENCY_MUL;
+    const staminaRule = settleStamina(resolved.stamina, negatives.fatigue ?? 0);
     const staminaApplied = staminaRule.applied;
     state.stamina = clampStamina(state.stamina + staminaApplied);
     state.money += resolved.money;
     state.mood = nextMood;
-    state.satiety = nextSatiety;
+    state.negatives = { ...negatives, stress: nextStress };
     state.health = clamp((state.health ?? 100) + resolved.health, 0, 100);
     for (const [k, v] of Object.entries(resolved.axes)) {
       const key = k;
@@ -36430,10 +36428,9 @@ function settle(run, schedule, from, to, seed, opts = {}) {
     state.log.push({
       at: item.endAt,
       actionId: action.id,
-      // 太饿导致恢复减半时补一句说明：配置文案写的是原值（如「体力 +40」），
-      // 不解释的话玩家只会看到「睡了但没加多少」。
-      text: staminaRule.halvedByHunger ? `${resolved.text}\uFF08\u809A\u5B50\u592A\u997F\uFF0C\u4F53\u529B\u53EA\u6062\u590D\u4E86\u4E00\u534A\uFF09` : resolved.text,
+      text: resolved.text,
       staminaDelta: staminaApplied,
+      stressDelta: nextStress - (negatives.stress ?? 0),
       statDelta,
       kind: "action"
     });

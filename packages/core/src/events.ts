@@ -8,7 +8,6 @@ export interface ChoiceEffects {
   stats?: Partial<Stats>;
   stamina?: number;
   mood?: number;
-  satiety?: number;
   axes?: Partial<Axes>;
   /** 性格变化 */
   traits?: Record<string, number>;
@@ -75,7 +74,6 @@ export const STORY_EVENTS: StoryEvent[] = RAW_STORY.map((e) => ({
       traits: c.effects.traits,
       negatives: c.effects.negatives,
       mood: c.effects.mood,
-      satiety: c.effects.satiety,
     },
     setFlag: c.setFlag,
     requires: (s: RunState) => matchesCondition(s, c.requires),
@@ -127,9 +125,6 @@ export function applyChoice(state: RunState, eventId: string, choiceId: string):
   }
 
   if (choice.effects.mood) next.mood = clamp((state.mood ?? 70) + choice.effects.mood);
-  if (choice.effects.satiety) {
-    next.satiety = clamp((state.satiety ?? 70) + choice.effects.satiety);
-  }
 
   const traits = { ...(state.traits ?? {}) };
   for (const [k, v] of Object.entries(choice.effects.traits ?? {})) {

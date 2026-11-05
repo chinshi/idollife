@@ -1,10 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  HUNGRY_SATIETY,
-  START_AT,
-  clampStamina,
-  settleStamina,
-} from '../src/content';
+import { START_AT, clampStamina, settleStamina } from '../src/content';
 import { createFans } from '../src/fans';
 import { preflightAction } from '../src/preflight';
 import { previewAction } from '../src/results';
@@ -22,7 +17,6 @@ function baseRun(over: Partial<RunState> = {}): RunState {
     stamina: 0,
     money: 50000,
     mood: 70,
-    satiety: 70,
     health: 100,
     parties: [],
     friends: [],
@@ -49,48 +43,36 @@ function item(id: string, actionId: string, offsetMin: number, durationMin = 10)
 
 /**
  * T-042 守卫：体力结算规则必须在「预览 / 预检 / 实际结算」三处完全一致。
- *
- * 线上真实现象（用户 2026-11-05）：饱腹 0~35 时爆睡只加 20 点，
- * 但行程卡预览与日志文案都按配置写「体力 +40」→ 玩家看到"睡完没涨"。
+ * T-044：饱腹退役，「太饿恢复减半」随之删除，这里只留积劳放大。
  */
 describe('settleStamina', () => {
-  it('饱腹正常时恢复按配置值', () => {
-    const r = settleStamina(40, 62, 0);
-    expect(r.applied).toBe(40);
-    expect(r.halvedByHunger).toBe(false);
+  it('恢复类按配置值给满', () => {
+    expect(settleStamina(40, 0).applied).toBe(40);
   });
 
-  it('行动后饱腹低于 20 → 恢复减半', () => {
-    const r = settleStamina(40, 10, 0);
-    expect(r.applied).toBe(20);
-    expect(r.halvedByHunger).toBe(true);
-  });
-
-  it('饱腹正好 20 不减半（边界是小于）', () => {
-    expect(settleStamina(40, HUNGRY_SATIETY, 0).applied).toBe(40);
-  });
-
-  it('消耗不受饱腹影响', () => {
-    const r = settleStamina(-10, 0, 0);
-    expect(r.applied).toBe(-10);
-    expect(r.halvedByHunger).toBe(false);
+  it('消耗不受影响', () => {
+    expect(settleStamina(-10, 0).applied).toBe(-10);
   });
 
   it('积劳 > 50 时消耗放大 1.2 倍', () => {
-    const r = settleStamina(-10, 70, 60);
+    const r = settleStamina(-10, 60);
     expect(r.applied).toBe(-12);
     expect(r.scaledByFatigue).toBe(true);
   });
 
-  it('又饿又积劳：恢复只减半、消耗只放大，互不串', () => {
-    expect(settleStamina(40, 5, 80).applied).toBe(20);
-    expect(settleStamina(-10, 5, 80).applied).toBe(-12);
+  it('积劳只放大消耗，不放大恢复', () => {
+    expect(settleStamina(40, 80).applied).toBe(40);
+  });
+
+  it('T-044：不再有饥饿减半，恢复类永远给满', () => {
+    // 旧规则下 40 会被砍成 20；饱腹退役后不管什么状态都是 40
+    expect(settleStamina(40, 0).applied).toBe(40);
   });
 });
 
 describe('预览与实际结算一致', () => {
-  it('饱腹充足：预览 = 实际（爆睡 +40）', () => {
-    const run = baseRun({ stamina: 10, satiety: 70 });
+  it('爆睡 +40：预览 = 实际', () => {
+    const run = baseRun({ stamina: 10 });
     const pv = previewAction(run, 'rest-sleep')!;
     const res = settle(run, [item('s1', 'rest-sleep', 0)], T0, T0 + 10 * MIN, 'seed', PURE);
     const played = res.state.log.find((l) => l.actionId === 'rest-sleep')!;
@@ -99,27 +81,8 @@ describe('预览与实际结算一致', () => {
     expect(res.state.stamina).toBe(50);
   });
 
-  it('太饿：预览必须显示减半后的 20，日志也要如实记 20', () => {
-    const run = baseRun({ stamina: 0, satiety: 10 });
-    const pv = previewAction(run, 'rest-sleep')!;
-    expect(pv.stamina).toBe(20);
-    expect(pv.hungerHalved).toBe(true);
-
-    const res = settle(run, [item('s1', 'rest-sleep', 0)], T0, T0 + 10 * MIN, 'seed', PURE);
-    const played = res.state.log.find((l) => l.actionId === 'rest-sleep')!;
-    expect(played.staminaDelta).toBe(pv.stamina);
-    expect(res.state.stamina).toBe(20);
-  });
-
-  it('太饿时日志文案补一句说明（配置文案写的是 +40）', () => {
-    const run = baseRun({ stamina: 0, satiety: 10 });
-    const res = settle(run, [item('s1', 'rest-sleep', 0)], T0, T0 + 10 * MIN, 'seed', PURE);
-    const played = res.state.log.find((l) => l.actionId === 'rest-sleep')!;
-    expect(played.text).toContain('只恢复了一半');
-  });
-
   it('体力在上限附近时，预览按原始值显示但实际被 clamp（不会说没加）', () => {
-    const run = baseRun({ stamina: 95, satiety: 70 });
+    const run = baseRun({ stamina: 95 });
     const pv = previewAction(run, 'rest-sleep')!;
     expect(pv.stamina).toBe(40);
     const res = settle(run, [item('s1', 'rest-sleep', 0)], T0, T0 + 10 * MIN, 'seed', PURE);
@@ -150,7 +113,7 @@ describe('0 体力不该能跑消耗行动', () => {
 
   it('先爆睡把体力睡回来，后面的唱 K 才执行（同一批排程）', () => {
     const res = settle(
-      baseRun({ stamina: 0, satiety: 70 }),
+      baseRun({ stamina: 0 }),
       [item('s1', 'rest-sleep', 0), item('s2', 'vocal-karaoke', 10)],
       T0,
       T0 + 20 * MIN,

@@ -27,7 +27,7 @@ export const ALIAS = {
   体力: 'stamina',
   资金: 'money',
   心情: 'mood',
-  饱腹: 'satiety',
+  压力: 'stress',
   粉丝数: 'friends',
   好友数: 'friends',
   粉丝总数: 'fansTotal',
@@ -57,8 +57,8 @@ export const GROUP_PREFIXES = ['innate', 'trait', 'neg', 'prof'];
 
 /**
  * 除属性/分组外的固定变量
- * mood / satiety 按 D-013 第 2 条**裸名接入**（不要加 state. 之类前缀），
- * 取值与缺省 70 在 expr.ts 的 buildExprData 里；校验器与编译器共用本文件，自动同源。
+ * mood / stress 按 D-013 第 2 条**裸名接入**（不要加 state. 之类前缀），
+ * 取值与缺省（mood 70 / stress 0）在 expr.ts 的 buildExprData 里；校验器与编译器共用本文件，自动同源。
  */
 const FIXED_NAMES = [
   'self',
@@ -69,7 +69,7 @@ const FIXED_NAMES = [
   'friends',
   'total',
   'mood',
-  'satiety',
+  'stress',
   // T-018：六轴粉丝之和（与客户端 totalFans 同口径）
   'fansTotal',
 ];

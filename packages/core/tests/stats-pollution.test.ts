@@ -16,7 +16,6 @@ function base(over: Partial<RunState> = {}): RunState {
     stats: { vocal: 15, dance: 15, acting: 15, talk: 15 },
     axes: { self: 50, others: 50, fit: 50 },
     mood: 70,
-    satiety: 70,
     fans: createFans(0),
     debuted: false,
     parties: [],

@@ -235,8 +235,9 @@ const counts = {};
     if (money !== undefined) effects.money = money;
     const mood = num(cell(r, 8));
     if (mood !== undefined) effects.mood = mood;
-    const satiety = num(cell(r, 9));
-    if (satiety !== undefined) effects.satiety = satiety;
+    // T-044：饱腹退役，第 9 列改为压力（stress，负值=减压）
+    const stress = num(cell(r, 9));
+    if (stress !== undefined) effects.stress = stress;
     // T-021：健康（col10）与隐藏轴（col16-18）
     const health = num(cell(r, 10));
     if (health !== undefined) effects.health = health;
@@ -319,12 +320,13 @@ const counts = {};
 
     const mood = num(cell(r, 14));
     if (mood !== undefined) effects.mood = mood;
-    const satiety = num(cell(r, 15));
-    if (satiety !== undefined) effects.satiety = satiety;
     const traits = parseJsonObject(cell(r, 16), `choices.${str(cell(r, 2))}.traits`);
     if (traits) effects.traits = traits;
-    const negatives = parseJsonObject(cell(r, 17), `choices.${str(cell(r, 2))}.negatives`);
-    if (negatives) effects.negatives = negatives;
+    // T-044：第 15 列（原「饱腹」）改为「压力」，并入 negatives.stress
+    const negatives = parseJsonObject(cell(r, 17), `choices.${str(cell(r, 2))}.negatives`) ?? {};
+    const stress = num(cell(r, 15));
+    if (stress !== undefined) negatives.stress = stress;
+    if (Object.keys(negatives).length) effects.negatives = negatives;
 
     const c = { id: str(cell(r, 2)), label: str(cell(r, 3)), text: str(cell(r, 4)), effects };
     const flag = str(cell(r, 13));

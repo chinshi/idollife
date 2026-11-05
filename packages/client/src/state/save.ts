@@ -164,7 +164,6 @@ export function normalizeRun(run: RunState): RunState {
     stats: sanitizeStats(run.stats),
     axes: run.axes ?? { self: 50, others: 50, fit: 50 },
     mood: isNum(run.mood) ? run.mood : 70,
-    satiety: isNum(run.satiety) ? run.satiety : 70,
     // T-021：健康兜底 100（旧档无感迁移）
     health: isNum(run.health) ? run.health : 100,
     innate: normalizeInnate(run.innate),
@@ -176,12 +175,13 @@ export function normalizeRun(run: RunState): RunState {
       ambitious: 0,
       passion: 0,
     },
-    negatives: run.negatives ?? {
-      stress: 0,
-      restless: 0,
-      fatigue: 0,
-      desire: 0,
-      scandal: 0,
+    // T-044：压力（stress）是核心状态，老档可能没有这个键或写成 null，统一兜底 0
+    negatives: {
+      stress: isNum(run.negatives?.stress) ? (run.negatives.stress as number) : 0,
+      restless: isNum(run.negatives?.restless) ? (run.negatives.restless as number) : 0,
+      fatigue: isNum(run.negatives?.fatigue) ? (run.negatives.fatigue as number) : 0,
+      desire: isNum(run.negatives?.desire) ? (run.negatives.desire as number) : 0,
+      scandal: isNum(run.negatives?.scandal) ? (run.negatives.scandal as number) : 0,
     },
     proficiency: run.proficiency ?? { stage_prof: 0, song_prof: 0, choreo_prof: 0 },
     fans: run.fans ?? EMPTY_FANS,

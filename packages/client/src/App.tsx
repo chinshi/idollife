@@ -145,7 +145,6 @@ const initialRun: RunState = {
   stats: { vocal: 10, dance: 10, acting: 10, talk: 10 },
   axes: { self: 50, others: 50, fit: 50 },
   mood: 70,
-  satiety: 70,
   health: 100,
   innate: {
     // T-016c：身高直接存厘米（145–180）；体重存公斤（40–80）；样貌对齐文案区间（50–100）

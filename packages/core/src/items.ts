@@ -210,7 +210,7 @@ interface AppliedDelta {
   delta: number;
 }
 
-/** 应用显性/负面效果（状态/钱/四维里的 stamina/mood/satiety 夹到上限） */
+/** 应用显性/负面效果（状态/钱/四维里的 stamina/mood 夹到上限） */
 function applyVisible(state: RunState, effects: Record<string, number>): RunState {
   const next: RunState = {
     ...state,
@@ -223,7 +223,6 @@ function applyVisible(state: RunState, effects: Record<string, number>): RunStat
     if (!delta) continue;
     if (key === 'stamina') next.stamina = clamp(next.stamina + delta, 0, STAMINA_MAX);
     else if (key === 'mood') next.mood = clamp((next.mood ?? 70) + delta, 0, 100);
-    else if (key === 'satiety') next.satiety = clamp((next.satiety ?? 70) + delta, 0, 100);
     else if (key === 'weight') next.innate = { ...next.innate, weight: (next.innate?.weight ?? 60) + delta };
     else if (key === 'appearance')
       next.innate = { ...next.innate, appearance: (next.innate?.appearance ?? 60) + delta };
@@ -270,11 +269,10 @@ function visibleSummary(lines: AppliedDelta[]): string {
   const LABELS: Record<string, string> = {
     stamina: '体力',
     mood: '心情',
-    satiety: '饱腹',
+    stress: '压力',
     weight: '体重',
     appearance: '样貌',
     fatigue: '积劳',
-    stress: '精神压力',
     restless: '焦躁',
   };
   return lines

@@ -4,12 +4,12 @@
  * 与 settle.ts 里「行动前」的三条检查同源：次数 → 体力 → 钱。
  * 纯函数：不读 Date.now / Math.random / DOM / localStorage。
  */
-import { ACTION_META, STAMINA_MAX, remainingTimes } from './content';
+import { ACTION_META, PRESSURE_MAX, STAMINA_MAX, remainingTimes } from './content';
 import { previewAction } from './results';
 import { nextPendingItem } from './plan';
 import type { RunState, ScheduleItem } from './types';
 
-export type PreflightReason = 'ok' | 'stamina' | 'money' | 'times';
+export type PreflightReason = 'ok' | 'stamina' | 'money' | 'times' | 'pressure';
 
 export interface PreflightResult {
   ok: boolean;
@@ -23,6 +23,20 @@ export interface PreflightResult {
 
 /** 判这一条现在能不能跑：次数 → 体力 → 钱（顺序与 settle 一致） */
 export function preflightAction(state: RunState, actionId: string): PreflightResult {
+  // T-044：压力到顶，产出行动一律不能做，必须先去减压。
+  // 放在最前面：压力满时连「次数」都不该往下判，否则给出的提示会指错方向。
+  const meta = ACTION_META[actionId];
+  const stress = state.negatives?.stress ?? 0;
+  if (meta && meta.category !== 'recover' && stress >= PRESSURE_MAX) {
+    return {
+      ok: false,
+      reason: 'pressure',
+      need: PRESSURE_MAX,
+      have: stress,
+      text: `压力已经满了（${stress}/${PRESSURE_MAX}），这条做不了。先安排一次减压：洗澡、游乐园或旅行。`,
+    };
+  }
+
   const left = remainingTimes(state, actionId);
   if (left <= 0) {
     const meta = ACTION_META[actionId];

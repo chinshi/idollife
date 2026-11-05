@@ -379,15 +379,16 @@ export function acceptTask(
  * * 配置表历史写法把体力写在 `rewards.stats.stamina`（「学会休息」+25 体力）。
  * 旧实现直接往 `stats` 里合并：`undefined + 25 = NaN`，JSON 序列化后落库成 `null`，
  * 于是 `stats.stamina` 常驻存档，把「体力」面板永久显示成 0（真实体力不受影响）。
- * 这里把 stats 下属于资源（stamina/mood/satiety/health）的项提到资源位，
+ * 这里把 stats 下属于资源（stamina/mood/stress/health）的项提到资源位，
  * stats 只留四项能力，未知键丢弃。
  */
 const clamp100 = (v: number) => Math.max(0, Math.min(100, v));
 
 function splitTaskRewards(rewards: TaskRewards | undefined) {
   const raw = (rewards ?? {}) as unknown as Record<string, unknown>;
-  const res: Record<string, number> = { money: 0, stamina: 0, mood: 0, satiety: 0, health: 0, fans: 0 };
-  for (const k of ['money', 'stamina', 'fans', 'mood', 'satiety', 'health']) {
+  // T-044：饱腹退役，stress 进资源位（负值=减压）
+  const res: Record<string, number> = { money: 0, stamina: 0, mood: 0, stress: 0, health: 0, fans: 0 };
+  for (const k of ['money', 'stamina', 'fans', 'mood', 'stress', 'health']) {
     const v = raw[k];
     if (typeof v === 'number' && Number.isFinite(v)) res[k] = v;
   }
@@ -401,7 +402,7 @@ function splitTaskRewards(rewards: TaskRewards | undefined) {
     money: res.money!,
     stamina: res.stamina!,
     mood: res.mood!,
-    satiety: res.satiety!,
+    stress: res.stress!,
     health: res.health!,
     fans: res.fans!,
     stats,
@@ -435,7 +436,7 @@ export function claimTaskReward(
       reward.money ? `+¥${reward.money}` : '',
       reward.stamina ? `体力 +${reward.stamina}` : '',
       reward.mood ? `心情 +${reward.mood}` : '',
-      reward.satiety ? `饱腹 +${reward.satiety}` : '',
+      reward.stress ? `压力 ${reward.stress > 0 ? '+' : ''}${reward.stress}` : '',
       reward.health ? `健康 +${reward.health}` : '',
       reward.fans ? `粉丝 +${reward.fans}` : '',
     ]
@@ -448,7 +449,10 @@ export function claimTaskReward(
       money: state.money + reward.money,
       stamina: clampStamina(state.stamina + reward.stamina),
       mood: clamp100((Number.isFinite(state.mood as number) ? (state.mood as number) : 70) + reward.mood),
-      satiety: clamp100((Number.isFinite(state.satiety as number) ? (state.satiety as number) : 70) + reward.satiety),
+      negatives: {
+        ...(state.negatives ?? {}),
+        stress: clamp100((state.negatives?.stress ?? 0) + reward.stress),
+      },
       health: clamp100((Number.isFinite(state.health as number) ? (state.health as number) : 100) + reward.health),
       stats,
       fans,
@@ -575,7 +579,7 @@ const EXTRA_LABELS: Record<string, string> = {
   total: '四项属性总和',
   stamina: '体力',
   mood: '心情',
-  satiety: '饱腹',
+  stress: '压力',
   height: '身高',
   weight: '体重',
   appearance: '样貌',
@@ -597,6 +601,8 @@ const ATTR_LABELS: Record<string, string> = (() => {
     map[attr.key] = attr.name;
     const prefix = GROUP[attr.category];
     if (prefix) map[prefix + '.' + attr.key] = attr.name;
+    // T-044：stress 从 negative 组挪进 status 组，但存量条件仍写 neg.stress，保留旧写法的中文名
+    if (attr.key === 'stress') map['neg.stress'] = attr.name;
   }
   return map;
 })();
@@ -835,7 +841,7 @@ export function describeRewards(task: TaskDef): string {
     r.money ? `¥${r.money}` : '',
     r.stamina ? `体力 +${r.stamina}` : '',
     r.mood ? `心情 +${r.mood}` : '',
-    r.satiety ? `饱腹 +${r.satiety}` : '',
+    r.stress ? `压力 ${r.stress > 0 ? '+' : ''}${r.stress}` : '',
     r.health ? `健康 +${r.health}` : '',
     r.fans ? `粉丝 +${r.fans}` : '',
     ...Object.entries(r.stats).map(([k, v]) => `${LABELS[k] ?? k} +${v}`),

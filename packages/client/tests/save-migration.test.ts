@@ -52,7 +52,6 @@ function sampleRun(): RunState {
     stats: { vocal: 31, dance: 22, acting: 13, talk: 9 },
     axes: { self: 51, others: 48, fit: 52 },
     mood: 55,
-    satiety: 66,
     fans: createFans(120),
     debuted: true,
     parties: [],
@@ -116,7 +115,8 @@ describe('测试 C：存档 v1→v2 迁移与写档备份', () => {
     expect(loaded?.run.stats).toEqual(v1.run.stats);
     expect(loaded?.run.money).toBe(v1.run.money);
     expect(loaded?.run.mood).toBe(v1.run.mood);
-    expect(loaded?.run.satiety).toBe(v1.run.satiety);
+    // T-044：饱腹退役，老档的 satiety 不再保留；压力（negatives.stress）统一兜底 0
+    expect(loaded?.run.negatives?.stress).toBe(0);
     // T-018：读档迁移会按推导补写 stage:reached（样本已出道 → seq4），其余 flags 原样保留
     expect(loaded?.run.flags).toEqual({ ...v1.run.flags, 'stage:reached': 4 });
     expect(loaded?.run.log).toEqual(v1.run.log);

@@ -91,7 +91,7 @@ export interface RawResult {
     /** 心情变化 */
     mood?: number;
     /** 饱腹变化 */
-    satiety?: number;
+    stress?: number;
     /** 健康变化（T-021） */
     health?: number;
     /** 粉丝增加量（按当前最强属性决定粉丝类型） */
@@ -129,7 +129,7 @@ export interface RawChoice {
   effects: {
     stamina?: number;
     mood?: number;
-    satiety?: number;
+    stress?: number;
     stats?: Record<string, number>;
     axes?: Record<string, number>;
     traits?: Record<string, number>;

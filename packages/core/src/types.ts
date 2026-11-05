@@ -98,6 +98,8 @@ export interface LogEntry {
   actionId: string;
   text: string;
   staminaDelta: number;
+  /** 本条行动造成的压力变化（T-044；正=更有压力，负=减压） */
+  stressDelta?: number;
   statDelta: Partial<Stats>;
   /** 隐藏属性（三轴）是否发生变化：只记录有无，不记录数值 */
   axesChanged?: boolean;
@@ -123,7 +125,6 @@ export interface RunState {
   /** 心情 0-100 */
   mood?: number;
   /** 饱腹 0-100 */
-  satiety?: number;
   /** 健康 0-100（T-021；旧档缺省按 100 处理） */
   health?: number;
   /** 性格（隐藏） */
@@ -227,6 +228,8 @@ export type StopReason =
   | 'exhausted'
   | 'stamina'
   | 'money'
+  /** T-044：压力到顶，产出行动被拦下，必须先减压 */
+  | 'pressure'
   | 'time'
   | 'event'
   | 'ending'

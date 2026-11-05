@@ -9,7 +9,7 @@ import type { AppApi } from './api';
 const EFFECT_LABEL: Record<string, string> = {
   stamina: '体力',
   mood: '心情',
-  satiety: '饱腹',
+  stress: '压力',
   weight: '体重',
   appearance: '样貌',
   fatigue: '积劳',
