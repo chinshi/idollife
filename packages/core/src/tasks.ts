@@ -12,7 +12,8 @@
  *   task:<id>:expiredDay  上次超时未完成的游戏日（T-007 A：同日不再出现）
  */
 import tasksJson from '../data/tasks.json';
-import { ACTION_MS, DAILY_SLOTS, DAY_MS } from './content';
+import { ACTION_MS, DAILY_SLOTS, DAY_MS, clampStamina } from './content';
+import { isStatKey } from './attributes';
 import { RAW_ATTRIBUTES, RAW_STORY } from './data';
 import { matchesCondition, type RawRequires } from './expr';
 import { ALIAS } from './expr-rules.js';
@@ -374,6 +375,40 @@ export function acceptTask(
 }
 
 /**
+ * T-043：奖励归一。
+ * * 配置表历史写法把体力写在 `rewards.stats.stamina`（「学会休息」+25 体力）。
+ * 旧实现直接往 `stats` 里合并：`undefined + 25 = NaN`，JSON 序列化后落库成 `null`，
+ * 于是 `stats.stamina` 常驻存档，把「体力」面板永久显示成 0（真实体力不受影响）。
+ * 这里把 stats 下属于资源（stamina/mood/satiety/health）的项提到资源位，
+ * stats 只留四项能力，未知键丢弃。
+ */
+const clamp100 = (v: number) => Math.max(0, Math.min(100, v));
+
+function splitTaskRewards(rewards: TaskRewards | undefined) {
+  const raw = (rewards ?? {}) as unknown as Record<string, unknown>;
+  const res: Record<string, number> = { money: 0, stamina: 0, mood: 0, satiety: 0, health: 0, fans: 0 };
+  for (const k of ['money', 'stamina', 'fans', 'mood', 'satiety', 'health']) {
+    const v = raw[k];
+    if (typeof v === 'number' && Number.isFinite(v)) res[k] = v;
+  }
+  const stats: Partial<Record<keyof Stats, number>> = {};
+  for (const [k, v] of Object.entries((raw.stats ?? {}) as Record<string, unknown>)) {
+    const n = typeof v === 'number' && Number.isFinite(v) ? v : 0;
+    if (isStatKey(k)) stats[k as keyof Stats] = (stats[k as keyof Stats] ?? 0) + n;
+    else if (k in res && k !== 'fans') res[k] = (res[k] ?? 0) + n;
+  }
+  return {
+    money: res.money!,
+    stamina: res.stamina!,
+    mood: res.mood!,
+    satiety: res.satiety!,
+    health: res.health!,
+    fans: res.fans!,
+    stats,
+  };
+}
+
+/**
  * 领取任务奖励：任务处于「可领奖」状态时调用，发奖并标记完成。
  */
 export function claimTaskReward(
@@ -384,21 +419,25 @@ export function claimTaskReward(
   if (!task) return { state, result: 'not-found' };
   if (taskStatus(state, task) !== 'completable') return { state, result: 'not-ready' };
 
-  const rewards = task.rewards ?? {};
+  const reward = splitTaskRewards(task.rewards);
   const stats = { ...state.stats };
-  for (const [k, v] of Object.entries(rewards.stats ?? {})) {
+  for (const [k, v] of Object.entries(reward.stats)) {
     const key = k as keyof Stats;
-    stats[key] = Math.max(0, Math.min(100, stats[key] + (v ?? 0)));
+    const before = typeof stats[key] === 'number' && Number.isFinite(stats[key]) ? stats[key] : 0;
+    stats[key] = Math.max(0, Math.min(100, before + (v ?? 0)));
   }
 
-  const fanGain = rewards.fans ?? 0;
+  const fanGain = reward.fans;
   const fans = fanGain > 0 ? applyFanAction(state.fans, 'stage', fanGain, 0.2) : state.fans;
 
   const rewardText =
     [
-      rewards.money ? `+¥${rewards.money}` : '',
-      rewards.stamina ? `体力 +${rewards.stamina}` : '',
-      rewards.fans ? `粉丝 +${rewards.fans}` : '',
+      reward.money ? `+¥${reward.money}` : '',
+      reward.stamina ? `体力 +${reward.stamina}` : '',
+      reward.mood ? `心情 +${reward.mood}` : '',
+      reward.satiety ? `饱腹 +${reward.satiety}` : '',
+      reward.health ? `健康 +${reward.health}` : '',
+      reward.fans ? `粉丝 +${reward.fans}` : '',
     ]
       .filter(Boolean)
       .join(' · ') || '已记录';
@@ -406,8 +445,11 @@ export function claimTaskReward(
   return {
     state: {
       ...state,
-      money: state.money + (rewards.money ?? 0),
-      stamina: Math.max(0, Math.min(100, state.stamina + (rewards.stamina ?? 0))),
+      money: state.money + reward.money,
+      stamina: clampStamina(state.stamina + reward.stamina),
+      mood: clamp100((Number.isFinite(state.mood as number) ? (state.mood as number) : 70) + reward.mood),
+      satiety: clamp100((Number.isFinite(state.satiety as number) ? (state.satiety as number) : 70) + reward.satiety),
+      health: clamp100((Number.isFinite(state.health as number) ? (state.health as number) : 100) + reward.health),
       stats,
       fans,
       flags: {
@@ -422,8 +464,8 @@ export function claimTaskReward(
           at: state.at,
           actionId: `task-done:${task.id}`,
           text: `完成任务「${task.name}」。（${rewardText}）`,
-          staminaDelta: rewards.stamina ?? 0,
-          statDelta: rewards.stats ?? {},
+          staminaDelta: reward.stamina,
+          statDelta: reward.stats,
           kind: 'action',
         },
       ],
@@ -788,12 +830,15 @@ export function describeCondition(cond?: RawRequires | string): string {
 
 /** 奖励文案 */
 export function describeRewards(task: TaskDef): string {
-  const r = task.rewards ?? {};
+  const r = splitTaskRewards(task.rewards);
   const parts = [
     r.money ? `¥${r.money}` : '',
     r.stamina ? `体力 +${r.stamina}` : '',
+    r.mood ? `心情 +${r.mood}` : '',
+    r.satiety ? `饱腹 +${r.satiety}` : '',
+    r.health ? `健康 +${r.health}` : '',
     r.fans ? `粉丝 +${r.fans}` : '',
-    ...Object.entries(r.stats ?? {}).map(([k, v]) => `${LABELS[k] ?? k} +${v}`),
+    ...Object.entries(r.stats).map(([k, v]) => `${LABELS[k] ?? k} +${v}`),
   ].filter(Boolean);
   return parts.join(' · ') || '无';
 }

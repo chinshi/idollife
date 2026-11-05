@@ -32134,6 +32134,25 @@ function matchesCondition(state, cond) {
   return matchObjectCondition(state, cond);
 }
 
+// ../core/src/attributes.ts
+var ATTRIBUTES = RAW_ATTRIBUTES.map((a) => ({
+  ...a,
+  visible: !a.hidden && a.linked !== 0
+}));
+var ATTRIBUTE_MAP = Object.fromEntries(
+  ATTRIBUTES.map((a) => [a.key, a])
+);
+var byCategory = (cat) => ATTRIBUTES.filter((a) => a.category === cat);
+var STAT_KEYS3 = byCategory("visible").map((a) => a.key);
+var AXIS_KEYS = byCategory("hidden").map((a) => a.key);
+var FAN_KEYS = byCategory("fans").map((a) => a.key);
+var STAT_LABEL = Object.fromEntries(
+  ATTRIBUTES.map((a) => [a.key, a.name])
+);
+function isStatKey(key) {
+  return STAT_KEYS3.includes(key);
+}
+
 // ../core/src/events.ts
 var ROUTINE_TEMPLATES = RAW_ROUTINE.map((r) => ({
   id: r.id,
@@ -32258,6 +32277,22 @@ function staminaMaxFrom(balance) {
 var STAMINA_MAX = staminaMaxFrom(BALANCE);
 function clampStamina(v) {
   return Math.max(0, Math.min(STAMINA_MAX, Math.round(v)));
+}
+var HUNGRY_SATIETY = 20;
+var HUNGRY_RECOVERY_MUL = 0.5;
+var FATIGUE_THRESHOLD = 50;
+var FATIGUE_COST_MUL = 1.2;
+function settleStamina(raw2, satietyAfter, fatigue) {
+  const scaledByFatigue = raw2 < 0 && fatigue > FATIGUE_THRESHOLD;
+  const cost = scaledByFatigue ? Math.round(raw2 * FATIGUE_COST_MUL) : raw2;
+  if (cost > 0 && satietyAfter < HUNGRY_SATIETY) {
+    return {
+      applied: Math.round(cost * HUNGRY_RECOVERY_MUL),
+      scaledByFatigue,
+      halvedByHunger: true
+    };
+  }
+  return { applied: cost, scaledByFatigue, halvedByHunger: false };
 }
 
 // ../core/src/rng.ts
@@ -35127,8 +35162,15 @@ function previewAction(state, actionId) {
   for (const [k, v] of Object.entries(result.effects.axes ?? {})) {
     axes[k] = Array.isArray(v) ? [v[0], v[1]] : [v, v];
   }
+  const satietyAfter = Math.max(0, Math.min(100, (state.satiety ?? 70) + (result.effects.satiety ?? 0)));
+  const staminaRule = settleStamina(
+    result.effects.stamina ?? 0,
+    satietyAfter,
+    state.negatives?.fatigue ?? 0
+  );
   return {
-    stamina: result.effects.stamina ?? 0,
+    stamina: staminaRule.applied,
+    hungerHalved: staminaRule.halvedByHunger,
     money: result.effects.money ?? 0,
     mood: result.effects.mood ?? 0,
     satiety: result.effects.satiety ?? 0,
@@ -35169,24 +35211,26 @@ function preflightAction(state, actionId) {
   }
   const preview = previewAction(state, actionId);
   if (!preview) return { ok: true, reason: "ok", text: "" };
-  if (preview.stamina < 0 && state.stamina + preview.stamina < 0) {
+  const haveStamina = Number.isFinite(state.stamina) ? state.stamina : STAMINA_MAX;
+  const haveMoney = Number.isFinite(state.money) ? state.money : 0;
+  if (preview.stamina < 0 && haveStamina + preview.stamina < 0) {
     const need = -preview.stamina;
     return {
       ok: false,
       reason: "stamina",
       need,
-      have: state.stamina,
-      text: `\u4F53\u529B\u4E0D\u591F\uFF1A\u8FD9\u6761\u8981 ${need} \u70B9\uFF0C\u4F60\u73B0\u5728 ${state.stamina}\u3002\u5728\u5B89\u6392\u884C\u7A0B\u91CC\u5220\u6389\u5B83\uFF0C\u6216\u5148\u628A\u5B83\u6362\u6210\u6062\u590D\u3002`
+      have: haveStamina,
+      text: `\u4F53\u529B\u4E0D\u591F\uFF1A\u8FD9\u6761\u8981 ${need} \u70B9\uFF0C\u4F60\u73B0\u5728 ${haveStamina}\u3002\u5728\u5B89\u6392\u884C\u7A0B\u91CC\u5220\u6389\u5B83\uFF0C\u6216\u5148\u628A\u5B83\u6362\u6210\u6062\u590D\u3002`
     };
   }
-  if (preview.money < 0 && state.money + preview.money < 0) {
+  if (preview.money < 0 && haveMoney + preview.money < 0) {
     const need = -preview.money;
     return {
       ok: false,
       reason: "money",
       need,
-      have: state.money,
-      text: `\u94B1\u4E0D\u591F\uFF1A\u8FD9\u6761\u8981 \xA5${need}\uFF0C\u4F60\u73B0\u5728 \xA5${state.money}\u3002\u5728\u5B89\u6392\u884C\u7A0B\u91CC\u5220\u6389\u5B83\uFF0C\u6216\u5148\u6362\u6210\u8D5A\u94B1\u3002`
+      have: haveMoney,
+      text: `\u94B1\u4E0D\u591F\uFF1A\u8FD9\u6761\u8981 \xA5${need}\uFF0C\u4F60\u73B0\u5728 \xA5${haveMoney}\u3002\u5728\u5B89\u6392\u884C\u7A0B\u91CC\u5220\u6389\u5B83\uFF0C\u6216\u5148\u6362\u6210\u8D5A\u94B1\u3002`
     };
   }
   return { ok: true, reason: "ok", text: "" };
@@ -36279,6 +36323,9 @@ function settle(run, schedule, from, to, seed, opts = {}) {
   const storyEvents = opts.storyEvents ?? true;
   let state = {
     ...run,
+    // T-042：老档 / 脏数据可能没有 stamina，之前会算出 NaN 再写回库；
+    // 而 NaN 参与 `stamina + cost < 0` 恒为 false，等于「体力无限」。
+    stamina: clampStamina(Number.isFinite(run.stamina) ? run.stamina : STAMINA_MAX),
     money: typeof run.money === "number" ? run.money : 0,
     stats: { ...run.stats },
     axes: { ...run.axes ?? { self: 50, others: 50, fit: 50 } },
@@ -36342,9 +36389,8 @@ function settle(run, schedule, from, to, seed, opts = {}) {
     if (nextSatiety < 20) efficiency *= 0.8;
     if ((negatives.restless ?? 0) > 50) efficiency *= 0.95;
     if ((negatives.stress ?? 0) > 60) efficiency *= 0.95;
-    const fatigueMul = (negatives.fatigue ?? 0) > 50 ? 1.2 : 1;
-    const staminaCost = resolved.stamina < 0 ? Math.round(resolved.stamina * fatigueMul) : resolved.stamina;
-    const staminaApplied = staminaCost > 0 && nextSatiety < 20 ? Math.round(staminaCost * 0.5) : staminaCost;
+    const staminaRule = settleStamina(resolved.stamina, nextSatiety, negatives.fatigue ?? 0);
+    const staminaApplied = staminaRule.applied;
     state.stamina = clampStamina(state.stamina + staminaApplied);
     state.money += resolved.money;
     state.mood = nextMood;
@@ -36364,6 +36410,7 @@ function settle(run, schedule, from, to, seed, opts = {}) {
     const nextProf = { ...proficiency };
     const statDelta = {};
     for (const [k, v] of Object.entries(resolved.stats)) {
+      if (!isStatKey(k)) continue;
       const key = k;
       const before = state.stats[key];
       const raw2 = v ?? 0;
@@ -36383,7 +36430,9 @@ function settle(run, schedule, from, to, seed, opts = {}) {
     state.log.push({
       at: item.endAt,
       actionId: action.id,
-      text: resolved.text,
+      // 太饿导致恢复减半时补一句说明：配置文案写的是原值（如「体力 +40」），
+      // 不解释的话玩家只会看到「睡了但没加多少」。
+      text: staminaRule.halvedByHunger ? `${resolved.text}\uFF08\u809A\u5B50\u592A\u997F\uFF0C\u4F53\u529B\u53EA\u6062\u590D\u4E86\u4E00\u534A\uFF09` : resolved.text,
       staminaDelta: staminaApplied,
       statDelta,
       kind: "action"
@@ -37084,22 +37133,6 @@ var RARE_OUTFITS = shop_default.shop.rare.map((o) => ({
 
 // ../core/src/divination.ts
 var DIVINATION_BASE = BALANCE.divinationBase;
-
-// ../core/src/attributes.ts
-var ATTRIBUTES = RAW_ATTRIBUTES.map((a) => ({
-  ...a,
-  visible: !a.hidden && a.linked !== 0
-}));
-var ATTRIBUTE_MAP = Object.fromEntries(
-  ATTRIBUTES.map((a) => [a.key, a])
-);
-var byCategory = (cat) => ATTRIBUTES.filter((a) => a.category === cat);
-var STAT_KEYS3 = byCategory("visible").map((a) => a.key);
-var AXIS_KEYS = byCategory("hidden").map((a) => a.key);
-var FAN_KEYS = byCategory("fans").map((a) => a.key);
-var STAT_LABEL = Object.fromEntries(
-  ATTRIBUTES.map((a) => [a.key, a.name])
-);
 
 // ../core/src/clock.ts
 function gameAdvance(elapsedMs, speed, timeScale = TIME_SCALE) {

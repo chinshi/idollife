@@ -1,4 +1,4 @@
-import { START_MONEY, STAGE_REACHED_KEY, derivedStageSeq, migrateEquipItem } from '@idollife/core';
+import { START_MONEY, STAGE_REACHED_KEY, derivedStageSeq, migrateEquipItem, sanitizeStats } from '@idollife/core';
 import type { EquipItem, EquipSlot, InventoryEntry, RunState, ScheduleItem } from '@idollife/core';
 
 /** 当前存档版本；v1 只读兼容，读入时迁移为 v2 */
@@ -160,7 +160,9 @@ export function normalizeRun(run: RunState): RunState {
     startedAt: isNum(run.startedAt) ? run.startedAt : isNum(run.at) ? run.at : 0,
     stamina: isNum(run.stamina) ? run.stamina : 100,
     money: isNum(run.money) ? run.money : START_MONEY,
-    stats: run.stats ?? { vocal: 0, dance: 0, acting: 0, talk: 0 },    axes: run.axes ?? { self: 50, others: 50, fit: 50 },
+    // T-043：脏数据（如 stats.stamina = null）在这里清掉，刷新即恢复
+    stats: sanitizeStats(run.stats),
+    axes: run.axes ?? { self: 50, others: 50, fit: 50 },
     mood: isNum(run.mood) ? run.mood : 70,
     satiety: isNum(run.satiety) ? run.satiety : 70,
     // T-021：健康兜底 100（旧档无感迁移）

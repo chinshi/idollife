@@ -1,6 +1,7 @@
 import { RAW_ROUTINE, RAW_STORY, type RawRequires } from './data';
 import { matchesCondition } from './expr';
 import { clampStamina } from './content';
+import { isStatKey } from './attributes';
 import type { Axes, RunState, Stats } from './types';
 
 export interface ChoiceEffects {
@@ -115,6 +116,8 @@ export function applyChoice(state: RunState, eventId: string, choiceId: string):
   };
 
   for (const [k, v] of Object.entries(choice.effects.stats ?? {})) {
+    // T-043：只收四项能力，其余键写进 stats 会变 NaN 并污染存档
+    if (!isStatKey(k)) continue;
     const key = k as keyof Stats;
     next.stats[key] = clamp(next.stats[key] + (v ?? 0));
   }

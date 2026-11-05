@@ -1,4 +1,5 @@
 import { ACTIONS, RENT_PER_WEEK, STAMINA_MAX, clampStamina, settleStamina, WEEK_MS } from './content';
+import { isStatKey } from './attributes';
 import { previewAction, resolveAction, showFanType } from './results';
 import { preflightAction } from './preflight';
 import { settleShow } from './shows';
@@ -170,6 +171,8 @@ export function settle(
 
     const statDelta: Partial<Stats> = {};
     for (const [k, v] of Object.entries(resolved.stats)) {
+      // T-043：数据表可能把非四项能力写进 stats（如 stamina），写进 stats 会变成 NaN 并永久污染存档
+      if (!isStatKey(k)) continue;
       const key = k as keyof Stats;
       const before = state.stats[key];
       const raw = v ?? 0;
