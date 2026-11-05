@@ -184,6 +184,7 @@ export function ActionCard({
                 {pv.stamina !== 0 ? (
                   <div className={pv.stamina > 0 ? 'eff-up' : 'eff-down'}>
                     体力 {fmt(pv.stamina)}
+                    {pv.hungerHalved ? <em className="eff-dim">（太饿，恢复减半）</em> : null}
                   </div>
                 ) : null}
                 {pv.mood !== 0 ? (

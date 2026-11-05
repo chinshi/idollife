@@ -4,7 +4,7 @@
  * 与 settle.ts 里「行动前」的三条检查同源：次数 → 体力 → 钱。
  * 纯函数：不读 Date.now / Math.random / DOM / localStorage。
  */
-import { ACTION_META, remainingTimes } from './content';
+import { ACTION_META, STAMINA_MAX, remainingTimes } from './content';
 import { previewAction } from './results';
 import { nextPendingItem } from './plan';
 import type { RunState, ScheduleItem } from './types';
@@ -42,24 +42,29 @@ export function preflightAction(state: RunState, actionId: string): PreflightRes
   const preview = previewAction(state, actionId);
   if (!preview) return { ok: true, reason: 'ok', text: '' };
 
-  if (preview.stamina < 0 && state.stamina + preview.stamina < 0) {
+  // T-042：脏数据里 stamina/money 可能是 undefined，`undefined + x < 0` 恒为 false
+  // 等于「永远拦不住」。这里按上限/0 兜底，宁可多拦也不放行。
+  const haveStamina = Number.isFinite(state.stamina) ? state.stamina : STAMINA_MAX;
+  const haveMoney = Number.isFinite(state.money) ? state.money : 0;
+
+  if (preview.stamina < 0 && haveStamina + preview.stamina < 0) {
     const need = -preview.stamina;
     return {
       ok: false,
       reason: 'stamina',
       need,
-      have: state.stamina,
-      text: `体力不够：这条要 ${need} 点，你现在 ${state.stamina}。在安排行程里删掉它，或先把它换成恢复。`,
+      have: haveStamina,
+      text: `体力不够：这条要 ${need} 点，你现在 ${haveStamina}。在安排行程里删掉它，或先把它换成恢复。`,
     };
   }
-  if (preview.money < 0 && state.money + preview.money < 0) {
+  if (preview.money < 0 && haveMoney + preview.money < 0) {
     const need = -preview.money;
     return {
       ok: false,
       reason: 'money',
       need,
-      have: state.money,
-      text: `钱不够：这条要 ¥${need}，你现在 ¥${state.money}。在安排行程里删掉它，或先换成赚钱。`,
+      have: haveMoney,
+      text: `钱不够：这条要 ¥${need}，你现在 ¥${haveMoney}。在安排行程里删掉它，或先换成赚钱。`,
     };
   }
 

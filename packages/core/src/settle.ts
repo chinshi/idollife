@@ -1,4 +1,4 @@
-import { ACTIONS, RENT_PER_WEEK, clampStamina, WEEK_MS } from './content';
+import { ACTIONS, RENT_PER_WEEK, STAMINA_MAX, clampStamina, settleStamina, WEEK_MS } from './content';
 import { previewAction, resolveAction, showFanType } from './results';
 import { preflightAction } from './preflight';
 import { settleShow } from './shows';
@@ -47,6 +47,9 @@ export function settle(
   const storyEvents = opts.storyEvents ?? true;
   let state: RunState = {
     ...run,
+    // T-042：老档 / 脏数据可能没有 stamina，之前会算出 NaN 再写回库；
+    // 而 NaN 参与 `stamina + cost < 0` 恒为 false，等于「体力无限」。
+    stamina: clampStamina(Number.isFinite(run.stamina) ? run.stamina : STAMINA_MAX),
     money: typeof run.money === 'number' ? run.money : 0,
     stats: { ...run.stats },
     axes: { ...(run.axes ?? { self: 50, others: 50, fit: 50 }) },
@@ -139,13 +142,9 @@ export function settle(
     if ((negatives.restless ?? 0) > 50) efficiency *= 0.95;
     if ((negatives.stress ?? 0) > 60) efficiency *= 0.95;
 
-    // 积劳：体力消耗更大
-    const fatigueMul = (negatives.fatigue ?? 0) > 50 ? 1.2 : 1;
-    const staminaCost =
-      resolved.stamina < 0 ? Math.round(resolved.stamina * fatigueMul) : resolved.stamina;
-
-    const staminaApplied =
-      staminaCost > 0 && nextSatiety < 20 ? Math.round(staminaCost * 0.5) : staminaCost;
+    // 积劳：体力消耗更大；太饿：恢复减半。规则与预览 / 预检共用（T-042）
+    const staminaRule = settleStamina(resolved.stamina, nextSatiety, negatives.fatigue ?? 0);
+    const staminaApplied = staminaRule.applied;
 
     state.stamina = clampStamina(state.stamina + staminaApplied);
     state.money += resolved.money;
@@ -193,7 +192,11 @@ export function settle(
     state.log.push({
       at: item.endAt,
       actionId: action.id,
-      text: resolved.text,
+      // 太饿导致恢复减半时补一句说明：配置文案写的是原值（如「体力 +40」），
+      // 不解释的话玩家只会看到「睡了但没加多少」。
+      text: staminaRule.halvedByHunger
+        ? `${resolved.text}（肚子太饿，体力只恢复了一半）`
+        : resolved.text,
       staminaDelta: staminaApplied,
       statDelta,
       kind: 'action',

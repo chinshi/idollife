@@ -182,3 +182,41 @@ export const STAMINA_MAX: number = staminaMaxFrom(BALANCE as unknown as Record<s
 export function clampStamina(v: number): number {
   return Math.max(0, Math.min(STAMINA_MAX, Math.round(v)));
 }
+
+/** 行动结束后饱腹低于这个值，恢复类效果打折 */
+export const HUNGRY_SATIETY = 20;
+/** 饿了的时候恢复打几折 */
+export const HUNGRY_RECOVERY_MUL = 0.5;
+/** 积劳超过这个值，体力消耗放大 */
+export const FATIGUE_THRESHOLD = 50;
+/** 积劳过高时消耗放大倍数 */
+export const FATIGUE_COST_MUL = 1.2;
+
+export interface StaminaRuleResult {
+  /** 真正生效的体力变化（已含积劳放大 / 饥饿减半） */
+  applied: number;
+  /** 负向消耗被积劳放大 */
+  scaledByFatigue: boolean;
+  /** 正向恢复因为太饿被减半 */
+  halvedByHunger: boolean;
+}
+
+/**
+ * 体力结算规则：积劳放大消耗、太饿时恢复减半。
+ *
+ * settle / previewAction / preflightAction 三处必须完全一致 ——
+ * 之前只有 settle 应用了这两条，预览按配置原值显示「体力 +40」，
+ * 实际只加 20，玩家看到的就是「睡了一觉体力没怎么涨 / 数值对不上」。
+ */
+export function settleStamina(raw: number, satietyAfter: number, fatigue: number): StaminaRuleResult {
+  const scaledByFatigue = raw < 0 && fatigue > FATIGUE_THRESHOLD;
+  const cost = scaledByFatigue ? Math.round(raw * FATIGUE_COST_MUL) : raw;
+  if (cost > 0 && satietyAfter < HUNGRY_SATIETY) {
+    return {
+      applied: Math.round(cost * HUNGRY_RECOVERY_MUL),
+      scaledByFatigue,
+      halvedByHunger: true,
+    };
+  }
+  return { applied: cost, scaledByFatigue, halvedByHunger: false };
+}

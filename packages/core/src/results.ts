@@ -3,6 +3,7 @@
  * 执行时按 priority 从小到大找到第一个条件匹配的结果。
  */
 import { RAW_RESULTS, type RawRequires, type RawResult } from './data';
+import { settleStamina } from './content';
 import { matchesCondition } from './events';
 import type { FanType } from './fans';
 import { effectiveStats } from './items';
@@ -136,6 +137,8 @@ export function resolveAction(
 /** 预览：不消耗随机数，用区间中间值给界面展示 */
 export function previewAction(state: RunState, actionId: string): {
   stamina: number;
+  /** 这条恢复被「太饿」打了对折（界面可以据此加一句说明） */
+  hungerHalved: boolean;
   money: number;
   mood: number;
   satiety: number;
@@ -159,8 +162,18 @@ export function previewAction(state: RunState, actionId: string): {
     axes[k as keyof Axes] = Array.isArray(v) ? [v[0], v[1]] : [v, v];
   }
 
+  // 体力按结算规则折算：积劳放大消耗、太饿恢复减半。
+  // 预览、预检、实际结算必须是同一个数，否则就会出现「卡片写 +40、面板只涨 20」。
+  const satietyAfter = Math.max(0, Math.min(100, (state.satiety ?? 70) + (result.effects.satiety ?? 0)));
+  const staminaRule = settleStamina(
+    result.effects.stamina ?? 0,
+    satietyAfter,
+    state.negatives?.fatigue ?? 0,
+  );
+
   return {
-    stamina: result.effects.stamina ?? 0,
+    stamina: staminaRule.applied,
+    hungerHalved: staminaRule.halvedByHunger,
     money: result.effects.money ?? 0,
     mood: result.effects.mood ?? 0,
     satiety: result.effects.satiety ?? 0,
