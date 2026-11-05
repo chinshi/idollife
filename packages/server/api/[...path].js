@@ -2226,7 +2226,7 @@ var require_filtrex = __commonJS({
       if (Array.isArray(value)) return "list";
       return "object";
     }
-    function num(value) {
+    function num2(value) {
       value = unwrap(value);
       if (typeof value === "number") return value;
       throw new UnexpectedTypeError("number", prettyType(value));
@@ -2280,7 +2280,7 @@ var require_filtrex = __commonJS({
         throw new UnknownFunctionError(funcName);
       },
       coerceArray: arr,
-      coerceNumber: num,
+      coerceNumber: num2,
       coerceNumberOrString: numstr,
       coerceBoolean: bool,
       isSubset(a, b) {
@@ -2423,17 +2423,17 @@ var require_filtrex = __commonJS({
       }
       let defaultOperators = {
         "+": (a, b) => numstr(a) + numstr(b),
-        "-": (a, b) => b === void 0 ? -num(a) : num(a) - num(b),
-        "*": (a, b) => num(a) * num(b),
-        "/": (a, b) => num(a) / num(b),
-        "^": (a, b) => Math.pow(num(a), num(b)),
-        mod: (a, b) => mod(num(a), num(b)),
+        "-": (a, b) => b === void 0 ? -num2(a) : num2(a) - num2(b),
+        "*": (a, b) => num2(a) * num2(b),
+        "/": (a, b) => num2(a) / num2(b),
+        "^": (a, b) => Math.pow(num2(a), num2(b)),
+        mod: (a, b) => mod(num2(a), num2(b)),
         "==": (a, b) => a === b,
         "!=": (a, b) => a !== b,
-        "<": (a, b) => num(a) < num(b),
-        "<=": (a, b) => num(a) <= num(b),
-        ">=": (a, b) => num(a) >= num(b),
-        ">": (a, b) => num(a) > num(b),
+        "<": (a, b) => num2(a) < num2(b),
+        "<=": (a, b) => num2(a) <= num2(b),
+        ">=": (a, b) => num2(a) >= num2(b),
+        ">": (a, b) => num2(a) > num2(b),
         "~=": (a, b) => RegExp(str(b)).test(str(a))
       };
       if (operators) {
@@ -19105,15 +19105,18 @@ var action_results_default = {
       condition: {},
       priority: 99,
       effects: {
-        stamina: -34,
-        money: -1100,
-        mood: -1,
-        satiety: -8,
+        stamina: -28,
+        money: -880,
+        mood: 0,
+        satiety: -4,
         stats: {
           vocal: [
-            5,
-            6
+            7,
+            9
           ]
+        },
+        axes: {
+          self: 1
         }
       },
       text: "\u8001\u5E08\u8BA9\u4F60\u5531\u4E00\u4E2A\u5355\u97F3\uFF0C\u5531\u5B8C\u4ED6\u8BF4\uFF1A\u4F60\u4E00\u76F4\u5728\u8EB2\u5B83\u3002\uFF08\u6F14\u5531 +{vocal}\uFF09"
@@ -19125,15 +19128,18 @@ var action_results_default = {
       condition: "vocal >= 35",
       priority: 30,
       effects: {
-        stamina: -34,
-        money: -1100,
-        mood: -1,
-        satiety: -8,
+        stamina: -28,
+        money: -880,
+        mood: 0,
+        satiety: -4,
         stats: {
           vocal: [
-            3,
-            4
+            7,
+            9
           ]
+        },
+        axes: {
+          self: 1
         }
       },
       text: "\u534A\u5C0F\u65F6\u53EA\u7EC3\u4E86\u4E24\u4E2A\u97F3\u3002\u4ED6\u8BF4\uFF0C\u4F60\u73B0\u5728\u624D\u53EB\u5728\u5531\u3002\uFF08\u6F14\u5531 +{vocal}\uFF09"
@@ -19145,15 +19151,18 @@ var action_results_default = {
       condition: "vocal >= 65",
       priority: 20,
       effects: {
-        stamina: -34,
-        money: -1100,
-        mood: -1,
-        satiety: -8,
+        stamina: -28,
+        money: -880,
+        mood: 0,
+        satiety: -4,
         stats: {
           vocal: [
-            2,
-            3
+            7,
+            9
           ]
+        },
+        axes: {
+          self: 1
         }
       },
       text: "\u4ED6\u8BA9\u4F60\u522B\u7528\u529B\u3002\u4F60\u677E\u5F00\u4E4B\u540E\uFF0C\u58F0\u97F3\u53CD\u800C\u4F20\u5F97\u66F4\u8FDC\u3002\uFF08\u6F14\u5531 +{vocal}\uFF09"
@@ -19165,15 +19174,18 @@ var action_results_default = {
       condition: "stamina < 25",
       priority: 10,
       effects: {
-        stamina: -34,
-        money: -1100,
-        mood: -4,
-        satiety: -8,
+        stamina: -28,
+        money: -880,
+        mood: 0,
+        satiety: -4,
         stats: {
           vocal: [
-            1,
-            2
+            7,
+            9
           ]
+        },
+        axes: {
+          self: 1
         }
       },
       text: "\u55D3\u5B50\u662F\u54D1\u7684\uFF0C\u8BFE\u4E5F\u9000\u4E0D\u4E86\u3002\u4F60\u542C\u5B8C\u4E86\u4E00\u5C0F\u65F6\u7684\u793A\u8303\u3002\uFF08\u6F14\u5531 +{vocal}\uFF09"
@@ -19185,15 +19197,18 @@ var action_results_default = {
       condition: "vocal >= 80",
       priority: 15,
       effects: {
-        stamina: -34,
-        money: -1100,
-        mood: -1,
-        satiety: -8,
+        stamina: -28,
+        money: -880,
+        mood: 0,
+        satiety: -4,
         stats: {
           vocal: [
-            1,
-            2
+            7,
+            9
           ]
+        },
+        axes: {
+          self: 1
         }
       },
       text: "\u8001\u5E08\u8BF4\uFF0C\u6280\u672F\u5C42\u9762\u4ED6\u5DF2\u7ECF\u6CA1\u4EC0\u4E48\u80FD\u6559\u7684\u4E86\u3002\u5269\u4E0B\u7684\u662F\u4F60\u81EA\u5DF1\u8981\u4E0D\u8981\u4FE1\u3002\uFF08\u6F14\u5531 +{vocal}\uFF09"
@@ -19205,15 +19220,18 @@ var action_results_default = {
       condition: {},
       priority: 99,
       effects: {
-        stamina: -34,
-        money: -1e3,
-        mood: -1,
-        satiety: -8,
+        stamina: -28,
+        money: -800,
+        mood: 0,
+        satiety: -4,
         stats: {
           dance: [
-            5,
-            6
+            7,
+            9
           ]
+        },
+        axes: {
+          self: 1
         }
       },
       text: "\u843D\u5730\u7684\u65F6\u5019\u819D\u76D6\u54CD\u4E86\u4E00\u58F0\u3002\u4F60\u6CA1\u505C\uFF0C\u628A\u6700\u540E\u516B\u62CD\u8D70\u5B8C\u3002\uFF08\u821E\u8E48 +{dance}\uFF09"
@@ -19225,15 +19243,18 @@ var action_results_default = {
       condition: "dance >= 35",
       priority: 30,
       effects: {
-        stamina: -34,
-        money: -1e3,
-        mood: -1,
-        satiety: -8,
+        stamina: -28,
+        money: -800,
+        mood: 0,
+        satiety: -4,
         stats: {
           dance: [
-            3,
-            4
+            7,
+            9
           ]
+        },
+        axes: {
+          self: 1
         }
       },
       text: "\u955C\u5B50\u91CC\u516D\u4E2A\u4EBA\uFF0C\u53EA\u6709\u4F60\u5728\u6570\u62CD\u5B50\u3002\u8001\u5E08\u8BF4\uFF0C\u5148\u522B\u6570\uFF0C\u5148\u542C\u3002\uFF08\u821E\u8E48 +{dance}\uFF09"
@@ -19245,15 +19266,18 @@ var action_results_default = {
       condition: "dance >= 65",
       priority: 20,
       effects: {
-        stamina: -34,
-        money: -1e3,
-        mood: -1,
-        satiety: -8,
+        stamina: -28,
+        money: -800,
+        mood: 0,
+        satiety: -4,
         stats: {
           dance: [
-            2,
-            3
+            7,
+            9
           ]
+        },
+        axes: {
+          self: 1
         }
       },
       text: "\u540C\u6837\u7684\u52A8\u4F5C\uFF0C\u4F60\u6BD4\u522B\u4EBA\u591A\u7559\u4E86\u534A\u62CD\u3002\u90A3\u534A\u62CD\u5C31\u662F\u5168\u90E8\u3002\uFF08\u821E\u8E48 +{dance}\uFF09"
@@ -19265,15 +19289,18 @@ var action_results_default = {
       condition: "stamina < 25",
       priority: 10,
       effects: {
-        stamina: -34,
-        money: -1e3,
-        mood: -4,
-        satiety: -8,
+        stamina: -28,
+        money: -800,
+        mood: 0,
+        satiety: -4,
         stats: {
           dance: [
-            1,
-            2
+            7,
+            9
           ]
+        },
+        axes: {
+          self: 1
         }
       },
       text: "\u6276\u7740\u628A\u6746\u8DF3\u5B8C\u3002\u4E0B\u8BFE\u6CA1\u4EBA\u8BF4\u4EC0\u4E48\uFF0C\u4F60\u81EA\u5DF1\u77E5\u9053\u96BE\u770B\u3002\uFF08\u821E\u8E48 +{dance}\uFF09"
@@ -19285,15 +19312,18 @@ var action_results_default = {
       condition: "dance >= 80",
       priority: 15,
       effects: {
-        stamina: -34,
-        money: -1e3,
-        mood: -1,
-        satiety: -8,
+        stamina: -28,
+        money: -800,
+        mood: 0,
+        satiety: -4,
         stats: {
           dance: [
-            1,
-            2
+            7,
+            9
           ]
+        },
+        axes: {
+          self: 1
         }
       },
       text: "\u6574\u95F4\u821E\u5BA4\u53EA\u6709\u4F60\u8DDF\u5F97\u4E0A\u8FD9\u6BB5\u3002\u8DF3\u5B8C\u4F60\u5728\u955C\u5B50\u524D\u7AD9\u4E86\u5F88\u4E45\uFF0C\u6CA1\u89C9\u5F97\u9AD8\u5174\u3002\uFF08\u821E\u8E48 +{dance}\uFF09"
@@ -19305,15 +19335,18 @@ var action_results_default = {
       condition: {},
       priority: 99,
       effects: {
-        stamina: -34,
-        money: -1e3,
-        mood: -1,
-        satiety: -8,
+        stamina: -28,
+        money: -800,
+        mood: 0,
+        satiety: -4,
         stats: {
           acting: [
-            5,
-            6
+            7,
+            9
           ]
+        },
+        axes: {
+          self: 1
         }
       },
       text: "\u4ED6\u8BA9\u4F60\u6F14\u4E00\u6BB5\u4EC0\u4E48\u90FD\u6CA1\u53D1\u751F\u7684\u620F\u3002\u4F60\u6F14\u4E86\u56DB\u5341\u5206\u949F\uFF0C\u4ED6\u4E00\u6B21\u6CA1\u6253\u65AD\u3002\uFF08\u6F14\u6280 +{acting}\uFF09"
@@ -19325,15 +19358,18 @@ var action_results_default = {
       condition: "acting >= 35",
       priority: 30,
       effects: {
-        stamina: -34,
-        money: -1e3,
-        mood: -1,
-        satiety: -8,
+        stamina: -28,
+        money: -800,
+        mood: 0,
+        satiety: -4,
         stats: {
           acting: [
-            3,
-            4
+            7,
+            9
           ]
+        },
+        axes: {
+          self: 1
         }
       },
       text: "\u4ED6\u8BF4\u4F60\u6F14\u7684\u662F\u60C5\u7EEA\uFF0C\u4E0D\u662F\u4EBA\u3002\u4F60\u91CD\u6765\u4E86\u4E00\u904D\uFF0C\u8FD9\u56DE\u624B\u5728\u6296\u3002\uFF08\u6F14\u6280 +{acting}\uFF09"
@@ -19345,15 +19381,18 @@ var action_results_default = {
       condition: "acting >= 65",
       priority: 20,
       effects: {
-        stamina: -34,
-        money: -1e3,
-        mood: -1,
-        satiety: -8,
+        stamina: -28,
+        money: -800,
+        mood: 0,
+        satiety: -4,
         stats: {
           acting: [
-            2,
-            3
+            7,
+            9
           ]
+        },
+        axes: {
+          self: 1
         }
       },
       text: "\u4F60\u7EC8\u4E8E\u80FD\u5728\u8BE5\u505C\u7684\u5730\u65B9\u505C\u4E0B\u3002\u505C\u4E0B\u6765\u6BD4\u8BF4\u51FA\u6765\u96BE\u3002\uFF08\u6F14\u6280 +{acting}\uFF09"
@@ -19365,15 +19404,18 @@ var action_results_default = {
       condition: "stamina < 25",
       priority: 10,
       effects: {
-        stamina: -34,
-        money: -1e3,
-        mood: -4,
-        satiety: -8,
+        stamina: -28,
+        money: -800,
+        mood: 0,
+        satiety: -4,
         stats: {
           acting: [
-            1,
-            2
+            7,
+            9
           ]
+        },
+        axes: {
+          self: 1
         }
       },
       text: "\u53F0\u8BCD\u80CC\u4E0D\u8FDB\u53BB\u3002\u4F60\u5750\u5728\u90A3\u513F\uFF0C\u628A\u672C\u5B50\u7FFB\u4E86\u4E09\u904D\u3002\uFF08\u6F14\u6280 +{acting}\uFF09"
@@ -19385,15 +19427,18 @@ var action_results_default = {
       condition: "acting >= 80",
       priority: 15,
       effects: {
-        stamina: -34,
-        money: -1e3,
-        mood: -1,
-        satiety: -8,
+        stamina: -28,
+        money: -800,
+        mood: 0,
+        satiety: -4,
         stats: {
           acting: [
-            1,
-            2
+            7,
+            9
           ]
+        },
+        axes: {
+          self: 1
         }
       },
       text: "\u4ED6\u8BA9\u4F60\u522B\u518D\u6F14\u4E86\uFF0C\u5C31\u7AD9\u5728\u90A3\u513F\u3002\u4F60\u7AD9\u4E86\u5341\u5206\u949F\uFF0C\u4ED6\u8BF4\u300C\u5C31\u662F\u8FD9\u4E2A\u300D\u3002\uFF08\u6F14\u6280 +{acting}\uFF09"
@@ -19405,15 +19450,15 @@ var action_results_default = {
       condition: {},
       priority: 99,
       effects: {
-        stamina: -32,
-        money: -900,
-        mood: -1,
-        satiety: -8,
+        stamina: -26,
+        money: -720,
+        mood: 0,
+        satiety: -4,
         fans: 4,
         stats: {
           talk: [
-            5,
-            6
+            7,
+            9
           ]
         }
       },
@@ -19426,15 +19471,15 @@ var action_results_default = {
       condition: "talk >= 35",
       priority: 30,
       effects: {
-        stamina: -32,
-        money: -900,
-        mood: -1,
-        satiety: -8,
+        stamina: -26,
+        money: -720,
+        mood: 0,
+        satiety: -4,
         fans: 4,
         stats: {
           talk: [
-            3,
-            4
+            7,
+            9
           ]
         }
       },
@@ -19447,15 +19492,15 @@ var action_results_default = {
       condition: "talk >= 65",
       priority: 20,
       effects: {
-        stamina: -32,
-        money: -900,
-        mood: -1,
-        satiety: -8,
+        stamina: -26,
+        money: -720,
+        mood: 0,
+        satiety: -4,
         fans: 4,
         stats: {
           talk: [
-            2,
-            3
+            7,
+            9
           ]
         }
       },
@@ -19468,15 +19513,15 @@ var action_results_default = {
       condition: "stamina < 25",
       priority: 10,
       effects: {
-        stamina: -32,
-        money: -900,
-        mood: -4,
-        satiety: -8,
+        stamina: -26,
+        money: -720,
+        mood: 0,
+        satiety: -4,
         fans: 4,
         stats: {
           talk: [
-            1,
-            2
+            7,
+            9
           ]
         }
       },
@@ -19489,15 +19534,15 @@ var action_results_default = {
       condition: "talk >= 80",
       priority: 15,
       effects: {
-        stamina: -32,
-        money: -900,
-        mood: -1,
-        satiety: -8,
+        stamina: -26,
+        money: -720,
+        mood: 0,
+        satiety: -4,
         fans: 4,
         stats: {
           talk: [
-            1,
-            2
+            7,
+            9
           ]
         }
       },
@@ -19512,7 +19557,8 @@ var action_results_default = {
       effects: {
         stamina: 40,
         mood: 8,
-        satiety: -8
+        satiety: -8,
+        health: 6
       },
       text: "\u95F9\u949F\u54CD\u4E86\u4E09\u904D\uFF0C\u4F60\u53EA\u542C\u89C1\u6700\u540E\u4E00\u904D\u3002\u9192\u6765\u5929\u5DF2\u7ECF\u9ED1\u900F\u3002\uFF08\u4F53\u529B +40\uFF09"
     },
@@ -19526,7 +19572,8 @@ var action_results_default = {
         stamina: 8,
         money: -80,
         mood: 6,
-        satiety: 18
+        satiety: 18,
+        health: -3
       },
       text: "\u4E00\u4EFD\u610F\u9762\uFF0C\u4E00\u676F\u514D\u8D39\u7684\u6C34\uFF0C\u5750\u4E86\u56DB\u5341\u5206\u949F\u3002\u6CA1\u4EBA\u8D76\u4F60\u3002\uFF08\u9971\u8179 +18 \xB7 \u5FC3\u60C5 +6\uFF09"
     },
@@ -19554,7 +19601,8 @@ var action_results_default = {
         stamina: 28,
         money: -520,
         mood: 25,
-        satiety: 38
+        satiety: 38,
+        health: 4
       },
       text: "\u62CD\u4E86\u5F88\u591A\u7167\u7247\u3002\u771F\u6B63\u5403\u5B8C\u7684\u53EA\u6709\u4E00\u534A\u3002\uFF08\u9971\u8179 +38 \xB7 \u5FC3\u60C5 +25\uFF09"
     },
@@ -19568,7 +19616,8 @@ var action_results_default = {
         stamina: 15,
         money: -60,
         mood: 12,
-        satiety: -2
+        satiety: -2,
+        health: 2
       },
       text: "\u5728\u6FA1\u5802\u6CE1\u5230\u624B\u6307\u53D1\u76B1\u3002\u9694\u58C1\u963F\u59E8\u95EE\u4F60\u662F\u54EA\u4E2A\u56E2\u7684\u3002\uFF08\u4F53\u529B +15 \xB7 \u5FC3\u60C5 +12\uFF09"
     },
@@ -19582,7 +19631,8 @@ var action_results_default = {
         stamina: -12,
         money: -400,
         mood: 28,
-        satiety: -10
+        satiety: -10,
+        health: -2
       },
       text: "\u4E00\u4E2A\u4EBA\u5750\u4E86\u4E24\u904D\u8FC7\u5C71\u8F66\u3002\u7B2C\u4E8C\u904D\u7684\u65F6\u5019\uFF0C\u4F60\u7EC8\u4E8E\u558A\u51FA\u6765\u4E86\u3002\uFF08\u5FC3\u60C5 +28\uFF09"
     },
@@ -19596,7 +19646,8 @@ var action_results_default = {
         stamina: 15,
         money: -1800,
         mood: 45,
-        satiety: -20
+        satiety: -20,
+        health: 6
       },
       text: "\u4E09\u5929\u6CA1\u8FDB\u6392\u7EC3\u5BA4\u3002\u56DE\u6765\u7684\u65F6\u5019\uFF0C\u4F60\u5C45\u7136\u60F3\u8DF3\u4E86\u3002\uFF08\u5FC3\u60C5 +45 \xB7 \u4F53\u529B +15\uFF09"
     },
@@ -19610,7 +19661,8 @@ var action_results_default = {
         stamina: 15,
         money: -300,
         mood: -4,
-        satiety: -4
+        satiety: -4,
+        health: 35
       },
       text: "\u533B\u751F\u8BF4\u4E0D\u662F\u5927\u95EE\u9898\uFF0C\u4F46\u4F60\u5F97\u505C\u4E24\u5468\u3002\u4F60\u8BF4\u4E0B\u4E2A\u6708\u6709\u573A\u3002\uFF08\u4F53\u529B +15\uFF09"
     },
@@ -19623,7 +19675,8 @@ var action_results_default = {
       effects: {
         stamina: 55,
         mood: -18,
-        satiety: -10
+        satiety: -10,
+        health: 10
       },
       text: "\u70E7\u5230\u4E09\u5341\u516B\u5EA6\u4E03\u3002\u624B\u673A\u5728\u6795\u8FB9\uFF0C\u7FA4\u91CC\u7684\u6D88\u606F\u4F60\u4E00\u6761\u90FD\u6CA1\u56DE\u3002\uFF08\u4F53\u529B +55 \xB7 \u5FC3\u60C5 -18\uFF09"
     },
@@ -19778,11 +19831,14 @@ var action_results_default = {
       condition: {},
       priority: 99,
       effects: {
-        stamina: -22,
+        stamina: -20,
         money: 900,
-        mood: -5,
+        mood: -3,
         satiety: -7,
-        fans: 3
+        fans: 3,
+        axes: {
+          others: 1
+        }
       },
       text: "\u68DA\u91CC\u5F00\u7740\u6696\u98CE\u673A\u3002\u6444\u5F71\u5E08\u8BF4\uFF0C\u518D\u6536\u4E00\u70B9\u4E0B\u5DF4\u3002\uFF08\u6536\u5165 +900 \xB7 \u7C89\u4E1D +3\uFF09"
     },
@@ -19793,10 +19849,13 @@ var action_results_default = {
       condition: "stamina < 25",
       priority: 10,
       effects: {
-        stamina: -24,
+        stamina: -22,
         money: 700,
-        mood: -8,
-        satiety: -7
+        mood: -5,
+        satiety: -7,
+        axes: {
+          others: 1
+        }
       },
       text: "\u773C\u775B\u7741\u4E0D\u5F00\uFF0C\u7B11\u4E5F\u50F5\u3002\u5BA2\u6237\u6362\u4EBA\u62CD\u5B8C\u4E86\u5269\u4E0B\u7684\u534A\u5377\u3002\uFF08\u6536\u5165 +700\uFF09"
     },
@@ -19839,7 +19898,10 @@ var action_results_default = {
         money: 260,
         mood: 2,
         satiety: -7,
-        fans: 12
+        fans: 12,
+        axes: {
+          others: 2
+        }
       },
       text: "\u5F00\u4E86\u4E24\u5C0F\u65F6\uFF0C\u6700\u9AD8\u5728\u7EBF\u5341\u4E5D\u4EBA\u3002\u4F60\u5728\u7B2C\u5341\u4EBA\u8FDB\u6765\u7684\u65F6\u5019\u5531\u4E86\u6B4C\u3002\uFF08\u6536\u5165 +260 \xB7 \u7C89\u4E1D +12\uFF09"
     },
@@ -19854,7 +19916,10 @@ var action_results_default = {
         money: 180,
         mood: -2,
         satiety: -7,
-        fans: 7
+        fans: 7,
+        axes: {
+          others: 2
+        }
       },
       text: "\u5BF9\u7740\u955C\u5934\u6253\u4E86\u4E2A\u54C8\u6B20\u3002\u6709\u4EBA\u5237\u4E86\u793C\u7269\uFF0C\u8BF4\u65E9\u70B9\u7761\u3002\uFF08\u6536\u5165 +180 \xB7 \u7C89\u4E1D +7\uFF09"
     },
@@ -19869,7 +19934,10 @@ var action_results_default = {
         money: 1800,
         mood: 8,
         satiety: -10,
-        fans: 150
+        fans: 150,
+        axes: {
+          others: 1
+        }
       },
       text: "\u706F\u4EAE\u8D77\u6765\u7684\u4E00\u77AC\u95F4\uFF0C\u5168\u573A\u5B89\u9759\u4E86\u534A\u79D2\uFF0C\u7136\u540E\u5F00\u59CB\u558A\u3002\u4F60\u5728\u90A3\u534A\u79D2\u91CC\u5FD8\u4E86\u547C\u5438\u3002\uFF08\u7C89\u4E1D +150 \xB7 \u6536\u5165 +1800\uFF09"
     },
@@ -19884,7 +19952,10 @@ var action_results_default = {
         money: 1100,
         mood: 5,
         satiety: -10,
-        fans: 90
+        fans: 90,
+        axes: {
+          others: 1
+        }
       },
       text: "\u6700\u540E\u4E00\u9996\u7684\u526F\u6B4C\uFF0C\u53F0\u4E0B\u6709\u4EBA\u63A5\u4E0A\u4E86\u3002\u4F60\u5DEE\u70B9\u5728\u53F0\u4E0A\u7B11\u51FA\u58F0\u3002\uFF08\u7C89\u4E1D +90 \xB7 \u6536\u5165 +1100\uFF09"
     },
@@ -19899,7 +19970,10 @@ var action_results_default = {
         money: 600,
         mood: 2,
         satiety: -10,
-        fans: 45
+        fans: 45,
+        axes: {
+          others: 1
+        }
       },
       text: "\u6CA1\u51FA\u9519\uFF0C\u4E5F\u6CA1\u8BB0\u4F4F\u4EC0\u4E48\u3002\u6563\u573A\u65F6\u6709\u4E24\u4E2A\u4EBA\u8BF4\u4E0B\u6B21\u8FD8\u6765\u3002\uFF08\u7C89\u4E1D +45 \xB7 \u6536\u5165 +600\uFF09"
     },
@@ -19914,7 +19988,10 @@ var action_results_default = {
         money: 220,
         mood: -6,
         satiety: -10,
-        fans: 15
+        fans: 15,
+        axes: {
+          others: 1
+        }
       },
       text: "\u4E2D\u95F4\u5FD8\u4E86\u4E00\u4E2A\u8F6C\u8EAB\uFF0C\u4F60\u7B11\u7740\u5706\u8FC7\u53BB\u4E86\u3002\u53F0\u4E0B\u6CA1\u4EBA\u53D1\u73B0\uFF0C\u53EA\u6709\u4F60\u81EA\u5DF1\u77E5\u9053\u3002\uFF08\u7C89\u4E1D +15 \xB7 \u6536\u5165 +220\uFF09"
     },
@@ -19929,7 +20006,10 @@ var action_results_default = {
         money: 180,
         mood: 3,
         satiety: -6,
-        fans: 12
+        fans: 12,
+        axes: {
+          self: 1
+        }
       },
       text: "\u7434\u76D2\u8FD8\u6CA1\u653E\u4E0B\uFF0C\u5C31\u6709\u4EBA\u8BA4\u51FA\u4F60\u3002\u5979\u8BF4\u5979\u5750\u4E86\u4E24\u7AD9\u5730\u94C1\u8FC7\u6765\u3002\uFF08\u7C89\u4E1D +12 \xB7 \u6536\u5165 +180\uFF09"
     },
@@ -19944,7 +20024,10 @@ var action_results_default = {
         money: 60,
         mood: -5,
         satiety: -6,
-        fans: 3
+        fans: 3,
+        axes: {
+          self: 1
+        }
       },
       text: "\u5531\u4E86\u516D\u9996\uFF0C\u8DEF\u8FC7\u7684\u4EBA\u6CA1\u6709\u505C\u3002\u6709\u4E2A\u5C0F\u5B69\u7AD9\u4E86\u4E00\u4F1A\u513F\uFF0C\u88AB\u5988\u5988\u62C9\u8D70\u4E86\u3002\uFF08\u7C89\u4E1D +3 \xB7 \u6536\u5165 +60\uFF09"
     },
@@ -19959,7 +20042,10 @@ var action_results_default = {
         money: 380,
         mood: 6,
         satiety: -9,
-        fans: 30
+        fans: 30,
+        axes: {
+          fit: 2
+        }
       },
       text: "\u97F3\u54CD\u5F88\u70C2\uFF0C\u4F46\u4F60\u628A\u4EBA\u4ECE\u644A\u4F4D\u90A3\u8FB9\u62C9\u4E86\u8FC7\u6765\u3002\u524D\u6392\u7AD9\u4E86\u4E94\u6392\u3002\uFF08\u7C89\u4E1D +30 \xB7 \u6536\u5165 +380\uFF09"
     },
@@ -19974,7 +20060,10 @@ var action_results_default = {
         money: 200,
         mood: 1,
         satiety: -9,
-        fans: 14
+        fans: 14,
+        axes: {
+          fit: 2
+        }
       },
       text: "\u53F0\u4E0B\u90FD\u662F\u7B49\u62BD\u5956\u7684\u3002\u4F60\u628A\u4E09\u5341\u4E94\u5206\u949F\u5531\u5B8C\uFF0C\u638C\u58F0\u96F6\u96F6\u6563\u6563\u3002\uFF08\u7C89\u4E1D +14 \xB7 \u6536\u5165 +200\uFF09"
     },
@@ -19989,7 +20078,10 @@ var action_results_default = {
         money: 2200,
         mood: -2,
         satiety: -10,
-        fans: 70
+        fans: 70,
+        axes: {
+          others: 3
+        }
       },
       text: "\u7532\u65B9\u5728\u53F0\u4E0B\u70B9\u5934\u3002\u5531\u5B8C\u6709\u4EBA\u9012\u540D\u7247\uFF0C\u8BF4\u4EE5\u540E\u6709\u6D3B\u52A8\u627E\u4F60\u3002\uFF08\u7C89\u4E1D +70 \xB7 \u6536\u5165 +2200\uFF09"
     },
@@ -20004,7 +20096,10 @@ var action_results_default = {
         money: 1600,
         mood: -4,
         satiety: -10,
-        fans: 40
+        fans: 40,
+        axes: {
+          others: 3
+        }
       },
       text: "\u5F00\u573A\u524D\u6539\u4E86\u4E09\u6B21\u6D41\u7A0B\u3002\u4F60\u5531\u5B8C\u4E24\u9996\u5C31\u88AB\u8BF7\u4E0B\u53F0\uFF0C\u56E0\u4E3A\u8D85\u65F6\u3002\uFF08\u7C89\u4E1D +40 \xB7 \u6536\u5165 +1600\uFF09"
     },
@@ -20019,7 +20114,10 @@ var action_results_default = {
         money: 2600,
         mood: 10,
         satiety: -11,
-        fans: 180
+        fans: 180,
+        axes: {
+          self: 3
+        }
       },
       text: "\u8FD9\u6B21\u6CA1\u6709\u522B\u4EBA\u7684\u56E2\u5728\u524D\u9762\u3002\u5B89\u53EF\u5531\u4E86\u4E24\u9996\uFF0C\u53F0\u4E0B\u8FD8\u4E00\u76F4\u5728\u558A\u3002\uFF08\u7C89\u4E1D +180 \xB7 \u6536\u5165 +2600\uFF09"
     },
@@ -20034,7 +20132,10 @@ var action_results_default = {
         money: 1800,
         mood: 4,
         satiety: -11,
-        fans: 90
+        fans: 90,
+        axes: {
+          self: 3
+        }
       },
       text: "\u573A\u5730\u53EA\u5750\u4E86\u4E00\u534A\u3002\u6563\u573A\u540E\u4F60\u5728\u540E\u53F0\u6570\u4E86\u4E00\u4E0B\u5E94\u63F4\u68D2\u3002\uFF08\u7C89\u4E1D +90 \xB7 \u6536\u5165 +1800\uFF09"
     },
@@ -20049,7 +20150,10 @@ var action_results_default = {
         money: 700,
         mood: 6,
         satiety: -6,
-        fans: 20
+        fans: 20,
+        axes: {
+          others: 2
+        }
       },
       text: "\u30C1\u30A7\u30AD\u62CD\u5230\u516D\u5341\u5F20\u3002\u6709\u4E2A\u5973\u5B69\u6392\u4E86\u4E09\u6B21\uFF0C\u6BCF\u6B21\u90FD\u53EA\u8BF4\u4E00\u53E5\u300C\u52A0\u6CB9\u300D\u3002\uFF08\u7C89\u4E1D +20 \xB7 \u6536\u5165 +700\uFF09"
     },
@@ -20064,7 +20168,10 @@ var action_results_default = {
         money: 280,
         mood: 2,
         satiety: -6,
-        fans: 8
+        fans: 8,
+        axes: {
+          others: 2
+        }
       },
       text: "\u684C\u5B50\u6446\u4E86\u56DB\u5341\u5206\u949F\uFF0C\u6765\u4E86\u516D\u4E2A\u4EBA\u3002\u4F60\u7ED9\u6BCF\u4E2A\u4EBA\u90FD\u5199\u4E86\u540D\u5B57\u3002\uFF08\u7C89\u4E1D +8 \xB7 \u6536\u5165 +280\uFF09"
     }
@@ -20086,7 +20193,7 @@ var actions_default = {
       affectedStats: [
         "vocal"
       ],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "dance-otaku",
@@ -20099,7 +20206,7 @@ var actions_default = {
       affectedStats: [
         "dance"
       ],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "acting-short",
@@ -20113,7 +20220,7 @@ var actions_default = {
         "acting",
         "talk"
       ],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "talk-selftalk",
@@ -20126,7 +20233,7 @@ var actions_default = {
       affectedStats: [
         "talk"
       ],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "vocal-street",
@@ -20140,7 +20247,7 @@ var actions_default = {
         "vocal",
         "talk"
       ],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "dance-class",
@@ -20154,7 +20261,7 @@ var actions_default = {
         "dance",
         "acting"
       ],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "acting-workshop",
@@ -20168,7 +20275,7 @@ var actions_default = {
         "acting",
         "talk"
       ],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "talk-host",
@@ -20182,7 +20289,7 @@ var actions_default = {
         "talk",
         "acting"
       ],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "vocal-coach",
@@ -20195,7 +20302,7 @@ var actions_default = {
       affectedStats: [
         "vocal"
       ],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "dance-intensive",
@@ -20208,7 +20315,7 @@ var actions_default = {
       affectedStats: [
         "dance"
       ],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "acting-coach",
@@ -20221,7 +20328,7 @@ var actions_default = {
       affectedStats: [
         "acting"
       ],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "talk-speech",
@@ -20234,7 +20341,7 @@ var actions_default = {
       affectedStats: [
         "talk"
       ],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "rest-sleep",
@@ -20245,7 +20352,7 @@ var actions_default = {
       times: 0,
       timesScope: "run",
       affectedStats: [],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "food-saizeriya",
@@ -20256,7 +20363,7 @@ var actions_default = {
       times: 0,
       timesScope: "run",
       affectedStats: [],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "food-sushiro",
@@ -20267,7 +20374,7 @@ var actions_default = {
       times: 0,
       timesScope: "run",
       affectedStats: [],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "food-nice",
@@ -20278,7 +20385,7 @@ var actions_default = {
       times: 0,
       timesScope: "run",
       affectedStats: [],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "recover-bath",
@@ -20289,7 +20396,7 @@ var actions_default = {
       times: 0,
       timesScope: "run",
       affectedStats: [],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "fun-park",
@@ -20300,7 +20407,7 @@ var actions_default = {
       times: 0,
       timesScope: "run",
       affectedStats: [],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "fun-trip",
@@ -20311,7 +20418,7 @@ var actions_default = {
       times: 0,
       timesScope: "run",
       affectedStats: [],
-      durationMinutes: 3
+      durationMinutes: 30
     },
     {
       id: "hospital",
@@ -20322,7 +20429,7 @@ var actions_default = {
       times: 0,
       timesScope: "run",
       affectedStats: [],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "sick-bed",
@@ -20333,7 +20440,7 @@ var actions_default = {
       times: 0,
       timesScope: "run",
       affectedStats: [],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "work-part-time",
@@ -20344,7 +20451,7 @@ var actions_default = {
       times: 0,
       timesScope: "run",
       affectedStats: [],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "work-tea",
@@ -20355,7 +20462,7 @@ var actions_default = {
       times: 0,
       timesScope: "run",
       affectedStats: [],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "work-maid",
@@ -20366,7 +20473,7 @@ var actions_default = {
       times: 0,
       timesScope: "run",
       affectedStats: [],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "work-flyer",
@@ -20377,7 +20484,7 @@ var actions_default = {
       times: 0,
       timesScope: "run",
       affectedStats: [],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "work-tutor",
@@ -20388,7 +20495,7 @@ var actions_default = {
       times: 0,
       timesScope: "run",
       affectedStats: [],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "work-photo",
@@ -20399,7 +20506,7 @@ var actions_default = {
       times: 0,
       timesScope: "run",
       affectedStats: [],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "work-stage-hand",
@@ -20410,7 +20517,7 @@ var actions_default = {
       times: 0,
       timesScope: "run",
       affectedStats: [],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "work-stream",
@@ -20421,7 +20528,7 @@ var actions_default = {
       times: 0,
       timesScope: "run",
       affectedStats: [],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "show",
@@ -20437,7 +20544,7 @@ var actions_default = {
         "acting",
         "talk"
       ],
-      durationMinutes: 3
+      durationMinutes: 30
     },
     {
       id: "street-live",
@@ -20450,7 +20557,7 @@ var actions_default = {
       affectedStats: [
         "vocal"
       ],
-      durationMinutes: 1
+      durationMinutes: 10
     },
     {
       id: "comic-stage",
@@ -20463,7 +20570,7 @@ var actions_default = {
       affectedStats: [
         "dance"
       ],
-      durationMinutes: 3
+      durationMinutes: 30
     },
     {
       id: "commercial",
@@ -20476,7 +20583,7 @@ var actions_default = {
       affectedStats: [
         "vocal"
       ],
-      durationMinutes: 3
+      durationMinutes: 30
     },
     {
       id: "one-man",
@@ -20490,7 +20597,7 @@ var actions_default = {
         "vocal",
         "dance"
       ],
-      durationMinutes: 3
+      durationMinutes: 30
     },
     {
       id: "cheki",
@@ -20503,7 +20610,7 @@ var actions_default = {
       affectedStats: [
         "talk"
       ],
-      durationMinutes: 1
+      durationMinutes: 10
     }
   ]
 };
@@ -20517,7 +20624,7 @@ var attributes_default = {
       categoryName: "\u56FA\u6709\u5C5E\u6027",
       name: "\u8EAB\u9AD8",
       key: "height",
-      hidden: false,
+      hidden: true,
       linked: 1
     },
     {
@@ -20525,7 +20632,7 @@ var attributes_default = {
       categoryName: "\u56FA\u6709\u5C5E\u6027",
       name: "\u4F53\u91CD",
       key: "weight",
-      hidden: false,
+      hidden: true,
       linked: 1
     },
     {
@@ -20533,15 +20640,7 @@ var attributes_default = {
       categoryName: "\u56FA\u6709\u5C5E\u6027",
       name: "\u6837\u8C8C",
       key: "appearance",
-      hidden: false,
-      linked: 1
-    },
-    {
-      category: "innate",
-      categoryName: "\u56FA\u6709\u5C5E\u6027",
-      name: "\u8EAB\u6750\u6BD4\u4F8B",
-      key: "proportion",
-      hidden: false,
+      hidden: true,
       linked: 1
     },
     {
@@ -20581,7 +20680,7 @@ var attributes_default = {
       categoryName: "\u72B6\u6001",
       name: "\u4F53\u529B",
       key: "stamina",
-      hidden: false,
+      hidden: true,
       linked: 1
     },
     {
@@ -20589,7 +20688,7 @@ var attributes_default = {
       categoryName: "\u72B6\u6001",
       name: "\u5FC3\u60C5",
       key: "mood",
-      hidden: false,
+      hidden: true,
       linked: 1
     },
     {
@@ -20597,7 +20696,7 @@ var attributes_default = {
       categoryName: "\u72B6\u6001",
       name: "\u9971\u8179",
       key: "satiety",
-      hidden: false,
+      hidden: true,
       linked: 1
     },
     {
@@ -20605,7 +20704,7 @@ var attributes_default = {
       categoryName: "\u6027\u683C",
       name: "\u4F53\u8D34",
       key: "kind",
-      hidden: true,
+      hidden: false,
       linked: 2
     },
     {
@@ -20613,7 +20712,7 @@ var attributes_default = {
       categoryName: "\u6027\u683C",
       name: "\u9886\u5BFC",
       key: "lead",
-      hidden: true,
+      hidden: false,
       linked: 2
     },
     {
@@ -20621,7 +20720,7 @@ var attributes_default = {
       categoryName: "\u6027\u683C",
       name: "\u5408\u4F5C",
       key: "coop",
-      hidden: true,
+      hidden: false,
       linked: 2
     },
     {
@@ -20629,7 +20728,7 @@ var attributes_default = {
       categoryName: "\u6027\u683C",
       name: "\u72EC\u7ACB",
       key: "independent",
-      hidden: true,
+      hidden: false,
       linked: 2
     },
     {
@@ -20637,7 +20736,7 @@ var attributes_default = {
       categoryName: "\u6027\u683C",
       name: "\u597D\u5F3A",
       key: "ambitious",
-      hidden: true,
+      hidden: false,
       linked: 2
     },
     {
@@ -20645,7 +20744,7 @@ var attributes_default = {
       categoryName: "\u6027\u683C",
       name: "\u70ED\u60C5",
       key: "passion",
-      hidden: true,
+      hidden: false,
       linked: 2
     },
     {
@@ -20653,7 +20752,7 @@ var attributes_default = {
       categoryName: "\u8D1F\u5411",
       name: "\u7CBE\u795E\u538B\u529B",
       key: "stress",
-      hidden: true,
+      hidden: false,
       linked: 2
     },
     {
@@ -20661,7 +20760,7 @@ var attributes_default = {
       categoryName: "\u8D1F\u5411",
       name: "\u7126\u8E81",
       key: "restless",
-      hidden: true,
+      hidden: false,
       linked: 2
     },
     {
@@ -20669,7 +20768,7 @@ var attributes_default = {
       categoryName: "\u8D1F\u5411",
       name: "\u79EF\u52B3",
       key: "fatigue",
-      hidden: true,
+      hidden: false,
       linked: 2
     },
     {
@@ -20677,7 +20776,7 @@ var attributes_default = {
       categoryName: "\u8D1F\u5411",
       name: "\u60C5\u6B32",
       key: "desire",
-      hidden: true,
+      hidden: false,
       linked: 2
     },
     {
@@ -20685,7 +20784,7 @@ var attributes_default = {
       categoryName: "\u8D1F\u5411",
       name: "\u9ED1\u5386\u53F2",
       key: "scandal",
-      hidden: true,
+      hidden: false,
       linked: 2
     },
     {
@@ -20741,7 +20840,7 @@ var attributes_default = {
       categoryName: "\u7C89\u4E1D\u5C5E\u6027",
       name: "\u821E\u53F0\u7C89",
       key: "stage",
-      hidden: false,
+      hidden: true,
       linked: 1
     },
     {
@@ -20749,7 +20848,7 @@ var attributes_default = {
       categoryName: "\u7C89\u4E1D\u5C5E\u6027",
       name: "\u560E\u8D77\u7C89",
       key: "gachi",
-      hidden: false,
+      hidden: true,
       linked: 1
     },
     {
@@ -20757,7 +20856,7 @@ var attributes_default = {
       categoryName: "\u7C89\u4E1D\u5C5E\u6027",
       name: "\u97F3\u4E50\u7C89",
       key: "music",
-      hidden: false,
+      hidden: true,
       linked: 1
     },
     {
@@ -20765,7 +20864,7 @@ var attributes_default = {
       categoryName: "\u7C89\u4E1D\u5C5E\u6027",
       name: "\u73B0\u573A\u7C89",
       key: "live",
-      hidden: false,
+      hidden: true,
       linked: 1
     },
     {
@@ -20773,7 +20872,7 @@ var attributes_default = {
       categoryName: "\u7C89\u4E1D\u5C5E\u6027",
       name: "\u517B\u6210\u7C89",
       key: "growth",
-      hidden: false,
+      hidden: true,
       linked: 1
     },
     {
@@ -20781,6 +20880,14 @@ var attributes_default = {
       categoryName: "\u7C89\u4E1D\u5C5E\u6027",
       name: "\u5B9E\u529B\u7C89",
       key: "power",
+      hidden: true,
+      linked: 1
+    },
+    {
+      category: "status",
+      categoryName: "\u72B6\u6001",
+      name: "\u5065\u5EB7",
+      key: "health",
       hidden: false,
       linked: 1
     }
@@ -20803,7 +20910,8 @@ var balance_default = {
     npcBaseRatio: 0.9,
     runDays: 730,
     divinationBase: 100,
-    partyMax: 10
+    partyMax: 10,
+    timeScale: 20
   }
 };
 
@@ -23377,8 +23485,8432 @@ var pools_default = {
   ]
 };
 
+// ../core/data/shows.json
+var shows_default = {
+  _\u8BF4\u660E: "\u6F14\u51FA\u8868\uFF08T-033\uFF09\uFF1Axlsx \u4E00\u573A\u4E00\u884C\uFF0C\u5BFC\u5165\u65F6\u6309\u300C\u9996\u987A\u4F4D\u2192\u672B\u987A\u4F4D\u300D\u7EBF\u6027\u63D2\u503C\u5C55\u5F00\u6210\u4E00\u987A\u4F4D\u4E00\u884C\uFF1B\u4E3B\u952E showId+slot\uFF1Btier \u6F14\u51FA\u7EA7\u522B\uFF1BslotCount \u987A\u4F4D\u6570\uFF1B\u4E0D\u518D\u6709\u57CE\u5E02\u7EF4\u5EA6\uFF08\u57CE\u5E02\u8FC7\u6EE4\u89C1 cities.json\uFF09",
+  shows: [
+    {
+      showId: "circuit-n04",
+      name: "\u57CE\u4E1C Live House \u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 4,
+      weight: 80,
+      slot: 1,
+      slotName: "\u5F00\u573A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 600,
+      ticketBase: 700,
+      goodsBase: 250,
+      statGain: 3,
+      fanGain: 20,
+      reqFame: 150,
+      reqStats: {
+        vocal: 15,
+        dance: 15,
+        acting: 12,
+        talk: 12
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n04",
+      name: "\u57CE\u4E1C Live House \u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 4,
+      weight: 80,
+      slot: 2,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 1e3,
+      ticketBase: 1267,
+      goodsBase: 400,
+      statGain: 4,
+      fanGain: 40,
+      reqFame: 300,
+      reqStats: {
+        vocal: 22,
+        dance: 22,
+        acting: 19,
+        talk: 18
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n04",
+      name: "\u57CE\u4E1C Live House \u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 4,
+      weight: 80,
+      slot: 3,
+      slotName: "\u6B21\u538B\u8F74",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 1400,
+      ticketBase: 1833,
+      goodsBase: 550,
+      statGain: 5,
+      fanGain: 60,
+      reqFame: 450,
+      reqStats: {
+        vocal: 28,
+        dance: 28,
+        acting: 25,
+        talk: 24
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.4,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n04",
+      name: "\u57CE\u4E1C Live House \u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 4,
+      weight: 80,
+      slot: 4,
+      slotName: "\u538B\u8F74",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 1800,
+      ticketBase: 2400,
+      goodsBase: 700,
+      statGain: 6,
+      fanGain: 80,
+      reqFame: 600,
+      reqStats: {
+        vocal: 35,
+        dance: 35,
+        acting: 32,
+        talk: 30
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.6,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n05",
+      name: "\u65E7\u57CE\u533A\u5468\u672B\u8054\u5408\u516C\u6F14",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 5,
+      weight: 80,
+      slot: 1,
+      slotName: "\u5F00\u573A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 800,
+      ticketBase: 950,
+      goodsBase: 350,
+      statGain: 4,
+      fanGain: 26,
+      reqFame: 200,
+      reqStats: {
+        vocal: 18,
+        dance: 18,
+        acting: 14,
+        talk: 14
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n05",
+      name: "\u65E7\u57CE\u533A\u5468\u672B\u8054\u5408\u516C\u6F14",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 5,
+      weight: 80,
+      slot: 2,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 1200,
+      ticketBase: 1525,
+      goodsBase: 500,
+      statGain: 5,
+      fanGain: 46,
+      reqFame: 350,
+      reqStats: {
+        vocal: 23,
+        dance: 23,
+        acting: 19,
+        talk: 19
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n05",
+      name: "\u65E7\u57CE\u533A\u5468\u672B\u8054\u5408\u516C\u6F14",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 5,
+      weight: 80,
+      slot: 3,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 1600,
+      ticketBase: 2100,
+      goodsBase: 650,
+      statGain: 6,
+      fanGain: 65,
+      reqFame: 500,
+      reqStats: {
+        vocal: 28,
+        dance: 28,
+        acting: 24,
+        talk: 23
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.4,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n05",
+      name: "\u65E7\u57CE\u533A\u5468\u672B\u8054\u5408\u516C\u6F14",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 5,
+      weight: 80,
+      slot: 4,
+      slotName: "\u6B21\u538B\u8F74",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 2e3,
+      ticketBase: 2675,
+      goodsBase: 800,
+      statGain: 7,
+      fanGain: 85,
+      reqFame: 650,
+      reqStats: {
+        vocal: 33,
+        dance: 33,
+        acting: 29,
+        talk: 28
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.6,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n05",
+      name: "\u65E7\u57CE\u533A\u5468\u672B\u8054\u5408\u516C\u6F14",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 5,
+      weight: 80,
+      slot: 5,
+      slotName: "\u538B\u8F74",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 2400,
+      ticketBase: 3250,
+      goodsBase: 950,
+      statGain: 8,
+      fanGain: 104,
+      reqFame: 800,
+      reqStats: {
+        vocal: 38,
+        dance: 38,
+        acting: 34,
+        talk: 32
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.8,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n06",
+      name: "\u5E02\u4E2D\u5FC3\u5267\u573A\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 6,
+      weight: 80,
+      slot: 1,
+      slotName: "\u5F00\u573A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 1050,
+      ticketBase: 1200,
+      goodsBase: 450,
+      statGain: 4,
+      fanGain: 32,
+      reqFame: 250,
+      reqStats: {
+        vocal: 20,
+        dance: 20,
+        acting: 16,
+        talk: 16
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n06",
+      name: "\u5E02\u4E2D\u5FC3\u5267\u573A\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 6,
+      weight: 80,
+      slot: 2,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 1470,
+      ticketBase: 1780,
+      goodsBase: 600,
+      statGain: 5,
+      fanGain: 51,
+      reqFame: 400,
+      reqStats: {
+        vocal: 24,
+        dance: 24,
+        acting: 20,
+        talk: 20
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n06",
+      name: "\u5E02\u4E2D\u5FC3\u5267\u573A\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 6,
+      weight: 80,
+      slot: 3,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 1890,
+      ticketBase: 2360,
+      goodsBase: 750,
+      statGain: 6,
+      fanGain: 70,
+      reqFame: 550,
+      reqStats: {
+        vocal: 28,
+        dance: 28,
+        acting: 24,
+        talk: 23
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.4,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n06",
+      name: "\u5E02\u4E2D\u5FC3\u5267\u573A\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 6,
+      weight: 80,
+      slot: 4,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 2310,
+      ticketBase: 2940,
+      goodsBase: 900,
+      statGain: 6,
+      fanGain: 90,
+      reqFame: 700,
+      reqStats: {
+        vocal: 32,
+        dance: 32,
+        acting: 28,
+        talk: 27
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.6,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n06",
+      name: "\u5E02\u4E2D\u5FC3\u5267\u573A\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 6,
+      weight: 80,
+      slot: 5,
+      slotName: "\u6B21\u538B\u8F74",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 2730,
+      ticketBase: 3520,
+      goodsBase: 1050,
+      statGain: 7,
+      fanGain: 109,
+      reqFame: 850,
+      reqStats: {
+        vocal: 36,
+        dance: 36,
+        acting: 32,
+        talk: 30
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.8,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n06",
+      name: "\u5E02\u4E2D\u5FC3\u5267\u573A\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 6,
+      weight: 80,
+      slot: 6,
+      slotName: "\u538B\u8F74",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 3150,
+      ticketBase: 4100,
+      goodsBase: 1200,
+      statGain: 8,
+      fanGain: 128,
+      reqFame: 1e3,
+      reqStats: {
+        vocal: 40,
+        dance: 40,
+        acting: 36,
+        talk: 34
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n07",
+      name: "\u5546\u5708\u97F3\u4E50\u8282\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 7,
+      weight: 80,
+      slot: 1,
+      slotName: "\u5F00\u573A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 1300,
+      ticketBase: 1500,
+      goodsBase: 550,
+      statGain: 4,
+      fanGain: 38,
+      reqFame: 300,
+      reqStats: {
+        vocal: 22,
+        dance: 22,
+        acting: 18,
+        talk: 18
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n07",
+      name: "\u5546\u5708\u97F3\u4E50\u8282\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 7,
+      weight: 80,
+      slot: 2,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 1733,
+      ticketBase: 2108,
+      goodsBase: 708,
+      statGain: 5,
+      fanGain: 57,
+      reqFame: 450,
+      reqStats: {
+        vocal: 25,
+        dance: 25,
+        acting: 21,
+        talk: 21
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n07",
+      name: "\u5546\u5708\u97F3\u4E50\u8282\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 7,
+      weight: 80,
+      slot: 3,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 2167,
+      ticketBase: 2717,
+      goodsBase: 867,
+      statGain: 5,
+      fanGain: 76,
+      reqFame: 600,
+      reqStats: {
+        vocal: 29,
+        dance: 29,
+        acting: 25,
+        talk: 24
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.4,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n07",
+      name: "\u5546\u5708\u97F3\u4E50\u8282\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 7,
+      weight: 80,
+      slot: 4,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 2600,
+      ticketBase: 3325,
+      goodsBase: 1025,
+      statGain: 6,
+      fanGain: 95,
+      reqFame: 750,
+      reqStats: {
+        vocal: 32,
+        dance: 32,
+        acting: 28,
+        talk: 27
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.6,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n07",
+      name: "\u5546\u5708\u97F3\u4E50\u8282\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 7,
+      weight: 80,
+      slot: 5,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 3033,
+      ticketBase: 3933,
+      goodsBase: 1183,
+      statGain: 7,
+      fanGain: 114,
+      reqFame: 900,
+      reqStats: {
+        vocal: 35,
+        dance: 35,
+        acting: 31,
+        talk: 30
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.8,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n07",
+      name: "\u5546\u5708\u97F3\u4E50\u8282\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 7,
+      weight: 80,
+      slot: 6,
+      slotName: "\u6B21\u538B\u8F74",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 3467,
+      ticketBase: 4542,
+      goodsBase: 1342,
+      statGain: 7,
+      fanGain: 133,
+      reqFame: 1050,
+      reqStats: {
+        vocal: 39,
+        dance: 39,
+        acting: 35,
+        talk: 33
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n07",
+      name: "\u5546\u5708\u97F3\u4E50\u8282\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 7,
+      weight: 80,
+      slot: 7,
+      slotName: "\u538B\u8F74",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 3900,
+      ticketBase: 5150,
+      goodsBase: 1500,
+      statGain: 8,
+      fanGain: 152,
+      reqFame: 1200,
+      reqStats: {
+        vocal: 42,
+        dance: 42,
+        acting: 38,
+        talk: 36
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n08",
+      name: "\u97F3\u4E50\u5385\u53CC\u56E2\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 8,
+      weight: 80,
+      slot: 1,
+      slotName: "\u5F00\u573A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 1600,
+      ticketBase: 1800,
+      goodsBase: 650,
+      statGain: 5,
+      fanGain: 44,
+      reqFame: 350,
+      reqStats: {
+        vocal: 24,
+        dance: 24,
+        acting: 19,
+        talk: 19
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n08",
+      name: "\u97F3\u4E50\u5385\u53CC\u56E2\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 8,
+      weight: 80,
+      slot: 2,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 2057,
+      ticketBase: 2421,
+      goodsBase: 807,
+      statGain: 6,
+      fanGain: 63,
+      reqFame: 500,
+      reqStats: {
+        vocal: 27,
+        dance: 27,
+        acting: 22,
+        talk: 22
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n08",
+      name: "\u97F3\u4E50\u5385\u53CC\u56E2\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 8,
+      weight: 80,
+      slot: 3,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 2514,
+      ticketBase: 3043,
+      goodsBase: 964,
+      statGain: 6,
+      fanGain: 82,
+      reqFame: 650,
+      reqStats: {
+        vocal: 30,
+        dance: 30,
+        acting: 25,
+        talk: 24
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.4,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n08",
+      name: "\u97F3\u4E50\u5385\u53CC\u56E2\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 8,
+      weight: 80,
+      slot: 4,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 2971,
+      ticketBase: 3664,
+      goodsBase: 1121,
+      statGain: 7,
+      fanGain: 101,
+      reqFame: 800,
+      reqStats: {
+        vocal: 33,
+        dance: 33,
+        acting: 28,
+        talk: 27
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.6,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n08",
+      name: "\u97F3\u4E50\u5385\u53CC\u56E2\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 8,
+      weight: 80,
+      slot: 5,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 3429,
+      ticketBase: 4286,
+      goodsBase: 1279,
+      statGain: 8,
+      fanGain: 119,
+      reqFame: 950,
+      reqStats: {
+        vocal: 35,
+        dance: 35,
+        acting: 30,
+        talk: 29
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.8,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n08",
+      name: "\u97F3\u4E50\u5385\u53CC\u56E2\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 8,
+      weight: 80,
+      slot: 6,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 3886,
+      ticketBase: 4907,
+      goodsBase: 1436,
+      statGain: 9,
+      fanGain: 138,
+      reqFame: 1100,
+      reqStats: {
+        vocal: 38,
+        dance: 38,
+        acting: 33,
+        talk: 32
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n08",
+      name: "\u97F3\u4E50\u5385\u53CC\u56E2\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 8,
+      weight: 80,
+      slot: 7,
+      slotName: "\u6B21\u538B\u8F74",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 4343,
+      ticketBase: 5529,
+      goodsBase: 1593,
+      statGain: 9,
+      fanGain: 157,
+      reqFame: 1250,
+      reqStats: {
+        vocal: 41,
+        dance: 41,
+        acting: 36,
+        talk: 34
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n08",
+      name: "\u97F3\u4E50\u5385\u53CC\u56E2\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 8,
+      weight: 80,
+      slot: 8,
+      slotName: "\u538B\u8F74",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 4800,
+      ticketBase: 6150,
+      goodsBase: 1750,
+      statGain: 10,
+      fanGain: 176,
+      reqFame: 1400,
+      reqStats: {
+        vocal: 44,
+        dance: 44,
+        acting: 39,
+        talk: 37
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.4,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n10",
+      name: "\u5927\u5267\u573A\u9EC4\u91D1\u6863\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 10,
+      weight: 80,
+      slot: 1,
+      slotName: "\u5F00\u573A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 2150,
+      ticketBase: 2400,
+      goodsBase: 850,
+      statGain: 6,
+      fanGain: 57,
+      reqFame: 450,
+      reqStats: {
+        vocal: 28,
+        dance: 28,
+        acting: 23,
+        talk: 23
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n10",
+      name: "\u5927\u5267\u573A\u9EC4\u91D1\u6863\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 10,
+      weight: 80,
+      slot: 2,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 2628,
+      ticketBase: 3050,
+      goodsBase: 1011,
+      statGain: 7,
+      fanGain: 76,
+      reqFame: 600,
+      reqStats: {
+        vocal: 30,
+        dance: 30,
+        acting: 25,
+        talk: 25
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n10",
+      name: "\u5927\u5267\u573A\u9EC4\u91D1\u6863\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 10,
+      weight: 80,
+      slot: 3,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 3106,
+      ticketBase: 3700,
+      goodsBase: 1172,
+      statGain: 7,
+      fanGain: 95,
+      reqFame: 750,
+      reqStats: {
+        vocal: 32,
+        dance: 32,
+        acting: 27,
+        talk: 27
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.4,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n10",
+      name: "\u5927\u5267\u573A\u9EC4\u91D1\u6863\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 10,
+      weight: 80,
+      slot: 4,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 3583,
+      ticketBase: 4350,
+      goodsBase: 1333,
+      statGain: 8,
+      fanGain: 114,
+      reqFame: 900,
+      reqStats: {
+        vocal: 35,
+        dance: 35,
+        acting: 30,
+        talk: 29
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.6,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n10",
+      name: "\u5927\u5267\u573A\u9EC4\u91D1\u6863\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 10,
+      weight: 80,
+      slot: 5,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 4061,
+      ticketBase: 5e3,
+      goodsBase: 1494,
+      statGain: 9,
+      fanGain: 133,
+      reqFame: 1050,
+      reqStats: {
+        vocal: 37,
+        dance: 37,
+        acting: 32,
+        talk: 31
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.8,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n10",
+      name: "\u5927\u5267\u573A\u9EC4\u91D1\u6863\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 10,
+      weight: 80,
+      slot: 6,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 4539,
+      ticketBase: 5650,
+      goodsBase: 1656,
+      statGain: 9,
+      fanGain: 152,
+      reqFame: 1200,
+      reqStats: {
+        vocal: 39,
+        dance: 39,
+        acting: 34,
+        talk: 33
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n10",
+      name: "\u5927\u5267\u573A\u9EC4\u91D1\u6863\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 10,
+      weight: 80,
+      slot: 7,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 5017,
+      ticketBase: 6300,
+      goodsBase: 1817,
+      statGain: 10,
+      fanGain: 171,
+      reqFame: 1350,
+      reqStats: {
+        vocal: 41,
+        dance: 41,
+        acting: 36,
+        talk: 35
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n10",
+      name: "\u5927\u5267\u573A\u9EC4\u91D1\u6863\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 10,
+      weight: 80,
+      slot: 8,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 5494,
+      ticketBase: 6950,
+      goodsBase: 1978,
+      statGain: 11,
+      fanGain: 190,
+      reqFame: 1500,
+      reqStats: {
+        vocal: 44,
+        dance: 44,
+        acting: 39,
+        talk: 37
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.4,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n10",
+      name: "\u5927\u5267\u573A\u9EC4\u91D1\u6863\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 10,
+      weight: 80,
+      slot: 9,
+      slotName: "\u6B21\u538B\u8F74",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 5972,
+      ticketBase: 7600,
+      goodsBase: 2139,
+      statGain: 11,
+      fanGain: 209,
+      reqFame: 1650,
+      reqStats: {
+        vocal: 46,
+        dance: 46,
+        acting: 41,
+        talk: 39
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.6,
+      festival: "none"
+    },
+    {
+      showId: "circuit-n10",
+      name: "\u5927\u5267\u573A\u9EC4\u91D1\u6863\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 10,
+      weight: 80,
+      slot: 10,
+      slotName: "\u538B\u8F74",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 6450,
+      ticketBase: 8250,
+      goodsBase: 2300,
+      statGain: 12,
+      fanGain: 228,
+      reqFame: 1800,
+      reqStats: {
+        vocal: 48,
+        dance: 48,
+        acting: 43,
+        talk: 41
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.8,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l12",
+      name: "\u4F53\u80B2\u9986\u5927\u578B\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 12,
+      weight: 6,
+      slot: 1,
+      slotName: "\u5F00\u573A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 3750,
+      ticketBase: 4150,
+      goodsBase: 1450,
+      statGain: 9,
+      fanGain: 96,
+      reqFame: 750,
+      reqStats: {
+        vocal: 44,
+        dance: 44,
+        acting: 35,
+        talk: 35
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l12",
+      name: "\u4F53\u80B2\u9986\u5927\u578B\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 12,
+      weight: 6,
+      slot: 2,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 4432,
+      ticketBase: 5068,
+      goodsBase: 1673,
+      statGain: 10,
+      fanGain: 122,
+      reqFame: 955,
+      reqStats: {
+        vocal: 46,
+        dance: 46,
+        acting: 37,
+        talk: 37
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l12",
+      name: "\u4F53\u80B2\u9986\u5927\u578B\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 12,
+      weight: 6,
+      slot: 3,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 5114,
+      ticketBase: 5986,
+      goodsBase: 1895,
+      statGain: 11,
+      fanGain: 148,
+      reqFame: 1159,
+      reqStats: {
+        vocal: 48,
+        dance: 48,
+        acting: 39,
+        talk: 38
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.4,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l12",
+      name: "\u4F53\u80B2\u9986\u5927\u578B\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 12,
+      weight: 6,
+      slot: 4,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 5795,
+      ticketBase: 6905,
+      goodsBase: 2118,
+      statGain: 11,
+      fanGain: 175,
+      reqFame: 1364,
+      reqStats: {
+        vocal: 49,
+        dance: 49,
+        acting: 40,
+        talk: 40
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.6,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l12",
+      name: "\u4F53\u80B2\u9986\u5927\u578B\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 12,
+      weight: 6,
+      slot: 5,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 6477,
+      ticketBase: 7823,
+      goodsBase: 2341,
+      statGain: 12,
+      fanGain: 201,
+      reqFame: 1568,
+      reqStats: {
+        vocal: 51,
+        dance: 51,
+        acting: 42,
+        talk: 42
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.8,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l12",
+      name: "\u4F53\u80B2\u9986\u5927\u578B\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 12,
+      weight: 6,
+      slot: 6,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 7159,
+      ticketBase: 8741,
+      goodsBase: 2564,
+      statGain: 13,
+      fanGain: 227,
+      reqFame: 1773,
+      reqStats: {
+        vocal: 53,
+        dance: 53,
+        acting: 44,
+        talk: 43
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l12",
+      name: "\u4F53\u80B2\u9986\u5927\u578B\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 12,
+      weight: 6,
+      slot: 7,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 7841,
+      ticketBase: 9659,
+      goodsBase: 2786,
+      statGain: 14,
+      fanGain: 253,
+      reqFame: 1977,
+      reqStats: {
+        vocal: 55,
+        dance: 55,
+        acting: 46,
+        talk: 45
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l12",
+      name: "\u4F53\u80B2\u9986\u5927\u578B\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 12,
+      weight: 6,
+      slot: 8,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 8523,
+      ticketBase: 10577,
+      goodsBase: 3009,
+      statGain: 15,
+      fanGain: 279,
+      reqFame: 2182,
+      reqStats: {
+        vocal: 57,
+        dance: 57,
+        acting: 48,
+        talk: 46
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.4,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l12",
+      name: "\u4F53\u80B2\u9986\u5927\u578B\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 12,
+      weight: 6,
+      slot: 9,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 9205,
+      ticketBase: 11495,
+      goodsBase: 3232,
+      statGain: 16,
+      fanGain: 305,
+      reqFame: 2386,
+      reqStats: {
+        vocal: 59,
+        dance: 59,
+        acting: 50,
+        talk: 48
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.6,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l12",
+      name: "\u4F53\u80B2\u9986\u5927\u578B\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 12,
+      weight: 6,
+      slot: 10,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 9886,
+      ticketBase: 12414,
+      goodsBase: 3455,
+      statGain: 16,
+      fanGain: 332,
+      reqFame: 2591,
+      reqStats: {
+        vocal: 60,
+        dance: 60,
+        acting: 51,
+        talk: 50
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.8,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l12",
+      name: "\u4F53\u80B2\u9986\u5927\u578B\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 12,
+      weight: 6,
+      slot: 11,
+      slotName: "\u6B21\u538B\u8F74",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 10568,
+      ticketBase: 13332,
+      goodsBase: 3677,
+      statGain: 17,
+      fanGain: 358,
+      reqFame: 2795,
+      reqStats: {
+        vocal: 62,
+        dance: 62,
+        acting: 53,
+        talk: 51
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l12",
+      name: "\u4F53\u80B2\u9986\u5927\u578B\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 12,
+      weight: 6,
+      slot: 12,
+      slotName: "\u538B\u8F74",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 11250,
+      ticketBase: 14250,
+      goodsBase: 3900,
+      statGain: 18,
+      fanGain: 384,
+      reqFame: 3e3,
+      reqStats: {
+        vocal: 64,
+        dance: 64,
+        acting: 55,
+        talk: 53
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l15",
+      name: "\u57CE\u5E02\u5076\u50CF\u76DB\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 15,
+      weight: 6,
+      slot: 1,
+      slotName: "\u5F00\u573A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 5150,
+      ticketBase: 5650,
+      goodsBase: 1950,
+      statGain: 10,
+      fanGain: 123,
+      reqFame: 1e3,
+      reqStats: {
+        vocal: 51,
+        dance: 51,
+        acting: 41,
+        talk: 41
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l15",
+      name: "\u57CE\u5E02\u5076\u50CF\u76DB\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 15,
+      weight: 6,
+      slot: 2,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 5886,
+      ticketBase: 6632,
+      goodsBase: 2186,
+      statGain: 11,
+      fanGain: 149,
+      reqFame: 1214,
+      reqStats: {
+        vocal: 52,
+        dance: 52,
+        acting: 42,
+        talk: 42
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l15",
+      name: "\u57CE\u5E02\u5076\u50CF\u76DB\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 15,
+      weight: 6,
+      slot: 3,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 6621,
+      ticketBase: 7614,
+      goodsBase: 2421,
+      statGain: 11,
+      fanGain: 176,
+      reqFame: 1429,
+      reqStats: {
+        vocal: 54,
+        dance: 54,
+        acting: 44,
+        talk: 44
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.4,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l15",
+      name: "\u57CE\u5E02\u5076\u50CF\u76DB\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 15,
+      weight: 6,
+      slot: 4,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 7357,
+      ticketBase: 8596,
+      goodsBase: 2657,
+      statGain: 12,
+      fanGain: 202,
+      reqFame: 1643,
+      reqStats: {
+        vocal: 55,
+        dance: 55,
+        acting: 45,
+        talk: 45
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.6,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l15",
+      name: "\u57CE\u5E02\u5076\u50CF\u76DB\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 15,
+      weight: 6,
+      slot: 5,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 8093,
+      ticketBase: 9579,
+      goodsBase: 2893,
+      statGain: 13,
+      fanGain: 228,
+      reqFame: 1857,
+      reqStats: {
+        vocal: 57,
+        dance: 57,
+        acting: 47,
+        talk: 46
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.8,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l15",
+      name: "\u57CE\u5E02\u5076\u50CF\u76DB\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 15,
+      weight: 6,
+      slot: 6,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 8829,
+      ticketBase: 10561,
+      goodsBase: 3129,
+      statGain: 14,
+      fanGain: 255,
+      reqFame: 2071,
+      reqStats: {
+        vocal: 58,
+        dance: 58,
+        acting: 48,
+        talk: 47
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l15",
+      name: "\u57CE\u5E02\u5076\u50CF\u76DB\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 15,
+      weight: 6,
+      slot: 7,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 9564,
+      ticketBase: 11543,
+      goodsBase: 3364,
+      statGain: 14,
+      fanGain: 281,
+      reqFame: 2286,
+      reqStats: {
+        vocal: 60,
+        dance: 60,
+        acting: 50,
+        talk: 49
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l15",
+      name: "\u57CE\u5E02\u5076\u50CF\u76DB\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 15,
+      weight: 6,
+      slot: 8,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 10300,
+      ticketBase: 12525,
+      goodsBase: 3600,
+      statGain: 15,
+      fanGain: 308,
+      reqFame: 2500,
+      reqStats: {
+        vocal: 61,
+        dance: 61,
+        acting: 51,
+        talk: 50
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.4,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l15",
+      name: "\u57CE\u5E02\u5076\u50CF\u76DB\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 15,
+      weight: 6,
+      slot: 9,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 11036,
+      ticketBase: 13507,
+      goodsBase: 3836,
+      statGain: 16,
+      fanGain: 334,
+      reqFame: 2714,
+      reqStats: {
+        vocal: 62,
+        dance: 62,
+        acting: 52,
+        talk: 51
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.6,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l15",
+      name: "\u57CE\u5E02\u5076\u50CF\u76DB\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 15,
+      weight: 6,
+      slot: 10,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 11771,
+      ticketBase: 14489,
+      goodsBase: 4071,
+      statGain: 16,
+      fanGain: 360,
+      reqFame: 2929,
+      reqStats: {
+        vocal: 64,
+        dance: 64,
+        acting: 54,
+        talk: 53
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.8,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l15",
+      name: "\u57CE\u5E02\u5076\u50CF\u76DB\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 15,
+      weight: 6,
+      slot: 11,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 12507,
+      ticketBase: 15471,
+      goodsBase: 4307,
+      statGain: 17,
+      fanGain: 387,
+      reqFame: 3143,
+      reqStats: {
+        vocal: 65,
+        dance: 65,
+        acting: 55,
+        talk: 54
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l15",
+      name: "\u57CE\u5E02\u5076\u50CF\u76DB\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 15,
+      weight: 6,
+      slot: 12,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 13243,
+      ticketBase: 16454,
+      goodsBase: 4543,
+      statGain: 18,
+      fanGain: 413,
+      reqFame: 3357,
+      reqStats: {
+        vocal: 67,
+        dance: 67,
+        acting: 57,
+        talk: 55
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l15",
+      name: "\u57CE\u5E02\u5076\u50CF\u76DB\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 15,
+      weight: 6,
+      slot: 13,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 13979,
+      ticketBase: 17436,
+      goodsBase: 4779,
+      statGain: 19,
+      fanGain: 439,
+      reqFame: 3571,
+      reqStats: {
+        vocal: 68,
+        dance: 68,
+        acting: 58,
+        talk: 56
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3.4,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l15",
+      name: "\u57CE\u5E02\u5076\u50CF\u76DB\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 15,
+      weight: 6,
+      slot: 14,
+      slotName: "\u6B21\u538B\u8F74",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 14714,
+      ticketBase: 18418,
+      goodsBase: 5014,
+      statGain: 19,
+      fanGain: 466,
+      reqFame: 3786,
+      reqStats: {
+        vocal: 70,
+        dance: 70,
+        acting: 60,
+        talk: 58
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3.6,
+      festival: "none"
+    },
+    {
+      showId: "circuit-l15",
+      name: "\u57CE\u5E02\u5076\u50CF\u76DB\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "large",
+      slotCount: 15,
+      weight: 6,
+      slot: 15,
+      slotName: "\u538B\u8F74",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 15450,
+      ticketBase: 19400,
+      goodsBase: 5250,
+      statGain: 20,
+      fanGain: 492,
+      reqFame: 4e3,
+      reqStats: {
+        vocal: 71,
+        dance: 71,
+        acting: 61,
+        talk: 59
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3.8,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s12",
+      name: "\u4E2D\u65E5\u5076\u50CF\u4EA4\u6D41\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 12,
+      weight: 3,
+      slot: 1,
+      slotName: "\u5F00\u573A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 4350,
+      ticketBase: 4800,
+      goodsBase: 1700,
+      statGain: 10,
+      fanGain: 110,
+      reqFame: 850,
+      reqStats: {
+        vocal: 50,
+        dance: 50,
+        acting: 40,
+        talk: 40
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s12",
+      name: "\u4E2D\u65E5\u5076\u50CF\u4EA4\u6D41\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 12,
+      weight: 3,
+      slot: 2,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 5141,
+      ticketBase: 5859,
+      goodsBase: 1964,
+      statGain: 11,
+      fanGain: 140,
+      reqFame: 1082,
+      reqStats: {
+        vocal: 52,
+        dance: 52,
+        acting: 42,
+        talk: 42
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s12",
+      name: "\u4E2D\u65E5\u5076\u50CF\u4EA4\u6D41\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 12,
+      weight: 3,
+      slot: 3,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 5932,
+      ticketBase: 6918,
+      goodsBase: 2227,
+      statGain: 12,
+      fanGain: 170,
+      reqFame: 1314,
+      reqStats: {
+        vocal: 54,
+        dance: 54,
+        acting: 44,
+        talk: 43
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.4,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s12",
+      name: "\u4E2D\u65E5\u5076\u50CF\u4EA4\u6D41\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 12,
+      weight: 3,
+      slot: 4,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 6723,
+      ticketBase: 7977,
+      goodsBase: 2491,
+      statGain: 13,
+      fanGain: 200,
+      reqFame: 1545,
+      reqStats: {
+        vocal: 55,
+        dance: 55,
+        acting: 45,
+        talk: 45
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.6,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s12",
+      name: "\u4E2D\u65E5\u5076\u50CF\u4EA4\u6D41\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 12,
+      weight: 3,
+      slot: 5,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 7514,
+      ticketBase: 9036,
+      goodsBase: 2755,
+      statGain: 14,
+      fanGain: 230,
+      reqFame: 1777,
+      reqStats: {
+        vocal: 57,
+        dance: 57,
+        acting: 47,
+        talk: 47
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.8,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s12",
+      name: "\u4E2D\u65E5\u5076\u50CF\u4EA4\u6D41\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 12,
+      weight: 3,
+      slot: 6,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 8305,
+      ticketBase: 10095,
+      goodsBase: 3018,
+      statGain: 15,
+      fanGain: 260,
+      reqFame: 2009,
+      reqStats: {
+        vocal: 59,
+        dance: 59,
+        acting: 49,
+        talk: 48
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s12",
+      name: "\u4E2D\u65E5\u5076\u50CF\u4EA4\u6D41\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 12,
+      weight: 3,
+      slot: 7,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 9095,
+      ticketBase: 11155,
+      goodsBase: 3282,
+      statGain: 15,
+      fanGain: 290,
+      reqFame: 2241,
+      reqStats: {
+        vocal: 61,
+        dance: 61,
+        acting: 51,
+        talk: 50
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s12",
+      name: "\u4E2D\u65E5\u5076\u50CF\u4EA4\u6D41\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 12,
+      weight: 3,
+      slot: 8,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 9886,
+      ticketBase: 12214,
+      goodsBase: 3545,
+      statGain: 16,
+      fanGain: 320,
+      reqFame: 2473,
+      reqStats: {
+        vocal: 63,
+        dance: 63,
+        acting: 53,
+        talk: 51
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.4,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s12",
+      name: "\u4E2D\u65E5\u5076\u50CF\u4EA4\u6D41\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 12,
+      weight: 3,
+      slot: 9,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 10677,
+      ticketBase: 13273,
+      goodsBase: 3809,
+      statGain: 17,
+      fanGain: 350,
+      reqFame: 2705,
+      reqStats: {
+        vocal: 65,
+        dance: 65,
+        acting: 55,
+        talk: 53
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.6,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s12",
+      name: "\u4E2D\u65E5\u5076\u50CF\u4EA4\u6D41\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 12,
+      weight: 3,
+      slot: 10,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 11468,
+      ticketBase: 14332,
+      goodsBase: 4073,
+      statGain: 18,
+      fanGain: 380,
+      reqFame: 2936,
+      reqStats: {
+        vocal: 66,
+        dance: 66,
+        acting: 56,
+        talk: 55
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.8,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s12",
+      name: "\u4E2D\u65E5\u5076\u50CF\u4EA4\u6D41\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 12,
+      weight: 3,
+      slot: 11,
+      slotName: "\u6B21\u538B\u8F74",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 12259,
+      ticketBase: 15391,
+      goodsBase: 4336,
+      statGain: 19,
+      fanGain: 410,
+      reqFame: 3168,
+      reqStats: {
+        vocal: 68,
+        dance: 68,
+        acting: 58,
+        talk: 56
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s12",
+      name: "\u4E2D\u65E5\u5076\u50CF\u4EA4\u6D41\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 12,
+      weight: 3,
+      slot: 12,
+      slotName: "\u538B\u8F74",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 13050,
+      ticketBase: 16450,
+      goodsBase: 4600,
+      statGain: 20,
+      fanGain: 440,
+      reqFame: 3400,
+      reqStats: {
+        vocal: 70,
+        dance: 70,
+        acting: 60,
+        talk: 58
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s15",
+      name: "\u4E9A\u6D32\u5076\u50CF\u8054\u5408\u516C\u6F14",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 15,
+      weight: 3,
+      slot: 1,
+      slotName: "\u5F00\u573A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 5900,
+      ticketBase: 6450,
+      goodsBase: 2250,
+      statGain: 12,
+      fanGain: 142,
+      reqFame: 1150,
+      reqStats: {
+        vocal: 59,
+        dance: 59,
+        acting: 47,
+        talk: 47
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s15",
+      name: "\u4E9A\u6D32\u5076\u50CF\u8054\u5408\u516C\u6F14",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 15,
+      weight: 3,
+      slot: 2,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 6743,
+      ticketBase: 7568,
+      goodsBase: 2525,
+      statGain: 13,
+      fanGain: 172,
+      reqFame: 1396,
+      reqStats: {
+        vocal: 60,
+        dance: 60,
+        acting: 48,
+        talk: 48
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s15",
+      name: "\u4E9A\u6D32\u5076\u50CF\u8054\u5408\u516C\u6F14",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 15,
+      weight: 3,
+      slot: 3,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 7586,
+      ticketBase: 8686,
+      goodsBase: 2800,
+      statGain: 14,
+      fanGain: 203,
+      reqFame: 1643,
+      reqStats: {
+        vocal: 62,
+        dance: 62,
+        acting: 50,
+        talk: 50
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.4,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s15",
+      name: "\u4E9A\u6D32\u5076\u50CF\u8054\u5408\u516C\u6F14",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 15,
+      weight: 3,
+      slot: 4,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 8429,
+      ticketBase: 9804,
+      goodsBase: 3075,
+      statGain: 15,
+      fanGain: 233,
+      reqFame: 1889,
+      reqStats: {
+        vocal: 63,
+        dance: 63,
+        acting: 51,
+        talk: 51
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.6,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s15",
+      name: "\u4E9A\u6D32\u5076\u50CF\u8054\u5408\u516C\u6F14",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 15,
+      weight: 3,
+      slot: 5,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 9271,
+      ticketBase: 10921,
+      goodsBase: 3350,
+      statGain: 15,
+      fanGain: 264,
+      reqFame: 2136,
+      reqStats: {
+        vocal: 65,
+        dance: 65,
+        acting: 53,
+        talk: 52
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.8,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s15",
+      name: "\u4E9A\u6D32\u5076\u50CF\u8054\u5408\u516C\u6F14",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 15,
+      weight: 3,
+      slot: 6,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 10114,
+      ticketBase: 12039,
+      goodsBase: 3625,
+      statGain: 16,
+      fanGain: 294,
+      reqFame: 2382,
+      reqStats: {
+        vocal: 66,
+        dance: 66,
+        acting: 54,
+        talk: 53
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s15",
+      name: "\u4E9A\u6D32\u5076\u50CF\u8054\u5408\u516C\u6F14",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 15,
+      weight: 3,
+      slot: 7,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 10957,
+      ticketBase: 13157,
+      goodsBase: 3900,
+      statGain: 17,
+      fanGain: 325,
+      reqFame: 2629,
+      reqStats: {
+        vocal: 68,
+        dance: 68,
+        acting: 56,
+        talk: 55
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s15",
+      name: "\u4E9A\u6D32\u5076\u50CF\u8054\u5408\u516C\u6F14",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 15,
+      weight: 3,
+      slot: 8,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 11800,
+      ticketBase: 14275,
+      goodsBase: 4175,
+      statGain: 18,
+      fanGain: 355,
+      reqFame: 2875,
+      reqStats: {
+        vocal: 69,
+        dance: 69,
+        acting: 57,
+        talk: 56
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.4,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s15",
+      name: "\u4E9A\u6D32\u5076\u50CF\u8054\u5408\u516C\u6F14",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 15,
+      weight: 3,
+      slot: 9,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 12643,
+      ticketBase: 15393,
+      goodsBase: 4450,
+      statGain: 19,
+      fanGain: 385,
+      reqFame: 3121,
+      reqStats: {
+        vocal: 70,
+        dance: 70,
+        acting: 58,
+        talk: 57
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.6,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s15",
+      name: "\u4E9A\u6D32\u5076\u50CF\u8054\u5408\u516C\u6F14",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 15,
+      weight: 3,
+      slot: 10,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 13486,
+      ticketBase: 16511,
+      goodsBase: 4725,
+      statGain: 20,
+      fanGain: 416,
+      reqFame: 3368,
+      reqStats: {
+        vocal: 72,
+        dance: 72,
+        acting: 60,
+        talk: 59
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.8,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s15",
+      name: "\u4E9A\u6D32\u5076\u50CF\u8054\u5408\u516C\u6F14",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 15,
+      weight: 3,
+      slot: 11,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 14329,
+      ticketBase: 17629,
+      goodsBase: 5e3,
+      statGain: 21,
+      fanGain: 446,
+      reqFame: 3614,
+      reqStats: {
+        vocal: 73,
+        dance: 73,
+        acting: 61,
+        talk: 60
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s15",
+      name: "\u4E9A\u6D32\u5076\u50CF\u8054\u5408\u516C\u6F14",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 15,
+      weight: 3,
+      slot: 12,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 15171,
+      ticketBase: 18746,
+      goodsBase: 5275,
+      statGain: 21,
+      fanGain: 477,
+      reqFame: 3861,
+      reqStats: {
+        vocal: 75,
+        dance: 75,
+        acting: 63,
+        talk: 61
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s15",
+      name: "\u4E9A\u6D32\u5076\u50CF\u8054\u5408\u516C\u6F14",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 15,
+      weight: 3,
+      slot: 13,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 16014,
+      ticketBase: 19864,
+      goodsBase: 5550,
+      statGain: 22,
+      fanGain: 507,
+      reqFame: 4107,
+      reqStats: {
+        vocal: 76,
+        dance: 76,
+        acting: 64,
+        talk: 62
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3.4,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s15",
+      name: "\u4E9A\u6D32\u5076\u50CF\u8054\u5408\u516C\u6F14",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 15,
+      weight: 3,
+      slot: 14,
+      slotName: "\u6B21\u538B\u8F74",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 16857,
+      ticketBase: 20982,
+      goodsBase: 5825,
+      statGain: 23,
+      fanGain: 538,
+      reqFame: 4354,
+      reqStats: {
+        vocal: 78,
+        dance: 78,
+        acting: 66,
+        talk: 64
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3.6,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s15",
+      name: "\u4E9A\u6D32\u5076\u50CF\u8054\u5408\u516C\u6F14",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 15,
+      weight: 3,
+      slot: 15,
+      slotName: "\u538B\u8F74",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 17700,
+      ticketBase: 22100,
+      goodsBase: 6100,
+      statGain: 24,
+      fanGain: 568,
+      reqFame: 4600,
+      reqStats: {
+        vocal: 79,
+        dance: 79,
+        acting: 67,
+        talk: 65
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3.8,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s18",
+      name: "\u4E16\u754C\u5076\u50CF\u5CF0\u4F1A\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 18,
+      weight: 3,
+      slot: 1,
+      slotName: "\u5F00\u573A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 7650,
+      ticketBase: 8250,
+      goodsBase: 2850,
+      statGain: 13,
+      fanGain: 175,
+      reqFame: 1400,
+      reqStats: {
+        vocal: 67,
+        dance: 67,
+        acting: 53,
+        talk: 53
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s18",
+      name: "\u4E16\u754C\u5076\u50CF\u5CF0\u4F1A\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 18,
+      weight: 3,
+      slot: 2,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 8550,
+      ticketBase: 9429,
+      goodsBase: 3135,
+      statGain: 14,
+      fanGain: 206,
+      reqFame: 1647,
+      reqStats: {
+        vocal: 68,
+        dance: 68,
+        acting: 54,
+        talk: 54
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s18",
+      name: "\u4E16\u754C\u5076\u50CF\u5CF0\u4F1A\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 18,
+      weight: 3,
+      slot: 3,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 9450,
+      ticketBase: 10609,
+      goodsBase: 3421,
+      statGain: 15,
+      fanGain: 237,
+      reqFame: 1894,
+      reqStats: {
+        vocal: 69,
+        dance: 69,
+        acting: 55,
+        talk: 55
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.4,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s18",
+      name: "\u4E16\u754C\u5076\u50CF\u5CF0\u4F1A\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 18,
+      weight: 3,
+      slot: 4,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 10350,
+      ticketBase: 11788,
+      goodsBase: 3706,
+      statGain: 15,
+      fanGain: 268,
+      reqFame: 2141,
+      reqStats: {
+        vocal: 71,
+        dance: 71,
+        acting: 57,
+        talk: 56
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.6,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s18",
+      name: "\u4E16\u754C\u5076\u50CF\u5CF0\u4F1A\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 18,
+      weight: 3,
+      slot: 5,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 11250,
+      ticketBase: 12968,
+      goodsBase: 3991,
+      statGain: 16,
+      fanGain: 299,
+      reqFame: 2388,
+      reqStats: {
+        vocal: 72,
+        dance: 72,
+        acting: 58,
+        talk: 57
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.8,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s18",
+      name: "\u4E16\u754C\u5076\u50CF\u5CF0\u4F1A\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 18,
+      weight: 3,
+      slot: 6,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 12150,
+      ticketBase: 14147,
+      goodsBase: 4276,
+      statGain: 17,
+      fanGain: 329,
+      reqFame: 2635,
+      reqStats: {
+        vocal: 73,
+        dance: 73,
+        acting: 59,
+        talk: 58
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s18",
+      name: "\u4E16\u754C\u5076\u50CF\u5CF0\u4F1A\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 18,
+      weight: 3,
+      slot: 7,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 13050,
+      ticketBase: 15326,
+      goodsBase: 4562,
+      statGain: 18,
+      fanGain: 360,
+      reqFame: 2882,
+      reqStats: {
+        vocal: 74,
+        dance: 74,
+        acting: 60,
+        talk: 59
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s18",
+      name: "\u4E16\u754C\u5076\u50CF\u5CF0\u4F1A\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 18,
+      weight: 3,
+      slot: 8,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 13950,
+      ticketBase: 16506,
+      goodsBase: 4847,
+      statGain: 18,
+      fanGain: 391,
+      reqFame: 3129,
+      reqStats: {
+        vocal: 75,
+        dance: 75,
+        acting: 61,
+        talk: 60
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.4,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s18",
+      name: "\u4E16\u754C\u5076\u50CF\u5CF0\u4F1A\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 18,
+      weight: 3,
+      slot: 9,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 14850,
+      ticketBase: 17685,
+      goodsBase: 5132,
+      statGain: 19,
+      fanGain: 422,
+      reqFame: 3376,
+      reqStats: {
+        vocal: 76,
+        dance: 76,
+        acting: 62,
+        talk: 61
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.6,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s18",
+      name: "\u4E16\u754C\u5076\u50CF\u5CF0\u4F1A\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 18,
+      weight: 3,
+      slot: 10,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 15750,
+      ticketBase: 18865,
+      goodsBase: 5418,
+      statGain: 20,
+      fanGain: 453,
+      reqFame: 3624,
+      reqStats: {
+        vocal: 78,
+        dance: 78,
+        acting: 64,
+        talk: 63
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.8,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s18",
+      name: "\u4E16\u754C\u5076\u50CF\u5CF0\u4F1A\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 18,
+      weight: 3,
+      slot: 11,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 16650,
+      ticketBase: 20044,
+      goodsBase: 5703,
+      statGain: 21,
+      fanGain: 484,
+      reqFame: 3871,
+      reqStats: {
+        vocal: 79,
+        dance: 79,
+        acting: 65,
+        talk: 64
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s18",
+      name: "\u4E16\u754C\u5076\u50CF\u5CF0\u4F1A\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 18,
+      weight: 3,
+      slot: 12,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 17550,
+      ticketBase: 21224,
+      goodsBase: 5988,
+      statGain: 21,
+      fanGain: 515,
+      reqFame: 4118,
+      reqStats: {
+        vocal: 80,
+        dance: 80,
+        acting: 66,
+        talk: 65
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s18",
+      name: "\u4E16\u754C\u5076\u50CF\u5CF0\u4F1A\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 18,
+      weight: 3,
+      slot: 13,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 18450,
+      ticketBase: 22403,
+      goodsBase: 6274,
+      statGain: 22,
+      fanGain: 546,
+      reqFame: 4365,
+      reqStats: {
+        vocal: 81,
+        dance: 81,
+        acting: 67,
+        talk: 66
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3.4,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s18",
+      name: "\u4E16\u754C\u5076\u50CF\u5CF0\u4F1A\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 18,
+      weight: 3,
+      slot: 14,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 19350,
+      ticketBase: 23582,
+      goodsBase: 6559,
+      statGain: 23,
+      fanGain: 576,
+      reqFame: 4612,
+      reqStats: {
+        vocal: 82,
+        dance: 82,
+        acting: 68,
+        talk: 67
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3.6,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s18",
+      name: "\u4E16\u754C\u5076\u50CF\u5CF0\u4F1A\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 18,
+      weight: 3,
+      slot: 15,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 20250,
+      ticketBase: 24762,
+      goodsBase: 6844,
+      statGain: 24,
+      fanGain: 607,
+      reqFame: 4859,
+      reqStats: {
+        vocal: 83,
+        dance: 83,
+        acting: 69,
+        talk: 68
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3.8,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s18",
+      name: "\u4E16\u754C\u5076\u50CF\u5CF0\u4F1A\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 18,
+      weight: 3,
+      slot: 16,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 21150,
+      ticketBase: 25941,
+      goodsBase: 7129,
+      statGain: 24,
+      fanGain: 638,
+      reqFame: 5106,
+      reqStats: {
+        vocal: 85,
+        dance: 85,
+        acting: 71,
+        talk: 69
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 4,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s18",
+      name: "\u4E16\u754C\u5076\u50CF\u5CF0\u4F1A\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 18,
+      weight: 3,
+      slot: 17,
+      slotName: "\u6B21\u538B\u8F74",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 22050,
+      ticketBase: 27121,
+      goodsBase: 7415,
+      statGain: 25,
+      fanGain: 669,
+      reqFame: 5353,
+      reqStats: {
+        vocal: 86,
+        dance: 86,
+        acting: 72,
+        talk: 70
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 4.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-s18",
+      name: "\u4E16\u754C\u5076\u50CF\u5CF0\u4F1A\u62FC\u76D8",
+      type: "circuit",
+      tier: "sino",
+      slotCount: 18,
+      weight: 3,
+      slot: 18,
+      slotName: "\u538B\u8F74",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 22950,
+      ticketBase: 28300,
+      goodsBase: 7700,
+      statGain: 26,
+      fanGain: 700,
+      reqFame: 5600,
+      reqStats: {
+        vocal: 87,
+        dance: 87,
+        acting: 73,
+        talk: 71
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 4.4,
+      festival: "none"
+    },
+    {
+      showId: "circuit-m03",
+      name: "\u5468\u4E2D\u591C\u573A\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 3,
+      weight: 80,
+      slot: 1,
+      slotName: "\u5F00\u573A",
+      weekday: "midweek",
+      slots: 1,
+      baseFee: 400,
+      ticketBase: 450,
+      goodsBase: 200,
+      statGain: 2,
+      fanGain: 14,
+      reqFame: 100,
+      reqStats: {
+        vocal: 12,
+        dance: 12,
+        acting: 10,
+        talk: 10
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "circuit-m03",
+      name: "\u5468\u4E2D\u591C\u573A\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 3,
+      weight: 80,
+      slot: 2,
+      slotName: "\u6B21\u538B\u8F74",
+      weekday: "midweek",
+      slots: 1,
+      baseFee: 800,
+      ticketBase: 1e3,
+      goodsBase: 375,
+      statGain: 3,
+      fanGain: 35,
+      reqFame: 250,
+      reqStats: {
+        vocal: 22,
+        dance: 22,
+        acting: 20,
+        talk: 19
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-m03",
+      name: "\u5468\u4E2D\u591C\u573A\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 3,
+      weight: 80,
+      slot: 3,
+      slotName: "\u538B\u8F74",
+      weekday: "midweek",
+      slots: 1,
+      baseFee: 1200,
+      ticketBase: 1550,
+      goodsBase: 550,
+      statGain: 4,
+      fanGain: 56,
+      reqFame: 400,
+      reqStats: {
+        vocal: 32,
+        dance: 32,
+        acting: 30,
+        talk: 28
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.4,
+      festival: "none"
+    },
+    {
+      showId: "circuit-m05",
+      name: "\u5468\u4E2D\u5267\u573A\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 5,
+      weight: 80,
+      slot: 1,
+      slotName: "\u5F00\u573A",
+      weekday: "midweek",
+      slots: 1,
+      baseFee: 800,
+      ticketBase: 950,
+      goodsBase: 350,
+      statGain: 4,
+      fanGain: 26,
+      reqFame: 200,
+      reqStats: {
+        vocal: 18,
+        dance: 18,
+        acting: 14,
+        talk: 14
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "circuit-m05",
+      name: "\u5468\u4E2D\u5267\u573A\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 5,
+      weight: 80,
+      slot: 2,
+      slotName: "\u4E2D\u575A",
+      weekday: "midweek",
+      slots: 1,
+      baseFee: 1200,
+      ticketBase: 1525,
+      goodsBase: 500,
+      statGain: 5,
+      fanGain: 46,
+      reqFame: 350,
+      reqStats: {
+        vocal: 23,
+        dance: 23,
+        acting: 19,
+        talk: 19
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.2,
+      festival: "none"
+    },
+    {
+      showId: "circuit-m05",
+      name: "\u5468\u4E2D\u5267\u573A\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 5,
+      weight: 80,
+      slot: 3,
+      slotName: "\u4E2D\u575A",
+      weekday: "midweek",
+      slots: 1,
+      baseFee: 1600,
+      ticketBase: 2100,
+      goodsBase: 650,
+      statGain: 6,
+      fanGain: 65,
+      reqFame: 500,
+      reqStats: {
+        vocal: 28,
+        dance: 28,
+        acting: 24,
+        talk: 23
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.4,
+      festival: "none"
+    },
+    {
+      showId: "circuit-m05",
+      name: "\u5468\u4E2D\u5267\u573A\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 5,
+      weight: 80,
+      slot: 4,
+      slotName: "\u6B21\u538B\u8F74",
+      weekday: "midweek",
+      slots: 1,
+      baseFee: 2e3,
+      ticketBase: 2675,
+      goodsBase: 800,
+      statGain: 7,
+      fanGain: 85,
+      reqFame: 650,
+      reqStats: {
+        vocal: 33,
+        dance: 33,
+        acting: 29,
+        talk: 28
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.6,
+      festival: "none"
+    },
+    {
+      showId: "circuit-m05",
+      name: "\u5468\u4E2D\u5267\u573A\u62FC\u76D8",
+      type: "circuit",
+      tier: "normal",
+      slotCount: 5,
+      weight: 80,
+      slot: 5,
+      slotName: "\u538B\u8F74",
+      weekday: "midweek",
+      slots: 1,
+      baseFee: 2400,
+      ticketBase: 3250,
+      goodsBase: 950,
+      statGain: 8,
+      fanGain: 104,
+      reqFame: 800,
+      reqStats: {
+        vocal: 38,
+        dance: 38,
+        acting: 34,
+        talk: 32
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.8,
+      festival: "none"
+    },
+    {
+      showId: "festival-ny06",
+      name: "\u8DE8\u5E74\u6148\u5584\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 6,
+      weight: 4,
+      slot: 1,
+      slotName: "\u5F00\u573A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 1400,
+      ticketBase: 1550,
+      goodsBase: 550,
+      statGain: 5,
+      fanGain: 41,
+      reqFame: 300,
+      reqStats: {
+        vocal: 26,
+        dance: 26,
+        acting: 21,
+        talk: 21
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "newyear"
+    },
+    {
+      showId: "festival-ny06",
+      name: "\u8DE8\u5E74\u6148\u5584\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 6,
+      weight: 4,
+      slot: 2,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 1960,
+      ticketBase: 2300,
+      goodsBase: 740,
+      statGain: 6,
+      fanGain: 66,
+      reqFame: 480,
+      reqStats: {
+        vocal: 30,
+        dance: 30,
+        acting: 25,
+        talk: 25
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.2,
+      festival: "newyear"
+    },
+    {
+      showId: "festival-ny06",
+      name: "\u8DE8\u5E74\u6148\u5584\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 6,
+      weight: 4,
+      slot: 3,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 2520,
+      ticketBase: 3050,
+      goodsBase: 930,
+      statGain: 7,
+      fanGain: 90,
+      reqFame: 660,
+      reqStats: {
+        vocal: 34,
+        dance: 34,
+        acting: 29,
+        talk: 28
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.4,
+      festival: "newyear"
+    },
+    {
+      showId: "festival-ny06",
+      name: "\u8DE8\u5E74\u6148\u5584\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 6,
+      weight: 4,
+      slot: 4,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 3080,
+      ticketBase: 3800,
+      goodsBase: 1120,
+      statGain: 8,
+      fanGain: 115,
+      reqFame: 840,
+      reqStats: {
+        vocal: 38,
+        dance: 38,
+        acting: 33,
+        talk: 32
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.6,
+      festival: "newyear"
+    },
+    {
+      showId: "festival-ny06",
+      name: "\u8DE8\u5E74\u6148\u5584\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 6,
+      weight: 4,
+      slot: 5,
+      slotName: "\u6B21\u538B\u8F74",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 3640,
+      ticketBase: 4550,
+      goodsBase: 1310,
+      statGain: 9,
+      fanGain: 139,
+      reqFame: 1020,
+      reqStats: {
+        vocal: 42,
+        dance: 42,
+        acting: 37,
+        talk: 35
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.8,
+      festival: "newyear"
+    },
+    {
+      showId: "festival-ny06",
+      name: "\u8DE8\u5E74\u6148\u5584\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 6,
+      weight: 4,
+      slot: 6,
+      slotName: "\u538B\u8F74",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 4200,
+      ticketBase: 5300,
+      goodsBase: 1500,
+      statGain: 10,
+      fanGain: 164,
+      reqFame: 1200,
+      reqStats: {
+        vocal: 46,
+        dance: 46,
+        acting: 41,
+        talk: 39
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2,
+      festival: "newyear"
+    },
+    {
+      showId: "festival-su10",
+      name: "\u590F\u65E5\u796D\u7279\u522B\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 10,
+      weight: 4,
+      slot: 1,
+      slotName: "\u5F00\u573A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 2800,
+      ticketBase: 3150,
+      goodsBase: 1100,
+      statGain: 7,
+      fanGain: 75,
+      reqFame: 600,
+      reqStats: {
+        vocal: 37,
+        dance: 37,
+        acting: 30,
+        talk: 30
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "summer"
+    },
+    {
+      showId: "festival-su10",
+      name: "\u590F\u65E5\u796D\u7279\u522B\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 10,
+      weight: 4,
+      slot: 2,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 3422,
+      ticketBase: 4e3,
+      goodsBase: 1306,
+      statGain: 8,
+      fanGain: 100,
+      reqFame: 800,
+      reqStats: {
+        vocal: 39,
+        dance: 39,
+        acting: 32,
+        talk: 32
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.2,
+      festival: "summer"
+    },
+    {
+      showId: "festival-su10",
+      name: "\u590F\u65E5\u796D\u7279\u522B\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 10,
+      weight: 4,
+      slot: 3,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 4044,
+      ticketBase: 4850,
+      goodsBase: 1511,
+      statGain: 9,
+      fanGain: 125,
+      reqFame: 1e3,
+      reqStats: {
+        vocal: 41,
+        dance: 41,
+        acting: 34,
+        talk: 34
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.4,
+      festival: "summer"
+    },
+    {
+      showId: "festival-su10",
+      name: "\u590F\u65E5\u796D\u7279\u522B\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 10,
+      weight: 4,
+      slot: 4,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 4667,
+      ticketBase: 5700,
+      goodsBase: 1717,
+      statGain: 9,
+      fanGain: 150,
+      reqFame: 1200,
+      reqStats: {
+        vocal: 44,
+        dance: 44,
+        acting: 37,
+        talk: 36
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.6,
+      festival: "summer"
+    },
+    {
+      showId: "festival-su10",
+      name: "\u590F\u65E5\u796D\u7279\u522B\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 10,
+      weight: 4,
+      slot: 5,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 5289,
+      ticketBase: 6550,
+      goodsBase: 1922,
+      statGain: 10,
+      fanGain: 175,
+      reqFame: 1400,
+      reqStats: {
+        vocal: 46,
+        dance: 46,
+        acting: 39,
+        talk: 38
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.8,
+      festival: "summer"
+    },
+    {
+      showId: "festival-su10",
+      name: "\u590F\u65E5\u796D\u7279\u522B\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 10,
+      weight: 4,
+      slot: 6,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 5911,
+      ticketBase: 7400,
+      goodsBase: 2128,
+      statGain: 11,
+      fanGain: 200,
+      reqFame: 1600,
+      reqStats: {
+        vocal: 48,
+        dance: 48,
+        acting: 41,
+        talk: 40
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2,
+      festival: "summer"
+    },
+    {
+      showId: "festival-su10",
+      name: "\u590F\u65E5\u796D\u7279\u522B\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 10,
+      weight: 4,
+      slot: 7,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 6533,
+      ticketBase: 8250,
+      goodsBase: 2333,
+      statGain: 12,
+      fanGain: 225,
+      reqFame: 1800,
+      reqStats: {
+        vocal: 50,
+        dance: 50,
+        acting: 43,
+        talk: 42
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.2,
+      festival: "summer"
+    },
+    {
+      showId: "festival-su10",
+      name: "\u590F\u65E5\u796D\u7279\u522B\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 10,
+      weight: 4,
+      slot: 8,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 7156,
+      ticketBase: 9100,
+      goodsBase: 2539,
+      statGain: 12,
+      fanGain: 250,
+      reqFame: 2e3,
+      reqStats: {
+        vocal: 53,
+        dance: 53,
+        acting: 46,
+        talk: 44
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.4,
+      festival: "summer"
+    },
+    {
+      showId: "festival-su10",
+      name: "\u590F\u65E5\u796D\u7279\u522B\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 10,
+      weight: 4,
+      slot: 9,
+      slotName: "\u6B21\u538B\u8F74",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 7778,
+      ticketBase: 9950,
+      goodsBase: 2744,
+      statGain: 13,
+      fanGain: 275,
+      reqFame: 2200,
+      reqStats: {
+        vocal: 55,
+        dance: 55,
+        acting: 48,
+        talk: 46
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.6,
+      festival: "summer"
+    },
+    {
+      showId: "festival-su10",
+      name: "\u590F\u65E5\u796D\u7279\u522B\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 10,
+      weight: 4,
+      slot: 10,
+      slotName: "\u538B\u8F74",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 8400,
+      ticketBase: 10800,
+      goodsBase: 2950,
+      statGain: 14,
+      fanGain: 300,
+      reqFame: 2400,
+      reqStats: {
+        vocal: 57,
+        dance: 57,
+        acting: 50,
+        talk: 48
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.8,
+      festival: "summer"
+    },
+    {
+      showId: "festival-sp14",
+      name: "\u6625\u8282\u796D\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 14,
+      weight: 4,
+      slot: 1,
+      slotName: "\u5F00\u573A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 4500,
+      ticketBase: 4950,
+      goodsBase: 1700,
+      statGain: 9,
+      fanGain: 110,
+      reqFame: 900,
+      reqStats: {
+        vocal: 47,
+        dance: 47,
+        acting: 37,
+        talk: 37
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "spring"
+    },
+    {
+      showId: "festival-sp14",
+      name: "\u6625\u8282\u796D\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 14,
+      weight: 4,
+      slot: 2,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 5192,
+      ticketBase: 5877,
+      goodsBase: 1923,
+      statGain: 10,
+      fanGain: 135,
+      reqFame: 1108,
+      reqStats: {
+        vocal: 49,
+        dance: 49,
+        acting: 39,
+        talk: 38
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.2,
+      festival: "spring"
+    },
+    {
+      showId: "festival-sp14",
+      name: "\u6625\u8282\u796D\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 14,
+      weight: 4,
+      slot: 3,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 5885,
+      ticketBase: 6804,
+      goodsBase: 2146,
+      statGain: 10,
+      fanGain: 161,
+      reqFame: 1315,
+      reqStats: {
+        vocal: 50,
+        dance: 50,
+        acting: 40,
+        talk: 40
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.4,
+      festival: "spring"
+    },
+    {
+      showId: "festival-sp14",
+      name: "\u6625\u8282\u796D\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 14,
+      weight: 4,
+      slot: 4,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 6577,
+      ticketBase: 7731,
+      goodsBase: 2369,
+      statGain: 11,
+      fanGain: 186,
+      reqFame: 1523,
+      reqStats: {
+        vocal: 52,
+        dance: 52,
+        acting: 42,
+        talk: 41
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.6,
+      festival: "spring"
+    },
+    {
+      showId: "festival-sp14",
+      name: "\u6625\u8282\u796D\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 14,
+      weight: 4,
+      slot: 5,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 7269,
+      ticketBase: 8658,
+      goodsBase: 2592,
+      statGain: 12,
+      fanGain: 212,
+      reqFame: 1731,
+      reqStats: {
+        vocal: 53,
+        dance: 53,
+        acting: 43,
+        talk: 43
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.8,
+      festival: "spring"
+    },
+    {
+      showId: "festival-sp14",
+      name: "\u6625\u8282\u796D\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 14,
+      weight: 4,
+      slot: 6,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 7962,
+      ticketBase: 9585,
+      goodsBase: 2815,
+      statGain: 12,
+      fanGain: 237,
+      reqFame: 1938,
+      reqStats: {
+        vocal: 55,
+        dance: 55,
+        acting: 45,
+        talk: 44
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2,
+      festival: "spring"
+    },
+    {
+      showId: "festival-sp14",
+      name: "\u6625\u8282\u796D\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 14,
+      weight: 4,
+      slot: 7,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 8654,
+      ticketBase: 10512,
+      goodsBase: 3038,
+      statGain: 13,
+      fanGain: 262,
+      reqFame: 2146,
+      reqStats: {
+        vocal: 56,
+        dance: 56,
+        acting: 46,
+        talk: 45
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.2,
+      festival: "spring"
+    },
+    {
+      showId: "festival-sp14",
+      name: "\u6625\u8282\u796D\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 14,
+      weight: 4,
+      slot: 8,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 9346,
+      ticketBase: 11438,
+      goodsBase: 3262,
+      statGain: 14,
+      fanGain: 288,
+      reqFame: 2354,
+      reqStats: {
+        vocal: 58,
+        dance: 58,
+        acting: 48,
+        talk: 47
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.4,
+      festival: "spring"
+    },
+    {
+      showId: "festival-sp14",
+      name: "\u6625\u8282\u796D\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 14,
+      weight: 4,
+      slot: 9,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 10038,
+      ticketBase: 12365,
+      goodsBase: 3485,
+      statGain: 15,
+      fanGain: 313,
+      reqFame: 2562,
+      reqStats: {
+        vocal: 59,
+        dance: 59,
+        acting: 49,
+        talk: 48
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.6,
+      festival: "spring"
+    },
+    {
+      showId: "festival-sp14",
+      name: "\u6625\u8282\u796D\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 14,
+      weight: 4,
+      slot: 10,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 10731,
+      ticketBase: 13292,
+      goodsBase: 3708,
+      statGain: 15,
+      fanGain: 338,
+      reqFame: 2769,
+      reqStats: {
+        vocal: 61,
+        dance: 61,
+        acting: 51,
+        talk: 49
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.8,
+      festival: "spring"
+    },
+    {
+      showId: "festival-sp14",
+      name: "\u6625\u8282\u796D\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 14,
+      weight: 4,
+      slot: 11,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 11423,
+      ticketBase: 14219,
+      goodsBase: 3931,
+      statGain: 16,
+      fanGain: 364,
+      reqFame: 2977,
+      reqStats: {
+        vocal: 62,
+        dance: 62,
+        acting: 52,
+        talk: 51
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3,
+      festival: "spring"
+    },
+    {
+      showId: "festival-sp14",
+      name: "\u6625\u8282\u796D\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 14,
+      weight: 4,
+      slot: 12,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 12115,
+      ticketBase: 15146,
+      goodsBase: 4154,
+      statGain: 17,
+      fanGain: 389,
+      reqFame: 3185,
+      reqStats: {
+        vocal: 64,
+        dance: 64,
+        acting: 54,
+        talk: 52
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3.2,
+      festival: "spring"
+    },
+    {
+      showId: "festival-sp14",
+      name: "\u6625\u8282\u796D\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 14,
+      weight: 4,
+      slot: 13,
+      slotName: "\u6B21\u538B\u8F74",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 12808,
+      ticketBase: 16073,
+      goodsBase: 4377,
+      statGain: 17,
+      fanGain: 415,
+      reqFame: 3392,
+      reqStats: {
+        vocal: 65,
+        dance: 65,
+        acting: 55,
+        talk: 54
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3.4,
+      festival: "spring"
+    },
+    {
+      showId: "festival-sp14",
+      name: "\u6625\u8282\u796D\u5178\u62FC\u76D8",
+      type: "circuit",
+      tier: "festival",
+      slotCount: 14,
+      weight: 4,
+      slot: 14,
+      slotName: "\u538B\u8F74",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 13500,
+      ticketBase: 17e3,
+      goodsBase: 4600,
+      statGain: 18,
+      fanGain: 440,
+      reqFame: 3600,
+      reqStats: {
+        vocal: 67,
+        dance: 67,
+        acting: 57,
+        talk: 55
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.26,
+        gachi: 0.18,
+        music: 0.18,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3.6,
+      festival: "spring"
+    },
+    {
+      showId: "birthday-01",
+      name: "\u751F\u65E5\u7EAA\u5FF5\u516C\u6F14",
+      type: "circuit",
+      tier: "birthday",
+      slotCount: 1,
+      weight: 2,
+      slot: 1,
+      slotName: "\u4E3B\u4F4D",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 450,
+      ticketBase: 550,
+      goodsBase: 200,
+      statGain: 3,
+      fanGain: 17,
+      reqFame: 100,
+      reqStats: {
+        vocal: 15,
+        dance: 15,
+        acting: 12,
+        talk: 12
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.28,
+        gachi: 0.3,
+        music: 0.14,
+        live: 0.12,
+        growth: 0.08,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "birthday-03",
+      name: "\u751F\u65E5\u7279\u522B\u821E\u53F0",
+      type: "circuit",
+      tier: "birthday",
+      slotCount: 3,
+      weight: 2,
+      slot: 1,
+      slotName: "\u5F00\u573A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 500,
+      ticketBase: 600,
+      goodsBase: 200,
+      statGain: 3,
+      fanGain: 18,
+      reqFame: 150,
+      reqStats: {
+        vocal: 15,
+        dance: 15,
+        acting: 12,
+        talk: 12
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.28,
+        gachi: 0.3,
+        music: 0.14,
+        live: 0.12,
+        growth: 0.08,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "birthday-03",
+      name: "\u751F\u65E5\u7279\u522B\u821E\u53F0",
+      type: "circuit",
+      tier: "birthday",
+      slotCount: 3,
+      weight: 2,
+      slot: 2,
+      slotName: "\u6B21\u538B\u8F74",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 1e3,
+      ticketBase: 1325,
+      goodsBase: 375,
+      statGain: 5,
+      fanGain: 45,
+      reqFame: 375,
+      reqStats: {
+        vocal: 25,
+        dance: 25,
+        acting: 22,
+        talk: 21
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.28,
+        gachi: 0.3,
+        music: 0.14,
+        live: 0.12,
+        growth: 0.08,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.2,
+      festival: "none"
+    },
+    {
+      showId: "birthday-03",
+      name: "\u751F\u65E5\u7279\u522B\u821E\u53F0",
+      type: "circuit",
+      tier: "birthday",
+      slotCount: 3,
+      weight: 2,
+      slot: 3,
+      slotName: "\u538B\u8F74",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 1500,
+      ticketBase: 2050,
+      goodsBase: 550,
+      statGain: 6,
+      fanGain: 72,
+      reqFame: 600,
+      reqStats: {
+        vocal: 35,
+        dance: 35,
+        acting: 32,
+        talk: 30
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.28,
+        gachi: 0.3,
+        music: 0.14,
+        live: 0.12,
+        growth: 0.08,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.4,
+      festival: "none"
+    },
+    {
+      showId: "graduate-05",
+      name: "\u524D\u8F88\u6BD5\u4E1A\u516C\u6F14",
+      type: "circuit",
+      tier: "graduate",
+      slotCount: 5,
+      weight: 2,
+      slot: 1,
+      slotName: "\u5F00\u573A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 950,
+      ticketBase: 1100,
+      goodsBase: 400,
+      statGain: 4,
+      fanGain: 30,
+      reqFame: 250,
+      reqStats: {
+        vocal: 20,
+        dance: 20,
+        acting: 16,
+        talk: 16
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.3,
+        gachi: 0.24,
+        music: 0.16,
+        live: 0.1,
+        growth: 0.12,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "graduate-05",
+      name: "\u524D\u8F88\u6BD5\u4E1A\u516C\u6F14",
+      type: "circuit",
+      tier: "graduate",
+      slotCount: 5,
+      weight: 2,
+      slot: 2,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 1425,
+      ticketBase: 1763,
+      goodsBase: 575,
+      statGain: 5,
+      fanGain: 53,
+      reqFame: 438,
+      reqStats: {
+        vocal: 25,
+        dance: 25,
+        acting: 21,
+        talk: 21
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.3,
+        gachi: 0.24,
+        music: 0.16,
+        live: 0.1,
+        growth: 0.12,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.2,
+      festival: "none"
+    },
+    {
+      showId: "graduate-05",
+      name: "\u524D\u8F88\u6BD5\u4E1A\u516C\u6F14",
+      type: "circuit",
+      tier: "graduate",
+      slotCount: 5,
+      weight: 2,
+      slot: 3,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 1900,
+      ticketBase: 2425,
+      goodsBase: 750,
+      statGain: 6,
+      fanGain: 75,
+      reqFame: 625,
+      reqStats: {
+        vocal: 30,
+        dance: 30,
+        acting: 26,
+        talk: 25
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.3,
+        gachi: 0.24,
+        music: 0.16,
+        live: 0.1,
+        growth: 0.12,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.4,
+      festival: "none"
+    },
+    {
+      showId: "graduate-05",
+      name: "\u524D\u8F88\u6BD5\u4E1A\u516C\u6F14",
+      type: "circuit",
+      tier: "graduate",
+      slotCount: 5,
+      weight: 2,
+      slot: 4,
+      slotName: "\u6B21\u538B\u8F74",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 2375,
+      ticketBase: 3088,
+      goodsBase: 925,
+      statGain: 7,
+      fanGain: 98,
+      reqFame: 813,
+      reqStats: {
+        vocal: 35,
+        dance: 35,
+        acting: 31,
+        talk: 30
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.3,
+        gachi: 0.24,
+        music: 0.16,
+        live: 0.1,
+        growth: 0.12,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.6,
+      festival: "none"
+    },
+    {
+      showId: "graduate-05",
+      name: "\u524D\u8F88\u6BD5\u4E1A\u516C\u6F14",
+      type: "circuit",
+      tier: "graduate",
+      slotCount: 5,
+      weight: 2,
+      slot: 5,
+      slotName: "\u538B\u8F74",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 2850,
+      ticketBase: 3750,
+      goodsBase: 1100,
+      statGain: 8,
+      fanGain: 120,
+      reqFame: 1e3,
+      reqStats: {
+        vocal: 40,
+        dance: 40,
+        acting: 36,
+        talk: 34
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.3,
+        gachi: 0.24,
+        music: 0.16,
+        live: 0.1,
+        growth: 0.12,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.8,
+      festival: "none"
+    },
+    {
+      showId: "graduate-08",
+      name: "\u6BD5\u4E1A\u7EAA\u5FF5\u62FC\u76D8",
+      type: "circuit",
+      tier: "graduate",
+      slotCount: 8,
+      weight: 2,
+      slot: 1,
+      slotName: "\u5F00\u573A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 1800,
+      ticketBase: 2050,
+      goodsBase: 750,
+      statGain: 6,
+      fanGain: 51,
+      reqFame: 400,
+      reqStats: {
+        vocal: 28,
+        dance: 28,
+        acting: 22,
+        talk: 22
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.3,
+        gachi: 0.24,
+        music: 0.16,
+        live: 0.1,
+        growth: 0.12,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "graduate-08",
+      name: "\u6BD5\u4E1A\u7EAA\u5FF5\u62FC\u76D8",
+      type: "circuit",
+      tier: "graduate",
+      slotCount: 8,
+      weight: 2,
+      slot: 2,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 2314,
+      ticketBase: 2764,
+      goodsBase: 936,
+      statGain: 7,
+      fanGain: 73,
+      reqFame: 571,
+      reqStats: {
+        vocal: 31,
+        dance: 31,
+        acting: 25,
+        talk: 25
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.3,
+        gachi: 0.24,
+        music: 0.16,
+        live: 0.1,
+        growth: 0.12,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.2,
+      festival: "none"
+    },
+    {
+      showId: "graduate-08",
+      name: "\u6BD5\u4E1A\u7EAA\u5FF5\u62FC\u76D8",
+      type: "circuit",
+      tier: "graduate",
+      slotCount: 8,
+      weight: 2,
+      slot: 3,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 2829,
+      ticketBase: 3479,
+      goodsBase: 1121,
+      statGain: 8,
+      fanGain: 95,
+      reqFame: 743,
+      reqStats: {
+        vocal: 34,
+        dance: 34,
+        acting: 28,
+        talk: 27
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.3,
+        gachi: 0.24,
+        music: 0.16,
+        live: 0.1,
+        growth: 0.12,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.4,
+      festival: "none"
+    },
+    {
+      showId: "graduate-08",
+      name: "\u6BD5\u4E1A\u7EAA\u5FF5\u62FC\u76D8",
+      type: "circuit",
+      tier: "graduate",
+      slotCount: 8,
+      weight: 2,
+      slot: 4,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 3343,
+      ticketBase: 4193,
+      goodsBase: 1307,
+      statGain: 9,
+      fanGain: 117,
+      reqFame: 914,
+      reqStats: {
+        vocal: 37,
+        dance: 37,
+        acting: 31,
+        talk: 30
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.3,
+        gachi: 0.24,
+        music: 0.16,
+        live: 0.1,
+        growth: 0.12,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.6,
+      festival: "none"
+    },
+    {
+      showId: "graduate-08",
+      name: "\u6BD5\u4E1A\u7EAA\u5FF5\u62FC\u76D8",
+      type: "circuit",
+      tier: "graduate",
+      slotCount: 8,
+      weight: 2,
+      slot: 5,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 3857,
+      ticketBase: 4907,
+      goodsBase: 1493,
+      statGain: 9,
+      fanGain: 138,
+      reqFame: 1086,
+      reqStats: {
+        vocal: 39,
+        dance: 39,
+        acting: 33,
+        talk: 32
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.3,
+        gachi: 0.24,
+        music: 0.16,
+        live: 0.1,
+        growth: 0.12,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.8,
+      festival: "none"
+    },
+    {
+      showId: "graduate-08",
+      name: "\u6BD5\u4E1A\u7EAA\u5FF5\u62FC\u76D8",
+      type: "circuit",
+      tier: "graduate",
+      slotCount: 8,
+      weight: 2,
+      slot: 6,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 4371,
+      ticketBase: 5621,
+      goodsBase: 1679,
+      statGain: 10,
+      fanGain: 160,
+      reqFame: 1257,
+      reqStats: {
+        vocal: 42,
+        dance: 42,
+        acting: 36,
+        talk: 35
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.3,
+        gachi: 0.24,
+        music: 0.16,
+        live: 0.1,
+        growth: 0.12,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2,
+      festival: "none"
+    },
+    {
+      showId: "graduate-08",
+      name: "\u6BD5\u4E1A\u7EAA\u5FF5\u62FC\u76D8",
+      type: "circuit",
+      tier: "graduate",
+      slotCount: 8,
+      weight: 2,
+      slot: 7,
+      slotName: "\u6B21\u538B\u8F74",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 4886,
+      ticketBase: 6336,
+      goodsBase: 1864,
+      statGain: 11,
+      fanGain: 182,
+      reqFame: 1429,
+      reqStats: {
+        vocal: 45,
+        dance: 45,
+        acting: 39,
+        talk: 37
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.3,
+        gachi: 0.24,
+        music: 0.16,
+        live: 0.1,
+        growth: 0.12,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.2,
+      festival: "none"
+    },
+    {
+      showId: "graduate-08",
+      name: "\u6BD5\u4E1A\u7EAA\u5FF5\u62FC\u76D8",
+      type: "circuit",
+      tier: "graduate",
+      slotCount: 8,
+      weight: 2,
+      slot: 8,
+      slotName: "\u538B\u8F74",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 5400,
+      ticketBase: 7050,
+      goodsBase: 2050,
+      statGain: 12,
+      fanGain: 204,
+      reqFame: 1600,
+      reqStats: {
+        vocal: 48,
+        dance: 48,
+        acting: 42,
+        talk: 40
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.3,
+        gachi: 0.24,
+        music: 0.16,
+        live: 0.1,
+        growth: 0.12,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.4,
+      festival: "none"
+    },
+    {
+      showId: "debut-10",
+      name: "\u51FA\u9053\u7EAA\u5FF5\u516C\u6F14",
+      type: "circuit",
+      tier: "debut",
+      slotCount: 10,
+      weight: 3,
+      slot: 1,
+      slotName: "\u5F00\u573A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 3700,
+      ticketBase: 4100,
+      goodsBase: 1450,
+      statGain: 10,
+      fanGain: 98,
+      reqFame: 750,
+      reqStats: {
+        vocal: 48,
+        dance: 48,
+        acting: 39,
+        talk: 39
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.34,
+        gachi: 0.2,
+        music: 0.16,
+        live: 0.12,
+        growth: 0.1,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "debut-10",
+      name: "\u51FA\u9053\u7EAA\u5FF5\u516C\u6F14",
+      type: "circuit",
+      tier: "debut",
+      slotCount: 10,
+      weight: 3,
+      slot: 2,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 4522,
+      ticketBase: 5206,
+      goodsBase: 1722,
+      statGain: 11,
+      fanGain: 131,
+      reqFame: 1e3,
+      reqStats: {
+        vocal: 50,
+        dance: 50,
+        acting: 41,
+        talk: 41
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.34,
+        gachi: 0.2,
+        music: 0.16,
+        live: 0.12,
+        growth: 0.1,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.2,
+      festival: "none"
+    },
+    {
+      showId: "debut-10",
+      name: "\u51FA\u9053\u7EAA\u5FF5\u516C\u6F14",
+      type: "circuit",
+      tier: "debut",
+      slotCount: 10,
+      weight: 3,
+      slot: 3,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 5344,
+      ticketBase: 6311,
+      goodsBase: 1994,
+      statGain: 12,
+      fanGain: 163,
+      reqFame: 1250,
+      reqStats: {
+        vocal: 52,
+        dance: 52,
+        acting: 43,
+        talk: 43
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.34,
+        gachi: 0.2,
+        music: 0.16,
+        live: 0.12,
+        growth: 0.1,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.4,
+      festival: "none"
+    },
+    {
+      showId: "debut-10",
+      name: "\u51FA\u9053\u7EAA\u5FF5\u516C\u6F14",
+      type: "circuit",
+      tier: "debut",
+      slotCount: 10,
+      weight: 3,
+      slot: 4,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 6167,
+      ticketBase: 7417,
+      goodsBase: 2267,
+      statGain: 13,
+      fanGain: 196,
+      reqFame: 1500,
+      reqStats: {
+        vocal: 55,
+        dance: 55,
+        acting: 46,
+        talk: 45
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.34,
+        gachi: 0.2,
+        music: 0.16,
+        live: 0.12,
+        growth: 0.1,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.6,
+      festival: "none"
+    },
+    {
+      showId: "debut-10",
+      name: "\u51FA\u9053\u7EAA\u5FF5\u516C\u6F14",
+      type: "circuit",
+      tier: "debut",
+      slotCount: 10,
+      weight: 3,
+      slot: 5,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 6989,
+      ticketBase: 8522,
+      goodsBase: 2539,
+      statGain: 14,
+      fanGain: 229,
+      reqFame: 1750,
+      reqStats: {
+        vocal: 57,
+        dance: 57,
+        acting: 48,
+        talk: 47
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.34,
+        gachi: 0.2,
+        music: 0.16,
+        live: 0.12,
+        growth: 0.1,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.8,
+      festival: "none"
+    },
+    {
+      showId: "debut-10",
+      name: "\u51FA\u9053\u7EAA\u5FF5\u516C\u6F14",
+      type: "circuit",
+      tier: "debut",
+      slotCount: 10,
+      weight: 3,
+      slot: 6,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 7811,
+      ticketBase: 9628,
+      goodsBase: 2811,
+      statGain: 16,
+      fanGain: 261,
+      reqFame: 2e3,
+      reqStats: {
+        vocal: 59,
+        dance: 59,
+        acting: 50,
+        talk: 49
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.34,
+        gachi: 0.2,
+        music: 0.16,
+        live: 0.12,
+        growth: 0.1,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2,
+      festival: "none"
+    },
+    {
+      showId: "debut-10",
+      name: "\u51FA\u9053\u7EAA\u5FF5\u516C\u6F14",
+      type: "circuit",
+      tier: "debut",
+      slotCount: 10,
+      weight: 3,
+      slot: 7,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 8633,
+      ticketBase: 10733,
+      goodsBase: 3083,
+      statGain: 17,
+      fanGain: 294,
+      reqFame: 2250,
+      reqStats: {
+        vocal: 61,
+        dance: 61,
+        acting: 52,
+        talk: 51
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.34,
+        gachi: 0.2,
+        music: 0.16,
+        live: 0.12,
+        growth: 0.1,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.2,
+      festival: "none"
+    },
+    {
+      showId: "debut-10",
+      name: "\u51FA\u9053\u7EAA\u5FF5\u516C\u6F14",
+      type: "circuit",
+      tier: "debut",
+      slotCount: 10,
+      weight: 3,
+      slot: 8,
+      slotName: "\u4E2D\u575A",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 9456,
+      ticketBase: 11839,
+      goodsBase: 3356,
+      statGain: 18,
+      fanGain: 327,
+      reqFame: 2500,
+      reqStats: {
+        vocal: 64,
+        dance: 64,
+        acting: 55,
+        talk: 53
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.34,
+        gachi: 0.2,
+        music: 0.16,
+        live: 0.12,
+        growth: 0.1,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.4,
+      festival: "none"
+    },
+    {
+      showId: "debut-10",
+      name: "\u51FA\u9053\u7EAA\u5FF5\u516C\u6F14",
+      type: "circuit",
+      tier: "debut",
+      slotCount: 10,
+      weight: 3,
+      slot: 9,
+      slotName: "\u6B21\u538B\u8F74",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 10278,
+      ticketBase: 12944,
+      goodsBase: 3628,
+      statGain: 19,
+      fanGain: 359,
+      reqFame: 2750,
+      reqStats: {
+        vocal: 66,
+        dance: 66,
+        acting: 57,
+        talk: 55
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.34,
+        gachi: 0.2,
+        music: 0.16,
+        live: 0.12,
+        growth: 0.1,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.6,
+      festival: "none"
+    },
+    {
+      showId: "debut-10",
+      name: "\u51FA\u9053\u7EAA\u5FF5\u516C\u6F14",
+      type: "circuit",
+      tier: "debut",
+      slotCount: 10,
+      weight: 3,
+      slot: 10,
+      slotName: "\u538B\u8F74",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 11100,
+      ticketBase: 14050,
+      goodsBase: 3900,
+      statGain: 20,
+      fanGain: 392,
+      reqFame: 3e3,
+      reqStats: {
+        vocal: 68,
+        dance: 68,
+        acting: 59,
+        talk: 57
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.34,
+        gachi: 0.2,
+        music: 0.16,
+        live: 0.12,
+        growth: 0.1,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.8,
+      festival: "none"
+    },
+    {
+      showId: "debut-15",
+      name: "\u51FA\u9053\u7EAA\u5FF5\u76DB\u5178",
+      type: "circuit",
+      tier: "debut",
+      slotCount: 15,
+      weight: 3,
+      slot: 1,
+      slotName: "\u5F00\u573A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 6500,
+      ticketBase: 7100,
+      goodsBase: 2450,
+      statGain: 13,
+      fanGain: 155,
+      reqFame: 1250,
+      reqStats: {
+        vocal: 64,
+        dance: 64,
+        acting: 51,
+        talk: 51
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.34,
+        gachi: 0.2,
+        music: 0.16,
+        live: 0.12,
+        growth: 0.1,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "debut-15",
+      name: "\u51FA\u9053\u7EAA\u5FF5\u76DB\u5178",
+      type: "circuit",
+      tier: "debut",
+      slotCount: 15,
+      weight: 3,
+      slot: 2,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 7429,
+      ticketBase: 8332,
+      goodsBase: 2746,
+      statGain: 14,
+      fanGain: 188,
+      reqFame: 1518,
+      reqStats: {
+        vocal: 65,
+        dance: 65,
+        acting: 52,
+        talk: 52
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.34,
+        gachi: 0.2,
+        music: 0.16,
+        live: 0.12,
+        growth: 0.1,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.2,
+      festival: "none"
+    },
+    {
+      showId: "debut-15",
+      name: "\u51FA\u9053\u7EAA\u5FF5\u76DB\u5178",
+      type: "circuit",
+      tier: "debut",
+      slotCount: 15,
+      weight: 3,
+      slot: 3,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 8357,
+      ticketBase: 9564,
+      goodsBase: 3043,
+      statGain: 15,
+      fanGain: 221,
+      reqFame: 1786,
+      reqStats: {
+        vocal: 67,
+        dance: 67,
+        acting: 54,
+        talk: 54
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.34,
+        gachi: 0.2,
+        music: 0.16,
+        live: 0.12,
+        growth: 0.1,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.4,
+      festival: "none"
+    },
+    {
+      showId: "debut-15",
+      name: "\u51FA\u9053\u7EAA\u5FF5\u76DB\u5178",
+      type: "circuit",
+      tier: "debut",
+      slotCount: 15,
+      weight: 3,
+      slot: 4,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 9286,
+      ticketBase: 10796,
+      goodsBase: 3339,
+      statGain: 16,
+      fanGain: 255,
+      reqFame: 2054,
+      reqStats: {
+        vocal: 68,
+        dance: 68,
+        acting: 55,
+        talk: 55
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.34,
+        gachi: 0.2,
+        music: 0.16,
+        live: 0.12,
+        growth: 0.1,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.6,
+      festival: "none"
+    },
+    {
+      showId: "debut-15",
+      name: "\u51FA\u9053\u7EAA\u5FF5\u76DB\u5178",
+      type: "circuit",
+      tier: "debut",
+      slotCount: 15,
+      weight: 3,
+      slot: 5,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 10214,
+      ticketBase: 12029,
+      goodsBase: 3636,
+      statGain: 17,
+      fanGain: 288,
+      reqFame: 2321,
+      reqStats: {
+        vocal: 70,
+        dance: 70,
+        acting: 57,
+        talk: 56
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.34,
+        gachi: 0.2,
+        music: 0.16,
+        live: 0.12,
+        growth: 0.1,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1.8,
+      festival: "none"
+    },
+    {
+      showId: "debut-15",
+      name: "\u51FA\u9053\u7EAA\u5FF5\u76DB\u5178",
+      type: "circuit",
+      tier: "debut",
+      slotCount: 15,
+      weight: 3,
+      slot: 6,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 11143,
+      ticketBase: 13261,
+      goodsBase: 3932,
+      statGain: 18,
+      fanGain: 321,
+      reqFame: 2589,
+      reqStats: {
+        vocal: 71,
+        dance: 71,
+        acting: 58,
+        talk: 57
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.34,
+        gachi: 0.2,
+        music: 0.16,
+        live: 0.12,
+        growth: 0.1,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2,
+      festival: "none"
+    },
+    {
+      showId: "debut-15",
+      name: "\u51FA\u9053\u7EAA\u5FF5\u76DB\u5178",
+      type: "circuit",
+      tier: "debut",
+      slotCount: 15,
+      weight: 3,
+      slot: 7,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 12071,
+      ticketBase: 14493,
+      goodsBase: 4229,
+      statGain: 19,
+      fanGain: 354,
+      reqFame: 2857,
+      reqStats: {
+        vocal: 73,
+        dance: 73,
+        acting: 60,
+        talk: 59
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.34,
+        gachi: 0.2,
+        music: 0.16,
+        live: 0.12,
+        growth: 0.1,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.2,
+      festival: "none"
+    },
+    {
+      showId: "debut-15",
+      name: "\u51FA\u9053\u7EAA\u5FF5\u76DB\u5178",
+      type: "circuit",
+      tier: "debut",
+      slotCount: 15,
+      weight: 3,
+      slot: 8,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 13e3,
+      ticketBase: 15725,
+      goodsBase: 4525,
+      statGain: 20,
+      fanGain: 388,
+      reqFame: 3125,
+      reqStats: {
+        vocal: 74,
+        dance: 74,
+        acting: 61,
+        talk: 60
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.34,
+        gachi: 0.2,
+        music: 0.16,
+        live: 0.12,
+        growth: 0.1,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.4,
+      festival: "none"
+    },
+    {
+      showId: "debut-15",
+      name: "\u51FA\u9053\u7EAA\u5FF5\u76DB\u5178",
+      type: "circuit",
+      tier: "debut",
+      slotCount: 15,
+      weight: 3,
+      slot: 9,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 13929,
+      ticketBase: 16957,
+      goodsBase: 4821,
+      statGain: 20,
+      fanGain: 421,
+      reqFame: 3393,
+      reqStats: {
+        vocal: 75,
+        dance: 75,
+        acting: 62,
+        talk: 61
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.34,
+        gachi: 0.2,
+        music: 0.16,
+        live: 0.12,
+        growth: 0.1,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.6,
+      festival: "none"
+    },
+    {
+      showId: "debut-15",
+      name: "\u51FA\u9053\u7EAA\u5FF5\u76DB\u5178",
+      type: "circuit",
+      tier: "debut",
+      slotCount: 15,
+      weight: 3,
+      slot: 10,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 14857,
+      ticketBase: 18189,
+      goodsBase: 5118,
+      statGain: 21,
+      fanGain: 454,
+      reqFame: 3661,
+      reqStats: {
+        vocal: 77,
+        dance: 77,
+        acting: 64,
+        talk: 63
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.34,
+        gachi: 0.2,
+        music: 0.16,
+        live: 0.12,
+        growth: 0.1,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 2.8,
+      festival: "none"
+    },
+    {
+      showId: "debut-15",
+      name: "\u51FA\u9053\u7EAA\u5FF5\u76DB\u5178",
+      type: "circuit",
+      tier: "debut",
+      slotCount: 15,
+      weight: 3,
+      slot: 11,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 15786,
+      ticketBase: 19421,
+      goodsBase: 5414,
+      statGain: 22,
+      fanGain: 487,
+      reqFame: 3929,
+      reqStats: {
+        vocal: 78,
+        dance: 78,
+        acting: 65,
+        talk: 64
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.34,
+        gachi: 0.2,
+        music: 0.16,
+        live: 0.12,
+        growth: 0.1,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3,
+      festival: "none"
+    },
+    {
+      showId: "debut-15",
+      name: "\u51FA\u9053\u7EAA\u5FF5\u76DB\u5178",
+      type: "circuit",
+      tier: "debut",
+      slotCount: 15,
+      weight: 3,
+      slot: 12,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 16714,
+      ticketBase: 20654,
+      goodsBase: 5711,
+      statGain: 23,
+      fanGain: 520,
+      reqFame: 4196,
+      reqStats: {
+        vocal: 80,
+        dance: 80,
+        acting: 67,
+        talk: 65
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.34,
+        gachi: 0.2,
+        music: 0.16,
+        live: 0.12,
+        growth: 0.1,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3.2,
+      festival: "none"
+    },
+    {
+      showId: "debut-15",
+      name: "\u51FA\u9053\u7EAA\u5FF5\u76DB\u5178",
+      type: "circuit",
+      tier: "debut",
+      slotCount: 15,
+      weight: 3,
+      slot: 13,
+      slotName: "\u4E2D\u575A",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 17643,
+      ticketBase: 21886,
+      goodsBase: 6007,
+      statGain: 24,
+      fanGain: 554,
+      reqFame: 4464,
+      reqStats: {
+        vocal: 81,
+        dance: 81,
+        acting: 68,
+        talk: 66
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.34,
+        gachi: 0.2,
+        music: 0.16,
+        live: 0.12,
+        growth: 0.1,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3.4,
+      festival: "none"
+    },
+    {
+      showId: "debut-15",
+      name: "\u51FA\u9053\u7EAA\u5FF5\u76DB\u5178",
+      type: "circuit",
+      tier: "debut",
+      slotCount: 15,
+      weight: 3,
+      slot: 14,
+      slotName: "\u6B21\u538B\u8F74",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 18571,
+      ticketBase: 23118,
+      goodsBase: 6304,
+      statGain: 25,
+      fanGain: 587,
+      reqFame: 4732,
+      reqStats: {
+        vocal: 83,
+        dance: 83,
+        acting: 70,
+        talk: 68
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.34,
+        gachi: 0.2,
+        music: 0.16,
+        live: 0.12,
+        growth: 0.1,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3.6,
+      festival: "none"
+    },
+    {
+      showId: "debut-15",
+      name: "\u51FA\u9053\u7EAA\u5FF5\u76DB\u5178",
+      type: "circuit",
+      tier: "debut",
+      slotCount: 15,
+      weight: 3,
+      slot: 15,
+      slotName: "\u538B\u8F74",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 19500,
+      ticketBase: 24350,
+      goodsBase: 6600,
+      statGain: 26,
+      fanGain: 620,
+      reqFame: 5e3,
+      reqStats: {
+        vocal: 84,
+        dance: 84,
+        acting: 71,
+        talk: 69
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.34,
+        gachi: 0.2,
+        music: 0.16,
+        live: 0.12,
+        growth: 0.1,
+        power: 0.08
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 3.8,
+      festival: "none"
+    },
+    {
+      showId: "comic-01",
+      name: "\u793E\u533A\u6F2B\u5C55\u5609\u5BBE\u767B\u53F0",
+      type: "comic",
+      tier: "normal",
+      slotCount: 1,
+      weight: 80,
+      slot: 1,
+      slotName: "\u4E3B\u4F4D",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 1500,
+      ticketBase: 900,
+      goodsBase: 320,
+      statGain: 5,
+      fanGain: 26,
+      reqFame: 400,
+      reqStats: {
+        vocal: 24,
+        dance: 24,
+        acting: 22,
+        talk: 26
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "comic-02",
+      name: "\u5927\u578B\u6F2B\u5C55\u4E3B\u821E\u53F0",
+      type: "comic",
+      tier: "large",
+      slotCount: 1,
+      weight: 6,
+      slot: 1,
+      slotName: "\u4E3B\u4F4D",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 4e3,
+      ticketBase: 1800,
+      goodsBase: 700,
+      statGain: 8,
+      fanGain: 60,
+      reqFame: 1500,
+      reqStats: {
+        vocal: 40,
+        dance: 40,
+        acting: 38,
+        talk: 42
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "comic-03",
+      name: "\u56FD\u9645\u52A8\u6F2B\u5C55\u4E3B\u821E\u53F0",
+      type: "comic",
+      tier: "sino",
+      slotCount: 1,
+      weight: 3,
+      slot: 1,
+      slotName: "\u4E3B\u4F4D",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 9e3,
+      ticketBase: 3200,
+      goodsBase: 1400,
+      statGain: 11,
+      fanGain: 120,
+      reqFame: 3e3,
+      reqStats: {
+        vocal: 55,
+        dance: 55,
+        acting: 53,
+        talk: 57
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "business-01",
+      name: "\u5546\u573A\u5F00\u4E1A\u5546\u6F14",
+      type: "business",
+      tier: "normal",
+      slotCount: 1,
+      weight: 80,
+      slot: 1,
+      slotName: "\u4E3B\u4F4D",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 2e3,
+      ticketBase: 600,
+      goodsBase: 200,
+      statGain: 5,
+      fanGain: 14,
+      reqFame: 0,
+      reqStats: {
+        vocal: 22,
+        dance: 22,
+        acting: 24,
+        talk: 26
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "business-02",
+      name: "\u54C1\u724C\u79CB\u51AC\u53D1\u5E03\u4F1A",
+      type: "business",
+      tier: "large",
+      slotCount: 1,
+      weight: 6,
+      slot: 1,
+      slotName: "\u4E3B\u4F4D",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 5e3,
+      ticketBase: 1100,
+      goodsBase: 400,
+      statGain: 8,
+      fanGain: 26,
+      reqFame: 0,
+      reqStats: {
+        vocal: 32,
+        dance: 32,
+        acting: 34,
+        talk: 38
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "business-03",
+      name: "\u56FD\u9645\u54C1\u724C\u4EE3\u8A00\u6F14\u51FA",
+      type: "business",
+      tier: "sino",
+      slotCount: 1,
+      weight: 3,
+      slot: 1,
+      slotName: "\u4E3B\u4F4D",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 12e3,
+      ticketBase: 2e3,
+      goodsBase: 800,
+      statGain: 11,
+      fanGain: 40,
+      reqFame: 0,
+      reqStats: {
+        vocal: 42,
+        dance: 42,
+        acting: 44,
+        talk: 50
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "shoot-01",
+      name: "\u6742\u5FD7\u5185\u9875\u62CD\u6444",
+      type: "shoot",
+      tier: "normal",
+      slotCount: 1,
+      weight: 80,
+      slot: 1,
+      slotName: "\u4E3B\u4F4D",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 1800,
+      ticketBase: 500,
+      goodsBase: 180,
+      statGain: 5,
+      fanGain: 12,
+      reqFame: 0,
+      reqStats: {
+        vocal: 20,
+        dance: 20,
+        acting: 26,
+        talk: 22
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.18,
+        gachi: 0.2,
+        music: 0.2,
+        live: 0.15,
+        growth: 0.14,
+        power: 0.13
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "shoot-02",
+      name: "\u65F6\u5C1A\u6742\u5FD7\u5C01\u9762\u62CD\u6444",
+      type: "shoot",
+      tier: "large",
+      slotCount: 1,
+      weight: 6,
+      slot: 1,
+      slotName: "\u4E3B\u4F4D",
+      weekday: "sat",
+      slots: 1,
+      baseFee: 4500,
+      ticketBase: 950,
+      goodsBase: 340,
+      statGain: 8,
+      fanGain: 22,
+      reqFame: 0,
+      reqStats: {
+        vocal: 30,
+        dance: 30,
+        acting: 38,
+        talk: 34
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "shoot-03",
+      name: "\u9662\u7EBF\u5E7F\u544A\u62CD\u6444",
+      type: "shoot",
+      tier: "sino",
+      slotCount: 1,
+      weight: 3,
+      slot: 1,
+      slotName: "\u4E3B\u4F4D",
+      weekday: "sun",
+      slots: 1,
+      baseFee: 1e4,
+      ticketBase: 1700,
+      goodsBase: 650,
+      statGain: 11,
+      fanGain: 34,
+      reqFame: 0,
+      reqStats: {
+        vocal: 40,
+        dance: 40,
+        acting: 48,
+        talk: 44
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: {},
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "one-man-01",
+      name: "\u5267\u573A OM \u4E13\u573A",
+      type: "one-man",
+      tier: "large",
+      slotCount: 1,
+      weight: 6,
+      slot: 1,
+      slotName: "\u4E3B\u4F4D",
+      weekday: "sat",
+      slots: 3,
+      baseFee: 2e4,
+      ticketBase: 8e3,
+      goodsBase: 3e3,
+      statGain: 14,
+      fanGain: 180,
+      reqFame: 3e3,
+      reqStats: {
+        vocal: 55,
+        dance: 55,
+        acting: 53,
+        talk: 50
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.24,
+        gachi: 0.16,
+        music: 0.22,
+        live: 0.14,
+        growth: 0.12,
+        power: 0.12
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: 'hasFlag("ev:debut")',
+      npcWeight: 1,
+      festival: "none"
+    },
+    {
+      showId: "one-man-02",
+      name: "\u5DE8\u86CB OM \u4E13\u573A",
+      type: "one-man",
+      tier: "sino",
+      slotCount: 1,
+      weight: 3,
+      slot: 1,
+      slotName: "\u4E3B\u4F4D",
+      weekday: "sat",
+      slots: 3,
+      baseFee: 45e3,
+      ticketBase: 16e3,
+      goodsBase: 6e3,
+      statGain: 18,
+      fanGain: 320,
+      reqFame: 6e3,
+      reqStats: {
+        vocal: 70,
+        dance: 70,
+        acting: 68,
+        talk: 65
+      },
+      reqParty: 0,
+      reqFans: 0,
+      audience: {
+        stage: 0.22,
+        gachi: 0.14,
+        music: 0.3,
+        live: 0.14,
+        growth: 0.1,
+        power: 0.1
+      },
+      songs: [
+        "set-main"
+      ],
+      gift: "",
+      visibleCond: 'hasFlag("ev:debut")',
+      npcWeight: 1,
+      festival: "none"
+    }
+  ]
+};
+
+// ../core/data/cities.json
+var cities_default = {
+  _\u8BF4\u660E: "\u57CE\u5E02\u53EF\u89C1\u6027\uFF08T-033\uFF09\uFF1A\u4E0D\u518D\u6309\u57CE\u5E02\u914D\u7F6E\u6F14\u51FA\uFF0C\u800C\u662F\u6309\u300C\u987A\u4F4D\u4E0A\u9650 + \u7C7B\u578B\u767D\u540D\u5355 + \u7EA7\u522B\u767D\u540D\u5355\u300D\u8FC7\u6EE4\u540C\u4E00\u4EFD\u6F14\u51FA\u6C60\uFF1B\u5468\u672B/\u5468\u4E2D\u573A\u6B21\u4E5F\u5728\u8FD9\u91CC",
+  cities: [
+    {
+      tier: 3,
+      name: "\u4E09\u7EBF",
+      weekend: 1,
+      midMin: 0,
+      midMax: 0,
+      maxSlots: 7,
+      types: [
+        "circuit",
+        "shoot"
+      ],
+      levels: [
+        "normal"
+      ],
+      weeklyCost: 0,
+      note: "\u5C0F\u573A\u5B50\uFF0C\u53EA\u6709\u62FC\u76D8\u548C\u62CD\u6444"
+    },
+    {
+      tier: 2,
+      name: "\u4E8C\u7EBF",
+      weekend: 2,
+      midMin: 0,
+      midMax: 0,
+      maxSlots: 10,
+      types: [
+        "circuit",
+        "shoot",
+        "business"
+      ],
+      levels: [
+        "normal",
+        "large"
+      ],
+      weeklyCost: 0,
+      note: "\u52A0\u4E86\u5546\u52A1"
+    },
+    {
+      tier: 1,
+      name: "\u4E00\u7EBF",
+      weekend: 4,
+      midMin: 0,
+      midMax: 0,
+      maxSlots: 15,
+      types: [
+        "circuit",
+        "shoot",
+        "business",
+        "comic"
+      ],
+      levels: [
+        "normal",
+        "large",
+        "festival",
+        "graduate",
+        "debut"
+      ],
+      weeklyCost: 0,
+      note: "\u52A0\u6F2B\u5C55\u5609\u5BBE\u4E0E\u5404\u7C7B SP"
+    },
+    {
+      tier: 0,
+      name: "\u8D85\u4E00\u7EBF",
+      weekend: 4,
+      midMin: 1,
+      midMax: 2,
+      maxSlots: 99,
+      types: [
+        "circuit",
+        "shoot",
+        "business",
+        "comic",
+        "one-man"
+      ],
+      levels: [
+        "normal",
+        "large",
+        "sino",
+        "festival",
+        "birthday",
+        "graduate",
+        "debut"
+      ],
+      weeklyCost: 0,
+      note: "\u5168\u5F00\uFF0C\u5468\u4E2D\u53E6\u6709\u591C\u573A"
+    }
+  ]
+};
+
 // ../core/src/data.ts
 var BALANCE = balance_default.balance;
+var CITIES = cities_default.cities;
+var RAW_SHOWS = shows_default.shows;
 var RAW_ACTIONS = actions_default.actions;
 var RAW_RESULTS = action_results_default.results;
 var RAW_ROUTINE = events_default.routine;
@@ -23405,6 +31937,7 @@ var ALIAS = {
   \u9971\u8179: "satiety",
   \u7C89\u4E1D\u6570: "friends",
   \u597D\u53CB\u6570: "friends",
+  \u7C89\u4E1D\u603B\u6570: "fansTotal",
   \u603B\u5C5E\u6027: "total"
 };
 var BARE_GROUP = {
@@ -23424,7 +31957,19 @@ var BARE_GROUP = {
   choreo_prof: "prof"
 };
 var GROUP_PREFIXES = ["innate", "trait", "neg", "prof"];
-var FIXED_NAMES = ["self", "others", "fit", "stamina", "money", "friends", "total", "mood", "satiety"];
+var FIXED_NAMES = [
+  "self",
+  "others",
+  "fit",
+  "stamina",
+  "money",
+  "friends",
+  "total",
+  "mood",
+  "satiety",
+  // T-018：六轴粉丝之和（与客户端 totalFans 同口径）
+  "fansTotal"
+];
 var FAN_TYPES = ["stage", "gachi", "music", "live", "growth", "power"];
 var KNOWN = /* @__PURE__ */ new Set([
   ...STAT_KEYS,
@@ -23489,6 +32034,8 @@ function buildExprData(state) {
     satiety: state.satiety ?? 70,
     friends: (state.friends ?? []).length,
     total: STAT_KEYS2.reduce((sum, k) => sum + state.stats[k], 0),
+    // T-018：六类粉丝之和（与客户端 totalFans 同口径）
+    fansTotal: Object.values(state.fans.byType).reduce((sum, v) => sum + (Number(v) || 0), 0),
     flags: state.flags
   };
   for (const key of declaredFlagKeys) data[key] = false;
@@ -23632,11 +32179,14 @@ function findStoryEvent(state) {
 var MIN = 6e4;
 var ACTION_MINUTES = BALANCE.actionMinutes;
 var ACTION_MS = ACTION_MINUTES * MIN;
+var TIME_SCALE = Math.max(1, Number(BALANCE.timeScale ?? 20));
 var DAILY_SLOTS = BALANCE.dailySlots;
 var SHOW_SLOTS = BALANCE.showSlots;
 var DAY_MS = DAILY_SLOTS * ACTION_MINUTES * MIN;
 var WEEK_MS = 7 * DAY_MS;
 var RUN_LENGTH_MS = BALANCE.runDays * DAY_MS;
+var START_AT = Date.UTC(2026, 0, 1, 9, 0, 0);
+var RUN_END_AT = START_AT + RUN_LENGTH_MS;
 var RENT_PER_WEEK = BALANCE.rentPerWeek;
 var START_MONEY = BALANCE.startMoney;
 var DEBUT_THRESHOLD = BALANCE.debutThreshold;
@@ -23733,174 +32283,2760 @@ function randInt(rng, min, max) {
   return min + Math.floor(rng() * (max - min + 1));
 }
 
-// ../core/data/shop.json
-var shop_default = {
-  _\u8BF4\u660E: "\u88C5\u5907\u8868\u3002common=\u666E\u901A\uFF08\u6BCF\u5468\u8D27\u67B6 3 \u4EF6\uFF09\uFF0Crare=\u7A00\u6709\uFF08\u6BCF\u5468 1 \u4EF6\uFF09\uFF1B\u4EF7\u683C\u53D6\u81EA balance \u8868\u7684 commonPrice / rarePrice",
-  shop: {
-    commonPrice: 800,
-    rarePrice: 2e3,
-    common: [
-      {
-        name: "\u7D20\u8272\u7EC3\u4E60\u670D",
-        stat: "dance",
-        statName: "\u821E\u8E48",
-        value: 2
+// ../core/data/equipments.json
+var equipments_default = {
+  _\u8BF4\u660E: "\u88C5\u5907\u8868\uFF1Aslot=\u56DB\u69FD\uFF08hair/outfit/shoes/accessory\uFF09\uFF1Brequirement=\u88C5\u5907\u8981\u6C42\u8868\u8FBE\u5F0F\uFF1Bbonus=\u663E\u6027\u52A0\u6210\uFF08\u56DB\u7EF4\uFF09\uFF1Bhidden=\u9690\u5F62\u52A0\u6210\uFF08\u53EA\u663E\u793A\u9690\u5F62\u6587\u6848\uFF0C\u4E0D\u663E\u793A\u6570\u503C\uFF09",
+  equipments: [
+    {
+      id: "eq-plain-practice",
+      slot: "outfit",
+      name: "\u7D20\u8272\u7EC3\u4E60\u670D",
+      rarity: "common",
+      icon: "",
+      requirement: {},
+      bonus: {
+        dance: 2
       },
-      {
-        name: "\u65E7\u536B\u8863",
-        stat: "dance",
-        statName: "\u821E\u8E48",
-        value: 2
+      hidden: {},
+      hiddenText: "",
+      text: "\u6392\u7EC3\u5BA4\u91CC\u4EBA\u624B\u4E00\u4EF6\u7684\u767E\u642D\u6B3E\u3002",
+      source: "",
+      price: 800
+    },
+    {
+      id: "eq-old-hoodie",
+      slot: "outfit",
+      name: "\u65E7\u536B\u8863",
+      rarity: "common",
+      icon: "",
+      requirement: {},
+      bonus: {
+        dance: 2
       },
-      {
-        name: "\u9ED1\u8272\u6253\u5E95\u8863",
-        stat: "dance",
-        statName: "\u821E\u8E48",
-        value: 2
+      hidden: {},
+      hiddenText: "",
+      text: "\u8D77\u7403\u4E86\uFF0C\u4F46\u6321\u98CE\u3002",
+      source: "",
+      price: 800
+    },
+    {
+      id: "eq-black-base",
+      slot: "outfit",
+      name: "\u9ED1\u8272\u6253\u5E95\u8863",
+      rarity: "common",
+      icon: "",
+      requirement: {},
+      bonus: {
+        dance: 2
       },
-      {
-        name: "\u5E06\u5E03\u978B",
-        stat: "dance",
-        statName: "\u821E\u8E48",
-        value: 2
+      hidden: {},
+      hiddenText: "",
+      text: "\u663E\u7626\uFF0C\u767E\u642D\uFF0C\u821E\u53F0\u4E8B\u6545\u7387\u6700\u4F4E\u7684\u4E00\u4EF6\u3002",
+      source: "",
+      price: 800
+    },
+    {
+      id: "eq-white-shirt",
+      slot: "outfit",
+      name: "\u767D\u886C\u886B",
+      rarity: "common",
+      icon: "",
+      requirement: {},
+      bonus: {
+        acting: 2
       },
-      {
-        name: "\u767D\u886C\u886B",
-        stat: "acting",
-        statName: "\u6F14\u6280",
-        value: 2
+      hidden: {},
+      hiddenText: "",
+      text: "\u9886\u53E3\u8981\u89E3\u5F00\u4E00\u9897\u6263\u5B50\u624D\u50CF\u6837\u3002",
+      source: "",
+      price: 800
+    },
+    {
+      id: "eq-linen-dress",
+      slot: "outfit",
+      name: "\u68C9\u9EBB\u957F\u88D9",
+      rarity: "common",
+      icon: "",
+      requirement: {},
+      bonus: {
+        acting: 2
       },
-      {
-        name: "\u68C9\u9EBB\u957F\u88D9",
-        stat: "acting",
-        statName: "\u6F14\u6280",
-        value: 2
+      hidden: {},
+      hiddenText: "",
+      text: "\u6587\u827A\u6302\u6807\u914D\uFF0C\u8F6C\u5708\u7684\u65F6\u5019\u5F88\u597D\u770B\u3002",
+      source: "",
+      price: 800
+    },
+    {
+      id: "eq-suit-dress",
+      slot: "outfit",
+      name: "\u6210\u719F\u897F\u88C5\u88D9",
+      rarity: "common",
+      icon: "",
+      requirement: {},
+      bonus: {
+        acting: 2
       },
-      {
-        name: "\u6210\u719F\u897F\u88C5\u88D9",
-        stat: "acting",
-        statName: "\u6F14\u6280",
-        value: 2
+      hidden: {},
+      hiddenText: "",
+      text: "\u88C5\u5927\u4EBA\u5229\u5668\u3002",
+      source: "",
+      price: 800
+    },
+    {
+      id: "eq-knit-cardigan",
+      slot: "outfit",
+      name: "\u9488\u7EC7\u5F00\u886B",
+      rarity: "common",
+      icon: "",
+      requirement: {},
+      bonus: {
+        vocal: 2
       },
-      {
-        name: "\u9488\u7EC7\u5F00\u886B",
-        stat: "vocal",
-        statName: "\u6F14\u5531",
-        value: 2
+      hidden: {},
+      hiddenText: "",
+      text: "\u6E29\u67D4\u611F\u662F\u7EC7\u51FA\u6765\u7684\u3002",
+      source: "",
+      price: 800
+    },
+    {
+      id: "eq-hooded-tops",
+      slot: "outfit",
+      name: "\u8FDE\u5E3D\u886B",
+      rarity: "common",
+      icon: "",
+      requirement: {},
+      bonus: {
+        vocal: 2
       },
-      {
-        name: "\u8FDE\u5E3D\u886B",
-        stat: "vocal",
-        statName: "\u6F14\u5531",
-        value: 2
+      hidden: {},
+      hiddenText: "",
+      text: "\u5E3D\u5B50\u4E00\u6234\uFF0C\u8C01\u90FD\u4E0D\u7231\u3002",
+      source: "",
+      price: 800
+    },
+    {
+      id: "eq-sequin-vest",
+      slot: "outfit",
+      name: "\u4EAE\u7247\u80CC\u5FC3",
+      rarity: "common",
+      icon: "",
+      requirement: {},
+      bonus: {
+        vocal: 2
       },
-      {
-        name: "\u4EAE\u7247\u80CC\u5FC3",
-        stat: "vocal",
-        statName: "\u6F14\u5531",
-        value: 2
+      hidden: {},
+      hiddenText: "",
+      text: "\u706F\u5149\u4E00\u6253\uFF0C\u4F60\u5C31\u662F\u821E\u53F0\u672C\u8EAB\u3002",
+      source: "",
+      price: 800
+    },
+    {
+      id: "eq-loose-tee",
+      slot: "outfit",
+      name: "\u5BBD\u677E T \u6064",
+      rarity: "common",
+      icon: "",
+      requirement: {},
+      bonus: {
+        talk: 2
       },
-      {
-        name: "\u5BBD\u677ET\u6064",
-        stat: "talk",
-        statName: "\u53E3\u624D",
-        value: 2
+      hidden: {},
+      hiddenText: "",
+      text: "oversize \u7684\u677E\u5F1B\u611F\u3002",
+      source: "",
+      price: 800
+    },
+    {
+      id: "eq-jk-uniform",
+      slot: "outfit",
+      name: "JK \u5236\u670D",
+      rarity: "common",
+      icon: "",
+      requirement: {},
+      bonus: {
+        talk: 2
       },
-      {
-        name: "JK \u5236\u670D",
-        stat: "talk",
-        statName: "\u53E3\u624D",
-        value: 2
+      hidden: {},
+      hiddenText: "",
+      text: "\u683C\u88D9\u8981\u914D\u8FC7\u819D\u889C\uFF0C\u8FD9\u662F\u57FA\u672C\u6CD5\u3002",
+      source: "",
+      price: 800
+    },
+    {
+      id: "eq-imo-suspender",
+      slot: "outfit",
+      name: "\u59B9\u7CFB\u540A\u5E26\u88D9",
+      rarity: "common",
+      icon: "",
+      requirement: {},
+      bonus: {
+        talk: 2
       },
-      {
-        name: "\u59B9\u7CFB\u540A\u5E26\u88D9",
-        stat: "talk",
-        statName: "\u53E3\u624D",
-        value: 2
+      hidden: {},
+      hiddenText: "",
+      text: "\u8425\u4E1A\u6D53\u5EA6\u8D85\u6807\u9884\u8B66\u3002",
+      source: "",
+      price: 800
+    },
+    {
+      id: "eq-shirt-vest",
+      slot: "outfit",
+      name: "\u886C\u886B\u52A0\u80CC\u5FC3",
+      rarity: "common",
+      icon: "",
+      requirement: {},
+      bonus: {
+        talk: 2
       },
-      {
-        name: "\u886C\u886B\u52A0\u80CC\u5FC3",
-        stat: "talk",
-        statName: "\u53E3\u624D",
-        value: 2
-      }
-    ],
-    rare: [
-      {
-        name: "\u6253\u6B4C\u670D\xB7\u521D\u7248",
-        stat: "dance",
-        statName: "\u821E\u8E48",
-        value: 5
+      hidden: {},
+      hiddenText: "",
+      text: "\u77E5\u6027\u98CE\u7684\u5B89\u5168\u724C\u3002",
+      source: "",
+      price: 800
+    },
+    {
+      id: "eq-first-costume",
+      slot: "outfit",
+      name: "\u6253\u6B4C\u670D\xB7\u521D\u7248",
+      rarity: "uncommon",
+      icon: "",
+      requirement: "dance >= 15",
+      bonus: {
+        dance: 3
       },
-      {
-        name: "\u821E\u53F0\u7528\u9A6C\u4E01\u9774",
-        stat: "dance",
-        statName: "\u821E\u8E48",
-        value: 5
+      hidden: {},
+      hiddenText: "",
+      text: "\u7B2C\u4E00\u5957\u6253\u6B4C\u670D\uFF0C\u5C3A\u7801\u7A0D\u5FAE\u5927\u4E86\u4E00\u70B9\u3002",
+      source: "",
+      price: 2e3
+    },
+    {
+      id: "eq-rock-jacket",
+      slot: "outfit",
+      name: "\u6447\u6EDA\u5939\u514B",
+      rarity: "uncommon",
+      icon: "",
+      requirement: "vocal >= 15",
+      bonus: {
+        vocal: 3
       },
-      {
-        name: "\u6447\u6EDA\u5939\u514B",
-        stat: "vocal",
-        statName: "\u6F14\u5531",
-        value: 5
+      hidden: {},
+      hiddenText: "",
+      text: "\u94C6\u9489\u662F\u5B83\u7684\u6001\u5EA6\u3002",
+      source: "",
+      price: 2e3
+    },
+    {
+      id: "eq-white-grad-dress",
+      slot: "outfit",
+      name: "\u767D\u88D9\xB7\u6BD5\u4E1A\u573A",
+      rarity: "uncommon",
+      icon: "",
+      requirement: "vocal >= 18",
+      bonus: {
+        vocal: 3
       },
-      {
-        name: "\u767D\u88D9\xB7\u6BD5\u4E1A\u573A",
-        stat: "vocal",
-        statName: "\u6F14\u5531",
-        value: 4
+      hidden: {
+        others: 2
       },
-      {
-        name: "\u53E4\u98CE\u957F\u88D9",
-        stat: "acting",
-        statName: "\u6F14\u6280",
-        value: 5
+      hiddenText: "\u7A7F\u8FC7\u5B83\u7684\u4EBA\u90FD\u6BD5\u4E1A\u4E86\u3002\u8F6E\u5230\u4F60\u65F6\uFF0C\u5E0C\u671B\u662F\u7B11\u7740\u8D70\u7684\u3002",
+      text: "\u6BD5\u4E1A\u516C\u6F14\u7684\u5B9A\u756A\u3002",
+      source: "",
+      price: 2e3
+    },
+    {
+      id: "eq-ancient-dress",
+      slot: "outfit",
+      name: "\u53E4\u98CE\u957F\u88D9",
+      rarity: "uncommon",
+      icon: "",
+      requirement: "acting >= 15",
+      bonus: {
+        acting: 3
       },
-      {
-        name: "\u5730\u96F7\u7CFB\u8FDE\u8863\u88D9",
-        stat: "acting",
-        statName: "\u6F14\u6280",
-        value: 5
+      hidden: {},
+      hiddenText: "",
+      text: "\u6C34\u8896\u4E00\u7529\uFF0C\u6545\u4E8B\u611F\u5C31\u6765\u4E86\u3002",
+      source: "",
+      price: 2e3
+    },
+    {
+      id: "eq-jiro-dress",
+      slot: "outfit",
+      name: "\u5730\u96F7\u7CFB\u8FDE\u8863\u88D9",
+      rarity: "uncommon",
+      icon: "",
+      requirement: "acting >= 15",
+      bonus: {
+        acting: 3
       },
-      {
-        name: "\u75C5\u5A07\u7CFB\u9ED1\u88D9",
-        stat: "acting",
-        statName: "\u6F14\u6280",
-        value: 4
+      hidden: {},
+      hiddenText: "",
+      text: "\u8774\u8776\u7ED3\u8981\u4E0D\u5BF9\u79F0\u624D\u5BF9\u5473\u3002",
+      source: "",
+      price: 2e3
+    },
+    {
+      id: "eq-yandere-dress",
+      slot: "outfit",
+      name: "\u75C5\u5A07\u7CFB\u9ED1\u88D9",
+      rarity: "uncommon",
+      icon: "",
+      requirement: "acting >= 18",
+      bonus: {
+        acting: 3
       },
-      {
-        name: "Lolita \u5957\u88C5",
-        stat: "talk",
-        statName: "\u53E3\u624D",
-        value: 4
-      }
-    ]
-  }
+      hidden: {
+        others: 2
+      },
+      hiddenText: "\u53F0\u4E0B\u603B\u6709\u4EBA\u4E3A\u8FD9\u5957\u5C16\u53EB\u3002",
+      text: "\u9ED1\u8272\u857E\u4E1D\u4E0E\u7EA2\u7EBF\u7684\u642D\u914D\u5B66\u3002",
+      source: "",
+      price: 2e3
+    },
+    {
+      id: "eq-lolita-set",
+      slot: "outfit",
+      name: "Lolita \u5957\u88C5",
+      rarity: "uncommon",
+      icon: "",
+      requirement: "talk >= 15",
+      bonus: {
+        talk: 3
+      },
+      hidden: {},
+      hiddenText: "",
+      text: "\u88D9\u6491\u522B\u5FD8\u8BB0\u5E26\u3002",
+      source: "",
+      price: 2e3
+    },
+    {
+      id: "eq-navy-uniform",
+      slot: "outfit",
+      name: "\u5236\u670D\xB7\u6D77\u519B\u98CE",
+      rarity: "uncommon",
+      icon: "",
+      requirement: "acting >= 12",
+      bonus: {
+        acting: 2,
+        talk: 2
+      },
+      hidden: {},
+      hiddenText: "",
+      text: "\u9886\u5DFE\u7684\u7CFB\u6CD5\u6709\u4E09\u79CD\uFF0C\u4F60\u90FD\u4F1A\u4E86\u3002",
+      source: "",
+      price: 1800
+    },
+    {
+      id: "eq-yukata",
+      slot: "outfit",
+      name: "\u79C1\u670D\xB7\u590F\u65E5\u6D74\u8863",
+      rarity: "uncommon",
+      icon: "",
+      requirement: "talk >= 12",
+      bonus: {
+        talk: 2
+      },
+      hidden: {},
+      hiddenText: "",
+      text: "\u82B1\u706B\u5927\u4F1A\u7684\u5B9A\u756A\uFF0C\u6728\u5C50\u8E29\u5F97\u5494\u54D2\u54CD\u3002",
+      source: "",
+      price: 1500
+    },
+    {
+      id: "eq-grad-gown",
+      slot: "outfit",
+      name: "\u767D\u8272\u6BD5\u4E1A\u793C\u670D",
+      rarity: "uncommon",
+      icon: "",
+      requirement: "vocal >= 20",
+      bonus: {
+        vocal: 2,
+        acting: 2
+      },
+      hidden: {},
+      hiddenText: "",
+      text: "\u6563\u573A\u540E\u522B\u6025\u7740\u8131\uFF0C\u591A\u7A7F\u4E00\u4F1A\u513F\u3002",
+      source: "",
+      price: 2200
+    },
+    {
+      id: "eq-stage-kimono",
+      slot: "outfit",
+      name: "\u821E\u53F0\u548C\u670D\xB7\u6D74\u8863",
+      rarity: "rare",
+      icon: "",
+      requirement: "vocal >= 30",
+      bonus: {
+        vocal: 4,
+        talk: 2
+      },
+      hidden: {
+        self: 2
+      },
+      hiddenText: "\u7A7F\u4E0A\u5B83\u7684\u90A3\u4E00\u523B\uFF0C\u8170\u80CC\u4F1A\u81EA\u5DF1\u633A\u76F4\u3002",
+      text: "\u6539\u826F\u526A\u88C1\uFF0C\u52A8\u4F5C\u5E45\u5EA6\u518D\u5927\u4E5F\u4E0D\u6015\u8D70\u5149\u3002",
+      source: "",
+      price: 5e3
+    },
+    {
+      id: "eq-qipao",
+      slot: "outfit",
+      name: "\u4E2D\u534E\u98CE\u6539\u826F\u65D7\u888D",
+      rarity: "rare",
+      icon: "",
+      requirement: "acting >= 30",
+      bonus: {
+        acting: 4,
+        talk: 2
+      },
+      hidden: {},
+      hiddenText: "",
+      text: "\u76D8\u6263\u662F\u624B\u5DE5\u7F1D\u7684\uFF0C\u4EF7\u683C\u4E5F\u662F\u3002",
+      source: "",
+      price: 5200
+    },
+    {
+      id: "eq-stage-hospital",
+      slot: "outfit",
+      name: "\u821E\u53F0\u75C5\u53F7\u670D",
+      rarity: "rare",
+      icon: "",
+      requirement: "acting >= 35",
+      bonus: {
+        acting: 5
+      },
+      hidden: {
+        scandal: 2,
+        others: 2
+      },
+      hiddenText: "\u6709\u4EBA\u4E3A\u4F60\u5FC3\u75BC\uFF0C\u6709\u4EBA\u53EA\u89C9\u5F97\u9177\u3002",
+      text: "\u884C\u4E3A\u827A\u672F\u3002\u8C22\u5E55\u65F6\u5168\u573A\u5B89\u9759\u4E86\u4E09\u79D2\u3002",
+      source: "",
+      price: 4800
+    },
+    {
+      id: "eq-costume-v2",
+      slot: "outfit",
+      name: "\u6253\u6B4C\u670D\xB7\u4E8C\u4EE3",
+      rarity: "rare",
+      icon: "",
+      requirement: "dance >= 30",
+      bonus: {
+        dance: 4,
+        talk: 2
+      },
+      hidden: {},
+      hiddenText: "",
+      text: "\u8FD9\u6B21\u5C3A\u7801\u521A\u597D\u3002",
+      source: "",
+      price: 5600
+    },
+    {
+      id: "eq-starry-costume",
+      slot: "outfit",
+      name: "\u6F14\u51FA\u670D\xB7\u661F\u7A7A\u4E3B\u9898",
+      rarity: "rare",
+      icon: "",
+      requirement: "dance >= 32",
+      bonus: {
+        dance: 4,
+        vocal: 2
+      },
+      hidden: {
+        fit: 2
+      },
+      hiddenText: "\u706F\u5149\u6697\u4E0B\u53BB\u7684\u77AC\u95F4\uFF0C\u53EA\u6709\u8863\u670D\u4E0A\u7684\u661F\u661F\u548C\u4F60\u4E00\u8D77\u4EAE\u7740\u3002",
+      text: "\u8BBE\u8BA1\u5E08\u8BF4\u7075\u611F\u6765\u81EA\u51CC\u6668\u56DB\u70B9\u7684\u6392\u7EC3\u5BA4\u3002",
+      source: "",
+      price: 5800
+    },
+    {
+      id: "eq-leather-jacket",
+      slot: "outfit",
+      name: "\u673A\u8F66\u76AE\u5939\u514B",
+      rarity: "rare",
+      icon: "",
+      requirement: "vocal >= 35",
+      bonus: {
+        vocal: 4
+      },
+      hidden: {
+        self: 3
+      },
+      hiddenText: "\u7A7F\u4E0A\u5B83\uFF0C\u611F\u89C9\u4EC0\u4E48\u90FD\u4E0D\u6015\u4E86\u2014\u2014\u5176\u5B9E\u662F\u9519\u89C9\uFF0C\u4F46\u9519\u89C9\u4E5F\u591F\u7528\u3002",
+      text: "\u62C9\u94FE\u8981\u53EA\u62C9\u4E00\u534A\u3002",
+      source: "",
+      price: 5500
+    },
+    {
+      id: "eq-wedding-dress",
+      slot: "outfit",
+      name: "\u5A5A\u7EB1\xB7\u7EC8\u573A\u9650\u5B9A",
+      rarity: "legendary",
+      icon: "",
+      requirement: "total >= 250",
+      bonus: {
+        vocal: 2,
+        dance: 2,
+        acting: 2,
+        talk: 2
+      },
+      hidden: {
+        others: 4,
+        self: 3
+      },
+      hiddenText: "\u6700\u540E\u4E00\u652F\u6B4C\u7684\u4FDD\u7559\u66F2\u76EE\u3002\u6709\u4EBA\u54ED\uFF0C\u4E5F\u6709\u4EBA\u7B11\u7740\u8D77\u54C4\u3002",
+      text: "\u7EC8\u573A\u6F14\u51FA\u624D\u4F1A\u62FF\u51FA\u6765\u7684\u5927\u6740\u5668\u3002",
+      source: "",
+      price: 15e3
+    },
+    {
+      id: "eq-hair-straight",
+      slot: "hair",
+      name: "\u9ED1\u957F\u76F4\xB7\u539F\u751F\u6001",
+      rarity: "common",
+      icon: "",
+      requirement: {},
+      bonus: {
+        vocal: 1
+      },
+      hidden: {},
+      hiddenText: "",
+      text: "\u6D17\u5B8C\u5439\u5E72\u8981\u56DB\u5341\u5206\u949F\uFF0C\u8BA4\u4E86\u3002",
+      source: "",
+      price: 500
+    },
+    {
+      id: "eq-hair-ponytail",
+      slot: "hair",
+      name: "\u9AD8\u9A6C\u5C3E",
+      rarity: "common",
+      icon: "",
+      requirement: {},
+      bonus: {
+        dance: 2
+      },
+      hidden: {},
+      hiddenText: "",
+      text: "\u8DF3\u8D77\u6765\u7684\u65F6\u5019\u7529\u5F97\u50CF\u97AD\u5B50\u3002",
+      source: "",
+      price: 500
+    },
+    {
+      id: "eq-hair-twin",
+      slot: "hair",
+      name: "\u53CC\u9A6C\u5C3E",
+      rarity: "common",
+      icon: "",
+      requirement: {},
+      bonus: {
+        talk: 2
+      },
+      hidden: {},
+      hiddenText: "",
+      text: "\u751C\u5EA6\u62C9\u6EE1\u7684\u7269\u7406\u5916\u6302\u3002",
+      source: "",
+      price: 500
+    },
+    {
+      id: "eq-hair-bun",
+      slot: "hair",
+      name: "\u4E38\u5B50\u5934",
+      rarity: "common",
+      icon: "",
+      requirement: {},
+      bonus: {
+        dance: 1,
+        vocal: 1
+      },
+      hidden: {},
+      hiddenText: "",
+      text: "\u7EC3\u821E\u521A\u9700\u3002",
+      source: "",
+      price: 500
+    },
+    {
+      id: "eq-hair-hime",
+      slot: "hair",
+      name: "\u516C\u4E3B\u5207",
+      rarity: "uncommon",
+      icon: "",
+      requirement: "acting >= 12",
+      bonus: {
+        acting: 2
+      },
+      hidden: {
+        others: 2
+      },
+      hiddenText: "\u5218\u6D77\u526A\u4E0B\u53BB\u90A3\u4E00\u523B\uFF0C\u955C\u5B50\u91CC\u6362\u4E86\u4E2A\u4EBA\u3002",
+      text: "tony \u8001\u5E08\u7684\u5C01\u5200\u4E4B\u4F5C\u3002",
+      source: "",
+      price: 1200
+    },
+    {
+      id: "eq-hair-perm",
+      slot: "hair",
+      name: "\u7F8A\u6BDB\u5377",
+      rarity: "uncommon",
+      icon: "",
+      requirement: "vocal >= 12",
+      bonus: {
+        vocal: 2
+      },
+      hidden: {},
+      hiddenText: "",
+      text: "\u5934\u9876\u4E09\u4E2A\u5377\u53D1\u68D2\u540C\u65F6\u5F00\u5DE5\u3002",
+      source: "",
+      price: 1300
+    },
+    {
+      id: "eq-hair-braid",
+      slot: "hair",
+      name: "\u7F16\u53D1\xB7\u4E09\u80A1",
+      rarity: "uncommon",
+      icon: "",
+      requirement: "acting >= 14",
+      bonus: {
+        acting: 2,
+        talk: 1
+      },
+      hidden: {},
+      hiddenText: "",
+      text: "\u7F16\u4E00\u6B21\u8981\u4E8C\u5341\u5206\u949F\uFF0C\u80FD\u6491\u4E00\u6574\u5929\u3002",
+      source: "",
+      price: 900
+    },
+    {
+      id: "eq-hair-silver",
+      slot: "hair",
+      name: "\u94F6\u7070\u77ED\u53D1",
+      rarity: "uncommon",
+      icon: "",
+      requirement: "acting >= 18",
+      bonus: {
+        acting: 3
+      },
+      hidden: {
+        self: 2
+      },
+      hiddenText: "tony \u8BF4\u8FD9\u4E2A\u989C\u8272\u663E\u767D\uFF0C\u4ED6\u8BF4\u5BF9\u4E86\u3002",
+      text: "\u6F02\u4E86\u4E09\u6B21\u624D\u5230\u7684\u989C\u8272\u3002",
+      source: "",
+      price: 2e3
+    },
+    {
+      id: "eq-hair-wavy",
+      slot: "hair",
+      name: "\u5927\u6CE2\u6D6A\xB7\u5FA1\u59D0\u98CE",
+      rarity: "uncommon",
+      icon: "",
+      requirement: "talk >= 16",
+      bonus: {
+        talk: 2,
+        vocal: 1
+      },
+      hidden: {},
+      hiddenText: "",
+      text: "\u98CE\u4E00\u5439\u5C31\u8981\u62E8\u5934\u53D1\uFF0C\u52A8\u4F5C\u8981\u7EC3\u5230\u808C\u8089\u8BB0\u5FC6\u3002",
+      source: "",
+      price: 1800
+    },
+    {
+      id: "eq-hair-blue-streak",
+      slot: "hair",
+      name: "\u6311\u67D3\xB7\u6D77\u76D0\u84DD",
+      rarity: "rare",
+      icon: "",
+      requirement: "dance >= 25",
+      bonus: {
+        dance: 3,
+        talk: 2
+      },
+      hidden: {
+        others: 2
+      },
+      hiddenText: "\u706F\u4E00\u6253\uFF0C\u5168\u573A\u76EE\u5149\u5148\u843D\u5728\u4F60\u5934\u9876\u3002",
+      text: "\u53EA\u6311\u4E86\u4E09\u64AE\uFF0C\u85CF\u5F97\u6DF1\uFF0C\u70B8\u5F97\u54CD\u3002",
+      source: "",
+      price: 3500
+    },
+    {
+      id: "eq-hair-wet-look",
+      slot: "hair",
+      name: "\u6E7F\u53D1\u9020\u578B\xB7\u821E\u53F0\u9650\u5B9A",
+      rarity: "rare",
+      icon: "",
+      requirement: "vocal >= 30",
+      bonus: {
+        vocal: 3,
+        acting: 2
+      },
+      hidden: {},
+      hiddenText: "",
+      text: "\u53D1\u80F6\u7528\u91CF\u7EA6\u7B49\u4E8E\u534A\u74F6\u3002",
+      source: "",
+      price: 3200
+    },
+    {
+      id: "eq-hair-white-wig",
+      slot: "hair",
+      name: "\u767D\u8272\u957F\u76F4\xB7\u5047\u53D1",
+      rarity: "legendary",
+      icon: "",
+      requirement: "vocal >= 40",
+      bonus: {
+        vocal: 4,
+        acting: 3
+      },
+      hidden: {
+        self: 3,
+        others: 2
+      },
+      hiddenText: "\u6234\u4E0A\u5B83\u7684\u90A3\u665A\uFF0C\u4F60\u8BF4\u4E0D\u6E05\u81EA\u5DF1\u662F\u8C01\u2014\u2014\u4F46\u53F0\u4E0B\u7684\u76EE\u5149\u662F\u771F\u7684\u3002",
+      text: "\u9020\u578B\u5E08\u7684\u9547\u7BB1\u4E4B\u5B9D\u3002",
+      source: "",
+      price: 1e4
+    },
+    {
+      id: "eq-cheer-band",
+      slot: "accessory",
+      name: "\u5E94\u63F4\u624B\u73AF",
+      rarity: "common",
+      icon: "",
+      requirement: {},
+      bonus: {
+        talk: 1
+      },
+      hidden: {},
+      hiddenText: "",
+      text: "\u7C89\u4E1D\u585E\u7ED9\u4F60\u7684\uFF0C\u989C\u8272\u548C\u4F60\u7684\u5E94\u63F4\u8272\u4E00\u6837\u3002",
+      source: "",
+      price: 0
+    },
+    {
+      id: "eq-cat-ears",
+      slot: "accessory",
+      name: "\u732B\u8033\u53D1\u7B8D",
+      rarity: "common",
+      icon: "",
+      requirement: {},
+      bonus: {
+        talk: 2
+      },
+      hidden: {},
+      hiddenText: "",
+      text: "\u8425\u4E1A\u795E\u5668\u3002",
+      source: "",
+      price: 400
+    },
+    {
+      id: "eq-cross-necklace",
+      slot: "accessory",
+      name: "\u5341\u5B57\u67B6\u9879\u94FE",
+      rarity: "common",
+      icon: "",
+      requirement: {},
+      bonus: {
+        vocal: 1
+      },
+      hidden: {},
+      hiddenText: "",
+      text: "\u7EC6\u94FE\u6761\uFF0C\u821E\u53F0\u95EA\u5149\u706F\u4E0B\u521A\u521A\u597D\u3002",
+      source: "",
+      price: 500
+    },
+    {
+      id: "eq-rhinestone-sticker",
+      slot: "accessory",
+      name: "\u821E\u53F0\u4EAE\u7247\u8D34",
+      rarity: "uncommon",
+      icon: "",
+      requirement: "dance >= 10",
+      bonus: {
+        dance: 1,
+        vocal: 1
+      },
+      hidden: {},
+      hiddenText: "",
+      text: "\u8D34\u5728\u98A7\u9AA8\u4E0A\uFF0C\u706F\u5149\u4E0B\u4F1A\u53D1\u5149\u3002",
+      source: "",
+      price: 300
+    },
+    {
+      id: "eq-velvet-choker",
+      slot: "accessory",
+      name: "choker\xB7\u9ED1\u4E1D\u7ED2",
+      rarity: "uncommon",
+      icon: "",
+      requirement: "acting >= 14",
+      bonus: {
+        acting: 2
+      },
+      hidden: {
+        others: 2
+      },
+      hiddenText: "\u8116\u5B50\u4F38\u76F4\u4E00\u70B9\uFF0C\u6C14\u573A\u5C31\u51FA\u6765\u4E86\u3002",
+      text: "\u4F4E\u8C03\u4F46\u81F4\u547D\u7684\u4E00\u4EF6\u3002",
+      source: "",
+      price: 800
+    },
+    {
+      id: "eq-star-earrings",
+      slot: "accessory",
+      name: "\u661F\u661F\u8033\u5760",
+      rarity: "uncommon",
+      icon: "",
+      requirement: "vocal >= 12",
+      bonus: {
+        vocal: 1,
+        talk: 1
+      },
+      hidden: {},
+      hiddenText: "",
+      text: "\u8F6C\u5230\u4E00\u534A\u4F1A\u6643\uFF0C\u53F0\u4E0B\u559C\u6B22\u770B\u5B83\u6643\u3002",
+      source: "",
+      price: 900
+    },
+    {
+      id: "eq-lace-gloves",
+      slot: "accessory",
+      name: "\u857E\u4E1D\u624B\u5957",
+      rarity: "uncommon",
+      icon: "",
+      requirement: "acting >= 14",
+      bonus: {
+        acting: 2
+      },
+      hidden: {},
+      hiddenText: "",
+      text: "\u6307\u5C16\u90A3\u622A\u857E\u4E1D\u662F\u91CD\u70B9\u3002",
+      source: "",
+      price: 700
+    },
+    {
+      id: "eq-pain-tape",
+      slot: "accessory",
+      name: "\u7EF7\u5E26\u88C5\u9970\xB7\u75DB\u75DB\u8D34",
+      rarity: "uncommon",
+      icon: "",
+      requirement: "dance >= 12",
+      bonus: {
+        dance: 1,
+        talk: 1
+      },
+      hidden: {},
+      hiddenText: "",
+      text: "\u5730\u5076\u7684\u7ECF\u5178\u7F8E\u5B66\uFF0C\u75DB\u5E76\u5FEB\u4E50\u7740\u3002",
+      source: "",
+      price: 200
+    },
+    {
+      id: "eq-pearl-clip",
+      slot: "accessory",
+      name: "\u73CD\u73E0\u53D1\u5939",
+      rarity: "uncommon",
+      icon: "",
+      requirement: "vocal >= 10",
+      bonus: {
+        vocal: 1,
+        acting: 1
+      },
+      hidden: {},
+      hiddenText: "",
+      text: "\u522B\u5728\u8033\u8FB9\uFF0C\u6E29\u67D4\u4E00\u5200\u3002",
+      source: "",
+      price: 600
+    },
+    {
+      id: "eq-gray-star-lens",
+      slot: "accessory",
+      name: "\u7F8E\u77B3\xB7\u7070\u661F\u661F",
+      rarity: "rare",
+      icon: "",
+      requirement: "talk >= 28",
+      bonus: {
+        talk: 3
+      },
+      hidden: {
+        others: 3
+      },
+      hiddenText: "\u8FD1\u8DDD\u79BB\u7279\u5178\u4F1A\u7684\u65F6\u5019\uFF0C\u6709\u4EBA\u76EF\u7740\u4F60\u7684\u773C\u775B\u770B\u4E86\u5341\u79D2\u3002",
+      text: "\u76F4\u5F84 14.2mm\uFF0C\u521A\u521A\u597D\u4E0D\u50CF\u5047\u7684\u3002",
+      source: "",
+      price: 1800
+    },
+    {
+      id: "eq-eyepatch",
+      slot: "accessory",
+      name: "\u88C5\u9970\u4E49\u773C\u7F69",
+      rarity: "rare",
+      icon: "",
+      requirement: "acting >= 32",
+      bonus: {
+        acting: 4
+      },
+      hidden: {
+        others: 2,
+        scandal: 2
+      },
+      hiddenText: "\u4E00\u534A\u662F\u795E\u79D8\uFF0C\u4E00\u534A\u662F\u8BDD\u9898\u3002",
+      text: "\u6234\u4E0A\u7684\u77AC\u95F4\uFF0C\u4EBA\u8BBE\u5C31\u7ACB\u4F4F\u4E86\u4E00\u534A\u3002",
+      source: "",
+      price: 2200
+    },
+    {
+      id: "eq-badge-v1",
+      slot: "accessory",
+      name: "\u56E2\u5FBD\xB7\u521D\u4EE3",
+      rarity: "rare",
+      icon: "",
+      requirement: 'hasFlag("ev:party-first")',
+      bonus: {
+        talk: 2,
+        dance: 2
+      },
+      hidden: {},
+      hiddenText: "",
+      text: "\u53EA\u53D1\u8FC7\u4E00\u6279\uFF0C\u540E\u6765\u8FDB\u56E2\u7684\u4EBA\u90FD\u7FA1\u6155\u3002",
+      source: "",
+      price: 0
+    },
+    {
+      id: "eq-crown",
+      slot: "accessory",
+      name: "\u51A0\u5195\u5934\u9970",
+      rarity: "legendary",
+      icon: "",
+      requirement: "total >= 200",
+      bonus: {
+        vocal: 3,
+        dance: 3,
+        acting: 2
+      },
+      hidden: {
+        self: 3
+      },
+      hiddenText: "\u8FD4\u573A\u7684\u65F6\u5019\u6234\u4E0A\u5B83\uFF0C\u5168\u573A\u558A\u4F60\u5973\u738B\u3002\u5176\u5B9E\u662F\u5851\u6599\u7684\uFF0C\u6CA1\u4EBA\u770B\u5F97\u51FA\u6765\u3002",
+      text: "\u706F\u5149\u4E0B\uFF0C\u5851\u6599\u4E5F\u80FD\u53D1\u5149\u3002",
+      source: "",
+      price: 8e3
+    },
+    {
+      id: "eq-fan-necklace",
+      slot: "accessory",
+      name: "\u7C89\u4E1D\u9001\u7684\u9879\u94FE",
+      rarity: "legendary",
+      icon: "",
+      requirement: 'hasFlag("ev:fan-gift")',
+      bonus: {
+        talk: 3,
+        vocal: 2
+      },
+      hidden: {
+        others: 4
+      },
+      hiddenText: "\u6BCF\u6B21\u6234\u4E0A\uFF0C\u90FD\u60F3\u8D77\u9001\u5B83\u7684\u90A3\u4E2A\u4EBA\u3002",
+      text: "\u4F60\u4ECE\u6765\u4E0D\u6562\u7B97\u5B83\u503C\u591A\u5C11\u94B1\u3002",
+      source: "",
+      price: 0
+    },
+    {
+      id: "eq-hc-natural-black",
+      slot: "haircolor",
+      name: "\u81EA\u7136\u9ED1",
+      rarity: "common",
+      icon: "",
+      requirement: {},
+      bonus: {},
+      hidden: {
+        self: 1
+      },
+      hiddenText: "\u522B\u4EBA\u770B\u4E0D\u89C1\uFF0C\u4F46\u4F60\u81EA\u5DF1\u77E5\u9053\u81EA\u5DF1\u7A33\u4E0D\u7A33\u3002",
+      text: "\u6700\u4E0D\u5BB9\u6613\u51FA\u9519\u7684\u989C\u8272\u3002\u5988\u5988\u8BF4\u7684\u3002",
+      source: "",
+      price: 300
+    },
+    {
+      id: "eq-hc-linen-brown",
+      slot: "haircolor",
+      name: "\u4E9A\u9EBB\u68D5",
+      rarity: "common",
+      icon: "",
+      requirement: {},
+      bonus: {
+        talk: 1
+      },
+      hidden: {
+        others: 1
+      },
+      hiddenText: "\u8D70\u5728\u8DEF\u4E0A\u591A\u88AB\u770B\u4E00\u773C\uFF0C\u8BF4\u4E0D\u6E05\u4E3A\u4EC0\u4E48\u3002",
+      text: "\u9633\u5149\u5E95\u4E0B\u7684\u68D5\uFF0C\u50CF\u521A\u7761\u9192\u4E5F\u5F88\u597D\u770B\u3002",
+      source: "",
+      price: 500
+    },
+    {
+      id: "eq-hc-honey-tea",
+      slot: "haircolor",
+      name: "\u8702\u871C\u8336",
+      rarity: "uncommon",
+      icon: "",
+      requirement: {},
+      bonus: {
+        talk: 2
+      },
+      hidden: {
+        others: 1,
+        self: 1
+      },
+      hiddenText: "\u955C\u5934\u504F\u7231\u5B83\uFF0C\u8BF4\u4E0D\u6E05\u4E3A\u4EC0\u4E48\u3002",
+      text: "\u751C\uFF0C\u4F46\u4E0D\u817B\uFF0C\u4E0A\u955C\u5F88\u5403\u9999\u3002",
+      source: "",
+      price: 900
+    },
+    {
+      id: "eq-hc-chestnut",
+      slot: "haircolor",
+      name: "\u6DF1\u6817\u8272",
+      rarity: "uncommon",
+      icon: "",
+      requirement: {},
+      bonus: {
+        acting: 1,
+        talk: 1
+      },
+      hidden: {
+        self: 1
+      },
+      hiddenText: "\u5B89\u9759\u7684\u989C\u8272\uFF0C\u601D\u8003\u7684\u65F6\u5019\u66F4\u6C89\u5F97\u4F4F\u3002",
+      text: "\u6C89\u7A33\uFF0C\u9002\u5408\u6F14\u620F\u65F6\u7684\u90A3\u5F20\u8138\u3002",
+      source: "",
+      price: 900
+    },
+    {
+      id: "eq-hc-silver-grey",
+      slot: "haircolor",
+      name: "\u5976\u5976\u7070",
+      rarity: "uncommon",
+      icon: "",
+      requirement: {},
+      bonus: {
+        acting: 2
+      },
+      hidden: {
+        others: 2
+      },
+      hiddenText: "\u56DE\u5934\u7387\u9AD8\uFF0C\u8BAE\u8BBA\u4E5F\u9AD8\u3002",
+      text: "\u8D70\u5728\u8857\u4E0A\u4F1A\u88AB\u56DE\u5934\u770B\u4E24\u6B21\u3002",
+      source: "",
+      price: 1500
+    },
+    {
+      id: "eq-hc-haze-blue",
+      slot: "haircolor",
+      name: "\u96FE\u973E\u84DD",
+      rarity: "rare",
+      icon: "",
+      requirement: {},
+      bonus: {
+        vocal: 2,
+        talk: 1
+      },
+      hidden: {
+        others: 2,
+        fit: 1
+      },
+      hiddenText: "\u51B7\u8C03\u7684\u4E1C\u897F\uFF0C\u548C\u9EA6\u514B\u98CE\u683C\u5916\u5408\u3002",
+      text: "\u51B7\u8C03\uFF0C\u63E1\u4F4F\u9EA6\u65F6\u50CF\u6362\u4E86\u4E2A\u4EBA\u3002",
+      source: "",
+      price: 2400
+    },
+    {
+      id: "eq-hc-lavender",
+      slot: "haircolor",
+      name: "\u85B0\u8863\u8349\u7D2B",
+      rarity: "rare",
+      icon: "",
+      requirement: {},
+      bonus: {
+        acting: 2,
+        talk: 1
+      },
+      hidden: {
+        others: 2,
+        self: 1
+      },
+      hiddenText: "\u50CF\u4ECE\u7ED8\u672C\u91CC\u8D70\u51FA\u6765\u7684\u4EBA\u3002",
+      text: "\u7AE5\u8BDD\u611F\u5F88\u91CD\uFF0C\u7C89\u4E1D\u7279\u522B\u7231\u62CD\u3002",
+      source: "",
+      price: 2400
+    },
+    {
+      id: "eq-hc-sakura-pink",
+      slot: "haircolor",
+      name: "\u6A31\u82B1\u7C89",
+      rarity: "rare",
+      icon: "",
+      requirement: {},
+      bonus: {
+        talk: 3
+      },
+      hidden: {
+        others: 2
+      },
+      hiddenText: "\u5408\u5F71\u65F6\u4F60\u603B\u662F\u6700\u4EAE\u7684\u90A3\u4E00\u4E2A\u3002",
+      text: "\u8425\u4E1A\u8272\uFF0C\u62CD\u7167\u6C38\u8FDC\u7B2C\u4E00\u540D\u3002",
+      source: "",
+      price: 2600
+    },
+    {
+      id: "eq-hc-mint-green",
+      slot: "haircolor",
+      name: "\u8584\u8377\u7EFF",
+      rarity: "rare",
+      icon: "",
+      requirement: {},
+      bonus: {
+        dance: 2,
+        talk: 1
+      },
+      hidden: {
+        others: 1,
+        fit: 1
+      },
+      hiddenText: "\u8DF3\u8D77\u6765\u7684\u65F6\u5019\uFF0C\u989C\u8272\u4F1A\u8DDF\u7740\u4F60\u8D70\u3002",
+      text: "\u6E05\u723D\uFF0C\u821E\u53F0\u706F\u4E0B\u5F88\u8DF3\u3002",
+      source: "",
+      price: 2600
+    },
+    {
+      id: "eq-hc-rose-gold",
+      slot: "haircolor",
+      name: "\u73AB\u7470\u91D1",
+      rarity: "legendary",
+      icon: "",
+      requirement: {},
+      bonus: {
+        vocal: 2,
+        talk: 2
+      },
+      hidden: {
+        others: 3,
+        fit: 1
+      },
+      hiddenText: "\u706F\u4E00\u6253\uFF0C\u5934\u53D1\u5148\u88AB\u770B\u89C1\u3002",
+      text: "\u6696\u8C03\u7684\u9AD8\u7EA7\u611F\uFF0C\u955C\u5934\u5403\u4E0D\u4E0B\u7B2C\u4E8C\u4E2A\u4EBA\u3002",
+      source: "",
+      price: 5200
+    },
+    {
+      id: "eq-hc-platinum",
+      slot: "haircolor",
+      name: "\u767D\u91D1",
+      rarity: "legendary",
+      icon: "",
+      requirement: {},
+      bonus: {
+        vocal: 3,
+        acting: 1
+      },
+      hidden: {
+        others: 3,
+        self: 1
+      },
+      hiddenText: "\u4E0D\u9700\u8981\u6EE4\u955C\u7684\u4E00\u79CD\u4EAE\u3002",
+      text: "\u6F02\u5230\u6700\u6D45\u7684\u90A3\u79CD\uFF0C\u5F88\u8D35\uFF0C\u4E5F\u5F88\u8106\u3002",
+      source: "",
+      price: 6e3
+    },
+    {
+      id: "eq-hc-gradient",
+      slot: "haircolor",
+      name: "\u6E10\u53D8\u6311\u67D3",
+      rarity: "legendary",
+      icon: "",
+      requirement: {},
+      bonus: {
+        dance: 2,
+        vocal: 2,
+        talk: 2
+      },
+      hidden: {
+        others: 3,
+        self: 1,
+        fit: 2
+      },
+      hiddenText: "\u7EF4\u6301\u5B83\u5F88\u8D35\uFF0C\u4F46\u5B83\u66FF\u4F60\u8BB0\u4F4F\u4E86\u5F88\u591A\u821E\u53F0\u3002",
+      text: "\u6700\u8D35\u3001\u6700\u96BE\u7EF4\u6301\uFF0C\u4E5F\u6700\u4E0A\u955C\u3002",
+      source: "",
+      price: 8e3
+    }
+  ]
 };
 
-// ../core/src/shop.ts
-var COMMON_PRICE = shop_default.shop.commonPrice;
-var RARE_PRICE = shop_default.shop.rarePrice;
-var OUTFITS = shop_default.shop.common.map((o) => ({
-  name: o.name,
-  stat: o.stat,
-  statName: o.statName,
-  value: o.value
-}));
-var RARE_OUTFITS = shop_default.shop.rare.map((o) => ({
-  name: o.name,
-  stat: o.stat,
-  statName: o.statName,
-  value: o.value
-}));
+// ../core/data/items.json
+var items_default = {
+  _\u8BF4\u660E: "\u6D88\u8017\u54C1\u8868\uFF08\u98DF\u7269/\u836F\u54C1\uFF09\uFF1Aeffects=\u663E\u6027\u6548\u679C\uFF0Cnegative=\u8D1F\u9762\u6548\u679C\uFF0Chidden=\u9690\u85CF\u6548\u679C\uFF08\u53EA\u5E94\u7528\u4E0D\u5C55\u793A\uFF0C\u6587\u6848\u91CC\u9690\u6666\u8868\u8FBE\uFF09\uFF1Bprice=\u53C2\u8003\u4EF7",
+  items: [
+    {
+      id: "food-bubble-tea",
+      type: "food",
+      name: "\u73CD\u73E0\u5976\u8336",
+      rarity: "common",
+      icon: "",
+      effects: {
+        mood: 12,
+        satiety: 5
+      },
+      negative: {},
+      hidden: {},
+      text: "\u4E09\u5206\u7CD6\uFF0C\u53BB\u51B0\u3002\u8FD9\u662F\u539F\u5219\u95EE\u9898\u3002",
+      source: "",
+      price: 15
+    },
+    {
+      id: "food-taro-bobo",
+      type: "food",
+      name: "\u828B\u6CE5\u6CE2\u6CE2\u5976\u8336",
+      rarity: "common",
+      icon: "",
+      effects: {
+        mood: 12,
+        satiety: 6
+      },
+      negative: {},
+      hidden: {},
+      text: "\u828B\u6CE5\u8981\u6363\u5F97\u591F\u788E\uFF0C\u6CE2\u6CE2\u8981\u716E\u5F97\u591F\u7CEF\u3002",
+      source: "",
+      price: 16
+    },
+    {
+      id: "food-mango-pomelo",
+      type: "food",
+      name: "\u6768\u679D\u7518\u9732",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        mood: 18
+      },
+      negative: {},
+      hidden: {},
+      text: "\u8292\u679C\u548C\u897F\u67DA\u7684\u6BD4\u4F8B\uFF0C\u662F\u8FD9\u5BB6\u5E97\u7684\u5546\u4E1A\u673A\u5BC6\u3002",
+      source: "",
+      price: 25
+    },
+    {
+      id: "food-coconut-latte",
+      type: "food",
+      name: "\u751F\u6930\u62FF\u94C1",
+      rarity: "common",
+      icon: "",
+      effects: {
+        mood: 10,
+        stamina: 5
+      },
+      negative: {},
+      hidden: {},
+      text: "\u4E0B\u5348\u4E09\u70B9\u7684\u7EED\u547D\u6C34\u3002",
+      source: "",
+      price: 18
+    },
+    {
+      id: "food-iced-americano",
+      type: "food",
+      name: "\u51B0\u7F8E\u5F0F",
+      rarity: "common",
+      icon: "",
+      effects: {
+        stamina: 8
+      },
+      negative: {
+        mood: 2
+      },
+      hidden: {},
+      text: "\u82E6\u3002\u4F46\u6E05\u9192\u3002",
+      source: "",
+      price: 12
+    },
+    {
+      id: "food-oat-latte",
+      type: "food",
+      name: "\u71D5\u9EA6\u62FF\u94C1",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        mood: 12,
+        stamina: 8
+      },
+      negative: {},
+      hidden: {},
+      text: "\u71D5\u9EA6\u7684\u8C37\u7269\u9999\u76D6\u8FC7\u4E86\u5496\u5561\u7684\u82E6\u3002",
+      source: "",
+      price: 22
+    },
+    {
+      id: "food-matcha-latte",
+      type: "food",
+      name: "\u62B9\u8336\u62FF\u94C1",
+      rarity: "common",
+      icon: "",
+      effects: {
+        mood: 10
+      },
+      negative: {},
+      hidden: {},
+      text: "\u62B9\u8336\u63A7\u7684\u65E0\u5E95\u6D1E\u3002",
+      source: "",
+      price: 18
+    },
+    {
+      id: "food-triple-milk-tea",
+      type: "food",
+      name: "\u4E09\u5144\u5F1F\u5976\u8336",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        mood: 16,
+        satiety: 8
+      },
+      negative: {},
+      hidden: {},
+      text: "\u73CD\u73E0\u3001\u4ED9\u8349\u3001\u5E03\u4E01\u3002\u9009\u62E9\u56F0\u96BE\u75C7\u7684\u7B54\u6848\uFF1A\u5168\u90FD\u8981\u3002",
+      source: "",
+      price: 20
+    },
+    {
+      id: "food-lemon-tea",
+      type: "food",
+      name: "\u67E0\u6AAC\u8336",
+      rarity: "common",
+      icon: "",
+      effects: {
+        mood: 8
+      },
+      negative: {},
+      hidden: {},
+      text: "\u6253\u5B63\u67E0\u6AAC\uFF0C\u9524\u5230\u51FA\u6C41\u3002",
+      source: "",
+      price: 10
+    },
+    {
+      id: "food-watermelon-juice",
+      type: "food",
+      name: "\u9C9C\u69A8\u897F\u74DC\u6C41",
+      rarity: "common",
+      icon: "",
+      effects: {
+        mood: 8,
+        satiety: 5
+      },
+      negative: {},
+      hidden: {},
+      text: "\u590F\u5929\u7684\u547D\u662F\u897F\u74DC\u7ED9\u7684\u3002",
+      source: "",
+      price: 12
+    },
+    {
+      id: "food-osmanthus-latte",
+      type: "food",
+      name: "\u6842\u82B1\u9152\u917F\u5976\u8336",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        mood: 15
+      },
+      negative: {},
+      hidden: {},
+      text: "\u79CB\u5929\u7684\u7B2C\u4E00\u676F\uFF0C\u95FB\u7740\u5C31\u6709\u6842\u82B1\u56ED\u3002",
+      source: "",
+      price: 24
+    },
+    {
+      id: "food-grape-cheese",
+      type: "food",
+      name: "\u591A\u8089\u8461\u8404",
+      rarity: "rare",
+      icon: "",
+      effects: {
+        mood: 25
+      },
+      negative: {},
+      hidden: {},
+      text: "\u6392\u961F\u56DB\u5341\u5206\u949F\u3002\u503C\u3002",
+      source: "",
+      price: 32
+    },
+    {
+      id: "food-egg-tart",
+      type: "food",
+      name: "\u86CB\u631E",
+      rarity: "common",
+      icon: "",
+      effects: {
+        mood: 10,
+        satiety: 5
+      },
+      negative: {},
+      hidden: {},
+      text: "\u521A\u51FA\u7089\u7684\u90A3\u53E3\u9165\u76AE\u4F1A\u6389\u6E23\uFF0C\u8BB0\u5F97\u7528\u624B\u63A5\u4F4F\u3002",
+      source: "",
+      price: 8
+    },
+    {
+      id: "food-dirty-bun",
+      type: "food",
+      name: "\u810F\u810F\u5305",
+      rarity: "common",
+      icon: "",
+      effects: {
+        mood: 12,
+        satiety: 8
+      },
+      negative: {},
+      hidden: {},
+      text: "\u5403\u5B8C\u624B\u6307\u90FD\u662F\u5DE7\u514B\u529B\u7C89\uFF0C\u522B\u6478\u767D\u88E4\u5B50\u3002",
+      source: "",
+      price: 12
+    },
+    {
+      id: "food-cheese-tart",
+      type: "food",
+      name: "\u534A\u719F\u829D\u58EB",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        mood: 15
+      },
+      negative: {},
+      hidden: {},
+      text: "\u5207\u5F00\u4F1A\u6D41\u5FC3\uFF0C\u50CF\u6162\u534A\u62CD\u7684\u5FC3\u52A8\u3002",
+      source: "",
+      price: 22
+    },
+    {
+      id: "food-cream-puff",
+      type: "food",
+      name: "\u6CE1\u8299",
+      rarity: "common",
+      icon: "",
+      effects: {
+        mood: 10
+      },
+      negative: {},
+      hidden: {},
+      text: "\u5976\u6CB9\u4ECE\u4E2D\u95F4\u6324\u51FA\u6765\u624D\u7B97\u5408\u683C\u3002",
+      source: "",
+      price: 10
+    },
+    {
+      id: "food-tiramisu",
+      type: "food",
+      name: "\u63D0\u62C9\u7C73\u82CF",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        mood: 16
+      },
+      negative: {},
+      hidden: {},
+      text: "\u300C\u5E26\u6211\u8D70\u300D\u3002\u4ECA\u5929\u8C01\u90FD\u522B\u60F3\u5E26\u6211\u8D70\uFF0C\u6211\u8981\u5403\u5B8C\u5B83\u3002",
+      source: "",
+      price: 26
+    },
+    {
+      id: "food-snow-mochi",
+      type: "food",
+      name: "\u96EA\u5A9A\u5A18",
+      rarity: "common",
+      icon: "",
+      effects: {
+        mood: 10
+      },
+      negative: {},
+      hidden: {},
+      text: "\u51B0\u76AE\u88F9\u7740\u5976\u6CB9\u548C\u4E00\u6574\u9897\u8349\u8393\u3002",
+      source: "",
+      price: 10
+    },
+    {
+      id: "food-matsong-beibei",
+      type: "food",
+      name: "\u8089\u677E\u5C0F\u8D1D",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        mood: 14,
+        satiety: 10
+      },
+      negative: {},
+      hidden: {},
+      text: "\u6D77\u82D4\u8089\u677E\u52A0\u6C99\u62C9\u9171\uFF0C\u7F6A\u6076\u4F46\u5FEB\u4E50\u3002",
+      source: "",
+      price: 15
+    },
+    {
+      id: "food-mochi",
+      type: "food",
+      name: "\u9EBB\u85AF",
+      rarity: "common",
+      icon: "",
+      effects: {
+        mood: 8,
+        satiety: 5
+      },
+      negative: {},
+      hidden: {},
+      text: "\u7CEF\u53FD\u53FD\u661F\u4EBA\u72C2\u559C\u3002",
+      source: "",
+      price: 6
+    },
+    {
+      id: "food-tanghulu",
+      type: "food",
+      name: "\u7CD6\u846B\u82A6",
+      rarity: "common",
+      icon: "",
+      effects: {
+        mood: 12
+      },
+      negative: {},
+      hidden: {},
+      text: "\u54AC\u4E0B\u53BB\u90A3\u58F0\u8106\u54CD\uFF0C\u662F\u5317\u65B9\u7684\u51AC\u5929\u3002",
+      source: "",
+      price: 8
+    },
+    {
+      id: "food-milk-pudding",
+      type: "food",
+      name: "\u53CC\u76AE\u5976",
+      rarity: "common",
+      icon: "",
+      effects: {
+        mood: 10,
+        satiety: 6
+      },
+      negative: {},
+      hidden: {},
+      text: "\u6C34\u725B\u5976\u505A\u7684\u624D\u6B63\u5B97\u3002",
+      source: "",
+      price: 12
+    },
+    {
+      id: "food-yolk-cake",
+      type: "food",
+      name: "\u86CB\u9EC4\u9165",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        mood: 12,
+        satiety: 10
+      },
+      negative: {},
+      hidden: {},
+      text: "\u4E00\u5C42\u9165\u4E00\u5C42\u8C46\u6C99\u4E00\u9897\u54B8\u86CB\u9EC4\u3002",
+      source: "",
+      price: 12
+    },
+    {
+      id: "food-strawberry-cake",
+      type: "food",
+      name: "\u8349\u8393\u86CB\u7CD5",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        mood: 18
+      },
+      negative: {},
+      hidden: {},
+      text: "\u8349\u8393\u8981\u5207\u534A\u7ACB\u5728\u5976\u6CB9\u4E0A\uFF0C\u4EEA\u5F0F\u611F\u3002",
+      source: "",
+      price: 32
+    },
+    {
+      id: "food-ice-cream",
+      type: "food",
+      name: "\u51B0\u6DC7\u6DCB",
+      rarity: "common",
+      icon: "",
+      effects: {
+        mood: 12,
+        stamina: 3
+      },
+      negative: {},
+      hidden: {},
+      text: "\u7B2C\u4E8C\u4E2A\u534A\u4EF7\u7684\u65F6\u5019\uFF0C\u4E00\u4E2A\u4EBA\u4E5F\u8981\u4E70\u4E24\u652F\u3002",
+      source: "",
+      price: 8
+    },
+    {
+      id: "food-souffle",
+      type: "food",
+      name: "\u8212\u8299\u857E",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        mood: 16
+      },
+      negative: {},
+      hidden: {},
+      text: "\u7B49\u5B83\u51FA\u7089\u7684\u5341\u4E94\u5206\u949F\uFF0C\u6BD4\u6F14\u51FA\u524D\u8FD8\u7D27\u5F20\u3002",
+      source: "",
+      price: 30
+    },
+    {
+      id: "food-yangmei-tangyuan",
+      type: "food",
+      name: "\u6768\u6885\u51B0\u6C64\u5706",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        mood: 15,
+        stamina: 5
+      },
+      negative: {},
+      hidden: {},
+      text: "\u51B0\u9547\u6768\u6885\u914D\u7CEF\u6C64\u5706\uFF0C\u4E00\u79D2\u5165\u590F\u3002",
+      source: "",
+      price: 18
+    },
+    {
+      id: "food-chestnut-cake",
+      type: "food",
+      name: "\u6817\u5B50\u86CB\u7CD5",
+      rarity: "rare",
+      icon: "",
+      effects: {
+        mood: 22
+      },
+      negative: {},
+      hidden: {},
+      text: "\u79CB\u5929\u9650\u5B9A\u7684\u6E29\u67D4\u3002",
+      source: "",
+      price: 36
+    },
+    {
+      id: "food-mc-spicy",
+      type: "food",
+      name: "\u9EA6\u8FA3\u9E21\u817F\u5821\u5957\u9910",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        satiety: 30,
+        mood: 10,
+        stamina: 8
+      },
+      negative: {},
+      hidden: {},
+      text: "\u52A0\u51B0\u53EF\u4E50\uFF0C\u8C22\u8C22\u3002",
+      source: "",
+      price: 35
+    },
+    {
+      id: "food-crazy-thursday",
+      type: "food",
+      name: "\u75AF\u72C2\u661F\u671F\u56DB",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        satiety: 25,
+        mood: 15
+      },
+      negative: {},
+      hidden: {},
+      text: "V \u6211 50\uFF0C\u8C22\u8C22\u3002",
+      source: "",
+      price: 40
+    },
+    {
+      id: "food-luosi-noodle",
+      type: "food",
+      name: "\u87BA\u86F3\u7C89",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        satiety: 28,
+        mood: 18
+      },
+      negative: {},
+      hidden: {},
+      text: "\u95FB\u7740\u4E0A\u5934\uFF0C\u5403\u7740\u66F4\u4E0A\u5934\u3002\u5403\u5B8C\u8BB0\u5F97\u5F00\u7A97\u3002",
+      source: "",
+      price: 22
+    },
+    {
+      id: "food-malatang",
+      type: "food",
+      name: "\u9EBB\u8FA3\u70EB",
+      rarity: "common",
+      icon: "",
+      effects: {
+        satiety: 25,
+        mood: 10
+      },
+      negative: {},
+      hidden: {},
+      text: "\u5939\u4E86\u4E00\u6574\u7897\u5A03\u5A03\u83DC\u548C\u5348\u9910\u8089\u3002",
+      source: "",
+      price: 20
+    },
+    {
+      id: "food-oden",
+      type: "food",
+      name: "\u5173\u4E1C\u716E",
+      rarity: "common",
+      icon: "",
+      effects: {
+        satiety: 20,
+        mood: 8,
+        stamina: 5
+      },
+      negative: {},
+      hidden: {},
+      text: "\u841D\u535C\u8981\u716E\u5230\u900F\u660E\u3002",
+      source: "",
+      price: 15
+    },
+    {
+      id: "food-jianbing",
+      type: "food",
+      name: "\u714E\u997C\u679C\u5B50",
+      rarity: "common",
+      icon: "",
+      effects: {
+        satiety: 22,
+        stamina: 8
+      },
+      negative: {},
+      hidden: {},
+      text: "\u52A0\u4E24\u4E2A\u86CB\uFF0C\u8584\u8106\u8981\u53CC\u4EFD\u3002",
+      source: "",
+      price: 10
+    },
+    {
+      id: "food-roujiamo",
+      type: "food",
+      name: "\u8089\u5939\u998D",
+      rarity: "common",
+      icon: "",
+      effects: {
+        satiety: 22
+      },
+      negative: {},
+      hidden: {},
+      text: "\u767D\u5409\u998D\u8981\u73B0\u6253\u7684\u3002",
+      source: "",
+      price: 12
+    },
+    {
+      id: "food-liangpi",
+      type: "food",
+      name: "\u51C9\u76AE",
+      rarity: "common",
+      icon: "",
+      effects: {
+        satiety: 18,
+        mood: 5
+      },
+      negative: {},
+      hidden: {},
+      text: "\u591A\u653E\u8FA3\u5B50\u591A\u653E\u918B\u3002",
+      source: "",
+      price: 10
+    },
+    {
+      id: "food-fried-skewer",
+      type: "food",
+      name: "\u70B8\u4E32",
+      rarity: "common",
+      icon: "",
+      effects: {
+        satiety: 15,
+        mood: 12
+      },
+      negative: {},
+      hidden: {},
+      text: "\u4E0B\u73ED\u8DEF\u4E0A\u7684\u5FEB\u4E50\u3002",
+      source: "",
+      price: 12
+    },
+    {
+      id: "food-bbq",
+      type: "food",
+      name: "\u6DF1\u591C\u70E7\u70E4",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        satiety: 25,
+        mood: 20
+      },
+      negative: {},
+      hidden: {},
+      text: "\u70E4\u8304\u5B50\u662F\u672C\u4F53\uFF0C\u4E32\u662F\u914D\u89D2\u3002",
+      source: "",
+      price: 45
+    },
+    {
+      id: "food-crayfish",
+      type: "food",
+      name: "\u5C0F\u9F99\u867E",
+      rarity: "rare",
+      icon: "",
+      effects: {
+        satiety: 20,
+        mood: 28
+      },
+      negative: {},
+      hidden: {},
+      text: "\u5265\u58F3\u4E24\u5C0F\u65F6\uFF0C\u5403\u8089\u4E94\u5206\u949F\uFF0C\u5FEB\u4E50\u4E00\u6574\u5929\u3002",
+      source: "",
+      price: 88
+    },
+    {
+      id: "food-hotpot",
+      type: "food",
+      name: "\u706B\u9505",
+      rarity: "rare",
+      icon: "",
+      effects: {
+        satiety: 35,
+        mood: 30
+      },
+      negative: {
+        stamina: 5
+      },
+      hidden: {},
+      text: "\u6BDB\u809A\u4E03\u4E0A\u516B\u4E0B\uFF0C\u9E2D\u80A0\u63D0\u4E09\u4E0B\u3002\u6491\u5230\u6276\u5899\u3002",
+      source: "",
+      price: 120
+    },
+    {
+      id: "food-suancaoyu",
+      type: "food",
+      name: "\u9178\u83DC\u9C7C",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        satiety: 30,
+        mood: 12
+      },
+      negative: {},
+      hidden: {},
+      text: "\u6C64\u8981\u9178\u5F97\u5192\u9F3B\u6D95\u624D\u591F\u5473\u3002",
+      source: "",
+      price: 60
+    },
+    {
+      id: "food-kao-lengmian",
+      type: "food",
+      name: "\u70E4\u51B7\u9762",
+      rarity: "common",
+      icon: "",
+      effects: {
+        satiety: 18,
+        mood: 10
+      },
+      negative: {},
+      hidden: {},
+      text: "\u94C1\u677F\u6ECB\u5566\u4E00\u58F0\uFF0C\u7075\u9B42\u5C31\u5230\u4E86\u3002",
+      source: "",
+      price: 10
+    },
+    {
+      id: "food-stinky-tofu",
+      type: "food",
+      name: "\u81ED\u8C46\u8150",
+      rarity: "common",
+      icon: "",
+      effects: {
+        satiety: 12,
+        mood: 10
+      },
+      negative: {},
+      hidden: {},
+      text: "\u7231\u7684\u4EBA\u6392\u961F\uFF0C\u4E0D\u7231\u7684\u4EBA\u7ED5\u9053\u3002",
+      source: "",
+      price: 12
+    },
+    {
+      id: "food-takoyaki",
+      type: "food",
+      name: "\u7AE0\u9C7C\u5C0F\u4E38\u5B50",
+      rarity: "common",
+      icon: "",
+      effects: {
+        satiety: 15,
+        mood: 10
+      },
+      negative: {},
+      hidden: {},
+      text: "\u6728\u9C7C\u82B1\u5728\u4E0A\u9762\u8DF3\u821E\u3002",
+      source: "",
+      price: 12
+    },
+    {
+      id: "food-egg-pancake",
+      type: "food",
+      name: "\u9E21\u86CB\u704C\u997C",
+      rarity: "common",
+      icon: "",
+      effects: {
+        satiety: 20
+      },
+      negative: {},
+      hidden: {},
+      text: "\u65E9\u516B\u4EBA\u7684\u6551\u547D\u65E9\u9910\u3002",
+      source: "",
+      price: 8
+    },
+    {
+      id: "food-huangmenji",
+      type: "food",
+      name: "\u9EC4\u7116\u9E21\u7C73\u996D",
+      rarity: "common",
+      icon: "",
+      effects: {
+        satiety: 30,
+        stamina: 10
+      },
+      negative: {},
+      hidden: {},
+      text: "\u4E09\u7897\u7C73\u996D\u514D\u8D39\u7EED\u3002",
+      source: "",
+      price: 22
+    },
+    {
+      id: "food-lanzhou-noodle",
+      type: "food",
+      name: "\u5170\u5DDE\u62C9\u9762",
+      rarity: "common",
+      icon: "",
+      effects: {
+        satiety: 28,
+        stamina: 10
+      },
+      negative: {},
+      hidden: {},
+      text: "\u4E00\u6E05\u4E8C\u767D\u4E09\u7EA2\u56DB\u7EFF\u4E94\u9EC4\u3002",
+      source: "",
+      price: 18
+    },
+    {
+      id: "food-malaxiangguo",
+      type: "food",
+      name: "\u9EBB\u8FA3\u9999\u9505",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        satiety: 32,
+        mood: 15
+      },
+      negative: {},
+      hidden: {},
+      text: "\u5FAE\u8FA3\u662F\u6700\u540E\u7684\u5014\u5F3A\u3002",
+      source: "",
+      price: 40
+    },
+    {
+      id: "food-sushi-box",
+      type: "food",
+      name: "\u5BFF\u53F8\u62FC\u76D2",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        satiety: 25,
+        mood: 10
+      },
+      negative: {},
+      hidden: {},
+      text: "\u4E09\u6587\u9C7C\u8981\u80A5\u7684\u3002",
+      source: "",
+      price: 48
+    },
+    {
+      id: "food-fried-chicken",
+      type: "food",
+      name: "\u97E9\u5F0F\u70B8\u9E21\u914D\u5564\u9152",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        satiety: 28,
+        mood: 20
+      },
+      negative: {},
+      hidden: {},
+      text: "\u8FFD\u5267\u6807\u914D\u3002\u672A\u6210\u5E74\u4EBA\u8BF7\u6362\u53EF\u4E50\u3002",
+      source: "",
+      price: 55
+    },
+    {
+      id: "food-rice-ball",
+      type: "food",
+      name: "\u996D\u56E2",
+      rarity: "common",
+      icon: "",
+      effects: {
+        satiety: 15,
+        stamina: 5
+      },
+      negative: {},
+      hidden: {},
+      text: "\u52A0\u70ED\u4E00\u5206\u949F\uFF0C\u63E1\u5728\u624B\u91CC\u6B63\u597D\u6696\u3002",
+      source: "",
+      price: 8
+    },
+    {
+      id: "food-sandwich",
+      type: "food",
+      name: "\u4E09\u660E\u6CBB",
+      rarity: "common",
+      icon: "",
+      effects: {
+        satiety: 18
+      },
+      negative: {},
+      hidden: {},
+      text: "\u91D1\u67AA\u9C7C\u7389\u7C73\u7684\uFF0C\u6C38\u8FDC\u7684\u795E\u3002",
+      source: "",
+      price: 12
+    },
+    {
+      id: "food-salad",
+      type: "food",
+      name: "\u6C99\u62C9\u8F7B\u98DF\u76D2",
+      rarity: "common",
+      icon: "",
+      effects: {
+        satiety: 15,
+        mood: 3
+      },
+      negative: {},
+      hidden: {},
+      text: "\u5403\u8349\u7684\u5FEB\u4E50\u4F60\u4E0D\u61C2\u2014\u2014\u5176\u5B9E\u662F\u9E21\u80F8\u8089\u5728\u6491\u573A\u9762\u3002",
+      source: "",
+      price: 20
+    },
+    {
+      id: "food-yogurt",
+      type: "food",
+      name: "\u9178\u5976",
+      rarity: "common",
+      icon: "",
+      effects: {
+        satiety: 10,
+        mood: 6
+      },
+      negative: {},
+      hidden: {},
+      text: "\u52A0\u4E86\u71D5\u9EA6\u8106\uFF0C\u53E3\u611F\u5C31\u9AD8\u7EA7\u4E86\u3002",
+      source: "",
+      price: 8
+    },
+    {
+      id: "food-nuts",
+      type: "food",
+      name: "\u575A\u679C\u6DF7\u5408\u88C5",
+      rarity: "common",
+      icon: "",
+      effects: {
+        satiety: 10,
+        stamina: 8
+      },
+      negative: {},
+      hidden: {},
+      text: "\u6BCF\u65E5\u575A\u679C\uFF0C\u8DDF\u98CE\u4E70\u7684\u3002",
+      source: "",
+      price: 10
+    },
+    {
+      id: "food-energy-bar",
+      type: "food",
+      name: "\u80FD\u91CF\u68D2",
+      rarity: "common",
+      icon: "",
+      effects: {
+        stamina: 12,
+        satiety: 8
+      },
+      negative: {},
+      hidden: {},
+      text: "\u8D76\u573A\u8DEF\u4E0A\u585E\u4E00\u6839\u3002",
+      source: "",
+      price: 8
+    },
+    {
+      id: "food-fruit-box",
+      type: "food",
+      name: "\u9C9C\u5207\u6C34\u679C\u76D2",
+      rarity: "common",
+      icon: "",
+      effects: {
+        satiety: 10,
+        mood: 8
+      },
+      negative: {},
+      hidden: {},
+      text: "\u897F\u74DC\u4E2D\u95F4\u90A3\u4E00\u52FA\u6700\u751C\u3002",
+      source: "",
+      price: 15
+    },
+    {
+      id: "food-cherries",
+      type: "food",
+      name: "\u8F66\u5398\u5B50\uFF08\u5F53\u5B63\uFF09",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        mood: 20,
+        satiety: 10
+      },
+      negative: {},
+      hidden: {},
+      text: "\u5B9E\u73B0\u8F66\u5398\u5B50\u81EA\u7531\u7684\u7B2C N \u6B21\u5C1D\u8BD5\u3002",
+      source: "",
+      price: 45
+    },
+    {
+      id: "food-bento",
+      type: "food",
+      name: "\u8F7B\u98DF\u4FBF\u5F53",
+      rarity: "common",
+      icon: "",
+      effects: {
+        satiety: 25,
+        stamina: 8
+      },
+      negative: {},
+      hidden: {},
+      text: "\u4FBF\u5229\u5E97\u5341\u5143\u6863\u7684\u9876\u914D\u3002",
+      source: "",
+      price: 18
+    },
+    {
+      id: "food-birthday-cake",
+      type: "food",
+      name: "\u751F\u65E5\u86CB\u7CD5",
+      rarity: "legendary",
+      icon: "",
+      effects: {
+        mood: 50,
+        satiety: 20
+      },
+      negative: {},
+      hidden: {},
+      text: "\u961F\u53CB\u4EEC\u51D1\u94B1\u4E70\u7684\u3002\u8721\u70DB\u63D2\u4E0A\u53BB\u7684\u90A3\u4E00\u523B\uFF0C\u4F60\u5DEE\u70B9\u54ED\u51FA\u6765\u3002",
+      source: "",
+      price: 200
+    },
+    {
+      id: "food-moms-food",
+      type: "food",
+      name: "\u5988\u5988\u5BC4\u6765\u7684\u5BB6\u4E61\u83DC",
+      rarity: "legendary",
+      icon: "",
+      effects: {
+        mood: 45,
+        satiety: 40,
+        stamina: 20
+      },
+      negative: {},
+      hidden: {},
+      text: "\u6CE1\u6CAB\u7BB1\u91CC\u585E\u4E86\u51B0\u888B\uFF0C\u5230\u4F60\u624B\u4E0A\u8FD8\u662F\u51C9\u7684\u3002\u52A0\u70ED\u65F6\u6574\u4E2A\u6392\u7EC3\u5BA4\u90FD\u662F\u5BB6\u7684\u5473\u9053\u3002",
+      source: "",
+      price: 0
+    },
+    {
+      id: "food-celebration",
+      type: "food",
+      name: "\u5E86\u529F\u5BB4",
+      rarity: "legendary",
+      icon: "",
+      effects: {
+        mood: 40,
+        satiety: 35,
+        stamina: 15
+      },
+      negative: {},
+      hidden: {},
+      text: "\u5168\u684C\u4EBA\u4E3E\u7740\u676F\u5B50\u558A\u4F60\u7684\u540D\u5B57\u3002\u8FD9\u4E00\u665A\uFF0C\u6240\u6709\u7684\u7D2F\u90FD\u503C\u4E86\u3002",
+      source: "",
+      price: 300
+    },
+    {
+      id: "med-throat-candy",
+      type: "medicine",
+      name: "\u6DA6\u5589\u7CD6",
+      rarity: "common",
+      icon: "",
+      effects: {
+        stamina: 8
+      },
+      negative: {},
+      hidden: {},
+      text: "\u542B\u7740\u7EC3\u5B8C\u6700\u540E\u4E00\u6BB5\u3002",
+      source: "",
+      price: 8
+    },
+    {
+      id: "med-jinsangzi",
+      type: "medicine",
+      name: "\u91D1\u55D3\u5B50\u5589\u7247",
+      rarity: "common",
+      icon: "",
+      effects: {
+        stamina: 10
+      },
+      negative: {},
+      hidden: {},
+      text: "\u5305\u88C5\u571F\uFF0C\u6548\u679C\u786C\u3002",
+      source: "",
+      price: 10
+    },
+    {
+      id: "med-throat-spray",
+      type: "medicine",
+      name: "\u6DA6\u5589\u55B7\u96FE",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        stamina: 15
+      },
+      negative: {},
+      hidden: {},
+      text: "\u55B7\u5B8C\u90A3\u4E00\u4E0B\u6E05\u51C9\u611F\u76F4\u51B2\u5929\u7075\u76D6\u3002",
+      source: "",
+      price: 30
+    },
+    {
+      id: "med-steam-eyemask",
+      type: "medicine",
+      name: "\u84B8\u6C7D\u773C\u7F69",
+      rarity: "common",
+      icon: "",
+      effects: {
+        mood: 12,
+        stamina: 8
+      },
+      negative: {},
+      hidden: {},
+      text: "\u56DB\u5341\u5EA6\u7684\u9ED1\u6697\uFF0C\u521A\u521A\u597D\u3002",
+      source: "",
+      price: 15
+    },
+    {
+      id: "med-melatonin",
+      type: "medicine",
+      name: "\u892A\u9ED1\u7D20\u8F6F\u7CD6",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        mood: 15,
+        stamina: 15
+      },
+      negative: {
+        restless: 3
+      },
+      hidden: {},
+      text: "\u7761\u524D\u4E00\u9897\u3002\u68A6\u91CC\u6CA1\u6709\u6392\u7EC3\u8868\u3002",
+      source: "",
+      price: 25
+    },
+    {
+      id: "med-vitc",
+      type: "medicine",
+      name: "\u7EF4\u751F\u7D20 C \u6CE1\u817E\u7247",
+      rarity: "common",
+      icon: "",
+      effects: {
+        stamina: 10
+      },
+      negative: {},
+      hidden: {},
+      text: "\u6A58\u5B50\u5473\uFF0C\u6C14\u6CE1\u5728\u676F\u5B50\u91CC\u5F00\u6F14\u5531\u4F1A\u3002",
+      source: "",
+      price: 12
+    },
+    {
+      id: "med-multivit",
+      type: "medicine",
+      name: "\u590D\u5408\u7EF4\u751F\u7D20",
+      rarity: "common",
+      icon: "",
+      effects: {
+        stamina: 12
+      },
+      negative: {},
+      hidden: {},
+      text: "\u4E00\u74F6\u8865\u5168\u6240\u6709\uFF0C\u8425\u517B\u754C\u7684\u6577\u884D\u7F8E\u5B66\u3002",
+      source: "",
+      price: 30
+    },
+    {
+      id: "med-ibuprofen",
+      type: "medicine",
+      name: "\u5E03\u6D1B\u82AC",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        stamina: 25
+      },
+      negative: {
+        fatigue: 5
+      },
+      hidden: {},
+      text: "\u6B62\u75DB\u4F46\u4E0D\u6CBB\u75C5\u3002\u4F60\u77E5\u9053\u7684\uFF0C\u4F46\u4ECA\u5929\u5FC5\u987B\u6491\u8FC7\u53BB\u3002",
+      source: "",
+      price: 18
+    },
+    {
+      id: "med-yunnan-spray",
+      type: "medicine",
+      name: "\u4E91\u5357\u767D\u836F\u55B7\u96FE",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        stamina: 20
+      },
+      negative: {
+        stress: 3
+      },
+      hidden: {},
+      text: "\u55B7\u7684\u65F6\u5019\u75BC\u5F97\u9F87\u7259\uFF0C\u55B7\u5B8C\u5C31\u80FD\u7EE7\u7EED\u8DF3\u3002",
+      source: "",
+      price: 25
+    },
+    {
+      id: "med-knee-brace",
+      type: "medicine",
+      name: "\u533B\u7528\u62A4\u819D",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        stamina: 15
+      },
+      negative: {
+        fatigue: 8
+      },
+      hidden: {},
+      text: "\u6234\u4E0A\u5B83\uFF0C\u819D\u76D6\u7684\u54CD\u58F0\u88AB\u5E03\u6599\u6342\u4F4F\u4E86\u3002",
+      source: "",
+      price: 35
+    },
+    {
+      id: "med-energy-drink",
+      type: "medicine",
+      name: "\u529F\u80FD\u996E\u6599",
+      rarity: "common",
+      icon: "",
+      effects: {
+        stamina: 20
+      },
+      negative: {
+        restless: 8
+      },
+      hidden: {},
+      text: "\u5FC3\u8DF3\u5F97\u50CF\u521A\u8DD1\u5B8C\u516B\u767E\u7C73\u3002\u624B\u522B\u6296\uFF0C\u63E1\u4F4F\u8BDD\u7B52\u3002",
+      source: "",
+      price: 8
+    },
+    {
+      id: "med-espresso-double",
+      type: "medicine",
+      name: "\u6D53\u7F29\u9ED1\u5496\u5561\uFF08\u53CC\u4EFD\uFF09",
+      rarity: "common",
+      icon: "",
+      effects: {
+        stamina: 15,
+        mood: 5
+      },
+      negative: {
+        restless: 5
+      },
+      hidden: {},
+      text: "\u4E24 shot\u3002\u820C\u5934\u9EBB\u4E86\uFF0C\u8111\u5B50\u9192\u4E86\u3002",
+      source: "",
+      price: 15
+    },
+    {
+      id: "med-electrolyte",
+      type: "medicine",
+      name: "\u7535\u89E3\u8D28\u6C34",
+      rarity: "common",
+      icon: "",
+      effects: {
+        stamina: 12
+      },
+      negative: {},
+      hidden: {},
+      text: "\u6C57\u6C34\u6D41\u8D70\u7684\u4E1C\u897F\uFF0C\u8865\u56DE\u6765\u3002",
+      source: "",
+      price: 6
+    },
+    {
+      id: "med-sleep-spray",
+      type: "medicine",
+      name: "\u52A9\u7720\u55B7\u96FE",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        mood: 12,
+        stamina: 10
+      },
+      negative: {},
+      hidden: {},
+      text: "\u85B0\u8863\u8349\u5473\uFF0C\u50CF\u628A\u4E00\u6574\u4E2A\u82B1\u7530\u55B7\u5728\u6795\u5934\u4E0A\u3002",
+      source: "",
+      price: 35
+    },
+    {
+      id: "med-anshen",
+      type: "medicine",
+      name: "\u5B89\u795E\u53E3\u670D\u6DB2",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        mood: 15,
+        stamina: 10
+      },
+      negative: {},
+      hidden: {},
+      text: "\u73BB\u7483\u74F6\u4E00\u652F\u4E00\u652F\u7684\uFF0C\u559D\u51FA\u4E00\u79CD\u4EEA\u5F0F\u611F\u3002",
+      source: "",
+      price: 20
+    },
+    {
+      id: "med-sleeping-pills",
+      type: "medicine",
+      name: "\u5904\u65B9\u5B89\u7720\u836F",
+      rarity: "rare",
+      icon: "",
+      effects: {
+        stamina: 35,
+        mood: 10
+      },
+      negative: {
+        fatigue: 12,
+        desire: 5
+      },
+      hidden: {
+        self: 3
+      },
+      text: "\u68A6\u91CC\u4EC0\u4E48\u90FD\u6CA1\u6709\uFF0C\u8FDE\u7126\u8651\u4E5F\u6CA1\u6709\u3002\u4F60\u6709\u70B9\u5F00\u59CB\u671F\u5F85\u6BCF\u665A\u90A3\u7247\u7A7A\u767D\u3002",
+      source: "",
+      price: 60
+    },
+    {
+      id: "med-anti-anxiety",
+      type: "medicine",
+      name: "\u6297\u7126\u8651\u836F",
+      rarity: "rare",
+      icon: "",
+      effects: {
+        mood: 40
+      },
+      negative: {
+        stamina: 10,
+        fatigue: 8
+      },
+      hidden: {
+        fit: 3
+      },
+      text: "\u4E0A\u53F0\u524D\u624B\u4E0D\u6296\u4E86\u3002\u53EA\u662F\u597D\u50CF\uFF0C\u4E5F\u6CA1\u90A3\u4E48\u60F3\u4E0A\u53F0\u4E86\u3002",
+      source: "",
+      price: 80
+    },
+    {
+      id: "med-antidepressant",
+      type: "medicine",
+      name: "\u6297\u6291\u90C1\u836F",
+      rarity: "rare",
+      icon: "",
+      effects: {
+        mood: 45,
+        stamina: 15
+      },
+      negative: {
+        desire: 8
+      },
+      hidden: {
+        self: 2
+      },
+      text: "\u60C5\u7EEA\u88AB\u78E8\u5E73\u7684\u65E5\u5B50\uFF0C\u638C\u58F0\u542C\u8D77\u6765\u5F88\u8FDC\uFF0C\u4F46\u81F3\u5C11\u4E0D\u75BC\u4E86\u3002",
+      source: "",
+      price: 90
+    },
+    {
+      id: "med-strong-painkiller",
+      type: "medicine",
+      name: "\u5F3A\u6548\u6B62\u75DB\u7247",
+      rarity: "rare",
+      icon: "",
+      effects: {
+        stamina: 40
+      },
+      negative: {
+        fatigue: 15,
+        scandal: 3
+      },
+      hidden: {
+        self: 2
+      },
+      text: "\u75BC\u75DB\u662F\u8EAB\u4F53\u7684\u4FE1\u53F7\u3002\u4F60\u5B66\u4F1A\u4E86\u5173\u6389\u4FE1\u53F7\u3002",
+      source: "",
+      price: 50
+    },
+    {
+      id: "med-stimulant",
+      type: "medicine",
+      name: "\u6765\u8DEF\u4E0D\u660E\u7684\u5174\u594B\u5242",
+      rarity: "rare",
+      icon: "",
+      effects: {
+        stamina: 55,
+        mood: 10
+      },
+      negative: {
+        restless: 15,
+        stress: 12
+      },
+      hidden: {
+        desire: 4
+      },
+      text: "\u5FC3\u8DF3\u5FEB\u5F97\u50CF\u8981\u89C1\u559C\u6B22\u7684\u4EBA\u3002\u4E00\u6574\u665A\u90FD\u662F\u3002",
+      source: "",
+      price: 120
+    },
+    {
+      id: "med-sedative",
+      type: "medicine",
+      name: "\u9547\u9759\u5242",
+      rarity: "rare",
+      icon: "",
+      effects: {
+        stamina: 20
+      },
+      negative: {
+        mood: 10,
+        stress: 12
+      },
+      hidden: {
+        others: 2
+      },
+      text: "\u4E16\u754C\u5B89\u9759\u4E86\uFF0C\u4F60\u4E5F\u5B89\u9759\u4E86\u3002\u6563\u573A\u65F6\u6709\u4EBA\u95EE\u4F60\u6CA1\u4E8B\u5427\uFF0C\u4F60\u8BF4\u6CA1\u4E8B\u3002",
+      source: "",
+      price: 70
+    },
+    {
+      id: "med-hormone",
+      type: "medicine",
+      name: "\u6FC0\u7D20\u8C03\u7406\u836F",
+      rarity: "rare",
+      icon: "",
+      effects: {
+        appearance: 6
+      },
+      negative: {
+        fatigue: 10,
+        stress: 8
+      },
+      hidden: {
+        scandal: 3
+      },
+      text: "\u76AE\u80A4\u786E\u5B9E\u53D8\u597D\u4E86\u3002\u53EA\u662F\u836F\u76D2\u4E0A\u7684\u8BF4\u660E\uFF0C\u4F60\u4ECE\u6765\u4E0D\u6562\u7EC6\u770B\u3002",
+      source: "",
+      price: 150
+    },
+    {
+      id: "med-diet-pill",
+      type: "medicine",
+      name: "\u7F51\u7EA2\u51CF\u80A5\u836F",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        weight: -2
+      },
+      negative: {
+        stamina: 15,
+        restless: 8
+      },
+      hidden: {
+        desire: 3
+      },
+      text: "\u4F53\u91CD\u79E4\u7684\u6570\u5B57\u53D8\u5C0F\u4E86\u3002\u80C3\u5728\u534A\u591C\u91CC\u53EB\uFF0C\u4F60\u5047\u88C5\u542C\u4E0D\u89C1\u3002",
+      source: "",
+      price: 80
+    },
+    {
+      id: "med-whitening",
+      type: "medicine",
+      name: "\u7F8E\u767D\u4E38",
+      rarity: "uncommon",
+      icon: "",
+      effects: {
+        appearance: 3
+      },
+      negative: {
+        fatigue: 5
+      },
+      hidden: {
+        others: 2
+      },
+      text: "\u767D\u4E86\u534A\u4E2A\u8272\u53F7\u3002\u955C\u5B50\u91CC\u7684\u4EBA\u770B\u8D77\u6765\u7CBE\u795E\u591A\u4E86\u3002",
+      source: "",
+      price: 60
+    },
+    {
+      id: "med-collagen",
+      type: "medicine",
+      name: "\u80F6\u539F\u86CB\u767D\u80BD",
+      rarity: "common",
+      icon: "",
+      effects: {
+        appearance: 2,
+        mood: 5
+      },
+      negative: {},
+      hidden: {},
+      text: "\u65E9 C \u665A A \u4E0D\u5982\u7761\u524D\u4E00\u676F\u80BD\u3002",
+      source: "",
+      price: 40
+    },
+    {
+      id: "med-anti-shampoo",
+      type: "medicine",
+      name: "\u9632\u8131\u6D17\u53D1\u6C34",
+      rarity: "common",
+      icon: "",
+      effects: {
+        mood: 8
+      },
+      negative: {},
+      hidden: {
+        self: 2
+      },
+      text: "\u71AC\u591C\u5973\u5B69\u7684\u6700\u540E\u4E00\u9053\u9632\u7EBF\u3002\u6CE1\u6CAB\u51B2\u6389\u65F6\u6570\u4E86\u6570\uFF0C\u4ECA\u5929\u53EA\u6389\u4E86\u4E94\u6839\u3002",
+      source: "",
+      price: 45
+    },
+    {
+      id: "med-medspa",
+      type: "medicine",
+      name: "\u6C34\u5149\u9488",
+      rarity: "rare",
+      icon: "",
+      effects: {
+        appearance: 8
+      },
+      negative: {
+        stamina: 10,
+        stress: 10
+      },
+      hidden: {
+        others: 2,
+        scandal: 2
+      },
+      text: "\u9488\u773C\u85CF\u5728\u5218\u6D77\u4E0B\u9762\uFF0C\u7B2C\u4E8C\u5929\u4E0A\u5986\u7279\u522B\u670D\u5E16\u3002",
+      source: "",
+      price: 300
+    },
+    {
+      id: "med-private-doctor",
+      type: "medicine",
+      name: "\u79C1\u4EBA\u533B\u751F\u8C03\u7406\u5957\u9910",
+      rarity: "legendary",
+      icon: "",
+      effects: {
+        stamina: 50,
+        mood: 30
+      },
+      negative: {},
+      hidden: {
+        others: 4
+      },
+      text: "\u4ED6\u53EA\u8BF4\u4E86\u4E00\u53E5\u300C\u522B\u518D\u8FD9\u4E48\u71AC\u4E86\u300D\u3002\u4F60\u542C\u51FA\u4E86\u522B\u7684\u610F\u601D\uFF0C\u6BD4\u5982\u6709\u4EBA\u5728\u4E4E\u4F60\u3002",
+      source: "",
+      price: 500
+    },
+    {
+      id: "med-overseas-pill",
+      type: "medicine",
+      name: "\u6D77\u5916\u4EE3\u8D2D\u5C0F\u836F\u4E38",
+      rarity: "legendary",
+      icon: "",
+      effects: {
+        stamina: 60,
+        mood: 35
+      },
+      negative: {
+        scandal: 10,
+        desire: 12
+      },
+      hidden: {
+        desire: 5,
+        scandal: 3
+      },
+      text: "\u74F6\u5B50\u4E0A\u7684\u5B57\u4F60\u4E0D\u8BA4\u8BC6\uFF0C\u4F46\u6548\u679C\u7ACB\u7AFF\u89C1\u5F71\u3002\u4F60\u6CA1\u60F3\u8FC7\u8981\u662F\u88AB\u4EBA\u770B\u89C1\u600E\u4E48\u529E\u3002",
+      source: "",
+      price: 260
+    },
+    {
+      id: "med-tcm",
+      type: "medicine",
+      name: "\u8001\u4E2D\u533B\u8C03\u7406\u65B9",
+      rarity: "legendary",
+      icon: "",
+      effects: {
+        stamina: 40,
+        mood: 25,
+        fatigue: -20
+      },
+      negative: {},
+      hidden: {
+        self: 2
+      },
+      text: "\u82E6\u5F97\u820C\u5934\u53D1\u9EBB\u3002\u4F46\u90A3\u5929\u591C\u91CC\uFF0C\u4F60\u771F\u7684\u7761\u7740\u4E86\u3002",
+      source: "",
+      price: 180
+    }
+  ]
+};
+
+// ../core/src/items.ts
+var EQUIP_SLOTS = [
+  "outfit",
+  "hair",
+  "haircolor",
+  "accessory1",
+  "accessory2",
+  "accessory3",
+  "accessory4"
+];
+var ITEMS = items_default.items;
+var EQUIPS = equipments_default.equipments;
+var ITEMS_MAP = Object.fromEntries(ITEMS.map((i) => [i.id, i]));
+var EQUIPS_MAP = Object.fromEntries(EQUIPS.map((e) => [e.id, e]));
+function equipDefOf(entry) {
+  return entry.itemId ? EQUIPS_MAP[entry.itemId] ?? null : null;
+}
+var STAT_EFFECT_KEYS = ["vocal", "dance", "acting", "talk"];
 function effectiveStats(state) {
   const stats = { ...state.stats };
-  for (const slot of Object.keys(state.equipped)) {
-    const id = state.equipped[slot];
-    if (!id) continue;
-    const item = (state.inventory ?? []).find((i) => i.id === id);
-    if (!item) continue;
-    stats[item.affix.stat] = Math.min(100, stats[item.affix.stat] + item.affix.value);
+  for (const slot of EQUIP_SLOTS) {
+    const invId = state.equipped?.[slot];
+    if (!invId) continue;
+    const entry = (state.inventory ?? []).find((e) => e.id === invId);
+    if (!entry) continue;
+    const def = equipDefOf(entry);
+    if (def) {
+      for (const [key, value] of Object.entries(def.bonus)) {
+        if (STAT_EFFECT_KEYS.includes(key)) {
+          stats[key] = Math.min(100, stats[key] + value);
+        }
+      }
+    } else if (entry.legacy) {
+      const { stat, value } = entry.legacy.affix;
+      stats[stat] = Math.min(100, stats[stat] + value);
+    }
   }
   return stats;
 }
@@ -23937,7 +35073,9 @@ function showFanType(state) {
   const innate = state.innate ?? {};
   const traits = state.traits ?? {};
   const scores = {
-    stage: s.dance + (innate.height ?? 50) / 4 + (innate.proportion ?? 50) / 4,
+    // T-016c：身材比例已删除，身高的舞台加成保留（height 新档为 145–180cm，/4 ≈ 36–45，
+    // 与旧公式 height/4 + proportion/4 的总量级相当；老档 height 存的是 40–80 分值，加成偏小，重开即正常）
+    stage: s.dance + (innate.height ?? 160) / 4,
     music: s.vocal,
     growth: s.acting + (s.vocal + s.dance) / 4,
     gachi: (innate.appearance ?? 50) + (traits.kind ?? 0) / 2,
@@ -23963,6 +35101,11 @@ function resolveAction(state, actionId, rng) {
   const fans = result.effects.fans ?? 0;
   const mood = result.effects.mood ?? 0;
   const satiety = result.effects.satiety ?? 0;
+  const health = result.effects.health ?? 0;
+  const axes = {};
+  for (const [k, v] of Object.entries(result.effects.axes ?? {})) {
+    axes[k] = rollValue(v, rng);
+  }
   let text = result.text;
   for (const [k, v] of Object.entries(stats)) {
     text = text.split(`{${k}}`).join(String(v));
@@ -23971,7 +35114,7 @@ function resolveAction(state, actionId, rng) {
   text = text.split("{n}").join(String(firstStat));
   text = text.split("{stamina}").join(String(stamina));
   text = text.split("{money}").join(String(money));
-  return { resultId: result.id, stamina, money, mood, satiety, fans, stats, text };
+  return { resultId: result.id, stamina, money, mood, satiety, health, fans, stats, axes, text };
 }
 function previewAction(state, actionId) {
   const result = pickActionResult(state, actionId);
@@ -23980,13 +35123,73 @@ function previewAction(state, actionId) {
   for (const [k, v] of Object.entries(result.effects.stats ?? {})) {
     stats[k] = Array.isArray(v) ? [v[0], v[1]] : [v, v];
   }
+  const axes = {};
+  for (const [k, v] of Object.entries(result.effects.axes ?? {})) {
+    axes[k] = Array.isArray(v) ? [v[0], v[1]] : [v, v];
+  }
   return {
     stamina: result.effects.stamina ?? 0,
     money: result.effects.money ?? 0,
+    mood: result.effects.mood ?? 0,
+    satiety: result.effects.satiety ?? 0,
+    health: result.effects.health ?? 0,
     fans: result.effects.fans ?? 0,
     stats,
+    axes,
     text: result.text
   };
+}
+
+// ../core/src/plan.ts
+function nextPendingItem(schedule) {
+  let next = null;
+  for (const item of schedule) {
+    if (item.done) continue;
+    if (!next || item.startAt < next.startAt) next = item;
+  }
+  return next;
+}
+
+// ../core/src/preflight.ts
+function preflightAction(state, actionId) {
+  const left = remainingTimes(state, actionId);
+  if (left <= 0) {
+    const meta = ACTION_META[actionId];
+    const scope = meta?.timesScope ?? "run";
+    const times = meta?.times ?? 0;
+    const word = { day: "\u4ECA\u5929", week: "\u672C\u5468", run: "\u672C\u5C40" }[scope] ?? "\u672C\u5C40";
+    const unit = { day: "\u5929", week: "\u5468", run: "\u5C40" }[scope] ?? "\u5C40";
+    return {
+      ok: false,
+      reason: "times",
+      need: 0,
+      have: 0,
+      text: `\u8FD9\u6761${word}\u7684\u6B21\u6570\u7528\u5B8C\u4E86\uFF08\u6BCF${unit} ${times} \u6B21\uFF09\u3002\u5220\u6389\u5B83\uFF0C\u540E\u9762\u7684\u884C\u7A0B\u624D\u80FD\u63A5\u7740\u8DD1\u3002`
+    };
+  }
+  const preview = previewAction(state, actionId);
+  if (!preview) return { ok: true, reason: "ok", text: "" };
+  if (preview.stamina < 0 && state.stamina + preview.stamina < 0) {
+    const need = -preview.stamina;
+    return {
+      ok: false,
+      reason: "stamina",
+      need,
+      have: state.stamina,
+      text: `\u4F53\u529B\u4E0D\u591F\uFF1A\u8FD9\u6761\u8981 ${need} \u70B9\uFF0C\u4F60\u73B0\u5728 ${state.stamina}\u3002\u5728\u5B89\u6392\u884C\u7A0B\u91CC\u5220\u6389\u5B83\uFF0C\u6216\u5148\u628A\u5B83\u6362\u6210\u6062\u590D\u3002`
+    };
+  }
+  if (preview.money < 0 && state.money + preview.money < 0) {
+    const need = -preview.money;
+    return {
+      ok: false,
+      reason: "money",
+      need,
+      have: state.money,
+      text: `\u94B1\u4E0D\u591F\uFF1A\u8FD9\u6761\u8981 \xA5${need}\uFF0C\u4F60\u73B0\u5728 \xA5${state.money}\u3002\u5728\u5B89\u6392\u884C\u7A0B\u91CC\u5220\u6389\u5B83\uFF0C\u6216\u5148\u6362\u6210\u8D5A\u94B1\u3002`
+    };
+  }
+  return { ok: true, reason: "ok", text: "" };
 }
 
 // ../core/src/fans.ts
@@ -24006,6 +35209,9 @@ function createFans(total = 0) {
     loyalty: { casual: total, dd: 0, group: 0, solo: 0 },
     affection: zeroed(FAN_TYPES2)
   };
+}
+function totalFans(fans) {
+  return LOYALTY_ORDER.reduce((sum, k) => sum + fans.loyalty[k], 0);
 }
 function applyFanAction(fans, type, newFans, affection) {
   const next = {
@@ -24037,6 +35243,100 @@ function promoteOnce(fans) {
   }
 }
 
+// ../core/src/fans-util.ts
+function fanShare(fans, type) {
+  const total = Object.values(fans.byType).reduce((a, b) => a + b, 0);
+  return total > 0 ? fans.byType[type] / total : 0;
+}
+
+// ../core/src/shows.ts
+var SHOW_GROUPS = /* @__PURE__ */ new Map();
+for (const raw2 of RAW_SHOWS) {
+  const def = {
+    showId: raw2.showId,
+    name: raw2.name,
+    type: raw2.type,
+    tier: raw2.tier,
+    slotCount: raw2.slotCount,
+    weight: raw2.weight,
+    slot: raw2.slot,
+    slotName: raw2.slotName,
+    weekday: raw2.weekday,
+    slots: raw2.slots,
+    baseFee: raw2.baseFee,
+    ticketBase: raw2.ticketBase,
+    goodsBase: raw2.goodsBase,
+    statGain: raw2.statGain,
+    fanGain: raw2.fanGain,
+    reqFame: raw2.reqFame,
+    reqStats: raw2.reqStats,
+    reqParty: raw2.reqParty,
+    reqFans: raw2.reqFans,
+    audience: raw2.audience,
+    songs: raw2.songs,
+    gift: raw2.gift,
+    visibleCond: raw2.visibleCond,
+    npcWeight: raw2.npcWeight,
+    festival: raw2.festival
+  };
+  const list = SHOW_GROUPS.get(raw2.showId) ?? [];
+  list.push(def);
+  SHOW_GROUPS.set(raw2.showId, list);
+}
+for (const list of SHOW_GROUPS.values()) list.sort((a, b) => a.slot - b.slot);
+var SHOW_SLOTS_DEFS = [...SHOW_GROUPS.values()].flat();
+function partyFameStub(run, party) {
+  return Math.floor(totalFans(run.fans) / 10 + (party?.members.length ?? 0) * 40);
+}
+function settleShow(state, item, booking) {
+  const defs = SHOW_GROUPS.get(booking.showId) ?? [];
+  const slot = defs.find((d) => d.slot === booking.slot);
+  if (!slot) return state;
+  const n = defs.length;
+  const ratio = n <= 1 ? 1 : (slot.slot - 1) / (n - 1);
+  const slotMul = [0.8, 1, 1.2, 1.4][Math.min(3, Math.round(ratio * 3))];
+  const fame = partyFameStub(state, state.parties.find((p) => p.id === state.activePartyId) ?? null);
+  const total = totalFans(state.fans);
+  const match2 = total <= 0 ? 0.5 : Object.entries(slot.audience).reduce((acc, [t, w]) => acc + (Number(w) || 0) * fanShare(state.fans, t), 0);
+  const ticket = slot.ticketBase * (0.5 + 0.5 * Math.min(1.5, fame / 1e3)) * slotMul;
+  const goods = slot.goodsBase * match2 * (0.6 + 0.4 * 0.7);
+  const income = Math.round(ticket + goods);
+  const stat = slot.statGain;
+  const fansGain = slot.fanGain;
+  const score = Math.round((ticket + goods + fansGain) / 10);
+  let fans = state.fans;
+  const dominant = Object.entries(slot.audience).sort((a, b) => b[1] - a[1])[0]?.[0];
+  if (dominant) fans = applyFanAction(fans, dominant, fansGain, 5);
+  const result = { ticket: Math.round(ticket), goods: Math.round(goods), stat, fans: fansGain, score };
+  const next = {
+    ...state,
+    at: item.endAt,
+    money: state.money + income,
+    fans,
+    stats: {
+      vocal: state.stats.vocal + Math.floor(stat / 4),
+      dance: state.stats.dance + Math.floor(stat / 4),
+      acting: state.stats.acting + Math.floor(stat / 4),
+      talk: state.stats.talk + (stat - 3 * Math.floor(stat / 4))
+    },
+    bookings: (state.bookings ?? []).map(
+      (b) => b.id === booking.id ? { ...b, status: "done", result } : b
+    ),
+    log: [
+      ...state.log,
+      {
+        at: item.endAt,
+        actionId: `show:${booking.showId}`,
+        text: `\u6F14\u51FA\u7ED3\u675F\u300A${booking.name}\u300B${booking.slot}\u53F7\u4F4D\uFF1A\u95E8\u7968 \xA5${Math.round(ticket)} \xB7 \u7279\u5178 \xA5${Math.round(goods)} \xB7 \u5C5E\u6027 +${stat} \xB7 \u7C89\u4E1D +${fansGain}`,
+        staminaDelta: 0,
+        statDelta: {},
+        kind: "show"
+      }
+    ]
+  };
+  return next;
+}
+
 // ../core/data/tasks.json
 var tasks_default = {
   _\u8BF4\u660E: "\u4EFB\u52A1\u8868\uFF1AdisplayCondition=\u53EF\u89C1\u6761\u4EF6\uFF1BacceptCondition=\u53EF\u9886\u53D6\u6761\u4EF6\uFF1BcompleteCondition=\u5B8C\u6210\u6761\u4EF6\u3002\u9886\u53D6\u540E\u8FDB\u5165\u8FDB\u884C\u4E2D\uFF0C\u6761\u4EF6\u8FBE\u6210\u81EA\u52A8\u5B8C\u6210\u5E76\u53D1\u5956",
@@ -24055,7 +35355,10 @@ var tasks_default = {
       times: 1,
       content: "\u56DB\u9879\u5C5E\u6027\u603B\u548C\u5230 120\uFF0C\u5C31\u6709\u8D44\u683C\u62A5\u540D\u51FA\u9053\u6F14\u51FA\u3002\u8FC7\u4E86\uFF0C\u4F60\u624D\u7B97\u771F\u7684\u8FDB\u4E86\u8FD9\u884C\u3002",
       brief: "\u56DB\u9879\u5C5E\u6027\u603B\u548C\u5230 120 \u540E\u62A5\u540D\u51FA\u9053",
-      priority: 10
+      priority: 10,
+      category: "guide",
+      guideGroup: "G2",
+      autoAccept: true
     },
     {
       id: "task-vocal-20",
@@ -24071,7 +35374,9 @@ var tasks_default = {
       content: "\u5148\u628A\u6F14\u5531\u7EC3\u5230 20\u3002\u5531 K \u4FBF\u5B9C\uFF0C\u5C31\u662F\u8D39\u55D3\u5B50\uFF0C\u522B\u8FDE\u7740\u6392\u4E09\u4E2A\u65F6\u6BB5\u3002",
       brief: "\u6F14\u5531\u7EC3\u5230 20",
       priority: 20,
-      deadlineDays: 3
+      category: "guide",
+      guideGroup: "G1",
+      autoAccept: true
     },
     {
       id: "task-dance-20",
@@ -24087,7 +35392,9 @@ var tasks_default = {
       content: "\u821E\u8E48\u5230 20\u3002\u5F55\u4E00\u904D\u56DE\u770B\uFF0C\u6BD4\u95F7\u5934\u8DF3\u4E8C\u5341\u904D\u6709\u7528\u3002",
       brief: "\u821E\u8E48\u7EC3\u5230 20",
       priority: 21,
-      deadlineDays: 3
+      category: "guide",
+      guideGroup: "G1",
+      autoAccept: true
     },
     {
       id: "task-acting-20",
@@ -24103,7 +35410,9 @@ var tasks_default = {
       content: "\u6F14\u6280\u5230 20\u3002\u81EA\u62CD\u5C0F\u77ED\u5267\u4E0D\u82B1\u94B1\uFF0C\u8FD8\u80FD\u987A\u624B\u6DA8\u4E00\u70B9\u7C89\u3002",
       brief: "\u6F14\u6280\u7EC3\u5230 20",
       priority: 22,
-      deadlineDays: 3
+      category: "guide",
+      guideGroup: "G1",
+      autoAccept: true
     },
     {
       id: "task-talk-20",
@@ -24119,7 +35428,9 @@ var tasks_default = {
       content: "\u53E3\u624D\u5230 20\u3002\u4E32\u573A\u8BCD\u8BF4\u987A\u4E86\uFF0C\u522B\u4EBA\u624D\u4F1A\u5728\u6563\u573A\u65F6\u8BB0\u4F4F\u4F60\u3002",
       brief: "\u53E3\u624D\u7EC3\u5230 20",
       priority: 23,
-      deadlineDays: 3
+      category: "guide",
+      guideGroup: "G1",
+      autoAccept: true
     },
     {
       id: "task-dance-30",
@@ -24136,11 +35447,13 @@ var tasks_default = {
       content: "\u628A\u821E\u8E48\u7EC3\u5230 30\uFF0C\u8BF4\u660E\u4F60\u5DF2\u7ECF\u4E0D\u662F\u65B0\u4EBA\u4E86\u3002\u5269\u4E0B\u7684\u9760\u4E0A\u53F0\u3002",
       brief: "\u821E\u8E48\u7EC3\u5230 30",
       priority: 30,
-      deadlineDays: 5
+      category: "guide",
+      guideGroup: "G2",
+      autoAccept: true
     },
     {
       id: "task-first-show",
-      type: "repeat",
+      type: "once",
       name: "\u7AD9\u4E0A\u821E\u53F0",
       displayCondition: "total >= 60",
       acceptCondition: "total >= 60",
@@ -24148,12 +35461,13 @@ var tasks_default = {
       rewards: {
         money: 800
       },
-      times: 5,
+      times: 1,
       content: "\u6F14\u51FA\u4F1A\u628A\u8DEF\u4EBA\u53D8\u6210\u7C89\u4E1D\u3002\u821E\u53F0\u7C89\u6512\u5230 100\uFF0C\u7FA4\u91CC\u5C31\u4F1A\u5F00\u59CB\u6709\u4EBA\u8BA4\u4F60\u3002",
       brief: "\u821E\u53F0\u7C89\u7D2F\u8BA1\u5230 100",
       priority: 31,
-      deadlineDays: 1,
-      reset: "daily"
+      category: "guide",
+      guideGroup: "G3",
+      autoAccept: true
     },
     {
       id: "task-show-10",
@@ -24170,7 +35484,9 @@ var tasks_default = {
       brief: "\u821E\u53F0\u7C89\u7D2F\u8BA1\u5230 400",
       priority: 32,
       deadlineDays: 3,
-      reset: "daily"
+      reset: "daily",
+      category: "routine",
+      autoAccept: false
     },
     {
       id: "task-money-10000",
@@ -24186,7 +35502,9 @@ var tasks_default = {
       content: "\u623F\u79DF\u6BCF\u5468\u90FD\u8981\u4EA4\u3002\u624B\u91CC\u6709\u4E00\u4E07\u5757\uFF0C\u624D\u6562\u6392\u4E00\u6B21\u65C5\u6E38\u3002",
       brief: "\u8D44\u91D1\u8FBE\u5230 10000",
       priority: 40,
-      deadlineDays: 7
+      deadlineDays: 7,
+      category: "routine",
+      autoAccept: false
     },
     {
       id: "task-money-50000",
@@ -24201,7 +35519,9 @@ var tasks_default = {
       times: 1,
       content: "\u4E94\u4E07\u662F\u4E2A\u5206\u6C34\u5CAD\uFF1A\u591F\u4ED8\u4E00\u573A OM \u7684\u5B9A\u91D1\uFF0C\u4E5F\u591F\u6491\u8FC7\u4E24\u4E2A\u6708\u7684\u7A7A\u7A97\u3002",
       brief: "\u8D44\u91D1\u8FBE\u5230 50000",
-      priority: 41
+      priority: 41,
+      category: "routine",
+      autoAccept: false
     },
     {
       id: "task-friend",
@@ -24217,7 +35537,9 @@ var tasks_default = {
       content: "\u53BB\u6F2B\u5C55\u3001\u770B\u6F14\u51FA\u3001\u8BA9\u670B\u53CB\u4ECB\u7ECD\u2014\u2014\u5730\u4E0B\u5708\u7684\u56E2\u57FA\u672C\u90FD\u662F\u8FD9\u4E48\u51D1\u8D77\u6765\u7684\u3002",
       brief: "\u670B\u53CB\u5708\u81F3\u5C11\u6709 1 \u4E2A\u4EBA",
       priority: 50,
-      deadlineDays: 3
+      deadlineDays: 3,
+      category: "routine",
+      autoAccept: false
     },
     {
       id: "task-party-5",
@@ -24233,7 +35555,9 @@ var tasks_default = {
       content: "\u4E00\u4E2A\u4EBA\u4E5F\u80FD\u4E0A\u53F0\uFF0C\u4F46\u4E94\u4E2A\u4EBA\u7684\u821E\u53F0\u624D\u50CF\u4E00\u573A\u6F14\u51FA\u3002\u5148\u628A\u4EBA\u8BA4\u5168\u3002",
       brief: "\u670B\u53CB\u5708\u6709 5 \u4E2A\u4EBA",
       priority: 51,
-      deadlineDays: 5
+      category: "guide",
+      guideGroup: "G4",
+      autoAccept: true
     },
     {
       id: "task-debut-party",
@@ -24248,7 +35572,10 @@ var tasks_default = {
       times: 1,
       content: "\u51FA\u9053\u4E4B\u540E\u5C31\u80FD\u5EFA\u7EC4\u5408\u3002\u540D\u5B57\u968F\u4FBF\u8D77\uFF0C\u53CD\u6B63\u4EE5\u540E\u4F1A\u6539\u3002",
       brief: "\u521B\u5EFA\u7B2C\u4E00\u4E2A\u7EC4\u5408",
-      priority: 52
+      priority: 52,
+      category: "guide",
+      guideGroup: "G4",
+      autoAccept: true
     },
     {
       id: "task-first-cheki",
@@ -24263,7 +35590,10 @@ var tasks_default = {
       times: 1,
       content: "\u7279\u5178\u4F1A\u662F\u5730\u4E0B\u5076\u50CF\u771F\u6B63\u7684\u6536\u5165\u6765\u6E90\u3002\u62CD\u5207\u3001\u5199\u540D\u5B57\u3001\u542C\u5979\u4EEC\u8BF4\u5B8C\u3002",
       brief: "\u5F00\u4E00\u6B21\u7279\u5178\u4F1A",
-      priority: 53
+      priority: 53,
+      category: "guide",
+      guideGroup: "G5",
+      autoAccept: true
     },
     {
       id: "task-manager-push",
@@ -24278,7 +35608,10 @@ var tasks_default = {
       times: 1,
       content: "\u62FC\u76D8\u7684\u53F0\u4E0B\u5168\u662F\u522B\u5BB6\u7684\u7C89\u3002\u62A2\u4E0D\u62A2\u5F97\u5230\uFF0C\u770B\u4F60\u5728\u53F0\u4E0A\u90A3\u5341\u5206\u949F\u3002",
       brief: "\u53C2\u52A0\u4E00\u573A\u62FC\u76D8",
-      priority: 54
+      priority: 54,
+      category: "guide",
+      guideGroup: "G6",
+      autoAccept: true
     },
     {
       id: "task-first-om",
@@ -24293,7 +35626,10 @@ var tasks_default = {
       times: 1,
       content: "OM \u662F\u300C\u53EA\u6709\u4F60\u4EEC\u300D\u7684\u610F\u601D\u3002\u6CA1\u6709\u522B\u7684\u56E2\u5728\u524D\u9762\uFF0C\u7968\u5F97\u81EA\u5DF1\u5356\u5B8C\u3002",
       brief: "\u529E\u4E00\u573A OM \u821E\u53F0",
-      priority: 55
+      priority: 55,
+      category: "guide",
+      guideGroup: "G7",
+      autoAccept: true
     },
     {
       id: "task-total-200",
@@ -24310,7 +35646,9 @@ var tasks_default = {
       content: "\u4E0D\u8981\u6C42\u6837\u6837\u62D4\u5C16\uFF0C\u4F46\u6CA1\u6709\u77ED\u677F\u624D\u63A5\u5F97\u4F4F\u5404\u79CD\u901A\u544A\u3002",
       brief: "\u56DB\u9879\u5C5E\u6027\u603B\u548C\u5230 200",
       priority: 60,
-      deadlineDays: 5
+      category: "guide",
+      guideGroup: "G3",
+      autoAccept: true
     },
     {
       id: "task-total-300",
@@ -24327,7 +35665,9 @@ var tasks_default = {
       content: "\u603B\u548C 300 \u662F\u5546\u6F14\u548C OM \u7684\u95E8\u69DB\u3002\u5230\u4E86\u8FD9\u4E2A\u6570\uFF0C\u4F60\u624D\u6709\u8D44\u683C\u6311\u6D3B\u3002",
       brief: "\u56DB\u9879\u5C5E\u6027\u603B\u548C\u5230 300",
       priority: 61,
-      deadlineDays: 7
+      category: "guide",
+      guideGroup: "G6",
+      autoAccept: true
     },
     {
       id: "task-fans-300",
@@ -24343,7 +35683,9 @@ var tasks_default = {
       content: "\u4E09\u767E\u4E2A\u4EBA\u7684\u573A\u5B50\uFF0C\u7AD9\u6EE1\u7684\u65F6\u5019\u540E\u6392\u662F\u770B\u4E0D\u6E05\u8138\u7684\u3002\u4F46\u4F60\u542C\u5F97\u89C1\u3002",
       brief: "\u821E\u53F0\u7C89\u5230 300",
       priority: 62,
-      deadlineDays: 5
+      category: "guide",
+      guideGroup: "G5",
+      autoAccept: true
     },
     {
       id: "task-fans-1000",
@@ -24359,37 +35701,47 @@ var tasks_default = {
       content: "\u5230\u4E00\u5343\u4EBA\u7684\u65F6\u5019\uFF0C\u4F1A\u5F00\u59CB\u6709\u4EBA\u81EA\u79F0\u300C\u8001\u7C89\u300D\u3002\u522B\u8BA9\u5979\u4EEC\u5931\u671B\u3002",
       brief: "\u821E\u53F0\u7C89\u5230 1000",
       priority: 63,
-      deadlineDays: 7
+      category: "guide",
+      guideGroup: "G6",
+      autoAccept: true
     },
     {
       id: "task-burnout",
       type: "once",
       name: "\u5B66\u4F1A\u4F11\u606F",
-      displayCondition: "total >= 80",
-      acceptCondition: "total >= 80",
-      completeCondition: 'hasFlag("ev:burnout")',
+      displayCondition: 'hasFlag("ev:burnout")',
+      acceptCondition: {},
+      completeCondition: "mood >= 60",
       rewards: {
-        money: 300
+        stats: {
+          stamina: 25
+        }
       },
       times: 1,
-      content: "\u6491\u4E0D\u4F4F\u4E0D\u662F\u5931\u8D25\u3002\u613F\u610F\u505C\u4E0B\u6765\u7684\u4EBA\uFF0C\u624D\u8DD1\u5F97\u5B8C\u4E24\u5E74\u3002",
-      brief: "\u7ECF\u5386\u4E00\u6B21\u6491\u4E0D\u4F4F",
-      priority: 70
+      content: "\u8EAB\u4F53\u5DF2\u7ECF\u5728\u62A5\u8B66\u4E86\u3002\u522B\u786C\u6491\uFF0C\u628A\u5FC3\u60C5\u517B\u56DE 60 \u4EE5\u4E0A\uFF0C\u597D\u597D\u5598\u53E3\u6C14\u3002",
+      brief: "\u4E8B\u4EF6\u540E\uFF1A\u5FC3\u60C5\u56DE\u5230 60 \u4EE5\u4E0A",
+      priority: 70,
+      deadlineDays: 2,
+      category: "timed",
+      autoAccept: true
     },
     {
       id: "task-fan-letter",
       type: "once",
       name: "\u7B2C\u4E00\u5C01\u4FE1",
-      displayCondition: {},
-      acceptCondition: "others >= 30",
-      completeCondition: 'hasFlag("ev:fan-letter")',
+      displayCondition: 'hasFlag("ev:fan-letter")',
+      acceptCondition: {},
+      completeCondition: "mood >= 55",
       rewards: {
         money: 300
       },
       times: 1,
-      content: "\u6709\u4EBA\u613F\u610F\u82B1\u65F6\u95F4\u5199\u4E0B\u6765\uFF0C\u8BF4\u660E\u4F60\u5728\u5979\u90A3\u513F\u4E0D\u662F\u4E00\u4E2A\u53EF\u6709\u53EF\u65E0\u7684\u540D\u5B57\u3002",
-      brief: "\u6536\u5230\u7B2C\u4E00\u5C01\u7C89\u4E1D\u4FE1",
-      priority: 71
+      content: "\u7B2C\u4E00\u5C01\u7C89\u4E1D\u6765\u4FE1\u5728\u4F60\u5305\u91CC\u653E\u4E86\u597D\u51E0\u5929\u3002\u627E\u4E2A\u5FC3\u60C5\u4E0D\u9519\u7684\u665A\u4E0A\uFF0C\u8BA4\u771F\u56DE\u6389\u5B83\u3002",
+      brief: "\u4E8B\u4EF6\u540E\uFF1A\u5FC3\u60C5\u56DE\u5230 55 \u4EE5\u4E0A\u518D\u56DE\u4FE1",
+      priority: 71,
+      deadlineDays: 3,
+      category: "timed",
+      autoAccept: true
     },
     {
       id: "task-first-audition",
@@ -24404,7 +35756,10 @@ var tasks_default = {
       times: 1,
       content: "\u7B2C\u4E00\u6B21\u8BD5\u955C\u4E0D\u7BA1\u6210\u4E0D\u6210\uFF0C\u53BB\u8FC7\u7684\u548C\u6CA1\u53BB\u8FC7\u7684\uFF0C\u662F\u4E24\u79CD\u4EBA\u3002",
       brief: "\u53BB\u4E00\u6B21\u8BD5\u955C",
-      priority: 72
+      priority: 72,
+      category: "guide",
+      guideGroup: "G1",
+      autoAccept: true
     },
     {
       id: "task-daily-repeat",
@@ -24422,10 +35777,180 @@ var tasks_default = {
       brief: "\u56DB\u9879\u5C5E\u6027\u603B\u548C\u5230 240",
       priority: 80,
       deadlineDays: 1,
-      reset: "daily"
+      reset: "daily",
+      category: "routine",
+      autoAccept: false
+    },
+    {
+      id: "task-ev-insomnia",
+      type: "once",
+      name: "\u628A\u89C9\u8865\u56DE\u6765",
+      displayCondition: 'hasFlag("ev:insomnia")',
+      acceptCondition: {},
+      completeCondition: "stamina >= 70",
+      rewards: {
+        stamina: 20
+      },
+      times: 1,
+      content: "\u8FDE\u7740\u51E0\u4E2A\u665A\u4E0A\u6CA1\u7761\u597D\uFF0C\u767D\u5929\u7EC3\u4EC0\u4E48\u90FD\u4E0D\u662F\u90A3\u4E2A\u5473\u3002\u5148\u628A\u4F53\u529B\u517B\u56DE 70\uFF0C\u522B\u7684\u7F13\u4E00\u7F13\u3002",
+      brief: "\u4E8B\u4EF6\u540E\uFF1A\u4F53\u529B\u56DE\u5230 70 \u4EE5\u4E0A",
+      priority: 60,
+      deadlineDays: 2,
+      category: "timed",
+      autoAccept: true
+    },
+    {
+      id: "task-ev-knee",
+      type: "once",
+      name: "\u819D\u76D6\u7684\u6297\u8BAE",
+      displayCondition: 'hasFlag("ev:knee")',
+      acceptCondition: {},
+      completeCondition: "stamina >= 60",
+      rewards: {
+        money: 300,
+        stamina: 10
+      },
+      times: 1,
+      content: "\u4E0B\u697C\u68AF\u65F6\u819D\u76D6\u54CD\u4E86\u90A3\u4E48\u4E00\u58F0\uFF0C\u4F60\u542C\u5F97\u6E05\u6E05\u695A\u695A\u3002\u8FD9\u51E0\u5929\u5C11\u7EC3\u70B9\uFF0C\u628A\u4F53\u529B\u517B\u56DE 60\uFF0C\u7701\u4E0B\u7684\u94B1\u4E70\u526F\u597D\u62A4\u819D\u3002",
+      brief: "\u4E8B\u4EF6\u540E\uFF1A\u4F53\u529B\u56DE\u5230 60 \u4EE5\u4E0A",
+      priority: 61,
+      deadlineDays: 3,
+      category: "timed",
+      autoAccept: true
+    },
+    {
+      id: "task-ev-fan-gift",
+      type: "once",
+      name: "\u5FC3\u610F\u8981\u63A5\u4F4F",
+      displayCondition: 'hasFlag("ev:fan-gift")',
+      acceptCondition: {},
+      completeCondition: "mood >= 60",
+      rewards: {
+        fans: 50
+      },
+      times: 1,
+      content: "\u7C89\u4E1D\u9001\u6765\u7684\u793C\u7269\u8D35\u5F97\u8BA9\u4EBA\u4E0D\u5B89\u3002\u4ECA\u5929\u5148\u628A\u81EA\u5DF1\u7684\u5FC3\u60C5\u7406\u987A\uFF0860 \u4EE5\u4E0A\uFF09\uFF0C\u518D\u53BB\u60F3\u600E\u4E48\u56DE\u5E94\u8FD9\u4EFD\u5FC3\u610F\u3002",
+      brief: "\u4E8B\u4EF6\u540E\uFF1A\u5F53\u5929\u5185\u5FC3\u60C5\u56DE\u5230 60 \u4EE5\u4E0A",
+      priority: 62,
+      deadlineDays: 1,
+      category: "timed",
+      autoAccept: true
+    },
+    {
+      id: "task-ev-comment-war",
+      type: "once",
+      name: "\u7528\u821E\u53F0\u8BF4\u8BDD",
+      displayCondition: 'hasFlag("ev:comment-war")',
+      acceptCondition: {},
+      completeCondition: "fans.stage >= 300",
+      rewards: {
+        fans: 80
+      },
+      times: 1,
+      content: "\u8BC4\u8BBA\u533A\u5435\u6210\u4E00\u9505\u7CA5\uFF0C\u89E3\u91CA\u662F\u89E3\u91CA\u4E0D\u6E05\u7684\u3002\u767B\u4E0A\u53F0\uFF0C\u628A\u821E\u53F0\u7C89\u7D2F\u8BA1\u5230 300\uFF0C\u8BA9\u5B9E\u529B\u66FF\u4F60\u95ED\u5634\u3002",
+      brief: "\u4E8B\u4EF6\u540E\uFF1A3 \u5929\u5185\u821E\u53F0\u7C89\u7D2F\u8BA1\u5230 300",
+      priority: 63,
+      deadlineDays: 3,
+      category: "timed",
+      autoAccept: true
+    },
+    {
+      id: "task-ev-teammate-quit",
+      type: "once",
+      name: "\u6BD5\u4E1A\u524D\u6700\u540E\u4E00\u652F\u821E",
+      displayCondition: 'hasFlag("ev:teammate-quit")',
+      acceptCondition: {},
+      completeCondition: "dance >= 40",
+      rewards: {
+        money: 600,
+        fans: 30
+      },
+      times: 1,
+      content: "\u5979\u8981\u8D70\u7684\u8BDD\u62E6\u4E0D\u4F4F\uFF0C\u4F46\u6700\u540E\u4E00\u652F\u821E\u53EF\u4EE5\u8DF3\u5F97\u6F02\u4EAE\u3002\u628A\u821E\u8E48\u7EC3\u5230 40\uFF0C\u522B\u8BA9\u544A\u522B\u6F14\u51FA\u7559\u9057\u61BE\u3002",
+      brief: "\u4E8B\u4EF6\u540E\uFF1A\u821E\u8E48\u7EC3\u5230 40",
+      priority: 64,
+      deadlineDays: 5,
+      category: "timed",
+      autoAccept: true
+    },
+    {
+      id: "task-ev-venue-closing",
+      type: "once",
+      name: "\u544A\u522B\u90A3\u5BB6\u573A",
+      displayCondition: 'hasFlag("ev:venue-closing")',
+      acceptCondition: {},
+      completeCondition: "fans.gachi >= 200",
+      rewards: {
+        fans: 120
+      },
+      times: 1,
+      content: "\u5E38\u53BB\u7684\u90A3\u5BB6 Live House \u8981\u5173\u95E8\u4E86\u3002\u6700\u540E\u4E00\u573A\uFF0C\u628A\u560E\u8D77\u7C89\u7D2F\u8BA1\u5230 200\uFF0C\u8BA9\u8001\u5730\u65B9\u70ED\u95F9\u7740\u6563\u573A\u3002",
+      brief: "\u4E8B\u4EF6\u540E\uFF1A\u560E\u8D77\u7C89\u7D2F\u8BA1\u5230 200",
+      priority: 65,
+      deadlineDays: 5,
+      category: "timed",
+      autoAccept: true
+    },
+    {
+      id: "task-ev-fan-birthday",
+      type: "once",
+      name: "\u751F\u8BDE\u796D\u5012\u8BA1\u65F6",
+      displayCondition: 'hasFlag("ev:fan-birthday")',
+      acceptCondition: {},
+      completeCondition: "money >= 3000",
+      rewards: {
+        fans: 100
+      },
+      times: 1,
+      content: "\u5927\u7C89\u7684\u751F\u65E5\u5C31\u5728\u8FD9\u51E0\u5929\uFF0C\u7C89\u4E1D\u7FA4\u91CC\u5DF2\u7ECF\u5728\u5F20\u7F57\u3002\u5907\u51FA 3000 \u5757\u7684\u9884\u7B97\uFF0C\u522B\u5728\u5E94\u63F4\u4E0A\u9732\u602F\u3002",
+      brief: "\u4E8B\u4EF6\u540E\uFF1A\u5907\u51FA 3000 \u8D44\u91D1",
+      priority: 66,
+      deadlineDays: 3,
+      category: "timed",
+      autoAccept: true
+    },
+    {
+      id: "task-ev-old-video",
+      type: "once",
+      name: "\u65E7\u89C6\u9891\u98CE\u6CE2",
+      displayCondition: 'hasFlag("ev:old-video")',
+      acceptCondition: {},
+      completeCondition: "talk >= 35",
+      rewards: {
+        money: 500
+      },
+      times: 1,
+      content: "\u51FA\u9053\u524D\u7684\u65E7\u89C6\u9891\u88AB\u4EBA\u7FFB\u51FA\u6765\u4E86\uFF0C\u8BF4\u4EC0\u4E48\u7684\u90FD\u6709\u3002\u7EC3\u7EC3\u53E3\u624D\uFF0835 \u4EE5\u4E0A\uFF09\uFF0C\u4E0B\u6B21\u76F4\u64AD\u5927\u65B9\u628A\u8BDD\u63A5\u4F4F\u3002",
+      brief: "\u4E8B\u4EF6\u540E\uFF1A\u53E3\u624D\u7EC3\u5230 35",
+      priority: 67,
+      deadlineDays: 4,
+      category: "timed",
+      autoAccept: true
     }
   ]
 };
+
+// ../core/src/task-progress.ts
+var CATEGORY_PREFIX = {
+  innate: "innate",
+  trait: "trait",
+  negative: "neg",
+  proficient: "prof",
+  fans: "fans"
+};
+var VARIABLE_LABEL = (() => {
+  const map = /* @__PURE__ */ new Map();
+  for (const attr of RAW_ATTRIBUTES) {
+    if (!attr.key || !attr.name) continue;
+    map.set(attr.key, attr.name);
+    const prefix = CATEGORY_PREFIX[attr.category];
+    if (prefix) map.set(`${prefix}.${attr.key}`, attr.name);
+  }
+  for (const [cn, en] of Object.entries(ALIAS)) {
+    if (!map.has(en)) map.set(en, cn);
+  }
+  return map;
+})();
 
 // ../core/src/tasks.ts
 var TASKS = tasks_default.tasks.slice().sort(
@@ -24493,8 +36018,20 @@ function prerequisitesDone(state, task, path) {
   path.delete(task.id);
   return ok;
 }
+function guideGroupNumber(group) {
+  const m = /^G(\d+)$/i.exec(String(group ?? "").trim());
+  return m ? Number(m[1]) : null;
+}
+function guideUnlocked(state, task) {
+  const n = guideGroupNumber(task.guideGroup);
+  if (n === null || n <= 1) return true;
+  const prev = TASKS.filter((t) => guideGroupNumber(t.guideGroup) === n - 1);
+  if (prev.length === 0) return true;
+  return prev.every((dep) => taskExhausted(state, dep));
+}
 function statusOf(state, task, path) {
   if (!prerequisitesDone(state, task, path)) return "hidden";
+  if (!guideUnlocked(state, task)) return "hidden";
   if (!matchesCondition(state, task.displayCondition)) return "hidden";
   if (taskExhausted(state, task)) return "done";
   const accepted = acceptedAt(state, task.id) > 0;
@@ -24526,6 +36063,19 @@ function statusOf(state, task, path) {
   const canAccept = matchesCondition(state, task.acceptCondition);
   return canAccept ? "claimable" : "locked";
 }
+function taskStatus(state, task) {
+  return statusOf(state, task, /* @__PURE__ */ new Set());
+}
+function autoAcceptTasks(state, tasks = TASKS) {
+  let next = state;
+  for (const task of tasks) {
+    if (!task.autoAccept) continue;
+    if (statusOf(next, task, /* @__PURE__ */ new Set()) !== "claimable") continue;
+    const accepted = acceptTask(next, task.id);
+    if (accepted.result === "ok") next = accepted.state;
+  }
+  return next;
+}
 function expireTasks(state, tasks = TASKS) {
   let next = state;
   for (const task of tasks) {
@@ -24544,7 +36094,7 @@ function expireTasks(state, tasks = TASKS) {
         {
           at: next.at,
           actionId: `task-expired:${task.id}`,
-          text: `\u901A\u544A\u300C${task.name}\u300D\u8D85\u65F6\u672A\u5B8C\u6210\u3002`,
+          text: task.category === "timed" ? `\u9650\u65F6\u59D4\u6258\u300C${task.name}\u300D\u8D85\u65F6\u672A\u5B8C\u6210\u3002` : `\u901A\u544A\u300C${task.name}\u300D\u8D85\u65F6\u672A\u5B8C\u6210\u3002`,
           staminaDelta: 0,
           statDelta: {},
           kind: "action"
@@ -24554,6 +36104,172 @@ function expireTasks(state, tasks = TASKS) {
   }
   return next;
 }
+function acceptTask(state, taskId) {
+  const task = TASKS.find((t) => t.id === taskId);
+  if (!task) return { state, result: "not-found" };
+  const status = taskStatus(state, task);
+  if (status === "done") return { state, result: "done" };
+  if (status !== "claimable") return { state, result: "not-claimable" };
+  return {
+    state: {
+      ...state,
+      flags: { ...state.flags, [acceptedKey(task.id)]: state.at, [doneKey(task.id)]: 0 },
+      log: [
+        ...state.log,
+        {
+          at: state.at,
+          actionId: `task-accept:${task.id}`,
+          text: `\u9886\u53D6\u4EFB\u52A1\u300C${task.name}\u300D\u3002`,
+          staminaDelta: 0,
+          statDelta: {},
+          kind: "action"
+        }
+      ]
+    },
+    result: "ok"
+  };
+}
+var ATTR_LABELS = (() => {
+  const GROUP = {
+    innate: "innate",
+    trait: "trait",
+    negative: "neg",
+    proficient: "prof",
+    fans: "fans"
+  };
+  const map = {};
+  for (const attr of RAW_ATTRIBUTES) {
+    map[attr.key] = attr.name;
+    const prefix = GROUP[attr.category];
+    if (prefix) map[prefix + "." + attr.key] = attr.name;
+  }
+  return map;
+})();
+var EVENT_TITLES = Object.fromEntries(
+  RAW_STORY.map((story) => [story.id, story.title])
+);
+
+// ../core/data/stages.json
+var stages_default = {
+  _\u8BF4\u660E: "\u6210\u957F\u9636\u6BB5\u8868\uFF1Aseq=\u987A\u5E8F\uFF1Bcondition=\u8FDB\u5165\u6761\u4EF6\uFF08\u8868\u8FBE\u5F0F\uFF0C\u7A7A=\u65E0\u6761\u4EF6\uFF0C\u53EA\u5141\u8BB8 seq=1 \u4E3A\u7A7A\uFF09\uFF1BbuttonText=\u664B\u7EA7\u6309\u94AE\u6587\u6848\uFF1Bstyle=s1\u2013s8 \u5BF9\u5E94\u5BA2\u6237\u7AEF\u6837\u5F0F\u7C7B\uFF1BthemeColor \u4EC5\u4F5C\u53C2\u8003\uFF1BunlockText=\u89E3\u9501\u8BF4\u660E",
+  stages: [
+    {
+      seq: 1,
+      id: "trainee",
+      name: "\u65B0\u4EBA\u7EC3\u4E60\u751F",
+      title: "\u521A\u8D70\u8FDB\u6392\u7EC3\u5BA4",
+      condition: {},
+      buttonText: "\u664B\u7EA7",
+      style: "s1",
+      themeColor: "8a9a8b",
+      unlockText: "\u7EC3\u6B4C\u3001\u7EC3\u821E\u3001\u6253\u5DE5\uFF0C\u5148\u6D3B\u4E0B\u6765\u3002"
+    },
+    {
+      seq: 2,
+      id: "trainee-plus",
+      name: "\u89C1\u4E60\u7EC3\u4E60\u751F",
+      title: "\u5F00\u59CB\u88AB\u8BB0\u4F4F\u540D\u5B57",
+      condition: "total >= 60",
+      buttonText: "\u664B\u7EA7",
+      style: "s2",
+      themeColor: "5fa8a0",
+      unlockText: "\u66F4\u591A\u8BAD\u7EC3\u884C\u52A8\u89E3\u9501\uFF0C\u6559\u7EC3\u5F00\u59CB\u8BB0\u4F4F\u4F60\u3002"
+    },
+    {
+      seq: 3,
+      id: "pre-debut",
+      name: "\u51FA\u9053\u5019\u8865",
+      title: "\u5DEE\u4E00\u6B65\u5C31\u4E0A\u53F0",
+      condition: "total >= 120",
+      buttonText: "\u51FA\u9053",
+      style: "s3",
+      themeColor: "e8a04c",
+      unlockText: "\u53EF\u62A5\u540D\u51FA\u9053\u6F14\u51FA\uFF1B\u7ECF\u7EAA\u4EBA\u7684\u76EE\u5149\u843D\u5230\u4F60\u8EAB\u4E0A\u3002"
+    },
+    {
+      seq: 4,
+      id: "rookie-idol",
+      name: "\u65B0\u664B\u5730\u5076",
+      title: "\u521D\u6B21\u767B\u53F0\u7684\u591C\u665A",
+      condition: 'hasFlag("ev:debut")',
+      buttonText: "\u664B\u7EA7",
+      style: "s4",
+      themeColor: "f2a0bd",
+      unlockText: "\u7EC4\u5408\u3001\u7279\u5178\u4F1A\u3001\u4E13\u573A\u4E8B\u4EF6\u5F00\u542F\u3002"
+    },
+    {
+      seq: 5,
+      id: "regular",
+      name: "\u573A\u6B21\u5E38\u5BA2",
+      title: "Live House \u7684\u719F\u9762\u5B54",
+      condition: "fansTotal >= 300",
+      buttonText: "\u664B\u7EA7",
+      style: "s5",
+      themeColor: "d4af37",
+      unlockText: "\u5E38\u9A7B\u6F14\u51FA\u9080\u8BF7\uFF0C\u66F4\u591A\u7C89\u4E1D\u4E8B\u4EF6\u3002"
+    },
+    {
+      seq: 6,
+      id: "pillar",
+      name: "\u56E2\u5185\u652F\u67F1",
+      title: "\u6709\u4EBA\u4E3E\u7740\u4F60\u7684\u540D\u5B57",
+      condition: "fansTotal >= 1000",
+      buttonText: "\u529E\u4E13\u573A",
+      style: "s6",
+      themeColor: "9b6bd4",
+      unlockText: "\u62FC\u76D8\u4E0E\u5916\u5730\u6F14\u51FA\uFF0C\u5A92\u4F53\u5F00\u59CB\u627E\u4F60\u3002"
+    },
+    {
+      seq: 7,
+      id: "headliner",
+      name: "\u4E13\u573A\u4E3B\u89D2",
+      title: "One Man Live",
+      condition: "fansTotal >= 3000",
+      buttonText: "\u664B\u7EA7",
+      style: "s7",
+      themeColor: "c9d1e8",
+      unlockText: "\u4E13\u573A\uFF08OM\uFF09\u4E8B\u4EF6\u94FE\uFF0C\u573A\u9986\u5347\u7EA7\u3002"
+    },
+    {
+      seq: 8,
+      id: "legend",
+      name: "\u5730\u4E0B\u4F20\u5947",
+      title: "\u8FD9\u4E2A\u573A\u666F\u8BB0\u5F97\u4F60",
+      condition: "fansTotal >= 8000",
+      buttonText: "",
+      style: "s8",
+      themeColor: "rainbow",
+      unlockText: "\u7EC8\u5C40\u7ED3\u7B97 special\u3002"
+    }
+  ]
+};
+
+// ../core/src/stages.ts
+var STAGES = stages_default.stages.slice().sort((a, b) => a.seq - b.seq);
+var STAGE_REACHED_KEY = "stage:reached";
+function reachedSeq(state) {
+  const raw2 = state.flags[STAGE_REACHED_KEY];
+  return typeof raw2 === "number" && Number.isFinite(raw2) ? raw2 : 0;
+}
+function meetsStage(state, stage) {
+  const cond = stage.condition;
+  if (cond === void 0 || cond === null) return true;
+  if (typeof cond === "object" && Object.keys(cond).length === 0) return true;
+  return matchesCondition(state, cond);
+}
+function derivedStageSeq(state) {
+  for (let i = STAGES.length - 1; i >= 0; i -= 1) {
+    const stage = STAGES[i];
+    if (stage && meetsStage(state, stage)) return stage.seq;
+  }
+  return 1;
+}
+function syncStageReached(state) {
+  const reached = reachedSeq(state);
+  const derived = derivedStageSeq(state);
+  if (derived <= reached) return state;
+  return { ...state, flags: { ...state.flags, [STAGE_REACHED_KEY]: derived } };
+}
 
 // ../core/src/settle.ts
 var clamp = (v, min, max) => Math.min(max, Math.max(min, v));
@@ -24561,7 +36277,7 @@ var ROUTINE_CHANCE = BALANCE.routineChance;
 function settle(run, schedule, from, to, seed, opts = {}) {
   const routineChance = opts.routineChance ?? ROUTINE_CHANCE;
   const storyEvents = opts.storyEvents ?? true;
-  const state = {
+  let state = {
     ...run,
     money: typeof run.money === "number" ? run.money : 0,
     stats: { ...run.stats },
@@ -24585,29 +36301,35 @@ function settle(run, schedule, from, to, seed, opts = {}) {
   let stoppedReason = null;
   let cursor = Math.max(from, run.at);
   const items = [...schedule].sort((a, b) => a.startAt - b.startAt);
+  const maxSteps = opts.maxSteps ?? Number.POSITIVE_INFINITY;
+  let steps = 0;
   for (const item of items) {
+    if (steps >= maxSteps) {
+      stoppedReason = "time";
+      break;
+    }
     if (item.startAt < cursor) continue;
     if (item.endAt > to) {
       stoppedReason = "time";
       break;
     }
+    if (item.kind === "show") {
+      const booking = (state.bookings ?? []).find((b) => b.id === item.bookingId);
+      state = booking ? settleShow(state, item, booking) : { ...state, at: item.endAt };
+      executed.push(item.id);
+      steps += 1;
+      continue;
+    }
     const action = ACTIONS[item.actionId];
     if (!action) continue;
     const rng = mulberry32(hashSeed(`${seed}:action:${item.id}`));
-    if (remainingTimes(state, item.actionId) <= 0) {
-      stoppedReason = "stopped";
+    const pf = preflightAction(state, item.actionId);
+    if (!pf.ok) {
+      stoppedReason = pf.reason === "times" ? "stopped" : pf.reason === "stamina" ? "stamina" : pf.reason === "money" ? "money" : null;
       break;
     }
     const preview = previewAction(state, item.actionId);
     if (!preview) continue;
-    if (preview.stamina < 0 && state.stamina + preview.stamina < 0) {
-      stoppedReason = "stamina";
-      break;
-    }
-    if (preview.money < 0 && state.money + preview.money < 0) {
-      stoppedReason = "money";
-      break;
-    }
     const resolved = resolveAction(state, item.actionId, rng);
     if (!resolved) continue;
     const nextMood = Math.max(0, Math.min(100, (state.mood ?? 70) + resolved.mood));
@@ -24627,6 +36349,11 @@ function settle(run, schedule, from, to, seed, opts = {}) {
     state.money += resolved.money;
     state.mood = nextMood;
     state.satiety = nextSatiety;
+    state.health = clamp((state.health ?? 100) + resolved.health, 0, 100);
+    for (const [k, v] of Object.entries(resolved.axes)) {
+      const key = k;
+      state.axes[key] = clamp((state.axes[key] ?? 50) + v, 0, 100);
+    }
     if (resolved.fans > 0) {
       state.fans = applyFanAction(state.fans, showFanType(state), resolved.fans, 0.3);
     }
@@ -24664,6 +36391,7 @@ function settle(run, schedule, from, to, seed, opts = {}) {
     state.at = item.endAt;
     cursor = item.endAt;
     executed.push(item.id);
+    steps += 1;
     if (rng() < routineChance) {
       const t = ROUTINE_TEMPLATES[Math.floor(rng() * ROUTINE_TEMPLATES.length)];
       state.stamina = clampStamina(state.stamina + t.stamina);
@@ -24691,6 +36419,7 @@ function settle(run, schedule, from, to, seed, opts = {}) {
         state.flags = { ...state.flags, ["ev:" + story.id + ":queued"]: true };
       }
     }
+    state = autoAcceptTasks(state);
     if (item.stopAfter) {
       stoppedReason = "stopped";
       break;
@@ -24713,7 +36442,7 @@ function settle(run, schedule, from, to, seed, opts = {}) {
   if (opts.endAt !== void 0 && state.at >= opts.endAt) {
     stoppedReason = "ending";
   }
-  return { state: expireTasks(state), executed, stoppedReason };
+  return { state: syncStageReached(expireTasks(state)), executed, stoppedReason };
 }
 
 // ../core/data/endings.json
@@ -25192,6 +36921,167 @@ var BIAS_LABEL = Object.fromEntries(
   BIASES.map((b) => [b, BIAS_NAMES?.[b] ?? b])
 );
 
+// ../core/data/shop.json
+var shop_default = {
+  _\u8BF4\u660E: "\u88C5\u5907\u8868\u3002common=\u666E\u901A\uFF08\u6BCF\u5468\u8D27\u67B6 3 \u4EF6\uFF09\uFF0Crare=\u7A00\u6709\uFF08\u6BCF\u5468 1 \u4EF6\uFF09\uFF1B\u4EF7\u683C\u53D6\u81EA balance \u8868\u7684 commonPrice / rarePrice",
+  shop: {
+    commonPrice: 800,
+    rarePrice: 2e3,
+    common: [
+      {
+        name: "\u7D20\u8272\u7EC3\u4E60\u670D",
+        stat: "dance",
+        statName: "\u821E\u8E48",
+        value: 2
+      },
+      {
+        name: "\u65E7\u536B\u8863",
+        stat: "dance",
+        statName: "\u821E\u8E48",
+        value: 2
+      },
+      {
+        name: "\u9ED1\u8272\u6253\u5E95\u8863",
+        stat: "dance",
+        statName: "\u821E\u8E48",
+        value: 2
+      },
+      {
+        name: "\u5E06\u5E03\u978B",
+        stat: "dance",
+        statName: "\u821E\u8E48",
+        value: 2
+      },
+      {
+        name: "\u767D\u886C\u886B",
+        stat: "acting",
+        statName: "\u6F14\u6280",
+        value: 2
+      },
+      {
+        name: "\u68C9\u9EBB\u957F\u88D9",
+        stat: "acting",
+        statName: "\u6F14\u6280",
+        value: 2
+      },
+      {
+        name: "\u6210\u719F\u897F\u88C5\u88D9",
+        stat: "acting",
+        statName: "\u6F14\u6280",
+        value: 2
+      },
+      {
+        name: "\u9488\u7EC7\u5F00\u886B",
+        stat: "vocal",
+        statName: "\u6F14\u5531",
+        value: 2
+      },
+      {
+        name: "\u8FDE\u5E3D\u886B",
+        stat: "vocal",
+        statName: "\u6F14\u5531",
+        value: 2
+      },
+      {
+        name: "\u4EAE\u7247\u80CC\u5FC3",
+        stat: "vocal",
+        statName: "\u6F14\u5531",
+        value: 2
+      },
+      {
+        name: "\u5BBD\u677ET\u6064",
+        stat: "talk",
+        statName: "\u53E3\u624D",
+        value: 2
+      },
+      {
+        name: "JK \u5236\u670D",
+        stat: "talk",
+        statName: "\u53E3\u624D",
+        value: 2
+      },
+      {
+        name: "\u59B9\u7CFB\u540A\u5E26\u88D9",
+        stat: "talk",
+        statName: "\u53E3\u624D",
+        value: 2
+      },
+      {
+        name: "\u886C\u886B\u52A0\u80CC\u5FC3",
+        stat: "talk",
+        statName: "\u53E3\u624D",
+        value: 2
+      }
+    ],
+    rare: [
+      {
+        name: "\u6253\u6B4C\u670D\xB7\u521D\u7248",
+        stat: "dance",
+        statName: "\u821E\u8E48",
+        value: 5
+      },
+      {
+        name: "\u821E\u53F0\u7528\u9A6C\u4E01\u9774",
+        stat: "dance",
+        statName: "\u821E\u8E48",
+        value: 5
+      },
+      {
+        name: "\u6447\u6EDA\u5939\u514B",
+        stat: "vocal",
+        statName: "\u6F14\u5531",
+        value: 5
+      },
+      {
+        name: "\u767D\u88D9\xB7\u6BD5\u4E1A\u573A",
+        stat: "vocal",
+        statName: "\u6F14\u5531",
+        value: 4
+      },
+      {
+        name: "\u53E4\u98CE\u957F\u88D9",
+        stat: "acting",
+        statName: "\u6F14\u6280",
+        value: 5
+      },
+      {
+        name: "\u5730\u96F7\u7CFB\u8FDE\u8863\u88D9",
+        stat: "acting",
+        statName: "\u6F14\u6280",
+        value: 5
+      },
+      {
+        name: "\u75C5\u5A07\u7CFB\u9ED1\u88D9",
+        stat: "acting",
+        statName: "\u6F14\u6280",
+        value: 4
+      },
+      {
+        name: "Lolita \u5957\u88C5",
+        stat: "talk",
+        statName: "\u53E3\u624D",
+        value: 4
+      }
+    ]
+  }
+};
+
+// ../core/src/shop.ts
+var COMMON_PRICE = shop_default.shop.commonPrice;
+var RARE_PRICE = shop_default.shop.rarePrice;
+var OUTFITS = shop_default.shop.common.map((o) => ({
+  name: o.name,
+  stat: o.stat,
+  statName: o.statName,
+  value: o.value
+}));
+var RARE_OUTFITS = shop_default.shop.rare.map((o) => ({
+  name: o.name,
+  stat: o.stat,
+  statName: o.statName,
+  value: o.value
+}));
+
 // ../core/src/divination.ts
 var DIVINATION_BASE = BALANCE.divinationBase;
 
@@ -25211,27 +37101,41 @@ var STAT_LABEL = Object.fromEntries(
   ATTRIBUTES.map((a) => [a.key, a.name])
 );
 
-// ../core/src/task-progress.ts
-var CATEGORY_PREFIX = {
-  innate: "innate",
-  trait: "trait",
-  negative: "neg",
-  proficient: "prof",
-  fans: "fans"
-};
-var VARIABLE_LABEL = (() => {
-  const map = /* @__PURE__ */ new Map();
-  for (const attr of RAW_ATTRIBUTES) {
-    if (!attr.key || !attr.name) continue;
-    map.set(attr.key, attr.name);
-    const prefix = CATEGORY_PREFIX[attr.category];
-    if (prefix) map.set(`${prefix}.${attr.key}`, attr.name);
-  }
-  for (const [cn, en] of Object.entries(ALIAS)) {
-    if (!map.has(en)) map.set(en, cn);
-  }
-  return map;
-})();
+// ../core/src/clock.ts
+function gameAdvance(elapsedMs, speed, timeScale = TIME_SCALE) {
+  return Math.max(0, elapsedMs) * Math.max(1, speed) * Math.max(1, timeScale);
+}
+var CLAMP_TOLERANCE_MS = 500;
+function createClock(gameAt, overrides = {}) {
+  return {
+    status: "paused",
+    gameAt,
+    wallAnchor: 0,
+    updatedAt: 0,
+    ...overrides
+  };
+}
+function maxTargetAt(clock, serverNow, timeScale = TIME_SCALE) {
+  if (clock.status !== "running") return clock.gameAt;
+  return clock.gameAt + gameAdvance(serverNow - clock.wallAnchor, 1, timeScale) + CLAMP_TOLERANCE_MS;
+}
+function advanceAnchor(clock, newGameAt, timeScale = TIME_SCALE) {
+  if (clock.status !== "running") return clock.wallAnchor;
+  return clock.wallAnchor + (newGameAt - clock.gameAt) / Math.max(1, timeScale);
+}
+function nextStopAt(schedule) {
+  const next = nextPendingItem(schedule);
+  if (!next) return null;
+  return next.endAt ?? next.startAt + ACTION_MS;
+}
+function markDone(schedule, executed) {
+  if (executed.length === 0) return schedule;
+  const done = new Set(executed);
+  const marked = schedule.map((s) => done.has(s.id) ? { ...s, done: true } : s);
+  const doneIds = marked.filter((s) => s.done).map((s) => s.id);
+  const keep = new Set(doneIds.slice(-60));
+  return marked.filter((s) => !s.done || keep.has(s.id));
+}
 
 // ../../node_modules/.pnpm/@supabase+supabase-js@2.118.0/node_modules/@supabase/supabase-js/dist/index.mjs
 var dist_exports = {};
@@ -33438,18 +45342,33 @@ function client() {
   });
   return authClient;
 }
+var USER_CACHE_TTL = 5 * 60 * 1e3;
+var userCache = /* @__PURE__ */ new Map();
 async function getUserFromRequest(c) {
   const header = c.req.header("authorization") ?? "";
   if (!header.toLowerCase().startsWith("bearer ")) return null;
   const token = header.slice(7).trim();
   if (!token) return null;
+  const cached = userCache.get(token);
+  if (cached && cached.exp > Date.now()) return cached.user;
+  if (cached) userCache.delete(token);
   const sb = client();
   if (!sb) return null;
   try {
     const { data, error } = await sb.auth.getUser(token);
-    if (error || !data.user) return null;
-    return { id: data.user.id, email: data.user.email ?? null };
+    if (error || !data.user) {
+      userCache.delete(token);
+      return null;
+    }
+    const user = { id: data.user.id, email: data.user.email ?? null };
+    if (userCache.size > 500) {
+      const now = Date.now();
+      for (const [k, v] of userCache) if (v.exp <= now) userCache.delete(k);
+    }
+    userCache.set(token, { user, exp: Date.now() + USER_CACHE_TTL });
+    return user;
   } catch {
+    userCache.delete(token);
     return null;
   }
 }
@@ -33508,7 +45427,11 @@ function toRecord(row) {
     updatedAt: row.updated_at,
     seed: row.seed,
     run: row.state,
-    schedule: row.schedule
+    schedule: row.schedule,
+    // 旧记录无 clock → 默认 idle（不抛错、不要求数据迁移）
+    clock: row.clock ?? createClock(row.state.at),
+    appliedEvents: row.clock?.appliedEvents,
+    lastEventTs: row.clock?.lastEventTs
   };
 }
 var SupabaseStore = class {
@@ -33534,7 +45457,9 @@ var SupabaseStore = class {
       updated_at: rec.updatedAt,
       seed: rec.seed,
       state: rec.run,
-      schedule: rec.schedule
+      schedule: rec.schedule,
+      // T-029：不新增列，把幂等键/事件时间塞进同一 clock jsonb
+      clock: { ...rec.clock, appliedEvents: rec.appliedEvents ?? [], lastEventTs: rec.lastEventTs ?? 0 }
     };
     const { error } = await this.client.from(TABLE).upsert(row, { onConflict: "run_id" });
     if (error) throw new Error(`supabase putRun: ${error.message}`);
@@ -33576,7 +45501,6 @@ function getStore() {
 }
 
 // src/app.ts
-var app = new Hono3().basePath("/api");
 function origins() {
   const raw2 = process.env.CORS_ORIGINS;
   if (!raw2) return ["http://127.0.0.1:5273", "http://localhost:5273"];
@@ -33591,159 +45515,221 @@ function allowOrigin(origin) {
   if (/^https:\/\/[a-z0-9-]+(\.[a-z0-9-]+)*\.nofunoffice\.com$/.test(origin)) return origin;
   return void 0;
 }
-app.use(
-  "*",
-  cors({
-    origin: (origin) => allowOrigin(origin),
-    allowMethods: ["GET", "POST"],
-    allowHeaders: ["content-type", "authorization"]
-  })
-);
-app.get("/_debug", (c) => {
-  return c.json({
-    url: c.req.url,
-    path: c.req.path,
-    host: c.req.header("host") ?? null
-  });
-});
-app.get("/health", async (c) => {
-  let storeKind = "unknown";
-  let runs = -1;
-  let error = null;
-  try {
-    const store2 = getStore();
-    storeKind = store2.kind;
-    runs = await store2.countRuns();
-  } catch (err) {
-    error = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
-  }
-  return c.json({
-    debug: error,
-    storeKind,
-    ok: true,
-    name: "idollife-api",
-    version: "0.5.0",
-    runs,
-    serverTime: Date.now()
-  });
-});
-function validate(body) {
-  if (!body || typeof body !== "object") return { error: "body must be an object" };
-  const b = body;
-  if (typeof b.runId !== "string" || !b.runId) return { error: "runId required" };
-  if (!b.run || typeof b.run !== "object") return { error: "run required" };
-  if (typeof b.run.at !== "number") return { error: "run.at must be number" };
-  if (typeof b.run.stamina !== "number") return { error: "run.stamina must be number" };
-  if (!b.run.stats || typeof b.run.stats.vocal !== "number") return { error: "run.stats invalid" };
-  if (!Array.isArray(b.run.log)) return { error: "run.log must be array" };
-  if (!Array.isArray(b.schedule)) return { error: "schedule must be array" };
-  if (typeof b.from !== "number" || typeof b.to !== "number") return { error: "from/to required" };
-  if (b.to < b.from) return { error: "to must be >= from" };
-  if (typeof b.seed !== "string") return { error: "seed required" };
-  return { body: b };
+function snapshot(rec, extra = {}) {
+  return {
+    runId: rec.runId,
+    revision: rec.revision,
+    seed: rec.seed,
+    run: rec.run,
+    state: rec.run,
+    schedule: rec.schedule,
+    clock: rec.clock,
+    nextStopAt: rec.clock.status === "running" ? nextStopAt(rec.schedule) : null,
+    serverTime: Date.now(),
+    ...extra
+  };
 }
-app.post("/v1/sync", async (c) => {
-  const user = await getUserFromRequest(c);
-  if (!user) return c.json({ error: "unauthorized" }, 401);
-  const raw2 = await c.req.json().catch(() => null);
-  const parsed = validate(raw2);
-  if ("error" in parsed) return c.json({ error: parsed.error }, 400);
-  const { runId, run, schedule, from, to, seed } = parsed.body;
-  const store2 = getStore();
-  let existing;
-  try {
-    existing = await store2.getRun(runId);
-  } catch (err) {
-    return c.json({ error: "store unavailable", detail: String(err) }, 503);
-  }
-  if (existing?.userId && existing.userId !== user.id) {
-    return c.json({ error: "forbidden" }, 403);
-  }
-  if (existing && existing.run.at > run.at) {
-    return c.json(
-      {
-        runId,
-        revision: existing.revision,
-        accepted: [],
-        stoppedReason: "stale",
-        state: existing.run,
-        serverTime: Date.now()
-      },
-      409
-    );
-  }
-  const base = existing?.run ?? run;
-  const result = settle(base, schedule, from, to, seed);
-  const record = {
-    userId: user.id,
-    runId,
-    revision: (existing?.revision ?? 0) + 1,
-    lastSyncAt: to,
-    updatedAt: Date.now(),
-    seed,
-    run: result.state,
-    schedule
-  };
-  try {
-    await store2.putRun(record);
-  } catch (err) {
-    return c.json({ error: "store write failed", detail: String(err) }, 503);
-  }
-  return c.json({
-    runId,
-    revision: record.revision,
-    accepted: result.executed,
-    stoppedReason: result.stoppedReason,
-    state: result.state,
-    serverTime: Date.now()
+var num = (v) => typeof v === "number" && Number.isFinite(v);
+function validPutRun(run) {
+  if (!run || typeof run !== "object") return false;
+  const r = run;
+  return num(r.at) && num(r.stamina) && !!r.stats && num(r.stats.vocal) && Array.isArray(r.log);
+}
+function createApp(options = {}) {
+  const getUser = options.getUser ?? getUserFromRequest;
+  const app2 = new Hono3().basePath("/api");
+  app2.use(
+    "*",
+    cors({ origin: (origin) => allowOrigin(origin), allowMethods: ["GET", "POST", "PUT"], allowHeaders: ["content-type", "authorization"] })
+  );
+  app2.get(
+    "/_debug",
+    (c) => c.json({ url: c.req.url, path: c.req.path, host: c.req.header("host") ?? null })
+  );
+  app2.get("/health", async (c) => {
+    let storeKind = "unknown";
+    let runs = -1;
+    let error = null;
+    try {
+      const store2 = getStore();
+      storeKind = store2.kind;
+      runs = await store2.countRuns();
+    } catch (err) {
+      error = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
+    }
+    return c.json({ debug: error, storeKind, ok: true, name: "idollife-api", version: "0.7.0", runs, serverTime: Date.now() });
   });
-});
-app.post("/v1/choice", async (c) => {
-  const user = await getUserFromRequest(c);
-  if (!user) return c.json({ error: "unauthorized" }, 401);
-  const body = await c.req.json().catch(() => null);
-  if (!body?.runId || !body.run) return c.json({ error: "runId and run required" }, 400);
-  const store2 = getStore();
-  const existing = await store2.getRun(body.runId);
-  if (existing?.userId && existing.userId !== user.id) {
-    return c.json({ error: "forbidden" }, 403);
-  }
-  const record = {
-    userId: user.id,
-    runId: body.runId,
-    revision: (existing?.revision ?? 0) + 1,
-    lastSyncAt: body.run.at,
-    updatedAt: Date.now(),
-    seed: existing?.seed ?? "choice",
-    run: body.run,
-    schedule: existing?.schedule ?? []
-  };
-  try {
-    await store2.putRun(record);
-  } catch (err) {
-    return c.json({ error: "store write failed", detail: String(err) }, 503);
-  }
-  return c.json({ runId: record.runId, revision: record.revision });
-});
-app.get("/v1/runs/latest", async (c) => {
-  const user = await getUserFromRequest(c);
-  if (!user) return c.json({ error: "unauthorized" }, 401);
-  try {
+  app2.get("/v1/state", async (c) => {
+    const user = await getUser(c);
+    if (!user) return c.json({ error: "unauthorized" }, 401);
+    const runId = c.req.query("runId");
+    const rec = runId ? await getStore().getRun(runId) : await getStore().latestForUser(user.id);
+    if (!rec) return c.json({ error: "not_found" }, 404);
+    if (rec.userId && rec.userId !== user.id) return c.json({ error: "forbidden" }, 403);
+    return c.json(snapshot(rec));
+  });
+  app2.put("/v1/state", async (c) => {
+    const user = await getUser(c);
+    if (!user) return c.json({ error: "unauthorized" }, 401);
+    const body = await c.req.json().catch(() => null);
+    if (!body?.runId) return c.json({ error: "runId required" }, 400);
+    if (body.run !== void 0 && !validPutRun(body.run)) return c.json({ error: "bad_run" }, 400);
+    if (body.schedule !== void 0 && !Array.isArray(body.schedule)) return c.json({ error: "bad_schedule" }, 400);
+    const store2 = getStore();
+    const now = Date.now();
+    const rec = await store2.getRun(body.runId);
+    if (!rec) {
+      if (!body.run) return c.json({ error: "run required for new record" }, 400);
+      const created = {
+        userId: user.id,
+        runId: body.runId,
+        revision: 1,
+        seed: body.seed ?? "run-demo",
+        run: body.run,
+        schedule: body.schedule ?? [],
+        clock: createClock(body.run.at),
+        lastSyncAt: body.run.at,
+        updatedAt: now
+      };
+      await store2.putRun(created);
+      return c.json(snapshot(created));
+    }
+    if (rec.userId && rec.userId !== user.id) return c.json({ error: "forbidden" }, 403);
+    if (body.expectedRevision !== rec.revision) return c.json({ error: "conflict", ...snapshot(rec) }, 409);
+    if (body.run && body.run.at !== rec.run.at) return c.json({ error: "stale_clock", ...snapshot(rec) }, 409);
+    const nextSchedule = body.schedule ?? rec.schedule;
+    const noPending = !nextSchedule.some((s) => !s.done);
+    const clock = noPending && rec.clock.status === "running" ? { ...rec.clock, status: "paused", wallAnchor: 0, updatedAt: now } : rec.clock;
+    const next = {
+      ...rec,
+      run: body.run ?? rec.run,
+      schedule: nextSchedule,
+      clock,
+      revision: rec.revision + 1,
+      lastSyncAt: (body.run ?? rec.run).at,
+      updatedAt: now
+    };
+    await store2.putRun(next);
+    return c.json(snapshot(next));
+  });
+  app2.post("/v1/advance", async (c) => {
+    const user = await getUser(c);
+    if (!user) return c.json({ error: "unauthorized" }, 401);
+    const body = await c.req.json().catch(() => null);
+    if (!body?.runId) return c.json({ error: "runId required" }, 400);
+    const store2 = getStore();
+    const now = Date.now();
+    const rec = await store2.getRun(body.runId);
+    if (!rec) return c.json({ error: "not_found" }, 404);
+    if (rec.userId && rec.userId !== user.id) return c.json({ error: "forbidden" }, 403);
+    if (body.expectedRevision !== rec.revision) return c.json({ error: "conflict", ...snapshot(rec) }, 409);
+    const maxTarget = maxTargetAt(rec.clock, now);
+    const requested = body.targetAt == null ? maxTarget : body.targetAt;
+    const target = Math.min(requested, maxTarget);
+    const clamped = requested > maxTarget;
+    if (target <= rec.clock.gameAt) {
+      return c.json(snapshot(rec, { executed: [], stepped: 0, stoppedReason: null, clamped, clampedTo: clamped ? target : null }));
+    }
+    const result = settle(rec.run, rec.schedule, rec.clock.gameAt, target, rec.seed, {
+      endAt: RUN_END_AT,
+      maxSteps: 2e3
+    });
+    const schedule = markDone(rec.schedule, result.executed);
+    const gameAt = result.state.at;
+    const keepRunning = result.stoppedReason === "time" || result.stoppedReason === null || result.executed.length >= 2e3 || result.stoppedReason === "exhausted" && schedule.some((s) => !s.done);
+    const status = keepRunning ? "running" : "paused";
+    const clock = status === "running" ? { ...rec.clock, status, gameAt, wallAnchor: advanceAnchor(rec.clock, gameAt), updatedAt: now } : { ...rec.clock, status, gameAt, wallAnchor: 0, updatedAt: now };
+    const next = {
+      ...rec,
+      run: result.state,
+      schedule,
+      clock,
+      revision: rec.revision + 1,
+      lastSyncAt: gameAt,
+      updatedAt: now
+    };
+    await store2.putRun(next);
+    return c.json(
+      snapshot(next, {
+        executed: result.executed.slice(-60),
+        stepped: result.executed.length,
+        stoppedReason: result.stoppedReason,
+        clamped,
+        clampedTo: clamped ? target : null
+      })
+    );
+  });
+  app2.post("/v1/start", async (c) => {
+    const user = await getUser(c);
+    if (!user) return c.json({ error: "unauthorized" }, 401);
+    const body = await c.req.json().catch(() => null);
+    if (!body?.runId) return c.json({ error: "runId required" }, 400);
+    const store2 = getStore();
+    const rec = await store2.getRun(body.runId);
+    if (!rec) return c.json({ error: "not_found" }, 404);
+    if (rec.userId && rec.userId !== user.id) return c.json({ error: "forbidden" }, 403);
+    if (!rec.schedule.some((s) => !s.done)) return c.json({ error: "no_schedule" }, 409);
+    if (rec.run.pendingEvent) return c.json({ error: "pending_event" }, 409);
+    if (rec.clock.status === "running") return c.json(snapshot(rec));
+    const now = Date.now();
+    const next = {
+      ...rec,
+      revision: rec.revision + 1,
+      clock: { status: "running", gameAt: rec.run.at, wallAnchor: now, updatedAt: now },
+      updatedAt: now
+    };
+    await store2.putRun(next);
+    return c.json(snapshot(next));
+  });
+  app2.post("/v1/pause", async (c) => {
+    const user = await getUser(c);
+    if (!user) return c.json({ error: "unauthorized" }, 401);
+    const body = await c.req.json().catch(() => null);
+    if (!body?.runId) return c.json({ error: "runId required" }, 400);
+    const store2 = getStore();
+    const rec = await store2.getRun(body.runId);
+    if (!rec) return c.json({ error: "not_found" }, 404);
+    if (rec.userId && rec.userId !== user.id) return c.json({ error: "forbidden" }, 403);
+    if (rec.clock.status === "paused") return c.json(snapshot(rec));
+    const now = Date.now();
+    const maxTarget = maxTargetAt(rec.clock, now);
+    const target = Math.min(body.targetAt == null ? maxTarget : body.targetAt, maxTarget);
+    const result = settle(rec.run, rec.schedule, rec.clock.gameAt, target, rec.seed, {
+      endAt: RUN_END_AT,
+      maxSteps: 2e3
+    });
+    const next = {
+      ...rec,
+      run: result.state,
+      schedule: markDone(rec.schedule, result.executed),
+      revision: rec.revision + 1,
+      clock: { ...rec.clock, status: "paused", gameAt: result.state.at, wallAnchor: 0, updatedAt: now },
+      lastSyncAt: result.state.at,
+      updatedAt: now
+    };
+    await store2.putRun(next);
+    return c.json(
+      snapshot(next, { executed: result.executed.slice(-60), stepped: result.executed.length, stoppedReason: result.stoppedReason })
+    );
+  });
+  app2.get("/v1/runs/latest", async (c) => {
+    const user = await getUser(c);
+    if (!user) return c.json({ error: "unauthorized" }, 401);
     const rec = await getStore().latestForUser(user.id);
     if (!rec) return c.json({ run: null }, 200);
-    return c.json(rec);
-  } catch (err) {
-    return c.json({ error: "store unavailable", detail: String(err) }, 503);
-  }
-});
-app.get("/v1/runs/:id", async (c) => {
-  const user = await getUserFromRequest(c);
-  if (!user) return c.json({ error: "unauthorized" }, 401);
-  const rec = await getStore().getRun(c.req.param("id"));
-  if (!rec) return c.json({ error: "not found" }, 404);
-  if (rec.userId && rec.userId !== user.id) return c.json({ error: "forbidden" }, 403);
-  return c.json(rec);
-});
+    return c.json(snapshot(rec));
+  });
+  app2.get("/v1/runs/:id", async (c) => {
+    const user = await getUser(c);
+    if (!user) return c.json({ error: "unauthorized" }, 401);
+    const rec = await getStore().getRun(c.req.param("id"));
+    if (!rec) return c.json({ error: "not found" }, 404);
+    if (rec.userId && rec.userId !== user.id) return c.json({ error: "forbidden" }, 403);
+    return c.json(snapshot(rec));
+  });
+  return app2;
+}
+var app = createApp();
 
 // src/vercel.ts
 var config = { runtime: "nodejs" };
